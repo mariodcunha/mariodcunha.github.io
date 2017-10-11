@@ -324,13 +324,11 @@ $('#world').click(
   		if($('#toggle-word').text()=='NEW')
   		{
   			$('#toggle-word').css('font-family','Lato');
-  			$('#built-by').css('font-family','Lato');
   			choice = 15; build();
   		}
   		else if($('#toggle-word').text()=='OLD')
   		{
   			$('#toggle-word').css('font-family','Times New Roman');
-  			$('#built-by').css('font-family','Times New Roman');
   			choice = 14; build();
   		}
   	})
