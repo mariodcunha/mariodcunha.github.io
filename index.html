@@ -1,20 +1,37 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>default-title</title>
 
-    <script src="javascript.js" type="text/javascript"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
-    <style> 
+<head>
 
-      /*body {padding: 0; margin: 0;} canvas {vertical-align: top;} */
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>The Seven Wonders of the World</title>
 
-    </style>
-  </head>
-  <body>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  
+</head>
 
-    <h1>Yaay! so much to build!</h1>
+<body class="bg" background="images/new-wonder-1.jpg" onload="change();">  
 
-  </body>
-</html>
+      <audio id="narration-sound" src="sound/voice-1.mp3" crossorigin autoplay ></audio> 
+
+      <h1 id="main-title">The <span id="toggle-word">NEW</span> 7 Wonders of the World</h1>
+
+      <p id="built-info">Built by: <span id="built-by">Emperor Shah Jahan</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;Built in: 
+        <span id="built-in">1653</span></p>
+
+      <p id="hashtags"><span id="hash1">#Tomb</span>&nbsp;<span id="hash2">#Gift</span>&nbsp;<span id="hash3"></span></p>
+      
+      <h1 id="wonder-title" onclick="change();">The Taj Mahal, India</h1>
+
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+    <script src="js/javascript.js" type="text/javascript" ></script>
+
+  
+</body></html>
+
+
+

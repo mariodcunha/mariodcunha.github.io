@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display+SC');
+@import url('https://fonts.googleapis.com/css?family=Vidaloka');
+
+/*font-family: 'Playfair Display SC', serif;*/
+
+body
+{
+	height: 100%;
+	width: 100%; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Lato', sans-serif;
+}
+
+h1
+{
+	color: white;
+	text-align: center;
+	/*font-family: 'Lato', sans-serif;*/
+	text-transform: uppercase;
+}
+
+p
+{
+	color: white;
+	margin-top: 30vw;
+	position: absolute;
+}
+
+#built-info
+{
+	float: right;
+	margin-left: 10vw;
+	padding: 10px;
+	background-color: #333333;
+	opacity: 0.5;
+
+
+}
+
+#hashtags
+{
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	margin-top: 30vw;
+	position: absolute;
+	margin-left: 70vw;
+}
+
+#hash1, #hash2, #hash3
+{
+	background-color: #333333;
+	opacity: 0.5;
+	padding: 10px;
+}
+
+#toggle-word
+{
+	font-size: 17px;
+	opacity: 1.0;	
+}
+
+#main-title
+{
+	opacity: 0.7;
+	letter-spacing: 30px;
+	font-size: 15px;
+}
+
+#wonder-title
+{
+	opacity: 0.7;
+	font-weight: bold;
+	margin-top: 73vh;
+	font-size: 100px;
+}
+
+
+
+
+
