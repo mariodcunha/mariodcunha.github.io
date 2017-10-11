@@ -11,7 +11,9 @@ body
     background-size: cover;
     background-repeat: no-repeat;
     font-family: 'Lato', sans-serif;
+    transition: all 1s;
 }
+
 
 h1
 {
@@ -19,6 +21,7 @@ h1
 	text-align: center;
 	/*font-family: 'Lato', sans-serif;*/
 	text-transform: uppercase;
+	/*transition: all 1s;*/
 }
 
 p
@@ -32,11 +35,12 @@ p
 {
 	float: right;
 	margin-left: 10vw;
+	margin-right: 10vw;
 	padding: 10px;
 	background-color: #333333;
 	opacity: 0.5;
-
-
+	letter-spacing: 1px;
+	transition: all 0.5s;
 }
 
 #hashtags
@@ -46,7 +50,9 @@ p
 	margin-top: 30vw;
 	position: absolute;
 	margin-left: 70vw;
+	transition: all 1s;
 }
+
 
 #hash1, #hash2, #hash3
 {
@@ -55,11 +61,28 @@ p
 	padding: 10px;
 }
 
+#hash1:hover, #hash2:hover, #hash3:hover, #built-info:hover
+{
+	background-color: black;
+	opacity: 1;
+	transition: all 0.5s;
+}
+
+
 #toggle-word
 {
 	font-size: 17px;
-	opacity: 1.0;	
+	opacity: 0.9;
 }
+
+
+#toggle-word:hover, #world:hover
+{
+	transition: all 0.5s;
+	font-weight: bolder;
+	text-shadow: 2px 2px #666666;
+}
+
 
 #main-title
 {
@@ -68,6 +91,14 @@ p
 	font-size: 15px;
 }
 
+
+#main-title:hover
+{
+	opacity: 1;
+	transition: all 0.5s;
+}
+
+
 #wonder-title
 {
 	opacity: 0.7;
@@ -75,6 +106,15 @@ p
 	margin-top: 73vh;
 	font-size: 100px;
 }
+
+
+#wonder-title:hover
+{	
+	opacity: 1;
+	transition: all 0.5s;
+}
+
+
 
 
 
