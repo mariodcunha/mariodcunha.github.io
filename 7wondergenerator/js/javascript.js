@@ -12,7 +12,7 @@ var builtBy = ['The Nabataeans', 'Emperor Shah Jahan', 'Titus', 'The Ming Dynast
 
 var builtWhen = ['5th Cent. BC', '1653', '80 AD', 'Bulti in 1398 AD', '600 AD', '1931', '1450 AD', '2600 BC', '290 BC', '351 BC', '435 BC', '800 BC', '280 BC', '280 BC','',''];
 
-var intro = "Welcome. Click on 'NEW' or 'WORLD' in the main title to explore and have fun! Click any font to surf through the wonders."
+var intro = "Welcome. Click on 'NEW' or 'WORLD' in the main title to explore and have fun! Click any text to surf through the wonders."
 
 var tomb = [0,1,7,9];
 
@@ -324,11 +324,13 @@ $('#world').click(
   		if($('#toggle-word').text()=='NEW')
   		{
   			$('#toggle-word').css('font-family','Lato');
+  			$('#built-by').css('font-family','Lato');
   			choice = 15; build();
   		}
   		else if($('#toggle-word').text()=='OLD')
   		{
   			$('#toggle-word').css('font-family','Times New Roman');
+  			$('#built-by').css('font-family','Times New Roman');
   			choice = 14; build();
   		}
   	})
