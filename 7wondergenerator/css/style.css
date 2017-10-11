@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 @import url('https://fonts.googleapis.com/css?family=Playfair+Display+SC');
 @import url('https://fonts.googleapis.com/css?family=Vidaloka');
-@import url('https://fonts.googleapis.com/css?family=Delius');
 
 
 /*font-family: 'Playfair Display SC', serif;*/
@@ -82,7 +81,9 @@ p
 {
 	transition: all 0.5s;
 	font-weight: bolder;
+	font-size: 25px;
 	text-shadow: 2px 2px #666666;
+
 }
 
 
@@ -98,6 +99,7 @@ p
 {
 	opacity: 1;
 	transition: all 0.5s;
+	font-size: 17px;
 }
 
 
