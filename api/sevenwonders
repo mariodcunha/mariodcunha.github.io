@@ -1,0 +1,27 @@
+[
+	{
+		"url": "https://mariodcunha.github.io/api/sevenwonders/1
+		"name": "The Taj Mahal Test",
+		"country": "India",
+		"type": "New",
+		"built-by": "Emperor Shah Jahan",
+		"built-in": "1653",
+		"hash1": "#tomb",
+		"hash2": "#gift",
+		"hash3": "",
+	},
+
+	{
+		"url": "https://mariodcunha.github.io/api/sevenwonders/1
+		"name": "Petra",
+		"country": "Jordan",
+		"type": "New",
+		"built-by": "The Nabateans",
+		"built-in": "5th Cent.BC",
+		"hash1": "#tomb",
+		"hash2": "",
+		"hash3": "",
+	},
+
+	
+]
