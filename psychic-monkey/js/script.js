@@ -8,13 +8,21 @@ if (annyang) {
 
   var commands = 
   {
-    'hey monkey is Todd *a': function() 
+    'hey monkey is Todd a good *a': function() 
     {
-      answerQuestion();
+      talkPos();
+    },
+    'hey monkey is Todd a bad *a': function() 
+    {
+      talkNeg();
+    },
+    'hey monkey Mario is awesome *a': function() 
+    {
+      talkGuess();
     },
     'hey monkey *a': function() 
     {
-      talkThat();
+      answerQuestion();
     },
 
     // ,
@@ -56,6 +64,8 @@ var replies = ["Yes", "No", "How should I know?", "Feed me and then I'll tell yo
 // list of replies, order must correspond with the right sound file
 
 var positive = [0,4,6,8];
+var negative = [1];
+var guessso = [2,3,5];
 
 var sounds = ["yes", "no", "how", "feedme", "maybe","dont","hellya","noclue","ohdeff","wut"]; // name of sound files
 
@@ -95,25 +105,12 @@ function randomNumGenerator(arrayName)
 function answerQuestion() 
 {
 	randomNum = randomNumGenerator(replies); 
+  talk();
 	
-	selectedVoice = sounds[randomNum];
-	$('#voice').attr('src', 'sound/'+selectedVoice+'.mp3');
-
-	selectedReply = replies[randomNum];
-	$('#speech').text(selectedReply);	
-
-	selectedEyes = eyes[randomNum];
-	$('#eyes').css('background-image','url(style/img/'+selectedEyes+'.png');
-
-	selectedBeak = beak[randomNum];
-	$('#beak').css('background-image','url(style/img/'+selectedBeak+'.png');
-
 }
 
-function talkThat() 
-{  
-  randomNum = positive[randomNumGenerator(4)]; 
-
+function talk()
+{
   selectedVoice = sounds[randomNum];
   $('#voice').attr('src', 'sound/'+selectedVoice+'.mp3');
 
@@ -127,14 +124,30 @@ function talkThat()
   $('#beak').css('background-image','url(style/img/'+selectedBeak+'.png');
 }
 
+
+function talkPos() 
+{  
+  randomNum = positive[randomNumGenerator(4)]; 
+  talk();
+}
+
+function talkNeg() 
+{  
+  randomNum = 1;
+  talk();
+}
+function talkGuess() 
+{  
+  randomNum = guessso[randomNumGenerator(3)]; 
+  talk();
+}
+
 // -- step 3
 // init function will initialize the rest of the functions
 function init() 
 {
 	 // check to see if script is linked properly and running
 	console.log('Hello World');
-
-
 }
 
 // -- step 2
