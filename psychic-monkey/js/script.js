@@ -8,13 +8,13 @@ if (annyang) {
 
   var commands = 
   {
-    'hey monkey *a': function() 
+    'hey monkey is Todd *a': function() 
     {
       answerQuestion();
     },
     'hey monkey *a': function() 
     {
-      answerQuestion();
+      talkThat();
     },
 
     // ,
