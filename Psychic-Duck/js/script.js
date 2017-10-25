@@ -8,12 +8,27 @@ if (annyang) {
 
   var commands = 
   {
-    'hello': function() 
+    '*a': function() 
     {
-      $('#speech').text("Here take your TPS Report");
-      $('#voice').attr('src', 'sound/feedme.mp3');
-      console.log("you listened to me");
-  }
+      answerQuestion();
+    }
+    // ,
+    // 'get lost': function() 
+    // {
+    //   $('#speech').text(replies[9]);
+    //   $('#voice').attr('src', 'sound/wut.mp3');
+    // },
+    // 'you are so cute': function() 
+    // {
+    //   $('#speech').text(replies[0]);
+    //   $('#voice').attr('src', 'sound/yes.mp3');
+    // },
+    // 'Mario is awesome': function() 
+    // {
+    //   $('#speech').text(replies[8]);
+    //   $('#voice').attr('src', 'sound/ohdeff.mp3');
+    // }
+
     // },
 
     // 'fuck off': function() 
