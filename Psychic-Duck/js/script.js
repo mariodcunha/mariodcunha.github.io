@@ -2,9 +2,34 @@
 preset replies in an array, while changing expressions. Steps are numbered. 
 */
 
-// -- 1
-// Create variables. 
 
+//Voice API from talater.com/annyang/
+if (annyang) {
+
+  var commands = 
+  {
+    'hello': function() 
+    {
+      $('#speech').text("Here take your TPS Report");
+      $('#voice').attr('src', 'sound/feedme.mp3');
+      console.log("you listened to me");
+  }
+    // },
+
+    // 'fuck off': function() 
+    // {
+    //   $('#speech').text("Here take your TPS Report");
+    //   $('#voice').attr('src', 'sound/wut.mp3');
+    //   console.log("you can still listen to me");
+    // }
+  };
+
+  // Add our commands to annyang
+  annyang.addCommands(commands);
+
+  // Start listening. You can call this here, or attach this call to an event, button, etc.
+  annyang.start();
+}
 
 
 var replies = ["Yes", "No", "How should I know?", "Feed me and then I'll tell you.", "Maaaaybe.", "Don't feel like answering you", "Hell ya!","No clue sonny!","Oh Definitely!","Waaaaat..."]; 
@@ -47,7 +72,6 @@ function randomNumGenerator(arrayName)
 // -- Create a function to bring the duck to life.
 function answerQuestion() 
 {
-
 	randomNum = randomNumGenerator(replies); 
 	
 	selectedVoice = sounds[randomNum];
