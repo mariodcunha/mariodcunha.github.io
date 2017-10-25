@@ -12,6 +12,11 @@ if (annyang) {
     {
       answerQuestion();
     },
+    'hey monkey *a': function() 
+    {
+      answerQuestion();
+    },
+
     // ,
     // 'get lost': function() 
     // {
