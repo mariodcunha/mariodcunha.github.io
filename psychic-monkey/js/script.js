@@ -1,24 +1,113 @@
+//READ ME
+
+/*
+
+The monkey only responds to "Hey Monkey", just like "Hey Google"
+
+Here are the possible tests:
+
+'hey monkey did you watch Planet of the Apes'
+NEGATIVE REPLY
+
+'hey monkey banana'
+POSITIVE REPLY
+
+'hey monkey are you a real monkey'
+IGNORANT REPLY
+
+'hey monkey'
+YES
+
+'hey monkey *anythingelse'
+RANDOM REPLY
+
+The mouth moves wtih p5 Microphone input
+Voice recognition is with API from talater.com/annyang
+Facial changes with jQuery
+
+*/
+
+
+
+   'hey monkey did you watch Planet of the Apes': function() 
+    {
+      talkNeg(); mic.stop();
+    },
+    'hey monkey banana': function() 
+    {
+      talkPos(); mic.stop();
+    },
+
+    'hey monkey are you a real monkey': function() 
+    {
+      talkGuess(); mic.stop();
+    },
+    'hey monkey': function() 
+    {
+      yes(); mic.stop();
+    },
+
+    'hey monkey *a': function() 
+    {
+      answerQuestion(); mic.stop();
+    },
+
+
+
+var vol, h, mic, beakWidth, beakHeight, wh, ww;
+counter = 0;
+
+
+function setup() 
+{
+  mic = new p5.AudioIn();
+  mic.stop();
+}
+
+
+function looper()
+{
+  mic.getLevel();
+  vol = mic.getLevel();
+
+  wh = map(vol, 0, 1, 70, 80);
+  ww = map(vol, 0, 1, 130, 150);
+  //  $('#speech').text(vol);
+
+  beakWidth = $('#beak').css('width');
+  beakHeight = $('#beak').css('height');
+
+  $('#beak').css('width', ww);
+  $('#beak').css('height', wh);  
+}
+
 
 //Voice API from talater.com/annyang/
 if (annyang) {
 
   var commands = 
   {
-    'hey monkey is Todd a good *a': function() 
+    'hey monkey did you watch Planet of the Apes': function() 
     {
-      talkPos();
+      talkNeg(); mic.stop();
     },
-    'hey monkey is Todd a bad *a': function() 
+    'hey monkey banana': function() 
     {
-      talkNeg();
+      talkPos(); mic.stop();
     },
-    'hey monkey Mario is awesome *a': function() 
+
+    'hey monkey are you a real monkey': function() 
     {
-      talkGuess();
+      talkGuess(); mic.stop();
     },
+    'hey monkey': function() 
+    {
+      yes(); mic.stop();
+    },
+
     'hey monkey *a': function() 
     {
-      answerQuestion();
+      answerQuestion(); mic.stop();
     },
 
     // ,
@@ -57,7 +146,7 @@ if (annyang) {
 
 var replies = ["Yes", "No", "How should I know?", "Feed me and then I'll tell you.", "Maaaaybe.", "Don't feel like answering you", "Hell ya!","No clue sonny!","Oh Definitely!","Waaaaat..."]; 
 
-var positive = [0,4,6,8];
+var positive = [0,0,6,8];
 var negative = [1];
 var guessso = [2,3,5];
 
@@ -94,6 +183,11 @@ function answerQuestion()
 
 function talk()
 {
+  
+  mic.start();
+  looper();
+  setInterval(looper, 50);
+  
   selectedVoice = sounds[randomNum];
   $('#voice').attr('src', 'sound/'+selectedVoice+'.mp3');
 
@@ -105,12 +199,16 @@ function talk()
 
   selectedBeak = beak[randomNum];
   $('#beak').css('background-image','url(style/img/'+selectedBeak+'.png');
+
+  mic.stop();
+  mic.stop();
+
 }
 
 
 function talkPos() 
 {  
-  randomNum = positive[randomNumGenerator(4)]; 
+  randomNum = positive[randomNumGenerator(positive)]; 
   console.log("positive");
   talk();
 }
@@ -121,10 +219,18 @@ function talkNeg()
   console.log("negative");
   talk();
 }
+
+function yes() 
+{  
+  randomNum = 0;
+  console.log("yes");
+  talk();
+}
+
 function talkGuess() 
 {  
-  randomNum = guessso[randomNumGenerator(3)]; 
-  console.log("guess");
+  randomNum = guessso[randomNumGenerator(guessso)]; 
+  console.log("guess"+randomNum);
   talk();
 }
 
