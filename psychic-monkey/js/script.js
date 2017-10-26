@@ -29,31 +29,6 @@ Facial changes with jQuery
 
 
 
-   'hey monkey did you watch Planet of the Apes': function() 
-    {
-      talkNeg(); mic.stop();
-    },
-    'hey monkey banana': function() 
-    {
-      talkPos(); mic.stop();
-    },
-
-    'hey monkey are you a real monkey': function() 
-    {
-      talkGuess(); mic.stop();
-    },
-    'hey monkey': function() 
-    {
-      yes(); mic.stop();
-    },
-
-    'hey monkey *a': function() 
-    {
-      answerQuestion(); mic.stop();
-    },
-
-
-
 var vol, h, mic, beakWidth, beakHeight, wh, ww;
 counter = 0;
 
@@ -79,6 +54,15 @@ function looper()
 
   $('#beak').css('width', ww);
   $('#beak').css('height', wh);  
+}
+
+function readMe()
+{
+  if($('#readmeBox').css('visibility')=='visible')
+    $('#readmeBox').css('visibility','hidden');
+  else
+    $('#readmeBox').css('visibility','visible');
+  console.log("you can still listen to me");
 }
 
 

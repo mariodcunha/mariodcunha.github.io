@@ -19,7 +19,7 @@
 	<h1>The Psychic Monkey</h1>
 
 	<!-- Speech Bubble -->
-	<p id="speech">Say "Hey Monkey" and then talk...</p>
+	<p id="speech">Say "Hey Monkey" and then talk</p>
 
 	<audio id="voice" crossorigin autoplay></audio>
 
@@ -28,13 +28,38 @@
 	<div id="eyes"></div><!-- <img id="eyes" src="style/img/eyes4.png"> -->
 	<div id="beak"></div>
 	</div>
+
+	<p id="readmeBox" onclick="readMe();">
+	
+	I only respond to "Hey Monkey", just like "Hey Google".<br>
+
+	Here are the possible tests:<br><br>
+
+	'hey monkey did you watch Planet of the Apes'<br>
+	NEGATIVE REPLY<br><br>
+
+	'hey monkey banana'<br>
+	POSITIVE REPLY<br><br>
+
+	'hey monkey are you a real monkey'<br>
+	IGNORANT REPLY<br><br>
+
+	'hey monkey'<br>
+	YES<br><br>
+
+	'hey monkey *anythingelse'<br>
+	RANDOM REPLY<br><br>
+	</p>
+
 			
 	<!-- Ask Question Form -->	
-	<div id="questionForm">
+	<div id="questionForm" >
 
 	<form>
 		<!-- <input type="text" id="question" placeholder="Type your question, pleeb." /> -->
-		<div id="submit">Use your Microphone</div>
+		<div id="submit">Use your Microphone</div><br><br>
+
+		<div id="readme" onclick="readMe();">Read Me</div>
 	</form>
 	</div>
 </div>

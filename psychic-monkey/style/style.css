@@ -123,7 +123,8 @@ p#speech:after {
 	border-radius: 10px;
 	outline: none;
 }
-#submit {
+#submit, #readme 
+{
 	color:#fff;
 	font-family: 'Gochi Hand', cursive;
 	font-size:24px;
@@ -134,10 +135,27 @@ p#speech:after {
 	padding:5px 10px;
 	cursor:pointer;
 }
-#submit:hover {
+
+#submit:hover, #readme:hover 
+{
 	color:#266590;
 	background:#fff;
 }
+
+#readmeBox
+{
+	font-size:20px;
+	top: 22vh; left: 3vw;
+	padding: 20px;
+	position: absolute;
+	margin: 0 auto;
+	display: block;
+	background-color: white;
+	border-radius: 30px;
+	visibility: hidden;
+	z-index: 5;
+}
+
 
 /* --  webkit "hack" to style placeholder text -- */ 
 ::-webkit-input-placeholder { color: #438ec1; text-align: center;  }
