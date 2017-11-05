@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Pintail</title>
+	<link rel="shortcut icon" href="logo/favicon.ico" type="image/x-icon">
+
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+
+</head>
+
+
+<body >
+
+	<div id="dashboard-header">
+
+  		<div id="nav-area-main">
+			<nav>
+				<ul>
+					<li><a href="index.html">
+					<span id="welcome-title">Hi Mario!</span></a></li>
+				</ul>
+			</nav>
+		</div>
+
+ 		<div id="nav-area">
+			<nav>
+				<ul>
+
+					<li><a href="#" class="menu-option brackets">
+					<img id="nav-button-img" src="images/addpintail.png">Add Pintail</a></li>
+
+					<li><a href="dashboard.html" class="menu-option brackets">Lists</a></li>
+					<li><a href="profile.html" class="menu-option brackets">Profile</a></li>
+					<li><a href="map.html" class="menu-option brackets">Map</a></li>
+					<li><a href="#" class="menu-option">Settings</a></li>
+
+					<li><a href="#" class="menu-option brackets">Help</a></li>
+
+					<li><a href="index.html" class="menu-option brackets" title="Logout"><img alt="Logout" id="nav-button-img" src="https://cdn.appletips.nl/wp-content/uploads/2014/04/power-aan-uit-knop.png"/></a></li>
+
+				</ul>
+			</nav>
+		</div>
+
+	</div>
+
+	<table id="profilefocus">
+		  <tr>
+		    <td>
+		    	<a href="">
+ 		    		<img class="profilepic" src="images/fullbit.jpg"/>
+		    	</a>
+		    </td>
+
+		    <td id="desc" style="padding-left: 10px;">
+		    	<div id="photo-about"><p><span id="profilename">Mario Dcunha<br></span>Grad Student in Design and Technology <a href="http://www.newschool.edu/parsons/mfa-design-technology/"><b>@ParsonsSchoolofDesign</b></a>, former Solutions Architect <a href="https://www.akamai.com/"><b>@Akamai</b></a>, Creator of <a href="http://mariodcunha.com/madebymad/#design"><b>@MadeByMAD</b></a> personal graphic design brand, Author of <a href="http://mpjtime.com/"><b>@MPJTime</b></a>, Singer, Artisté, Traveller and a Multipotentialite with Super-Powers!<br><br><img src="images/put1.jpg" style="width: 170px; height: 17px;"></div>
+
+		    </td>		  
+		</tr>	  
+		</table>
+
+<!-- 		<div id="nav-area-subtitle" style="visibility: hidden;">
+			<nav>
+				<ul>
+					<li>Lists</li>
+				</ul>
+			</nav>
+		</div>
+ -->
+	<iframe id="iframe-content" src="profile-lists.html"></iframe>
+
+    <div id="popup">
+	    <div id="close"></div>
+	    <div id="left" class="direction" onclick="change(-1)">&#8678;</div>
+	    <div id="right" class="direction" onclick="change(1)">&#8680;</div>
+
+        <div id="pic-container" onclick="close()">
+            <img id="pic" onclick="close()" />
+        </div>
+    </div>
+
+
+
+	</div>
+
+	<footer id="profile-footer">
+		<div>
+			<div class="social-links" style="float: right;">
+
+				<div><a target="_blank" href="https://www.facebook.com/mariodcunha" id="social-facebook" style="width:30px; height: 30px"></div>
+				&nbsp;<img src="images/facebook.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.twitter.com/mariodcunha_" id="social-twitter">
+				&nbsp;<img src="images/twitter.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.instagram.com/mariodcunha" id="social-instagram">
+				&nbsp;<img src="images/instagram.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.youtube.com/channel/UCS-0a1wWmdD1amAk_4qHbdw" id="social-youtube">
+				&nbsp;<img src="images/youtube.png" style="width:30px; height: 30px">&nbsp;
+				</a>
+
+		</div>
+
+		<span id="footer-title" style="float: left;">PINTAIL</span ><span style="float: center;">  pintail.com © 2017</span>
+	</footer>
+
+	<script type="text/javascript" src="js/dashboard.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Pintail</title>
+	<link rel="shortcut icon" href="logo/favicon.ico" type="image/x-icon">
+
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+</head>
+
+
+<body >
+
+	<video id="bgvid" autoplay playsinline muted loop>
+			<source src="video/intro.mp4" type="video/mp4">
+	</video>	
+
+	<div id="header">
+
+		<div id="title-area">
+					<a href="#">
+						<img src="logo/logo.png" onmouseover="highlightLogo()" onmouseout="normalTitle()"/>
+					</a>
+					<div id="title-font"><a href="#"><span id="mainTitle">PINTAIL</span></a></div>
+		</div>
+	</div>
+
+
+	<div id="login-wrap">
+
+		<div id="login-form" class="modal">
+	  
+		  	<form>
+		    	<div class="container">  
+		    		<input type="text" placeholder="Username / Email" id="username" required >
+			      	<input type="password" placeholder="Enter Password" id="password" required> 
+		      	
+		      		<div>
+				      	
+				      	<a href="dashboard.html">
+				      	<button class="login-button" type="button">LOGIN</button>
+					  	</a>
+			      		<button class="sociallogin-button" id="google-button" type="button">Google</button>
+			      		<button class="sociallogin-button" id="facebook-button" type="button">Facebook</button>
+		      		</div>  
+
+		      		<div>
+		                  <p class="psw"><a href="#">Forgot Password?</a></p>
+		      		</div>  
+
+				</div>
+		  	</form>
+		</div>
+
+		<div id="register">
+		  	<p>Don't have an account?&nbsp;<a href="#"><b>Register here for free!</b></a></p>
+		</div>  
+	</div>
+	
+	<script type="text/javascript" src="js/login.js"></script>
+
+
+	<footer id="index-footer">
+
+			<div>
+			<div class="social-links" style="float: right;">
+
+				<div><a target="_blank" href="https://www.facebook.com/mariodcunha" id="social-facebook" style="width:30px; height: 30px"></div>
+				&nbsp;<img src="images/facebook-w.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.twitter.com/mariodcunha_" id="social-twitter">
+				&nbsp;<img src="images/twitter-w.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.instagram.com/mariodcunha" id="social-instagram">
+				&nbsp;<img src="images/instagram-w.png" style="width:30px; height: 30px">
+				</a>
+
+				<a target="_blank" href="https://www.youtube.com/channel/UCS-0a1wWmdD1amAk_4qHbdw" id="social-youtube">
+				&nbsp;<img src="images/youtube-w.png" style="width:30px; height: 30px">&nbsp;
+				</a>
+
+		</div>
+
+		<span style="float: center;"><p style="float: center;">
+		&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+		pintail.com © 2017</p></span>
+	</footer>
+
+</body>
+</html>
+
