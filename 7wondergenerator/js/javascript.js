@@ -40,6 +40,45 @@ var click = false;
 
 //$(document).ready(choose());
 
+
+
+//Voice API from talater.com/annyang/
+if (annyang) 
+{
+
+  var commands = 
+  {
+    'change new': function() 
+    {
+    	currentChoice = choice;
+		
+		while(choice == currentChoice)
+			choice = Math.floor(Math.random()*7); build();
+
+    },
+    'change old': function() 
+    {
+    	currentChoice = choice;
+		
+		while(choice == currentChoice)
+			choice = Math.floor(Math.random() * (13 - 7 + 1) ) + 7; build();
+    },
+
+    'hashtag *word': function() 
+    {
+      checkHashArray(word);
+      console.log(word);
+    },
+
+};
+
+  // Add our commands to annyang
+  annyang.addCommands(commands);
+
+  // Start listening.
+  annyang.start();
+}
+
 	
 function begin()
 {
@@ -47,6 +86,7 @@ function begin()
 
 	build();
 }
+
 
 
 function choose()
@@ -248,6 +288,36 @@ function checkHashArray(array)
 
 
 
+$('#built-info').mouseenter(
+	function()
+	{
+		//console.log('mouseenter');
+  		$('#toggle-word').css('font-size','35px');
+  		$('#toggle-word').css('transition','0.3s');
+  		$('#toggle-word').css('opacity','1.0');
+  		$('#toggle-word').css('color','black');
+
+  		$('#world').css('font-size','35px');
+  		$('#world').css('transition','0.3s');
+  		$('#world').css('opacity','1.0');
+  		$('#world').css('color','black');
+
+
+  	})
+
+$('#built-info').mouseleave(
+	function()
+	{
+		//console.log('mouseenter');
+  		$('#toggle-word').css('font-size','17px');
+  		$('#toggle-word').css('color','inherit');
+
+  		$('#world').css('font-size','17px');
+  		$('#world').css('color','inherit');
+
+  	})
+
+
 
 
 $('#toggle-word').mouseenter(
@@ -366,6 +436,10 @@ function changeWorld()
 	}
 
 }
+
+
+
+
 
 
 
