@@ -34,11 +34,9 @@ var ruins = [6,10];
 // Lighthouse at Alexandria - guard
 
 
- var voice = ['sound/sound-0.mp3', 'sound/sound-1.mp3', 'sound/sound-2.mp3', 'sound/sound-3.mp3', 'sound/sound-4.mp3', 'sound/sound-5.mp3', 'sound/sound-6.mp3', 'sound/sound-7.mp3','sound/sound-8.mp3','sound/sound-9.mp3','sound/sound-10.mp3','sound/sound-11.mp3','sound/sound-12.mp3','sound/sound-13.mp3','sound/sound-A.mp3','sound/sound-N.mp3',];
+var voice = ['sound/sound-0.mp3', 'sound/sound-1.mp3', 'sound/sound-2.mp3', 'sound/sound-3.mp3', 'sound/sound-4.mp3', 'sound/sound-5.mp3', 'sound/sound-6.mp3', 'sound/sound-7.mp3','sound/sound-8.mp3','sound/sound-9.mp3','sound/sound-10.mp3','sound/sound-11.mp3','sound/sound-12.mp3','sound/sound-13.mp3','sound/sound-A.mp3','sound/sound-N.mp3',];
 
 var click = false;
-
-//$(document).ready(choose());
 
 
 

@@ -152,6 +152,11 @@ nav ul li a {
 	margin: auto;
 }
 
+.contactText
+{
+	text-align: center;
+	font-size: 17px;
+}
 
 table
 {
@@ -168,12 +173,12 @@ table td
 }
 
 
-td a img
-{
-	border: 1px solid #E6E6E6;
-	width: 18vw;
-	margin: 3px;
-	position: relative;
+td a img {
+    border: 1px solid #E6E6E6;
+    width: 17.7vw;
+    height: 250px;
+    margin: 3px;
+    position: relative;
 }
 
 span
@@ -189,10 +194,9 @@ span
 
 img.trayimg:hover
 {
-  opacity:0.1;
+  opacity:0.2;
   /*filter: grayscale(0%);*/
   transition: all 0.7s;
-  padding-top: 90px;
 }
 
 
@@ -217,7 +221,7 @@ p
 	float: left;
 	margin-top: 20px;
 	background-image: url('images/8bit.jpg');
-	/*transition: all 0.5s;*/
+	transition: all 0.7s;
 }
 
 
