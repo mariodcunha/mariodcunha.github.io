@@ -289,17 +289,19 @@ function checkHashArray(array)
 $('#built-info').mouseenter(
 	function()
 	{
-		//console.log('mouseenter');
-  		$('#toggle-word').css('font-size','35px');
-  		$('#toggle-word').css('transition','0.3s');
-  		$('#toggle-word').css('opacity','1.0');
-  		$('#toggle-word').css('color','black');
+		if(choice ==15 || choice ==14)
+		{
+			//console.log('mouseenter');
+	  		$('#toggle-word').css('font-size','30px');
+	  		$('#toggle-word').css('transition','0.3s');
+	  		$('#toggle-word').css('opacity','1.0');
+	  		$('#toggle-word').css('color','black');
 
-  		$('#world').css('font-size','35px');
-  		$('#world').css('transition','0.3s');
-  		$('#world').css('opacity','1.0');
-  		$('#world').css('color','black');
-
+	  		$('#world').css('font-size','35px');
+	  		$('#world').css('transition','0.3s');
+	  		$('#world').css('opacity','1.0');
+	  		$('#world').css('color','black');
+	  	}
 
   	})
 
