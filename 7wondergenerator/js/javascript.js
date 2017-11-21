@@ -390,7 +390,6 @@ $('#toggle-word').click(
 $('#world').click(
 	function()
 	{
-
   		if($('#toggle-word').text()=='NEW')
   		{
   			$('#toggle-word').css('font-family','Lato');
