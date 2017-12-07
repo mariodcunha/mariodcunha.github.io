@@ -1,12 +1,12 @@
 
 var choice, currentChoice, selectedBuiltBy, selectedBuiltWhen;
 
-var wonderTitle = ['Petra, Jordan', 'The Taj Mahal, India', 'The Colossuem, Italy', 'The Great Wall of China', 'Chichen Itza, Mexico', 'Cristo Ridentor, Brazil', 'Machhu Pichhu, Peru', 'Pyramids of Egypt', 'Hanging Gardens of Babylon', 'Mausoleum at Halicarnassus', 'Statue of Zeus', 'Temple of Artemis', 'Colossus of Rhodes', 'Lighthouse at Alexandria','',''];
-
 var wonderTitleFont = ['120px', '110px', '110px', '100px', '110px', '100px', '110px', 
 						'120px', '80px', '80px', '120px', '120px', '110px', '90px','0px','0px'];
 
 var wonderImage = ['images/new-wonder-0.jpg', 'images/new-wonder-1.jpg', 'images/new-wonder-2.jpg', 'images/new-wonder-3.jpg', 'images/new-wonder-4.jpg', 'images/new-wonder-5.jpg', 'images/new-wonder-6.jpg', 'images/new-wonder-7.jpg', 'images/new-wonder-8.jpg', 'images/new-wonder-9.jpg', 'images/new-wonder-10.jpg', 'images/new-wonder-11.jpg', 'images/new-wonder-12.jpg', 'images/new-wonder-13.jpg','images/ancient.jpg','images/new.jpg'];
+
+var wonderTitle = ['Petra, Jordan', 'The Taj Mahal, India', 'The Colossuem, Italy', 'The Great Wall of China', 'Chichen Itza, Mexico', 'Cristo Ridentor, Brazil', 'Machhu Pichhu, Peru', 'Pyramids of Egypt', 'Hanging Gardens of Babylon', 'Mausoleum at Halicarnassus', 'Statue of Zeus', 'Temple of Artemis', 'Colossus of Rhodes', 'Lighthouse at Alexandria','',''];
 
 var builtBy = ['The Nabataeans', 'Emperor Shah Jahan', 'Titus', 'The Ming Dynasty', 'The Mayans', 'A group of Sculptors', 'The Incas', 'Pharaohs', 'King Nebuchadnezzar II', 'Queen Artemisia II', 'Phidias', 'Chersiphron', 'Chares', 'Ptolemaics','',''];
 
@@ -80,7 +80,7 @@ if (annyang)
 	
 function begin()
 {
-	choice = 15;
+	choice = Math.floor(Math.random() * (13 - 7 + 1) ) + 7;
 
 	build();
 }
@@ -126,6 +126,7 @@ function build()
 	selectedWonderTitle = wonderTitle[choice];
 	selectedWonderTitleFont = wonderTitleFont[choice];
 	selectedWonderImage = wonderImage[choice];
+
 	
 	if(choice <14)
 	{
@@ -155,6 +156,11 @@ function build()
 
 	else
 		$('#main-title').css('color','white');
+
+
+	console.log(selectedWonderTitle);
+	console.log(selectedBuiltBy);
+	console.log(selectedBuiltWhen);
 
 
 	switch(choice) 
