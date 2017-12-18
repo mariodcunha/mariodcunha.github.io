@@ -38,7 +38,7 @@ function searchBooks()
       $('#generatePage').empty();
       $('#result').empty();
       
-      alert('Please enter a book name');
+      //alert('Please enter a book name');
       // title=$('<p class="center-align">Please enter a book name.</p>');
       // title.appendTo('#result');
     }

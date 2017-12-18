@@ -23,6 +23,11 @@ body
 }
 
 
+.input-field input[type=search]
+{
+	color: white;
+}
+
 /*#dot
 {
 	color: #f44335;
