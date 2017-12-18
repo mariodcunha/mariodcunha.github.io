@@ -1,9 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700,900');
+
+body
+{
+	font-family: 'Lato', sans-serif;
+	background-color: #ffcc99;
+	color: #555;
+}
 
 #myform
 {
 	/*position: fixed;*/
 }
 
+
+#logo
+{
+    margin-top: -200px;
+    margin-left: 120px;
+    font-weight: 900;
+    font-size: 70px;
+    color: white;
+}
+
+
+/*#dot
+{
+	color: #f44335;
+}*/
 
 #search
 {
@@ -26,7 +49,7 @@
 
 #cartButton
 {
-	margin-left: 70vw;
+	margin-left: 45vw;
     margin-top: -15vh;
     background-color: #f44335;
 }
@@ -86,58 +109,209 @@ div[id*='bookInfo']
   	flex-direction: column;
   	max-width: 40vw;
   	padding: 3vw;
-  	transition: all 0.9s;
-
+  	transition: all 0.3s;
 }
 
 div[id*='bookInfo']:hover 
 {
 
-  	background-color: #333333;
-  	transition: 0.7s;
+  	background-color: #777	;
+  	transition: 0.3s;
   	border-radius: 20px;
+  	color: white;
 }
 
 img[id*='collageThumbnail'] 
 {
 	padding: 3px;
-	width: 5vw; height: 14vh;
-	/*position: relative;*/
+	position: relative;
+	
+	border-radius: 100%;
+	width: 5vw; height: 5vw;
+	/*width: 5vw; height: 13vh;*/
+	transition: 0.5s;
 }
 
 #collage
 {
 	position: absolute;
-
-  	margin: auto;
+	margin: auto;
 	margin-left: 11%;
 	margin-top: 5%;
-
+	height: 45vh;
   padding: 30px;
   border-style: solid;
   border-width: 15px;
-  border-top-color: lighten(#999, 20%);
+  border-color: #000;
+  /*border-top-color: lighten(#999, 20%);
   border-right-color: lighten(#999, 0%);
   border-bottom-color: lighten(#999, 20%);
   border-left-color: lighten(#999, 0%);
-  box-shadow: 2px 2px 4px rgba(0,0,0,.6);
+  */box-shadow: 2px 2px 4px rgba(0,0,0,.6);
 
+  background-color: #fff;
 }
 
-
-
-
-
-/*
-
-.aligning
+#frameColour
 {
-	margin-left:0px;
-	margin-top:20px;
+	/*background-color: white;*/
+	/*left: 50%;*/
+	float: right;
+	margin-right: 50px;
+	margin-top: 100px;	
+}
+
+input.frameRadio
+{
+	background-color: white;
+	margin: 5px;
+}
+
+label
+{
+	padding-right: 20px;
+	color: #555;
+	font-size: 10px;
 }
 
 
+
+#frameLabel
+{
+	font-size: 18px;
+    position: absolute;
+    float: right;
+    margin-top: 65px;
+    margin-left: 70%;
+    transition: 1.5s;
+}
+
+#frameBackgroundLabel
+{
+	font-size: 18px;
+    position: absolute;
+    float: right;
+    margin-top: 145px;
+    margin-left: 70%;
+    transition: 1.5s;	
+}
+
+#frameBackgroundColour
+{
+	float: right;
+	margin-right: -275px;
+	margin-top: 180px;	
+}
+
+
+
+
+
+#imageEffectsLabel
+{
+	font-size: 18px;
+    position: absolute;
+    float: right;
+    margin-top: 235px;
+    margin-left: 70%;
+    transition: 1.5s;
+}
+
+#imageEffects
+{
+	font-size: 18px;
+    position: absolute;
+    float: right;
+    margin-top: 270px;
+    margin-left: 70%;
+    transition: 1.5s;	
+}
+
+/*#imageEffects
+{
+	float: right;
+	margin-right: -275px;
+	margin-top: 180px;	
+}
 */
 
 
 
+.shapeToggle
+{
+  position: absolute;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+
+  float: right;
+  margin-top: 330px;
+  margin-left: 70%;
+}
+
+
+#shapeLabel
+{
+	font-size: 18px;
+	position: absolute;
+	float: right;  	
+  	margin-top: 330px;
+  	margin-left: 75%;
+}
+
+
+.shapeToggle input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  height: 35px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+
+
+}
+
+input:checked + .slider 
+{
+  border-radius: 0px;
+}
+
+input:focus + .slider 
+{
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before 
+{
+  transform: translateX(26px);
+    border-radius: 0px;
+}
+
+/* Rounded sliders */
+.slider.round 
+{
+  border-radius: 34px;
+  background-color: #f44335; 
+
+}
+
+.slider.round:before 
+{
+  border-radius: 50%;
+}
