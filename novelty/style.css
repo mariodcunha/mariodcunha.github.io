@@ -7,6 +7,11 @@ body
 	color: #555;
 }
 
+a
+{
+	color: white;
+}
+
 #myform
 {
 	/*position: fixed;*/
@@ -161,7 +166,7 @@ img[id*='collageThumbnail']
   border-right-color: lighten(#999, 0%);
   border-bottom-color: lighten(#999, 20%);
   border-left-color: lighten(#999, 0%);
-  */box-shadow: 2px 2px 4px rgba(0,0,0,.6);
+  */box-shadow: 4px 4px 8px rgba(0,0,0,.6);
 
   background-color: #fff;
 }
