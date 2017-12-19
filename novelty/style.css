@@ -22,6 +22,11 @@ body
     color: white;
 }
 
+#noInput
+{
+	margin: auto;
+	margin-top: -40px;
+}
 
 .input-field input[type=search]
 {
@@ -52,17 +57,12 @@ body
     position: fixed;
 }
 
-#cartButton
-{
-	margin-left: 45vw;
-    margin-top: -15vh;
-    background-color: #f44335;
-}
+
 
 #generate
 {
 	margin-left: 2vw;
-    margin-top: -15vh;
+    margin-top: -16.5vh;
     background-color: #f44335;
 }
 
@@ -77,11 +77,20 @@ img[id*='thumbnail']
 
 #mainSearchButton
 {
-	position:relative;
-	margin: auto;
-	display: block;
+	/*position:relative;*/
+	/*margin: auto;*/
+	/*display: block;*/
+	margin-left: 20vw;
+    margin-top: -15vh;
+    background-color: #f44335;
 }
 
+#cartButton
+{
+	margin-left: 50vw;
+    margin-top: -16.5vh;
+    background-color: #f44335;
+}
 
 button[id*='selectButton'], button[id*='deleteButton']
 {

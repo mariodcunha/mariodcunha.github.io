@@ -37,6 +37,9 @@ function searchBooks()
     {
       $('#generatePage').empty();
       $('#result').empty();
+
+       warning=$('<p id="noInput">Please enter a book name.</p>');
+       warning.appendTo('#result');
       
       //alert('Please enter a book name');
       // title=$('<p class="center-align">Please enter a book name.</p>');
@@ -206,7 +209,9 @@ $('#generate').click(function()
 
     if(bookObject.cover.length<=0)
     {
-        alert("Please add a book");
+          warning=$('<p id="noInput">Please add a books to cart</p>');
+          warning.appendTo('#result');
+
     }
 
     else
