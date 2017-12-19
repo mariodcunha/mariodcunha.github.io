@@ -12,7 +12,7 @@ void ofApp::setup()
 {
    //ofBackground(255,255,0);
     cake.load("cake.png");
-    spray.load("cake1.png");
+    spray.load("spray.png");
     
     int numParticles = 700;
     
@@ -49,15 +49,22 @@ void ofApp::draw()
     //ofSetColor(255, 255, 255, 0);
     //ofBackground(255, 198, 0);
     
-    for (int i = 0; i < particles.size(); i++)
-    {
-        particles[i].draw();
-    }
+    ofPushMatrix();
+    ofSetColor(255);
     
     if(imageCenter==0)
         cake.draw(posX-50, posY-50);
     else
         spray.draw(posX, posY);
+
+    ofPopMatrix();
+
+    
+    for (int i = 0; i < particles.size(); i++)
+    {
+        particles[i].draw();
+    }
+    
 
 }
 
@@ -98,11 +105,13 @@ void ofApp::mousePressed(int x, int y, int button)
     
     if(imageCenter==0)
     {
-        imageCenter=1; cake.draw(posX-50, posY-50);
+        imageCenter=1;
+        cake.draw(posX-50, posY-50);
     }
-    else
+    else if(imageCenter ==1)
     {
-        imageCenter=0; spray.draw(posX, posY);
+        imageCenter=0;
+        spray.draw(posX, posY);
     }
 }
 
