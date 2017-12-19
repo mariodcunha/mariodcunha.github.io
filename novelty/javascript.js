@@ -59,7 +59,11 @@ function searchBooks()
       $.get("https://www.googleapis.com/books/v1/volumes?q=" + searchText, function(response)
       {
 
-        for(i=0; i<response.items.length; i++)
+        // warning=$('<p id="noInput"></p>');
+        // $('#noInput').text(response.items.length+" books found");
+        // warning.appendTo('#result');
+
+        for(i=0; i < response.items.length; i++)
         {
 
            bookInfo=$('<div id="bookInfo'+i+'"></div>');

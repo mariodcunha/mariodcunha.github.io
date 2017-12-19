@@ -12,6 +12,13 @@ a
 	color: white;
 }
 
+#noInput
+{
+	margin: auto;
+	margin-top: -40px;
+}
+
+
 #myform
 {
 	/*position: fixed;*/
@@ -27,11 +34,6 @@ a
     color: white;
 }
 
-#noInput
-{
-	margin: auto;
-	margin-top: -40px;
-}
 
 .input-field input[type=search]
 {
