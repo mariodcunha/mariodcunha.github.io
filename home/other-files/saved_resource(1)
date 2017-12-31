@@ -1,0 +1,351 @@
+@import  "https://fonts.googleapis.com/css?family=Vidaloka";
+
+
+@font-face {
+    font-family: 'vincentiaregular';
+    src: url('wp-content/themes/edge/assets/font-awesome/fonts/vincentia-webfont.woff2') format('woff2'),
+         url('wp-content/themes/edge/assets/font-awesome/fonts/vincentia-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+.post-featured-image
+{
+	width: 43%;
+}
+
+.attachment-post-thumbnail, .size-post-thumbnail, .wp-post-image
+{
+	margin-top:55px;
+	height: 200px;
+}
+
+.entry-content
+{
+	overflow: hidden;
+}
+
+
+
+#page
+{
+	width: 800px;
+}
+
+
+.cat-links, .tag-links, .fa-calendar, .vcard, .comments
+{
+	display: none;
+}
+
+.single-post .entry-header .entry-meta, .single-post .entry-footer {
+    text-align: center;
+}
+
+.menu
+{
+	/*padding-right: 90px;*/
+}
+
+
+h1.page-title 
+{
+    text-transform: capitalize;
+    /*color: black;*/
+    padding-bottom: 10px;
+}
+
+#colophon .column-4 
+{
+	border-right: 0;
+	width: 0%;
+	margin: 0px;
+}
+
+#search-19 
+{
+    width: 40vw;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+
+#site-branding
+{
+	width: 100%;	
+}
+
+
+#site-title
+{
+    font-family: vincentiaregular;
+		font-size: 72px;
+		padding: 39px;
+}
+
+.nav-site-title
+{
+	font-family: Lato;
+	text-transform: lowercase;
+  color: black;
+  font-size: 20px;
+	/*margin-top: 10px;*/
+}
+
+
+pre
+{
+	background-color:white;
+	color: black;
+}
+
+
+h1.page-title {
+		font-size: 27px;
+		float: none;
+    text-align: center;
+}
+
+#content {
+    padding: 50px 0 0 0px;
+}
+
+#primary {
+    float: none;
+    width: 100%;
+}
+
+#secondary {
+    float: none;
+    padding-left: 0px;
+    width: 0%;
+}
+
+
+
+#site-navigation
+{
+    background-color: white;
+}
+
+.boxed-layout-small #page, .is-sticky #sticky_header
+{
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0);
+}
+
+
+h2.entry-title {
+	font-size: 27px;
+	font-weight: bolder;
+	/*text-transform: capitalize;*/
+}
+
+p, ul, li {
+	font-size: 17px;
+}
+
+
+#text-21
+{
+font-size: medium;
+margin: auto;
+}
+
+#colophon .widget-wrap {
+	background-color: #f1f1f1;
+}
+
+.site-info .social-links a {
+	border: 1px solid #fff;
+	color: #fff;
+}
+
+#footer-navigation ul a {
+	color: #fff;
+}
+
+.site-info .copyright a {
+	color: #fff;
+}
+
+.site-info .copyright {
+	color: #fff;
+}
+
+.site-info {
+	background-color: #23282d;
+}
+
+/* Social Icons Edits */
+.fa-pinterest:before {
+	content: "\f1b5";
+}
+
+.fa-pinterest-square:before {
+	content: "\f1b5";
+}
+
+.fa-pinterest-p:before {
+	content: "\f1b5";
+}
+
+.fa-dribbble:before {
+	content: "\f26e";
+}
+
+.fa-flickr:before {
+	content: "\f1be";
+}
+
+.fa-google-plus-official:before {
+	content: "\f166";
+}
+
+/* Social Icons Hovering Colors */
+.social-links a[href*="facebook.com"]:hover {
+	background-color: #3B5998;
+	color: #FFF;
+}
+
+.social-links a[href*="twitter.com"]:hover {
+	background-color: #33CCFF;
+	color: #FFF;
+}
+
+.social-links a[href*="youtube.com"]:hover {
+	background-color: #d34637;
+	color: #FFF;
+}
+
+.social-links a[href*="linkedin.com"]:hover {
+	background-color: #007BB6;
+	color: #FFF;
+}
+
+.social-links a[href*="instagram.com"]:hover {
+	background-color: #ea599f;
+	color: #FFF;
+}
+
+.social-links a[href*="soundcloud.com"]:hover {
+	background-color: #ef8841;
+	color: #FFF;
+}
+
+.social-links a[href*="behance.net"]:hover {
+	background-color: #006bfb;
+	color: #FFF;
+}
+
+.social-links a[href*="500px.com"]:hover {
+	background-color: #47b0eb;
+	color: #FFF;
+}
+
+.woocommerce #content div.product div.summary, .woocommerce div.product div.summary, .woocommerce-page #content div.product div.summary, .woocommerce-page div.product div.summary {
+	float: left;
+	width: 100%;
+	clear: both;
+}
+
+.woocommerce #content div.product div.images, .woocommerce div.product div.images, .woocommerce-page #content div.product div.images, .woocommerce-page div.product div.images {
+	float: left;
+	width: 100%;
+}
+
+.woocommerce div.product .product_title {
+	clear: none;
+	margin-top: 0;
+	padding: 0;
+	font-size: 20px;
+	line-height: 1.2;
+	text-align: center;
+	text-transform: uppercase;
+	font-family: 'Lato';
+	font-weight: bold;
+}
+
+.woocommerce ul.products li.product h3 h4 {
+	font-size: 1em;
+	text-transform: uppercase;
+	font-family: 'Lato';
+}
+
+h1, h2, h3, h4, h5, h6 
+{
+	font-family: 'Lato', sans-serif;
+	font-weight: bold;
+}
+
+.promonational-overlay h4
+{
+	letter-spacing: 3px;
+  background-color: rgba(0, 0, 0, 0.5);
+    color: rgb(255, 255, 255);
+		font-weight: bold;
+}
+
+
+div.related.products h2 {
+	font-size: 17px;
+	line-height: 33px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: 'Lato', sans-serif;
+}
+
+.post:first-child .entry-content p:first-child:first-letter {
+	border-right: 0;
+	display: block;
+	float: none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: 0;
+	margin-bottom: 0;
+	margin-right: 0;
+	margin-top: 0;
+	padding: 1px;
+	text-align: center;
+}
+
+
+
+/*
+Welcome to Custom CSS!
+
+To learn how this works, see http://wp.me/PEmnE-Bt
+
+Animating the header */
+
+
+
+/*
+#site-title
+{
+  display: inline-block;
+  width: 300px;
+  height: 62px;
+  background: url(http://mariodcunha.com/wp-content/uploads/2017/09/frames-try-5.png) no-repeat;
+}
+
+#site-title.animate:hover
+{
+  animation: sign-anim 1s 0.0s steps(13, end) infinite;
+}
+
+
+@keyframes sign-anim 
+{
+  to {
+    background-position: 0 -806px;
+  }
+}
+*/
+
+
+/*Finish animating the header */
+
+
