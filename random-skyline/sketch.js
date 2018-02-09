@@ -15,7 +15,7 @@ var triangleX = [];
 var triangleY = [];
 var array = [];
 
-var r, g, b;
+var winSwitch=0;
 
 
 
@@ -57,7 +57,11 @@ function drawTile(x, y, w, h)
 	fill(random(2), colour);
 	rect(x, y, w, h);	
 
-	fill(winColour);
+	if(winSwitch==1)
+		fill(random(winColour));
+	else
+		fill(winColour);
+
 	rect(x+(w/8), 			y+(h/8),	 	w/4, h/4);
 	rect(x+((w*5)/8),		y+(h/8),		w/4, h/4);
 	rect(x+(w/8),			y+((h*5)/8),	w/4, h/4);
@@ -90,7 +94,12 @@ function mouseClicked()
 
 function keyTyped()
 {
-  mouseClicked();
+  	if(winSwitch==1)
+		winSwitch=0;
+	else
+		winSwitch=1;
+
+	mouseClicked();
 }
 
 
