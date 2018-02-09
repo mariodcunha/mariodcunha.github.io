@@ -50,9 +50,6 @@ function draw()
 		i++;		
 	}
 
-	 // frameRate(1);
-	 console.log(i);
-
 }
 
 function drawTile(x, y, s)
