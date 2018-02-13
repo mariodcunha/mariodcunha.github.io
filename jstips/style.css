@@ -1,0 +1,21 @@
+
+body 
+{
+    background-color: #272822;
+    font-family: Courier New;
+    color: white;
+    /* margin: 5%; */
+    width: 50%;
+    margin: auto;
+    margin-top: 5%;
+}
+
+.heading
+{
+	text-align: center;
+}
+
+.highlight
+{
+	color: yellow;
+}
