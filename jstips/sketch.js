@@ -62,66 +62,66 @@
 
 
 
-// Number of Squares to Draw
-var num_squares = 400;
+// // Number of Squares to Draw
+// var num_squares = 400;
 
-// The width of the squares.
-var square_size = 10;
+// // The width of the squares.
+// var square_size = 10;
 
-var  min1 =5, max1=20, swidth = 3;
+// var  min1 =5, max1=20, swidth = 3;
 
-var sqsize = [min1, max1];
+// var sqsize = [min1, max1];
 
-var min_slider, max_slider, sizes;
+// var min_slider, max_slider, sizes;
 
-function setup() 
-{
-    createCanvas(window.innerWidth, window.innerHeight);
+// function setup() 
+// {
+//     createCanvas(window.innerWidth, window.innerHeight);
 
-    fill(100);
-    rectMode(CENTER);
-    stroke(255);
-    strokeWeight(swidth);
+//     fill(100);
+//     rectMode(CENTER);
+//     stroke(255);
+//     strokeWeight(swidth);
 
-    createP('Minimum');
-    min_slider = createSlider(1, 5, width/2);
+//     createP('Minimum');
+//     min_slider = createSlider(1, 5, width/2);
 
-    createP('Maximum');
-    max_slider = createSlider(10, 20, width/2);
+//     createP('Maximum');
+//     max_slider = createSlider(10, 20, width/2);
 
-    createP('Sizes');
-    sizes = createSlider(0, width, width/2);
+//     createP('Sizes');
+//     sizes = createSlider(0, width, width/2);
 
-}
-
-
-function draw() 
-{
-    background(50);
-    fill(200, 100, 100);
+// }
 
 
-    sqsize = [min_slider.value(), max_slider.value()];
-
-    for (var i = 0; i < num_squares; i++) 
-    {
-        square_size = arrayRandom(sqsize);
-        rect(random(0, width), random(0, height), square_size, square_size);
-    }
-    noLoop();
-}
+// function draw() 
+// {
+//     background(50);
+//     fill(200, 100, 100);
 
 
-function myRandom(n)
-{
-  return Math.floor(random(n));
-}
+//     sqsize = [min_slider.value(), max_slider.value()];
+
+//     for (var i = 0; i < num_squares; i++) 
+//     {
+//         square_size = arrayRandom(sqsize);
+//         rect(random(0, width), random(0, height), square_size, square_size);
+//     }
+//     noLoop();
+// }
 
 
-function arrayRandom(myArray)
-{
-  return myArray[Math.floor(random(myArray.length))];
-}
+// function myRandom(n)
+// {
+//   return Math.floor(random(n));
+// }
+
+
+// function arrayRandom(myArray)
+// {
+//   return myArray[Math.floor(random(myArray.length))];
+// }
 
 
 
