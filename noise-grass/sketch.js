@@ -22,6 +22,7 @@ function setup()
 
 
     // minLabel.class('labels'); 
+    infoLabel.parent('info');
     toggleLabel.parent('info');
     toggle.parent('info');
 }
