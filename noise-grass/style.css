@@ -1,0 +1,32 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+
+#container
+{
+	position: absolute;
+	font-family: Lato;
+	font-size: 15px;
+}
+
+#info
+{
+	position: absolute;
+	background-color: rgba(200, 200, 200, 0.5);
+
+	/*padding-top: 5px;*/
+	padding-bottom: 10px;
+	padding-right: 15px;
+	padding-left: 15px;
+	border-radius: 10px;
+
+	/*margin: 10px;*/
+	/*margin-left: 15px;*/
+
+	bottom: 30%;
+}
+
+#info:hover
+{
+	background-color: rgba(10, 10, 10, 0.9);
+	color: rgb(250,250,250);
+}
