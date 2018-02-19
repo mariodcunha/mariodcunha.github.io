@@ -13,7 +13,7 @@ function setup()
     noStroke();
     // noLoop();
 
-
+    var infoLabel = createP('Drag Mouse over Grass');
     var toggleLabel = createP('Toggle Here');
     // min_slider = createSlider(1, min1+5, min1);
     toggle = createRadio();
