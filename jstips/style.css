@@ -1,15 +1,25 @@
 
 body 
 {
-    background-color: #333;
+    background-color: #fff;
     font-family: Courier New;
-    color: white;
+    color: #434343;
     /* margin: 5%; */
     width: 50%;
     margin: auto;
     margin-top: 5%;
 }
 
+a
+{
+	text-decoration: none;
+	color: #434343;
+}
+
+a:hover
+{
+	color: #009eed;	
+}
 .heading
 {
 	text-align: center;
@@ -17,5 +27,6 @@ body
 
 .highlight
 {
-	color: yellow;
+	color: #009eed;
+	font-weight: bold;
 }

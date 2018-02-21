@@ -78,12 +78,6 @@ var Particle = function(position)
 
   this.velocity = createVector(RandomNoise(-10, 10, change/20), RandomNoise(-10, 10, change/20));
 
-  // if(n==0)
-  //   this.velocity = createVector(RandomNoise(-10, 10), RandomNoise(-10, 10));
-  // else
-  //   // this.velocity = createVector(noise(random(-1, 1))*2, noise(random(-1, 0)*10)*2);
-  //   this.velocity = createVector(noise(-10, 10)*random(-10,10), noise(-5, 10)*random(-10,10));
-
   this.position = position.copy();
   this.lifespan = 255.0;
 
