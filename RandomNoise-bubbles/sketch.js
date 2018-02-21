@@ -133,6 +133,10 @@ function labelSetup()
     toggleLabel = createDiv('');
     toggleLabel.html("Noise");
     toggleLabel.parent('info');
+
+    var controlLabel = createDiv('');
+    controlLabel.html("Click to Toggle. Scroll to Control.");
+    controlLabel.parent('instruction');
 }
 
 
