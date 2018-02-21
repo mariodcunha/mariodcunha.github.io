@@ -1,38 +1,45 @@
 // require https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js
 
 var mouseMotion = 0;
-var m=0;
+
+var n=1, change=1;
+
+var toggleLabel, mode="Noise"; 
+
+var canvas; //for convenience and portabliilty
+
+
 
 function setup() 
 {
-    var canvas = createCanvas(window.innerWidth, window.innerHeight);
-    canvas.parent('container');
+    canvas = createCanvas(window.innerWidth, window.innerHeight);
+
+    labelSetup();
 
     ellipseMode(CENTER);
     fill(200, 50, 100);
     noStroke();
     // noLoop();
 
-    var infoLabel = createP('Drag Mouse over Grass');
-    var toggleLabel = createP('Toggle Here');
-    // min_slider = createSlider(1, min1+5, min1);
-    toggle = createRadio();
-    toggle.option('Random        ');
-    toggle.option('Noise');
+    // var toggleLabel = createP('Toggle Here');
+    // // min_slider = createSlider(1, min1+5, min1);
+    // toggle = createRadio();
+    // toggle.option('Random        ');
+    // toggle.option('Noise');
 
 
-    // minLabel.class('labels'); 
-    infoLabel.parent('info');
-    toggleLabel.parent('info');
-    toggle.parent('info');
+    // // minLabel.class('labels'); 
+    // infoLabel.parent('info');
+    // toggleLabel.parent('info');
+    // toggle.parent('info');
 }
 
 function draw() 
 {
     background(255);
-    let n;
+    let num;
 
-    checkToggle();
+    toggleLabel.html(mode);
 
     stroke(0, 0, 0, 50);
 
@@ -44,15 +51,15 @@ function draw()
 
         // lean (mid frequency, static)
 
-        n = RandomNoise(x * .1);
-        offsetX += n * 20 - 5;
+        num = RandomNoise(0, x * .1, change);
+        offsetX += num * 20 - 5;
 
         // height (very high frequency becomes fully random due to aliasing)
-        offsetY += RandomNoise(x * 100) * 400;
+        offsetY += RandomNoise(0, x * 100, change) * 400;
 
         // wind( low frequency, timed)
-        n = RandomNoise(x * .01 + millis() * -.001);
-        offsetX += n * 40;
+        num = RandomNoise(0, x * .01 + millis() * -.001, change);
+        offsetX += num * 40;
 
         var centerX, centerY;
 
@@ -97,13 +104,6 @@ function draw()
 
 function mouseDragged(event) 
 {
-  //   fill(245,216,19);
-  // ellipse(mouseX, mouseY, 5, 5);
-  // prevent default
-  // return false;
-
-  // console.log("screen: "+event.movementX);
-
   
   if(event.movementX < 0)
   {
@@ -117,31 +117,76 @@ function mouseDragged(event)
 }
 
 
-function RandomNoise(value)
+
+
+function labelSetup() 
 {
-    if(m==1)
-    {
-        return random(value);
-    }
-    else
-    {
-        return noise(value);
-    }
-    console.log("Spacebar. "+m);
-}
+    canvas.parent('container');
 
-function checkToggle()
-{
-    var string = toggle.value();
+    //Please note: This if if you want to add HTML elemts on your p5 page.
+    //Please add the CSS along with it to keep it clean.
+    //Basic HTML and CSS given below.
 
-    if(string == "Noise" || string == null || string == "")
-        m = 0;
-    else
-        m=1;
+    toggleLabel = createDiv('');
+    toggleLabel.html("Noise");
+    toggleLabel.parent('info');
 
-    console.log(toggle.value());
+    var controlLabel = createDiv('');
+    controlLabel.html("Drag Mouse over the Grass.<br><br>Click to Toggle. Scroll to Control.");
+    controlLabel.parent('instruction');
+
 }
 
 
 
+function RandomNoise(lowLimit, highLimit, factor)
+{
+
+    if(n==0) //Pure Random State
+    {
+        return random(lowLimit,highLimit)+(factor*5);
+    }
+
+    else if(n==1) //Pure Noise State
+    {
+        return noise(lowLimit,highLimit)+(factor/100);  
+    }
+    else if(n==2) //Noise x Random
+    {
+        return (noise(lowLimit,highLimit)*random(lowLimit,highLimit))+(factor*100);   
+
+    }
+
+}
+
+
+function mouseClicked() 
+{
+    if(n==0)
+    {
+      n=1;
+      mode = "Noise";
+    }
+    else if(n==1)
+    {
+      n=2;
+      mode = "Noise x Random";
+    }
+    else if(n==2)
+    {
+      n=0;
+      mode = "Random";
+    }
+
+    console.log(n);
+}
+
+
+
+function mouseWheel(event) 
+{
+    //Increments or Decrements of the attribute you want to control
+    change+= event.delta; 
+    console.log(event.delta);
+}
 
