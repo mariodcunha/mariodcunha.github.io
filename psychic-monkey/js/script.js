@@ -36,13 +36,13 @@ counter = 0;
 function setup() 
 {
   mic = new p5.AudioIn();
-  mic.stop();
+  mic.start();
 }
 
 
 function looper()
 {
-  mic.getLevel();
+  // mic.getLevel();
   vol = mic.getLevel();
 
   wh = map(vol, 0, 1, 70, 80);
