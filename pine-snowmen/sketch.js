@@ -4,7 +4,7 @@
 
 
 
-var posX, posY, shapeSize=7;
+var posX, posY, shapeSize=7, canvas;
 var change=100, margin=100;
 
 var Trees = [];
@@ -29,7 +29,9 @@ function Snowman(x, y)
 
 function setup() 
 {
-  createCanvas(window.innerWidth, window.innerHeight);
+  canvas = createCanvas(window.innerWidth, window.innerHeight);
+
+  labelSetup();
 
   createTree(0, numTrees);
   createSnowman(0, numSnowmen);
@@ -90,6 +92,7 @@ function drawSnowmen()
 
       Snowmen[i].x += randomInt(-5,5);
       Snowmen[i].y += randomInt(-5,5);
+
 
   }
 
@@ -208,6 +211,18 @@ function createSnowman(l, h)
 }
 
 
+function labelSetup() 
+{
+    canvas.parent('container');
+
+    toggleLabel = createDiv('');
+    toggleLabel.html("The North Remembers");
+    toggleLabel.parent('info');
+
+    var controlLabel = createDiv('');
+    controlLabel.html("Scroll to Multiply");
+    controlLabel.parent('instruction');
+}
 
 
 
