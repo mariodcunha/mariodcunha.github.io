@@ -59,8 +59,8 @@ function draw()
 
           if(e==1)
           {
-            colorMode(RGB); 
-            fill(50);
+            colorMode(HSB); 
+            fill(19.6);
             ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
           }
           else
