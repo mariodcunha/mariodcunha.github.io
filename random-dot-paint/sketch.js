@@ -205,6 +205,44 @@ function mouseClicked(event)
 }
 
 
+
+// function mouseMoved(event) 
+// {
+
+//   console.log(mode);
+
+
+//   var posX, posY, posDiameter, posColor, rangeX, rangeY;
+
+//   for (let i=0; i < Dots.length; i++) 
+//   {
+    
+//     posX = Dots[i].x; posY = Dots[i].y;
+    
+//     posDiameter = Dots[i].diameter; 
+//     posColor = Dots[i].amtColor;
+
+//     rangeXL = posX - (posDiameter);
+//     rangeXH = posX + (posDiameter); 
+
+//     rangeYL = posY - (posDiameter);
+//     rangeYH = posY + (posDiameter); 
+
+//     if((mouseX > rangeXL && mouseX < rangeXH) && (mouseY < rangeXH && mouseY > rangeXL))
+//     {
+//       chosenColor = posColor;
+//       // console.log("color: "+posColor);
+
+//       colorMode(HSB);
+//       let tempColor = lerpColor(fromColor, toColor, posColor);
+//     }
+//   }
+
+//   draw();
+
+// }
+
+
 function keyPressed()
 {
   console.log(mode);
