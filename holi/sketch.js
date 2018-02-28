@@ -21,6 +21,7 @@ function Dot(x, y, diameter, amtColor)
   this.y = y;
   this.diameter = diameter;
   this.amtColor = amtColor;
+  // this.angle = angle;
 }
 
 
@@ -33,6 +34,9 @@ function setup()
   noStroke();
 
   createDots(0,100);
+
+  angleMode(RADIANS);
+  rectMode(CORNER);
 
 }
 
@@ -338,8 +342,19 @@ function drawShape(x, y, d)
   }
   else if(tri==1)
   {
-    circle=0; square=0;
+
+    // var deg = mouseX; var rad = radians(deg);
+    // push();
+    // // translate(rx+r, ry+d);
+
+    // let a = map(mouseX, 1, width, 1, 360);
+    // // console.log(a);
+    // // rotate(-a);
+
+    // // circle=0; square=0;
+    // // triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
     triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
+    // pop();
   }
 
 }
