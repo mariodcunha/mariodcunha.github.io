@@ -13,6 +13,8 @@ var Dots= [], mode=0, e=0;
 
 var fromColor, toColor, chosenColor;
 
+var square=0, tri=0, circle=1;
+
 function Dot(x, y, diameter, amtColor)
 {
   this.x = x;
@@ -29,7 +31,6 @@ function setup()
   labelSetup();
 
   noStroke();
-  ellipseMode(CENTER);    
 
   createDots(0,100);
 
@@ -61,13 +62,14 @@ function draw()
           {
             colorMode(HSB); 
             fill(19.6);
-            ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
+            drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
+            // ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
           }
           else
           {
             colorMode(HSB); 
             fill(myColor);
-            ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
+            drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
  
           }
 
@@ -77,7 +79,7 @@ function draw()
           Dots[i].x += RandomNoise(-50,50);//+mouseX;
           Dots[i].y += RandomNoise(-50,50); //+mouseY;
           fill(myColor);
-          ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
+          drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
         }
         // else if((Dots[i].amtColor == chosenColor) && mode==2 && e==1)
         // {
@@ -90,7 +92,7 @@ function draw()
         else
         {
           fill(myColor);
-          ellipse(Dots[i].x+RandomNoise(5), Dots[i].y+RandomNoise(5), Dots[i].diameter, Dots[i].diameter);
+          drawShape(Dots[i].x+RandomNoise(5), Dots[i].y+RandomNoise(5), Dots[i].diameter);
         }
         
     }
@@ -206,42 +208,6 @@ function mouseClicked(event)
 
 
 
-// function mouseMoved(event) 
-// {
-
-//   console.log(mode);
-
-
-//   var posX, posY, posDiameter, posColor, rangeX, rangeY;
-
-//   for (let i=0; i < Dots.length; i++) 
-//   {
-    
-//     posX = Dots[i].x; posY = Dots[i].y;
-    
-//     posDiameter = Dots[i].diameter; 
-//     posColor = Dots[i].amtColor;
-
-//     rangeXL = posX - (posDiameter);
-//     rangeXH = posX + (posDiameter); 
-
-//     rangeYL = posY - (posDiameter);
-//     rangeYH = posY + (posDiameter); 
-
-//     if((mouseX > rangeXL && mouseX < rangeXH) && (mouseY < rangeXH && mouseY > rangeXL))
-//     {
-//       chosenColor = posColor;
-//       // console.log("color: "+posColor);
-
-//       colorMode(HSB);
-//       let tempColor = lerpColor(fromColor, toColor, posColor);
-//     }
-//   }
-
-//   draw();
-
-// }
-
 
 function keyPressed()
 {
@@ -275,19 +241,66 @@ function keyPressed()
         e = 0;
   }
 
+   if(key == "t" || key == "T")
+  {
+      if(tri==0)
+      {
+        tri=1; circle=0; square=0;
+      }
+      else 
+      {
+        tri=0; circle=1; square=0;
+      }
+  }
+
+
+   if(key == "s" || key == "S")
+  {
+      if(square==0)
+      {
+        tri=0; circle=0; square=1;
+      }
+      else 
+      {
+        tri=0; circle=1; square=0;
+      }
+  }
+
+  if(key == "d" || key == "D")
+  {
+      if(circle==0)
+      {
+        tri=0; circle=1; square=0;
+      }
+      else 
+      {
+        tri=0; circle=1; square=0;
+      }
+
+  }
+
 }
 
 function labelSetup() 
 {
     canvas.parent('container');
 
-    // toggleLabel = createDiv('');
-    // toggleLabel.html("Noise");
-    // toggleLabel.parent('info');
+     var outerControls = createDiv('');
+    outerControls.id("outerControls");
 
     var controlLabel = createDiv('');
-    controlLabel.html("Click on Dots to release same color<br>Toggle spacebar to suspend / paint / shuffle / auto-color<br>Scroll to Increase/Decrease number of dots");
-    controlLabel.parent('instruction');
+    controlLabel.html(
+      "<b>CONTROL TOGGLES</b><br><br>"+
+      "<b>CLICK DOT</b>&nbsp;&nbsp;&nbsp;Release a Color<br>"+
+      "<b>SPACEBAR</b>&nbsp;&nbsp;&nbsp;paint / shuffle / auto-color<br>"+
+      "<b>[ A ]  : AUTO-COLOR</b>&nbsp;&nbsp;&nbsp;direct<br>"+
+      "<b>[ E ]  : ERASER</b>&nbsp;&nbsp;&nbsp;on clicked color<br>"+
+      "<b>[ T ]  : TRIANGLE</b>&nbsp;&nbsp;&nbsp;<br>"+
+      "<b>[ S ]  : SQUARES</b>&nbsp;&nbsp;&nbsp;<br>"+
+      "<b>[ D ]  : DOTS</b>&nbsp;&nbsp;&nbsp;<br>"+
+      "<b>SCROLL</b>&nbsp;&nbsp;to multiply dots<br>");
+
+    controlLabel.parent('outerControls');
 }
 
 function randomInt(l, h) 
@@ -305,47 +318,31 @@ function RandomNoise(lowLimit, highLimit)
 }
 
 
+function drawShape(x, y, d)
+{
+  let rx, ry, r;
 
-// $('#instruction').mouseenter(
-//   function()
-//   {
-    
+  r = d/2;
+  rx = x-r;
+  ry = y-r;
 
-//     //console.log('mouseenter');
+  if(circle==1)
+  {
+    square=0; tri=0;
+    ellipse(x, y, d, d);
+  }
+  else if(square==1)
+  {
+    circle=0; tri=0;
+    rect(rx, ry, d, d);
+  }
+  else if(tri==1)
+  {
+    circle=0; square=0;
+    triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
+  }
 
-//       if($(this).text()=='NEW')
-//       {
-//         $(this).text('OLD');
-//         $(this).css('font-family','Times New Roman');
-//       }
-//       else if($(this).text()=='OLD')
-//       {
-//         $(this).text('NEW');
-//         $(this).css('font-family','Lato');
-//       }
-//     })
-
-
-// $('#toggle-word').mouseleave(
-//   function()
-//   {
-//     //console.log('mouse leaveing');
-//     if(click==false)
-//     {
-//       if($(this).text()=='NEW')
-//         {
-//           $(this).text('OLD');
-//           $(this).css('font-family','Times New Roman');
-//         }
-//         else if($(this).text()=='OLD')
-//         {
-//           $(this).text('NEW');
-//           $(this).css('font-family','Lato');
-//         }
-//     }
-//     })
-
-
+}
 
 
 
