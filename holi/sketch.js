@@ -7,13 +7,16 @@ var numberDots=100;
 
 var smallDistance=10, largeDistance=300;
 
-var lrange=5, hrange=20, myFrameRate=30;
+var lrange=5, hrange=20;
 
-var Dots= [], mode=0, e=0;
+var Dots= [];
 
 var fromColor, toColor, chosenColor;
 
-var square=0, tri=0, circle=1;
+var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
+
+var something=0;
+
 
 function Dot(x, y, diameter, amtColor)
 {
@@ -22,6 +25,14 @@ function Dot(x, y, diameter, amtColor)
   this.diameter = diameter;
   this.amtColor = amtColor;
   // this.angle = angle;
+
+  this.radius = this.diameter/2; 
+
+  this.rangeXL = this.x - (this.radius);
+  this.rangeXH = this.x + (this.radius);
+
+  this.rangeYL = this.y - (this.radius);
+  this.rangeYH = this.y + (this.radius);
 }
 
 
@@ -33,17 +44,19 @@ function setup()
 
   noStroke();
 
-  createDots(0,100);
+  createDots(0,numberDots);
 
-  angleMode(RADIANS);
+  // angleMode(RADIANS);
   rectMode(CORNER);
+  ellipseMode(CENTER);
 
 }
 
 
 function draw() 
 {
-    // noCursor();
+    // Dots[2].diameter += 1 + something;
+
     colorMode(RGB);
 
     if(mode%2 == 0) //even mode
@@ -53,28 +66,31 @@ function draw()
     toColor = color(255, 0, 150);
 
     colorMode(HSB);  
+
+
     for (var i=0; i < Dots.length; i++) 
     {
         myColor = lerpColor(fromColor, toColor, Dots[i].amtColor);
 
         if((Dots[i].amtColor == chosenColor) && mode != 2)
         {
-          Dots[i].x += RandomNoise(-50,50);//+mouseX;
-          Dots[i].y += RandomNoise(-50,50); //+mouseY;
+          Dots[i].x += RandomNoise(-50,50);
+          Dots[i].y += RandomNoise(-50,50);
 
-          if(e==1)
+          if(e==1)  //Eraser Mode
           {
             colorMode(HSB); 
             fill(19.6);
+
             drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
-            // ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
           }
-          else
+          else //Normal (No-eraser) Mode
           {
             colorMode(HSB); 
             fill(myColor);
+
             drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
- 
+
           }
 
         }
@@ -82,24 +98,19 @@ function draw()
         {
           Dots[i].x += RandomNoise(-50,50);//+mouseX;
           Dots[i].y += RandomNoise(-50,50); //+mouseY;
+
           fill(myColor);
           drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
         }
-        // else if((Dots[i].amtColor == chosenColor) && mode==2 && e==1)
-        // {
-        //   Dots[i].x += RandomNoise(-50,50);//+mouseX;
-        //   Dots[i].y += RandomNoise(-50,50); //+mouseY;
-        //   colorMode(RGB);
-        //   fill(50);
-        //   ellipse(Dots[i].x, Dots[i].y, Dots[i].diameter, Dots[i].diameter);
-        // }
+
         else
         {
           fill(myColor);
-          drawShape(Dots[i].x+RandomNoise(5), Dots[i].y+RandomNoise(5), Dots[i].diameter);
+          drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
         }
         
     }
+
 
     // noLoop();  
     // setFrameRate(frameRate);
@@ -118,6 +129,8 @@ function mouseWheel(event)
 {
 
   let previous = numberDots;
+
+  // something += event.delta;
  
   if(Dots.length > 0)
   {
@@ -148,7 +161,7 @@ function mouseWheel(event)
       createDots(previous, numberDots);
   }
 
-    draw();
+  draw();
 
 }
 
@@ -156,11 +169,12 @@ function mouseWheel(event)
 
 function createDots(l, h)
 {
-    var i=0;
-   for (i = l; i < h; i++) 
+  var i=0;
+  
+  for (i = l; i < h; i++) 
   {
       diameter = randomInt(lrange,hrange);
-      
+
       var amtColor = map(diameter, lrange,hrange,0,1);
       
       smallDistance = map(amtColor, 0, 1, (largeDistance-50), largeDistance);
@@ -174,36 +188,42 @@ function createDots(l, h)
 
 }
 
+
+
 function mouseClicked(event) 
 {
-
-  console.log(mode);
-
-
-  var posX, posY, posDiameter, posColor, rangeX, rangeY;
+  var posX, posY, posRadius, posColor, posRangeXL, posRrangeXH, posRangeYL, posRangeYH;
 
   for (let i=0; i < Dots.length; i++) 
   {
     
-    posX = Dots[i].x; posY = Dots[i].y;
-    
-    posDiameter = Dots[i].diameter; 
+    posX = Dots[i].x; 
+    posY = Dots[i].y;
     posColor = Dots[i].amtColor;
+    posRadius = Dots[i].radius;
 
-    rangeXL = posX - (posDiameter);
-    rangeXH = posX + (posDiameter); 
+    Dots[i].rangeXL = posX - posRadius;
+    Dots[i].rangeXH = posX + posRadius;
 
-    rangeYL = posY - (posDiameter);
-    rangeYH = posY + (posDiameter); 
+    Dots[i].rangeYL = posY - posRadius;
+    Dots[i].rangeYH = posY + posRadius;
 
-    if((mouseX > rangeXL && mouseX < rangeXH) || (mouseY < rangeXH && mouseY > rangeXL))
+    posRangeXL = Dots[i].rangeXL;
+    posRangeXH = Dots[i].rangeXH;
+
+    posRangeYL = Dots[i].rangeYL;
+    posRangeYH = Dots[i].rangeYH;
+
+    if((mouseX >= posRangeXL && mouseX <= posRangeXH) && (mouseY >= posRangeYL && mouseY <= posRangeYH))
     {
       chosenColor = posColor;
-      // console.log("color: "+posColor);
-
-      colorMode(HSB);
-      let tempColor = lerpColor(fromColor, toColor, posColor);
     }
+        // console.log("CLICKED!\n");
+        // console.log("Element: "+i);
+        // console.log(mouseX+" : "+mouseY);
+        // console.log(Dots[i].x+", "+Dots[i].y);
+        // console.log("Diameter: "+Dots[i].diameter);
+        // console.log(Dots[i].rangeXL+"-"+Dots[i].rangeXH+" : "+Dots[i].rangeYL+"-"+Dots[i].rangeYH+"\n\n");      
   }
 
   draw();
@@ -211,12 +231,8 @@ function mouseClicked(event)
 }
 
 
-
-
 function keyPressed()
 {
-  console.log(mode);
-
   if(key == " ")
   {
     if(mode==0)
@@ -283,7 +299,22 @@ function keyPressed()
 
   }
 
+  if(key == "g" || key == "G")
+  {
+      if(grid==0)
+      {
+        grid=1;
+      }
+      else 
+      {
+        grid=0;
+      }
+
+  }
+  draw();
+
 }
+
 
 function labelSetup() 
 {
@@ -317,7 +348,7 @@ function randomInt(l, h)
 function RandomNoise(lowLimit, highLimit)
 {
 
-  return noise(lowLimit,highLimit)*random(lowLimit,highLimit);
+  return noise(lowLimit/2,highLimit/2)*random(lowLimit/2,highLimit/2);
  
 }
 
@@ -343,6 +374,7 @@ function drawShape(x, y, d)
   else if(tri==1)
   {
 
+    //working on rotate each triangle
     // var deg = mouseX; var rad = radians(deg);
     // push();
     // // translate(rx+r, ry+d);
