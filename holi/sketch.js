@@ -13,7 +13,7 @@ var Dots= [];
 
 var fromColor, toColor, chosenColor;
 
-var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
+var square=0, tri=1, circle=0, mode=0, e=0, grid=0;
 
 var something=0;
 
@@ -46,7 +46,7 @@ function setup()
 
   createDots(0,numberDots);
 
-  // angleMode(RADIANS);
+  angleMode(RADIANS);
   rectMode(CORNER);
   ellipseMode(CENTER);
 
@@ -383,18 +383,21 @@ function drawShape(x, y, d)
   {
 
     //working on rotate each triangle
-    // var deg = mouseX; var rad = radians(deg);
+    // var a = map(mouseX, 1, width, 1, 10);
     // push();
-    // // translate(rx+r, ry+d);
-
-    // let a = map(mouseX, 1, width, 1, 360);
-    // // console.log(a);
-    // // rotate(-a);
-
-    // // circle=0; square=0;
-    // // triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
-    triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
+    //   rectMode(CENTER);
+    //   angleMode(DEGREES);
+    //   translate((rx+r), (ry+d));
+    //   // translate((rx+rx+d)/2, (ry+d+ry+d)/2);
+    //   var a = atan2(mouseX-(ry+d+ry+d)/4, mouseX-(rx+rx+d)/4);      
+    //   rotate(a);
+    //   triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
+    //   //rotate(-a/10);
+    //   // console.log(a);
+    //   // triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
     // pop();
+
+    triangle(rx, ry+d, rx+r, ry, rx+d, ry+d);
   }
 
 }
