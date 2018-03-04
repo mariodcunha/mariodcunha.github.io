@@ -133,7 +133,7 @@ function draw() {
 
   //mic---
   vol = mic.getLevel();
-  soundx = map(vol, 0, 1, 1, 50);
+  soundx = map(vol, 0, 1, 1, 100);
 
   fill(255);
   noStroke();
