@@ -311,6 +311,12 @@ function keyPressed()
       }
 
   }
+
+  if(keyCode == ENTER || keyCode == RETURN)
+  {
+      save('myCanvas.jpg');
+  }
+
   draw();
 
 }
@@ -333,7 +339,9 @@ function labelSetup()
       "<b>[ T ]  : TRIANGLE</b>&nbsp;&nbsp;&nbsp;<br>"+
       "<b>[ S ]  : SQUARES</b>&nbsp;&nbsp;&nbsp;<br>"+
       "<b>[ D ]  : DOTS</b>&nbsp;&nbsp;&nbsp;<br>"+
-      "<b>SCROLL</b>&nbsp;&nbsp;to multiply dots<br>");
+      "<b>SCROLL</b>&nbsp;&nbsp;to multiply dots<br>"+
+      "<b>ENTER</b>&nbsp;&nbsp;to download art<br><br><br>"+
+      "<div id='download' onClick='downloadArt()'><b>Download Artwork</b></div><br>");
 
     controlLabel.parent('outerControls');
 }
@@ -390,8 +398,13 @@ function drawShape(x, y, d)
   }
 
 }
+// console.log("asd");
 
+function downloadArt()
+{
+    save('myCanvas.jpg');
+    console.log("asd");
 
-
+}
 
 
