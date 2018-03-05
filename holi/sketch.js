@@ -13,7 +13,7 @@ var Dots= [];
 
 var fromColor, toColor, chosenColor;
 
-var square=0, tri=1, circle=0, mode=0, e=0, grid=0;
+var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
 
 var something=0;
 
