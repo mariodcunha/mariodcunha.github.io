@@ -53,7 +53,7 @@ function drawBranch(length)
         return;
     }
 
-    myTurtle.moveForward(300);
+    myTurtle.moveForward(200);
 
     myTurtle.penDown();
     myTurtle.pushState();
