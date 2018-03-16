@@ -52,7 +52,7 @@ if (ptouchIsDown && touchIsDown){
     if(mode==1)
         myTurtle.penDown();
     
-    myTurtle.moveTo(mouseX,mouseY);    
+    // myTurtle.moveTo(mouseX,mouseY);    
 
 
     // noLoop();
