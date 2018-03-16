@@ -11,6 +11,9 @@ var change=10;
 
 var mySide = 500, mode=0;
 
+var ptouchIsDown;
+var pmouseIsPressed;
+
 function setup() 
 {
     createCanvas(window.innerWidth, window.innerHeight);
@@ -18,6 +21,9 @@ function setup()
     background(50);
     mode=0;
     myTurtle.penUp();
+
+    ptouchIsDown = touchIsDown;
+    pmouseIsPressed = mouseIsPressed;
 }
 
 function draw() 
@@ -31,26 +37,14 @@ function draw()
     myTurtle.penUp();
 
 
-    // myTurtle.penUp();
-    // myTurtle.moveTo(250, 450);
-    // myTurtle.turnTo(-90);
-    // myTurtle.penDown();
-    // drawBranch(100);
-
-
-
-    // // move to starting position (without drawing)
-    // myTurtle.penUp();
-    // myTurtle.moveTo(width/2, height/2);
-
-    // // put the pen down to draw
-    // myTurtle.penDown();
-
-    // // draw the triangle
-    // for (var i = 0; i < change; i++) {
-    //     myTurtle.moveForward(300);
-    //     myTurtle.turnRight(change);
-    // }
+if (ptouchIsDown && touchIsDown){
+    stroke(255, 0, 0);
+    line(touchX, touchY, ptouchX, ptouchY);
+  }
+  if (pmouseIsPressed && mouseIsPressed){
+    stroke(0, 0, 255);
+    line(mouseX, mouseY, pmouseX, pmouseY);
+  }
 
     if(mode==1)
         myTurtle.penDown();
@@ -60,92 +54,6 @@ function draw()
 
     // noLoop();
 }
-
-
-function drawTriangle(turtle)
-{
-    // stroke(random(255),random(255),random(255));
-    for (var i = 0; i < 3; i++) 
-    {
-        myTurtle.moveForward(mySide);
-        myTurtle.turnLeft(120);
-    }
-}
-
-
-function drawPentagon(turtle)
-{
-    for (var i = 0; i < 5; i++) 
-    {
-        myTurtle.moveForward(mySide);
-        myTurtle.turnRight(72);
-    }
-}
-
-
-function drawHexagon(turtle)
-{
-    for (var i = 0; i < 6; i++) 
-    {
-        myTurtle.moveForward(mySide);
-        myTurtle.turnRight(60);
-    }
-}
-
-
-function drawOctagon(turtle)
-{
-    for (var i = 0; i < 8; i++) 
-    {
-        myTurtle.moveForward(mySide);
-        myTurtle.turnRight(45);
-    }
-}
-
-
-function drawCircle(turtle)
-{
-    for (var i = 0; i < 80; i++) 
-    {
-        myTurtle.moveForward(10);
-        myTurtle.turnLeft(5);
-        
-        //dashed
-        // if(i%2==0)
-        //     turtle.penUp();
-        // else
-        //     turtle.penDown();
-
-    }
-}
-
-
-function getTurtlePosition(turtle)
-{
-
-    turtleX = turtle.x;
-    turtleY = turtle.y;
-}
-
-
-function makeGrid(gridSize)
-{
-    getTurtlePosition(myTurtle);
-     for (var y = turtleY; y < gridSize; y+=mySide*2) 
-    {
-        for (var x = turtleX; x < gridSize; x+=mySide*2)
-        {
-            // myTurtle.moveTo(noise(x)*random(2,200),y);
-            myTurtle.moveTo(x,y);
-            myTurtle.penDown();
-            drawPentagon(myTurtle);   
-            myTurtle.penUp();         
-        }
-    }
-}
-
-
-
 
 
 
@@ -179,7 +87,6 @@ function RandomNoise(lowLimit, highLimit)
 
 
 
-
 function keyPressed()
 {
     if(keyCode == ENTER || keyCode == RETURN)
@@ -207,18 +114,12 @@ function keyPressed()
 
 
 
-
-function mouseWheel(event)
+function mouseDragged() 
 {
-    change += event.delta;
-    draw();
-}
+    // line(mouseX, mouseY, pmouseX, pmouseY);
+    // return false;
 
-
-
-function mouseClicked()
-{
-    if(mode == 0)
+ if(mode == 0)
     {
       mode=1;
       myTurtle.penDown();
@@ -229,9 +130,8 @@ function mouseClicked()
         myTurtle.penUp();
     }
 
+
 }
-
-
 
 
 function touchMoved() 
