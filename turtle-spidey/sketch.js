@@ -7,14 +7,14 @@
 
 var myTurtle, turtleX, turtleY;
 
-var mySide = 500, mode=0, change=1;
+var change=1;
 
 
 
 
 function setup() 
 {
-    createCanvas(window.innerWidth, window.innerHeight);
+    createCanvas(window.innerWidth, window.innerHeight+150);
     myTurtle = new Turtle();
     
     noFill();
@@ -28,7 +28,7 @@ function setup()
 function draw() 
 {
     background(255,0,0);
-    stroke(0); strokeWeight(12); up();
+    stroke(0); strokeWeight(11); up();
     // stroke(250); strokeWeight(9); up();
 
     myTurtle.moveTo(width/2+RandomNoise(change), height/2-100+RandomNoise(change));
