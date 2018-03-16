@@ -37,12 +37,15 @@ function draw()
     myTurtle.penUp();
 
 
+//mouse or tablet
 if (ptouchIsDown && touchIsDown){
     stroke(255, 0, 0);
     line(touchX, touchY, ptouchX, ptouchY);
   }
+
+  //desktop
   if (pmouseIsPressed && mouseIsPressed){
-    stroke(0, 0, 255);
+    stroke(0, 255, 0);
     line(mouseX, mouseY, pmouseX, pmouseY);
   }
 
