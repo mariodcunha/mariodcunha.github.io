@@ -14,6 +14,9 @@ function setup()
 {
     createCanvas(myImage.width, myImage.height);
     // noStroke();
+    strokeWeight(1);
+    stroke(0,0,0,100);
+    // noCursor();
 
     
 }
@@ -22,9 +25,10 @@ var randomColor;
 
 function draw() 
 {
-    background(20);
+    noCursor();
+    // background(20);
 
-    strokeWeight(pixelate/30);
+    // strokeWeight(pixelate/30);
 
     // var spacing = 500 / myImage.width;
 
@@ -66,7 +70,7 @@ function draw()
         }
     }
 
-    noSmooth();
+    // noSmooth();
     noLoop();
     // image(myImage, window.innerWidth/2-(myImage.width/2), window.innerHeight/2-(myImage.height/2), myImage.width, myImage.height);
     // image(myImage, 0,0, myImage.width/2, myImage.height/2);
