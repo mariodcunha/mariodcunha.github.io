@@ -1,6 +1,6 @@
 
 //Mario Dcunha
-
+ 
 // require https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js
 // require /turtles/turtle/turtle.js
 
@@ -18,7 +18,7 @@ function setup()
     myTurtle = new Turtle();
     
     noFill();
-    background(255,0,0);
+    background(0,255,0);
     up();
 }
 
