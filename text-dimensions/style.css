@@ -1,14 +1,24 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
 
+@font-face 
+{
+font-family: "NeueDisplay-Random";
+src: url("fonts/NeueDisplay-Random.otf");
+src: url("fonts/NeueDisplay-Random.otf") format("opentype");
+/*url("css/fonts/Harabara.svg#filename") format("svg");*/
+}
+
+
 body
 {
 	background: rgba(20,20,20,255);
+	font-family: "NeueDisplay-Random";
 }
 
 #container
 {
 	position: absolute;
-	font-family: Lato;
+	/*font-family: Lato;*/
 	font-size: 15px;
 
 }
@@ -25,7 +35,7 @@ body
 	margin-left: 15px;
 
 	bottom: 1%;
-	display: none;
+	/*display: none;*/
 }
 
 #info:hover
