@@ -18,8 +18,8 @@ var wl; //wordLength
 oldWord="DIRECTIONS", newWord="DIMENSIONS";
 
 var wordsArray = [  "DISTURBED","DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE",
-                    "DISSIPATE","DISBAND","DISCHARGE","DISLOD","DISPEL","DISMANTLE",
-                    "DISSOLVE","DISBURSE","DISSEMINAT","DIRECTIONS","DRIFT"];
+                    "DISSIPATE","DISBAND","DISCHARGE","DISLODGE","DISPEL","DISMANTLE",
+                    "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
 
 var myFont;
 
