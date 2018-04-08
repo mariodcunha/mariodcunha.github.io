@@ -13,6 +13,14 @@ var fromColor, toColor;
 var LetterArray = [];
 var letters = ['D','I','M','E','N','S','I','O','N','S'];
 
+var oldWord, newWord;
+var wl; //wordLength
+oldWord="DIRECTIONS", newWord="DIMENSIONS";
+
+var wordsArray = [  "DISTURBED","DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE",
+                    "DISSIPATE","DISBAND","DISCHARGE","DISLOD","DISPEL","DISMANTLE",
+                    "DISSOLVE","DISBURSE","DISSEMINAT","DIRECTIONS","DRIFT"];
+
 var myFont;
 
 function preload() 
@@ -64,10 +72,23 @@ function createLetters()
     // fromColor = color(randomInt(10,100), randomInt(10,100), randomInt(10,100), 200);
     // toColor = color(randomInt(110,255), randomInt(110,255), randomInt(110,255), 10);
 
-    for(let i=0; i<letters.length; i++)
+    //do not repeat oldWord
+    oldWord = newWord;
+    newWord = wordsArray[randomInt(wordsArray.length)];
+
+    while(oldWord == newWord)
+        newWord = wordsArray[randomInt(wordsArray.length)];
+
+    letters = [];
+    for(let i=0; i<newWord.length; i++)
+        letters.push(newWord.slice(i,i+1));
+
+    wl = letters.length;
+
+    for(let i=0; i<wl; i++)
     {
-        LetterArray[i] = new Letter(randomInt(((width/10)*(i)), ((width/10)*(i+1))), 
-                                    randomInt((height/10),(height-(height/10))), letters[i], randomInt(-2,2));
+        LetterArray[i] = new Letter(randomInt(((width/wl)*(i)), ((width/wl/1.1)*(i+1))), 
+                                    randomInt((height/wl),(height-(height/wl))), letters[i], randomInt(-2,2)+noise(1));
         
     }
 }
@@ -90,7 +111,7 @@ function drawLetter(lettercount)
     {
         //draw each letter's shaded blending
         //which is many letters behind single one, with decreasing size        
-
+        letterSize = width/(2.5*wl);
         for(let j=1, k=100; j<50; j++)
         {
             //letterSize can be scrolled, check mouseWheel()
@@ -146,18 +167,12 @@ function keyPressed()
 
 function randomInt(n)
 {
-  return random(0,n);
+  return Math.floor(random(0,n));
 }
 
 function randomInt(l,h)
 {
-  return random(l,h);
-}
-
-
-function myRandom(num)
-{
-    return Math.floor(random(num));
+  return Math.floor(random(l,h));
 }
 
 
