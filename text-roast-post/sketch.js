@@ -22,8 +22,9 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 var grammar = tracery.createGrammar(grammarObj);
 
 
+
 var baseURL = "https://api.giphy.com/v1/gifs/search?q=";
-var api = "&api_key=liJmvnJR1o2rFS6mYIY6biZ70S2YSF9L&limit=10";
+var api = "&api_key=jJkB8D4uexeWCfIm4JwE44MVdlTMckBB&limit=10";
 var searchURL = "";
 
 var httpRequest, mainTitle, imageSource;
