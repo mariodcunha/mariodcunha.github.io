@@ -22,7 +22,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 var grammar = tracery.createGrammar(grammarObj);
 
 
-var baseURL = "http://api.giphy.com/v1/gifs/search?q=";
+var baseURL = "https://api.giphy.com/v1/gifs/search?q=";
 var api = "&api_key=liJmvnJR1o2rFS6mYIY6biZ70S2YSF9L&limit=10";
 var searchURL = "";
 
@@ -70,7 +70,7 @@ function fillInfo()
     }
 
   var parsed = JSON.parse(responseContent);
-  console.log(parsed);
+  // console.log(parsed);
 
   $('#pic').attr("src",parsed.data[randomMath(0,9)].images.original.url);
   $('#randomVolume').text("Vol. "+randomMath(1,1000));
@@ -79,7 +79,7 @@ function fillInfo()
   var tempMainTitle = mainTitle.slice(mainTitle.indexOf(' ')+1,mainTitle.length);
   // wordSpace(tempMainTitle);
   namePerson = wordSpace(mainTitle) +" "+ wordSpace(tempMainTitle);
-  console.log(namePerson);
+  // console.log(namePerson);
 
   var stories = 
   [
