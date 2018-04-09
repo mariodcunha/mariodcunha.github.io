@@ -23,7 +23,7 @@ var grammar = tracery.createGrammar(grammarObj);
 
 
 var baseURL = "http://api.giphy.com/v1/gifs/search?q=";
-var api = "&api_key=liJmvnJR1o2rFS6mYIY6biZ70S2YSF9L&limit=1";
+var api = "&api_key=liJmvnJR1o2rFS6mYIY6biZ70S2YSF9L&limit=10";
 var searchURL = "";
 
 var httpRequest, mainTitle, imageSource;
@@ -70,9 +70,9 @@ function fillInfo()
     }
 
   var parsed = JSON.parse(responseContent);
-  // console.log(parsed);
+  console.log(parsed);
 
-  $('#pic').attr("src",parsed.data[0].images.original.url);
+  $('#pic').attr("src",parsed.data[randomMath(0,9)].images.original.url);
   $('#randomVolume').text("Vol. "+randomMath(1,1000));
   $('#date').text(calendar(parsed.data[0].import_datetime.slice(0,10)));
   

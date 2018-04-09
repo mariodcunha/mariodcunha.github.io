@@ -21,12 +21,13 @@
 
 body
 {
-	background-color: lightgray;
+	/*background-color: lightgray;*/
 	color: black;
 	
 	width: 100%;
 	display: block;
 	transition: background-color 0.5s;
+
 }
 
 button
@@ -64,7 +65,10 @@ button:hover
 	background-color: white;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-bottom: 50px;
+	/*padding-bottom: 50px;*/
+	border-right: 1px solid black;
+    border-left: 1px solid black;
+    margin-bottom: 50px;
 }
 
 
