@@ -113,7 +113,7 @@ function type0()
       $('#headline0').append(Story_0.charAt(x++));
     }
     
-    setTimeout(type0, 100);
+    setTimeout(type0, 50);
   }
   else if(x>=Story_0.length)
       typeWriter1();
