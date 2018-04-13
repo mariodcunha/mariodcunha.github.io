@@ -76,6 +76,8 @@ function keyPressed()
 
 function mouseWheel(event)
 {
+
+    console.log(event);
     change += event.delta;
     draw();
 }
