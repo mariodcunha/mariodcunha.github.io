@@ -64,7 +64,7 @@ Sentence[3] = tracery.createGrammar(sentence4);
 function startTyping()
 {
     Story_0 = $('#headline0').text();
-    Story_0 = "It was a dark and Stormy night."
+    Story_0 = "It was a dark and 'Stormy' night."
 
     type0();   
 }
@@ -92,7 +92,7 @@ function typeWriter4()
 
 function typeWriter5()
 {   
-    Story_last = "Who do you think managed to Trump the other?"
+    Story_last = "Who do you think managed to 'Trump' the other?"
     // Story_0 = "It was a dark and Stormy night."
     type5();   
 }
