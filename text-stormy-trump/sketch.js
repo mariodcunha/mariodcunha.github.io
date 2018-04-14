@@ -67,9 +67,9 @@ var sentence1 =
 {
   "S": ["He was #Verb# on the #Position#. "],
   "Pronoun": ["He", "She"],
-  "Verb": ["confusing", "hard", "challenging", "acting", "insulting", "scheming", "charging", "bloody", "standing smelly", "bruised and hurt"],
+  "Verb": ["drooling with blood", "sweating and nervous", "gasping for breath", "trying to look terrifying", "insulting", "scheming", "charging", "bloody", "standing smelly", "bruised and hurt"],
   "Position": ["#Place# table", "3rd street, away from the #Place#", "Crooked Chair, inside #Place#", "#Place# hallway"],
-  "Place": ["Oval Office", "White House", "Capitol Hill", "Pentagon", "Congress Balcony", "Golf Resort", "KFC Chicken Place", "Mexican Food Joint"]
+  "Place": ["Oval Office", "White House", "Capitol Hill", "Pentagon", "Congress Balcony", "Golf Resort", "KFC Chicken", "Mexican Food Joint"]
 }
 
 var sentence2 = 
