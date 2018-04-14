@@ -3,7 +3,12 @@
 
 body
 {
-	background-color: black;
+	/*background-color: black;*/
+	background-image: url('images/trump.jpg') opacity 0.5;
+	background-size: cover;
+	background-position: top right;
+	background-color: #000;
+
 	color: white;
 	font-family: 'Special Elite';
 	/*font-family: 'Courier';*/
@@ -13,6 +18,9 @@ body
 	/*display: block;*/
 	transition: background-color 0.5s;
 	line-height: 40px;
+
+	word-wrap: break-word;
+
 }
 
 button
@@ -51,6 +59,8 @@ button:hover
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-bottom: 50px;
+
+	word-wrap: break-word;
 }
 
 #stormy
@@ -69,9 +79,13 @@ h1
 	padding-left: 10px;
 	padding-top: 10px;
 
-
+	word-wrap: break-word;
 }
 
+#heading0, #heading1, #heading2, #heading3, #heading4 
+{
+	word-wrap: break-word;
+}
 
 
 #title
