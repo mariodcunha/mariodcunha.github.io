@@ -17,6 +17,8 @@ Who do you think Trumped the other?
 */
 
 var mySounds=[], suddenSounds=[];
+var amplitude;
+
 
 function preload() 
 {
@@ -40,8 +42,14 @@ function preload()
 
 function setup()
 {
+
+  amplitude = new p5.Amplitude();
+
   stormSound.play();
   stormSound.amp(0.5);
+
+  //Volume of lightning;
+  amplitude.setInput(stormSound);
 
   startTyping();
 }
@@ -49,15 +57,16 @@ function setup()
 
 function draw()
 {
+  var level = amplitude.getLevel();
+  var lightningLevel = map(level, 0, 1, 0, 150);
+
+  console.log(lightningLevel);
   canvas = createCanvas(window.innerWidth/1.2, window.innerHeight);
   // background(bg);
-  tint(255,255,255, tintValue[randomInt(tintValue.length)]);
+  // tint(255,255,255, tintValue[randomInt(tintValue.length)]);
+  tint(255,255,255, lightningLevel*10);
   image(bg, 0, 0, window.innerWidth/1.2, window.innerHeight);
 
-  // stormSound.play();
-  // stormSound.amp(0.3);
-
-  // startTyping();
 }
 
 
@@ -156,7 +165,6 @@ function typeWriter5()
 function typewriterSound()
 {
   var randomTypeWriterSound = randomInt(1,11);
-  mySounds[randomTypeWriterSound].setVolume(1.0);
   mySounds[randomTypeWriterSound].play();
   mySounds[randomTypeWriterSound].setVolume(1.0);
 
