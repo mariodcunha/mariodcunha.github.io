@@ -30,8 +30,8 @@ function setup()
     mode=0;
     myTurtle.penUp();
 
-    // ding.play();
-    // ding.amp(1.0);
+    ding.play();
+    ding.amp(1.0);
 
 }
 
@@ -73,15 +73,17 @@ function draw()
     {        
         bgColor=50;
         strokeColor=255;
-        ding.stop();
+        // ding.stop();
     }
 
+    // if (ding.isPlaying())
+    //     ding.stop();
 }
 
 function dingEffect()
 {
-    // ding.play();
-    // ding.amp(1.0);
+    ding.play();
+    ding.amp(1.0);
     bgColor=255;
     strokeColor=50;
     
