@@ -1,10 +1,13 @@
 var osc, fft;
 
+var sine=1, triangle=0, square=0, sawtooth=0;
+
 function setup() 
 {
-  createCanvas(720, 256);
+  createCanvas(window.innerWidth, window.innerHeight);
 
-  osc = new p5.TriOsc(); // set frequency and type
+  osc = new p5.Oscillator(); // set frequency and type
+  osc.setType('sine');
   osc.amp(.5);
 
   fft = new p5.FFT();
@@ -14,6 +17,23 @@ function setup()
 function draw() 
 {
   background(255);
+
+  if(sine==1)
+  {
+    osc.setType('sine');
+  }
+  else if(triangle==1)
+  {
+    osc.setType('triangle');
+  }
+  else if(square==1)
+  {
+    osc.setType('square');
+  }
+  else if(sawtooth==1)
+  {
+    osc.setType('sawtooth');
+  }
 
   var waveform = fft.waveform();  // analyze the waveform
   
@@ -33,4 +53,24 @@ function draw()
 
   var amp = map(mouseY, 0, height, 1, .01);
   osc.amp(amp);
+}
+
+function mousePressed()
+{
+  if(sine==1)
+  {
+    triangle=1; sine=0; square=0; sawtooth=0;
+  }
+  else if(triangle==1)
+  {
+    triangle=0; sine=0; square=1; sawtooth=0;
+  }
+  else if(square==1)
+  {
+    triangle=0; sine=0; square=0; sawtooth=1;
+  }
+  else if(sawtooth==1)
+  {
+    triangle=0; sine=1; square=0; sawtooth=0;
+  }
 }
