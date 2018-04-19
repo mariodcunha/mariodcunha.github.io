@@ -1,6 +1,8 @@
 var osc, fft;
 
 var sine=1, triangle=0, square=0, sawtooth=0;
+var r=200, g=200, b=200;
+var r1=100, g1=100, b1=100;
 
 function setup() 
 {
@@ -12,11 +14,16 @@ function setup()
 
   fft = new p5.FFT();
   osc.start();
+  smooth();
 }
 
 function draw() 
 {
-  background(255);
+  colorMode(RGB);
+  background(r, g, b);
+  stroke(r1, g1, b1);
+
+  // colorMode(RGB);
 
   if(sine==1)
   {
@@ -37,8 +44,10 @@ function draw()
 
   var waveform = fft.waveform();  // analyze the waveform
   
+  noFill();
   beginShape();
   strokeWeight(5);
+
   for (var i = 0; i < waveform.length; i++)
   {
     var x = map(i, 0, waveform.length, 0, width);
@@ -73,4 +82,29 @@ function mousePressed()
   {
     triangle=0; sine=1; square=0; sawtooth=0;
   }
+
+  r = randomInt(150,255);
+  g = randomInt(150,255);
+  b = randomInt(150,255);
+
+  r1 = randomInt(100,150);
+  g1 = randomInt(100,150);
+  b1 = randomInt(100,150);
+
+}
+
+
+
+function randomInt(l, h) 
+{
+  return Math.floor(random(l, h));
+}
+
+
+
+function RandomNoise(lowLimit, highLimit)
+{
+
+  return noise(lowLimit/2,highLimit/2)*random(lowLimit/2,highLimit/2);
+ 
 }
