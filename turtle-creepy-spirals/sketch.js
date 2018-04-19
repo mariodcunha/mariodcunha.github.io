@@ -11,6 +11,7 @@ var mySide = 500, mode=0;
 
 
 
+var osc;
 
 function setup() 
 {
@@ -19,6 +20,19 @@ function setup()
     background(50);
     mode=0;
     up();
+
+    // myOscillator = new p5.Oscillator('sine');
+    // myOscillator.amp(10); // set amplitude
+    // myOscillator.freq(340); // set frequency
+
+    // myOscillator.start();
+
+    osc = new p5.Oscillator();
+      osc.setType('sine');
+      osc.freq(240);
+      osc.amp(10);
+      osc.start();
+
 }
 
 
@@ -30,6 +44,10 @@ function draw()
     stroke(255);
     strokeWeight(2);
     myTurtle.penUp();
+
+    osc.amp(change); // set amplitude
+    osc.freq(change*100); // set frequency
+
 
     // myTurtle.moveTo(width/2, height/2-100);
     getTurtlePosition(myTurtle);
