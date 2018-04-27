@@ -1,0 +1,47 @@
+@import 'https://fonts.googleapis.com/css?family=Gochi+Hand';
+
+* { margin:0; padding:0;}
+
+body 
+{
+	/*color: #fff;*/
+	font-family: 'Gochi Hand', cursive;
+	font-size:100%;
+	background: #eee;
+}
+
+#myBox
+{
+	display: block;
+}
+
+#square
+{
+	width: 100px;
+	height: 100px;
+	background-color: yellow;
+}
+
+#rect
+{
+	width: 300px;
+	height: 100px;
+	background-color: red;
+}
+
+
+#circle
+{
+	width: 200px;
+	height: 200px;
+	border-radius: 100%;
+	background-color: blue;
+	display: inline;
+}
+
+
+
+
+
+
+
