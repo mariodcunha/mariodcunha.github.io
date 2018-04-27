@@ -3,6 +3,7 @@
 
 var likeCounter=0;
 var mySpeech;
+var theWord="function";
 
 // wait until dom is loaded then run init function
 $(document).ready(function()
@@ -65,9 +66,9 @@ function countLikes()
 {
   var likeIndex;
 
-  while(mySpeech.indexOf('like') > 1)
+  while(mySpeech.indexOf(theWord) > 1)
   {
-    likeIndex = mySpeech.indexOf('like');
+    likeIndex = mySpeech.indexOf(theWord);
     console.log("Infinite While Loop Possible > "+likeIndex);
     
     if(likeIndex > 1)
@@ -76,7 +77,7 @@ function countLikes()
       $('#likeSound').attr('src', 'sound/like.mp3');
     }
 
-    mySpeech = mySpeech.replace("like ", "");  
+    mySpeech = mySpeech.replace(theWord +" ", "");  
     
     console.log(likeCounter);
     console.log(mySpeech.length);
