@@ -1,11 +1,20 @@
 
 var circles = [];
 
-var bgColor = 255;
+var bgColor = 0;
 
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
+
+	 envelope = new p5.Env();
+
+    envelope.setADSR(0.01, 0.05, 0.75, 0.25); // middling
+    envelope.setRange(1.0, 0.0);
+
+    oscillator = new p5.Oscillator('triangle');
+    oscillator.amp(envelope); // set amplitude
+    oscillator.start(); // start oscillating
 }
 
 function draw()
@@ -59,6 +68,27 @@ var circle = function()
 
 function mouseClicked()
 {
-  bgColor = random(255);
+	envelope.triggerRelease();
+
 }
+
+
+function mouseMoved() 
+{
+    bgColor = random(33);
+
+    const note = floor(map(mouseX, 0, 400, 20, 80));
+    const freq = midiToFreq(note);
+    oscillator.freq(RandomNoise(220)+100);
+    envelope.triggerAttack();
+}
+
+
+
+function RandomNoise(n) 
+{
+    return random(n*2)*noise(n);
+}
+
+
 
