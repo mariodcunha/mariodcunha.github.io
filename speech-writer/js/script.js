@@ -3,7 +3,7 @@
 
 var likeCounter=0;
 var mySpeech;
-var theWord="function";
+var theWord="like";
 
 // wait until dom is loaded then run init function
 $(document).ready(function()
