@@ -188,10 +188,27 @@ img
 
 
 
+#title
+{
+	font-family: "OldLondon", serif;
+	font-weight: 500;
+	letter-spacing: 3px;
+	font-size: 75px;
+	text-align: center;
+	margin: 0px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 10px;
+	border-bottom: 1px solid #000;
+}
+
+
+
+
 #headline
 {
 	font-family: 'Playfair Display', serif;
-	font-size: 20px;
+	font-size: 30px;
 	padding-right: 7px;
 	padding-left: 7px;
 	padding-top: 7px;
@@ -201,18 +218,16 @@ img
 	text-align: center;
 }
 
-#title
+
+img
 {
-	font-family: "OldLondon", serif;
-	font-weight: 500;
-	letter-spacing: 3px;
-	font-size: 64px;
-	text-align: center;
-	margin: 0px;
-	padding-right: 10px;
-	padding-left: 10px;
-	padding-top: 10px;
-	border-bottom: 1px solid #000;
+	width: 450px;
+    height: 450px;
+    padding-right: 10px;
+	padding-left: 7px;
+	/*padding-top: 7px;*/
+	float: left;
+	display: inline;
 }
 
 #dateinfo
@@ -248,17 +263,6 @@ img
 	display: flex;
 }
 
-img
-{
-	width: 250px;
-    height: 250px;
-    padding-right: 10px;
-	padding-left: 7px;
-	/*padding-top: 7px;*/
-	float: left;
-	display: inline;
-
-}
 
 #story
 {
