@@ -23,13 +23,13 @@ body
 {
 	/*background-color: lightgray;*/
 	color: black;
-	
 	width: 100%;
 	display: block;
 	transition: background-color 0.5s;
 
 }
 
+/*
 button
 {
     padding: 15px;
@@ -41,7 +41,6 @@ button
     font-family: Lato;
     letter-spacing: 2px;
     background-color: royalblue;
-    /*font-weight: bold;*/
     color: white;
     cursor: pointer;
     box-shadow: 1px 1px 5px #aaa;
@@ -55,7 +54,8 @@ button:hover
     background-color: black;
     color: white;
     transition: all 0.5s;
-}
+}*/
+
 
 #container
 {
@@ -163,4 +163,124 @@ img
 	font-family: Lato;
 	font-size: 10px;
 	padding-left: 10px;
+}
+
+
+
+/* iPad */
+
+@media only screen and (max-width: 1025px)
+{
+
+#container
+{
+	position: absolute;
+	margin-left: 10%;
+	margin-right: 10%;
+	background-color: white;
+	padding-left: 10px;
+	padding-right: 10px;
+	/*padding-bottom: 50px;*/
+	border-right: 1px solid black;
+    border-left: 1px solid black;
+    margin-bottom: 50px;
+}
+
+
+
+#headline
+{
+	font-family: 'Playfair Display', serif;
+	font-size: 20px;
+	padding-right: 7px;
+	padding-left: 7px;
+	padding-top: 7px;
+	border-top: 1px solid #000;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	text-align: center;
+}
+
+#title
+{
+	font-family: "OldLondon", serif;
+	font-weight: 500;
+	letter-spacing: 3px;
+	font-size: 64px;
+	text-align: center;
+	margin: 0px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 10px;
+	border-bottom: 1px solid #000;
+}
+
+#dateinfo
+{
+	padding: 0px;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 5px;
+	text-align: center;
+}
+
+#randomVolume
+{
+	float: left;
+	/*padding-right: 50px;*/
+}
+
+
+#price
+{
+	float: right;
+}
+
+#date
+{
+	/*text-align: center;*/
+	margin: auto;
+	/*float: left;*/
+}
+
+#news
+{
+	display: flex;
+}
+
+img
+{
+	width: 250px;
+    height: 250px;
+    padding-right: 10px;
+	padding-left: 7px;
+	/*padding-top: 7px;*/
+	float: left;
+	display: inline;
+
+}
+
+#story
+{
+	float: right;
+	padding-right: 10px;
+	padding-left: 7px;
+	text-align: justify;
+
+}
+
+
+
+
+#credit
+{
+	font-family: Lato;
+	font-size: 10px;
+	padding-left: 10px;
+}
+
+
+
+
+
 }
