@@ -14,7 +14,7 @@ function setup()
 {
     createCanvas(myImage.width, myImage.height);
     // noStroke();
-    strokeWeight(0);
+    strokeWeight(1);
     stroke(0,0,0,100);
     // noCursor();
 
