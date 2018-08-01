@@ -23,7 +23,7 @@
 		/*padding: 0em;*/
 		/*display: block;*/
 		color: #1778bf;
-		border-bottom: 1px solid #000; 
+		box-shadow: 0 7px 7px -7px gray;
 
 	}
 
@@ -38,7 +38,7 @@
 	h2
 	{
 		font-family: "Avenir" !important;
-		font-size: 2.5em;
+		font-size: 3em;
 
 	}
 
@@ -67,7 +67,8 @@
 		bottom: 0%;
 		/*display: block;*/
 		/*background: blue;*/
-		padding: 1.3em 1.3em 2.5em 1.3em;
+		padding: 2.5em 1.3em 2.5em 1.3em;
+		box-shadow: 2px -7px 7px -7px gray;
 	}
 
 	button
