@@ -70,11 +70,23 @@
 	#myname, #inspired
 	{
 		font-size: 3em;
-		padding: 5em 0em 3em 0em;
-		line-height: 1.5em;
+		padding: 2em 0em 1em 0em;
 		font-weight: 700;
 		text-align: center;
 	}
+
+	#myname1
+	{
+		font-size: 3em;
+		padding: 0.4em;
+		line-height: 1.5em;
+		font-weight: 700;
+		text-align: center;
+		border-radius: 7px;
+		background: orange;
+
+	}
+
 
 	.heading
 	{
