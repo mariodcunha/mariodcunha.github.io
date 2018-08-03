@@ -88,9 +88,10 @@
 	{
 		float: right;
 		background-color: #1778bf;
-		padding: 10px 26px 10px 26px;
+		padding: 17px 35px 17px 35px;
 		color: white;
 		border-radius: 100%;
+		font-size: 1.1em;
 	}
 
 	.spot_number_item
@@ -113,6 +114,18 @@
 		color: white;
 		margin-left: 5%;
 		border-radius: 100%;
+	}
+
+	#button_nav
+	{
+		float: left;
+		margin-right: 5px;
+	}
+
+	#button_index
+	{
+		float: right;
+		margin-right: 5%;
 	}
 
 	.index_title
