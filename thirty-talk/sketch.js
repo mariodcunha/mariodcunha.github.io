@@ -1,51 +1,36 @@
 
 //Mario Dcunha
 
+var i=0;
+var itemVar = '', temp, itemTitle='';
 
-var myRandomWord;
 
-function generate() 
+function imgLoad()
 {
-  myRandomWord = RiTa.randomWord('nn');
+  temp = $('title').text();
+  itemVar = temp.slice(0,2);
 
-  while (RiTa.rhymes(myRandomWord).length < 1)
+  switch(itemVar)
   {
-    myRandomWord = RiTa.randomWord('nn');
+    case '01': itemTitle = "Product Roadmap";
   }
 
-  $('#word1').text(myRandomWord + ',');
-  $('#word2').text(RiTa.randomItem(RiTa.rhymes(myRandomWord)) + '.');
+  document.getElementById('spot_number_item').innerHTML = itemVar;
+  document.getElementById('item_heading').innerHTML = itemTitle;
 
-  var randomR, randomG, randomB;
+  i++;
 
-  $('body').css('background-color',
-    'rgba('+randomMath(100,220)+','+randomMath(100,220)+','+randomMath(100,220)+','+randomMath(100,220)+')');
+  var imgSource = "images/"+itemVar+"/"+i+".jpg";
+  var imgSpace = "imgSpace"+i;
 
-  $('button').css('background-color',
-    'rgba('+randomMath(50,100)+','+randomMath(50,100)+','+randomMath(50,100)+','+randomMath(50,100)+')');
+  var divimg = document.getElementById('imageSpace');
+  console.log(divimg);
+  divimg = $('#imageSpace').attr('id', imgSpace);
+  console.log(divimg);
 
+  var img = $("<img class='thirtyimg'></img><br><br>");
+  img.attr('src', imgSource);
+
+  $("#"+imgSpace).append(img);
 }
-
-
-function  randomMath(min, max)
-{
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function randomInt(l, h) 
-{
-  return Math.floor(random(l, h));
-}
-
-
-
-function RandomNoise(lowLimit, highLimit)
-{
-
-  return noise(lowLimit/2,highLimit/2)*random(lowLimit/2,highLimit/2);
- 
-}
-
-
-
 
