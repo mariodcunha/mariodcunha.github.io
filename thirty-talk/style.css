@@ -155,12 +155,13 @@
 	#item_heading
 	{
 		background: #c5ebff;
-		padding: 15px 36px 15px 36px;
+		padding: 30px 36px 30px 36px;
 		/*margin: 10px 0px 0px 30px;*/
 		/*margin: 0% 0 0% 0%;*/
-		border-radius: 50px;
+		border-radius: 70px;
 		text-align: left;
 		float: left;
+		font-size: 1.1em;
 	}
 
 	.spot_help
@@ -177,12 +178,12 @@
 	{
 		float: left;
 		background-color: #1778bf;
-		padding: 20px;
+		padding: 30px;
 		margin-right: 30px;
 		/*padding: 10px 26px 10px 26px;*/
 		color: white;
 		border-radius: 100%;
-		font-size: 0.9em;		
+		font-size: 1.0em;		
 	}
 
 	.spot_number
