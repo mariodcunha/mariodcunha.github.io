@@ -14,6 +14,11 @@
 		width: 100%;
 	}
 
+	#initPage
+	{
+		background: #1778bf;
+	}
+
 	a
 	{
 		text-decoration: none;
@@ -24,6 +29,15 @@
 	{
 		font-size: 2.5em;
 		line-height: 2em;
+	}
+	
+	#init-main-header
+	{
+		position: fixed;
+		text-align: center;
+		width: 100%;
+		color: white;
+	
 	}
 
 	#main-header
@@ -38,8 +52,20 @@
 		color: #1778bf;
 		box-shadow: 0 7px 7px -7px gray;
 		font-weight: 900;
-
 	}
+
+	#init-title a
+	{
+		font-size: 10em;
+		font-weight: 900;
+		color: white;
+	}
+
+	#init-title
+	{
+		margin-top: 20%;	
+	}
+	
 
 	h1
 	{
@@ -53,7 +79,7 @@
 	h2
 	{
 		font-size: 3em;
-		font-weight: 700;
+		font-weight: 400;
 
 	}
 
@@ -61,20 +87,22 @@
 	{
 		/*background: red;*/
 		position: absolute;
-		margin-top: 33%;
 		width: 100%;
 		padding-left: 2.2em;
 		padding-right: 2.2em;
+		margin: 70% 0% 0% 0%;
 
 
 	}
 
 	#myname, #inspired
 	{
-		font-size: 3em;
-		padding: 2em 0em 1em 0em;
-		font-weight: 700;
-		text-align: center;
+		font-size: 2.7em;
+		padding: 1em 0em 1em 0em;
+		font-weight: 200;
+		margin: 0% 0% 0% 12%;
+		line-height: 1.5em;
+		color: white;
 	}
 
 	#myname1
@@ -168,6 +196,7 @@
 		
 	}
 
+
 	.index_title
 	{
 		float: left;
@@ -179,6 +208,7 @@
 		text-align: left;
 		/*color: white;*/
 		color: #000;
+
 	}
 
 	.item
@@ -213,15 +243,27 @@
 
 	}
 
-	button
+	.mainButton
 	{
-		font-size: 2.5em;
+		position: fixed;
+		text-align: center;
+		width: 100vw;
+		bottom: 0%;
+		background: #1778bf;
 		color: white;
-		background-color: #1778bf;
-		padding: 0.7em 1.3em 0.7em 1.3em;
-		border-radius: 0.3em;
-		font-family: "Lato";
+		padding: 1.5em 0.4em 1.5em 0.4em;
+		margin: 0 0 2% 1%;
+		border-radius: 200px;
+		border: solid 2px white;
+		font-size: 3em;
 	}
+
+	.mainButton a
+	{
+		font-size: 1em;
+		color: white;
+	}
+
 
 }
 
