@@ -2,7 +2,7 @@
 //Mario Dcunha
 
 var mode=0;
-var r=0, temp=0;
+var r=0, temp=0, c=0;
 var count=0;
 var mainArray = [];
 var me = "Mario Dcunha";
@@ -66,12 +66,17 @@ function init()
 {
   mode=0;
   randomQuote();
+  buttonHover(0);
+  buttonHover(1);
+  buttonHover(2);
+  buttonHover(3);
+
 }
 
 function write(serial,quoteObject)
 {
     $('#quote').text("\""+quoteObject[serial].quote+"\"");
-    $('#author').text("- "+quoteObject[serial].author);  
+    $('#author').text("- "+quoteObject[serial].author);
 }
 
 function randomQuote()
@@ -84,7 +89,6 @@ function randomQuote()
   
   write(r,mainArray);
 
-  console.log(r);
 }
 
 
@@ -94,9 +98,9 @@ function back()
 
   if(r > 0) r--;
   else      r=count-1;
-  
+
   write(r,mainArray);
-  console.log(r);
+
 }
 
 
@@ -108,7 +112,7 @@ function next()
   else            r=0;
   
   write(r,mainArray);
-  console.log(r);
+
 }
 
 
@@ -120,49 +124,41 @@ function setMode()
     case 0: 
     count     = marioism.length; 
     mainArray = marioism; 
-    fontchange('Satisfy', '2em', 400, '40px', 'green')
-    // $('#quote').css('font-family', 'Satisfy');
-    // $('#quote').css('font-size', '2em');
-    // $('#quote').css('font-weight', '400');
-
+    fontchange('Satisfy', '2.2em', 400, '45px', 'black', 200, 245);
     break;
 
     case 1:
     count     = inspiration.length; 
     mainArray = inspiration;
-    $('#quote').css('font-family', 'Lato');
-    $('#quote').css('font-size', '1.7em');
-    $('#quote').css('font-weight', 'bold');
+    fontchange('Lato', '1.7em', 'bold', '45px', 'white', 10, 100);
     break;
 
 
     case 2:
     count     = design.length; 
-    mainArray = design; break;
+    mainArray = design; 
+    fontchange('Lato', '1.7em', 'bold', '45px', 'white', 100, 200);
+    break;
 
     case 3:
     count     = intuit.length; 
-    mainArray = intuit; break;
+    mainArray = intuit; 
+    fontchange('Montserrat', '1.7em', 500, '45px', 'white', 200, 255);
+    break;
   }
 
   $('#b'+mode).css('background-color', '#009eed');
+  // $('#b'+mode).css('border', '1px solid #009eed');
   $('#b'+mode).css('color', '#fff');
-  // $('#b'+mode).css('border', '#fff');
 }
 
 function resetButtons()
 {
-  console.log(r);
   for(i=0; i<4; i++)
   {
-      $('#b'+i).css('background-color', '#fff');
       $('#b'+i).css('color', '#999');
-      // $('#b'+i).css('border', '1px solid #999');    
+      $('#b'+i).css('background-color', '#fff');    
   }
-  buttonHover(0);
-  buttonHover(1);
-  buttonHover(2);
-  buttonHover(3);
 }
 
 
@@ -176,9 +172,8 @@ function buttonHover(buttonMode)
     }
     else
     {
-      $("#b"+buttonMode).css('background-color','#aaa');
+      $("#b"+buttonMode).css('background-color','#999');
       $("#b"+buttonMode).css('color','#fff');
-      // $("#b"+buttonMode).css('border','1px solid #fff');
     }
   });
 
@@ -193,13 +188,12 @@ function buttonHover(buttonMode)
     {
       $("#b"+buttonMode).css('background-color','#fff');
       $("#b"+buttonMode).css('color','#999');
-      // $("#b"+buttonMode).css('border','1px solid #999');
     }
   });
 
 }
 
-  
+
 
 
 function modeSwitch(changeMode)
@@ -208,49 +202,45 @@ function modeSwitch(changeMode)
   setMode();
   resetButtons();
   randomQuote();
-  console.log(mode);
 }
 
 
 
 
-function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor)
+function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor, bgl, bgh)
 {
     $('#quote').css('font-family', fontFamily);
+    $('#author').css('font-family', fontFamily);
     $('#quote').css('font-size', fontSize);
     $('#quote').css('font-weight', fontWeight);
     $('#quote').css('color', fontColor);
+    $('#author').css('color', fontColor);
     $('#quote').css('line-height', lineHeight);
-}
 
+    if(mode==0)
+    {
+      c = randomMath(bgl,bgh);
+      $('body').css('background-color','rgb('+c+','+c+','+c+')');
+    }
+    else if(mode==1)
+    {
+      c = randomMath(bgl,bgh);
+      $('body').css('background-color','rgb('+c+','+c+','+c+')');
+    }
 
-
-
-
-
-var myRandomWord;
-
-function generate() 
-{
-  myRandomWord = RiTa.randomWord('nn');
-
-  while (RiTa.rhymes(myRandomWord).length < 1)
-  {
-    myRandomWord = RiTa.randomWord('nn');
-  }
-
-  $('#word1').text(myRandomWord + ',');
-  $('#word2').text(RiTa.randomItem(RiTa.rhymes(myRandomWord)) + '.');
-
-  var randomR, randomG, randomB;
-
-  $('body').css('background-color',
-    'rgba('+randomMath(100,220)+','+randomMath(100,220)+','+randomMath(100,220)+','+randomMath(100,220)+')');
-
-  $('button').css('background-color',
-    'rgba('+randomMath(50,100)+','+randomMath(50,100)+','+randomMath(50,100)+','+randomMath(50,100)+')');
+    else if(mode==2)
+    {
+      $('body').css('background-color','rgb('+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+')');
+    }
+    else if(mode==3)
+    {
+      $('body').css('background-color','rgb('+randomMath(10,50)+','+randomMath(100,200)+','+randomMath(250,255)+')');
+      $('#b3').css('border','1px solid #fff');
+    }
 
 }
+
+
 
 
 function  randomMath(l, h)
