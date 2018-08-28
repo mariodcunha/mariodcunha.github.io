@@ -12,6 +12,7 @@ body
 	/*background-repeat: no-repeat;*/
 	background-size: 1500px;
 	margin: auto;
+	transition: all 0.5s;
 }
 
 
@@ -454,6 +455,7 @@ body
 button
 {
 	background: white;
+
 }
 
 button:hover
@@ -470,11 +472,12 @@ button:hover
     padding: 10px 15px 10px 15px;
     border: 0px;
     border-radius: 400px;
-    font-size: 1em;
+    font-size: 2em;
     text-align: center;
     font-family: Lato;
     color: #777;
     background-color: #fff;
+    padding: 25px;
 }
 
 .nav:hover
@@ -496,15 +499,15 @@ button:hover
 {
 	font-family: Lato;
 	font-weight: 400;
-	font-size: 1.2em;
+	font-size: 2em;
 }
 
 .hash
 {
     margin-right: 2%;
-    padding: 10px 15px 10px 15px;
+    padding: 10px 20px 10px 20px;
     border-radius: 400px;
-    font-size: 1em;
+    font-size: 3em;
     text-align: center;
     font-family: Lato;
     color: #999;
@@ -519,7 +522,7 @@ button:hover
 {
 	position: absolute;
     margin-top: 10%;
-    width: 70%;
+    width: 90%;
 }
 
 #hashtags
@@ -533,16 +536,22 @@ button:hover
 #quotes
 {
 	padding: 5% 0% 1% 0%;
+	font-size: 2em;
 }
 
 #navbuttons
 {
 	float: left;
 	width: 100%;
-	top: 50%;
+	bottom: 10%;
 	position: absolute;
 }
 
+#randombutton
+{
+	float: right;
+	margin-right: 15%;
+}
 
 
 
