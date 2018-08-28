@@ -97,9 +97,9 @@ inspiration[5] = new Quote("Use all your five senses to learn. That’s when max
 inspiration[6] = new Quote("You have the capacity to learn anything, anyhow.", "Frank Dcunha");
 
 //DESIGN
-design[0] = new Quote("Every Designer must only think with a pen, paper and a prototype.", "Mario Dcunha");
+design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
 design[1] = new Quote("The moment you add time as a factor, all great ideas are killed.", "James Helms");
-design[2] = new Quote("Practice pen to paper. It's ok to be broken.", "JB Chaykowsky");
+design[2] = new Quote("Practice pen to paper. It's ok to be broken.", "J. B. Chaykowsky");
 design[3] = new Quote("Don't assume you know the customer until you have sat with them.", "Scott Cook");
 design[4] = new Quote("I can't sit at my desk and design. I only can check my email at my desk.", "Paula Scherr");
 design[5] = new Quote("Design of a logo is not the logo itself but getting a million people to believe in using it.", "Paula Scherr");
