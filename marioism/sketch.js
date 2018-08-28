@@ -22,16 +22,15 @@ var intuit = [];
 //MARIOISM
 marioism[0] = new Quote("Life’s funny, but I’m funnier!", me);
 marioism[1] = new Quote("Don’t take ‘taking for granted’, for granted.", me);
-marioism[2] = new Quote("Plan is not life, if its planned.", me);
+marioism[2] = new Quote("Plan is not life, if its planned.Plan is not life, if its planned.Plan is not life, if its planned.Plan is not life, if its planned.Plan is not life, if its planned.", me);
 
 //INSPIRATION
 inspiration[0] = new Quote("If you want to Shine like the Sun, be ready to Burn like the Sun.", "President Abdul Kalam");
 inspiration[1] = new Quote("We don’t just need Education. We need Education with Values.", "President Abdul Kalam");
 inspiration[2] = new Quote("Dreams are not what you see in your sleep. Dreams are what does not let you sleep.", "President Abdul Kalam");
 inspiration[3] = new Quote("Purpose of life, is a life of purpose.", "Robert Byrne");
-inspiration[4] = new Quote("If you only do your work, you will not grow, unless you are learning something new that advances you.", "Aaron Walter, VP Design Education, InVision");
-inspiration[5] = new Quote("Use all your five senses to learn. That’s when maximum observation and learning happens.", "Henry Monteiro, 8th grade teacher.");
-
+inspiration[4] = new Quote("If you only do your work, you will not grow, unless you are learning something new that advances you.", "Aaron Walter");
+inspiration[5] = new Quote("Use all your five senses to learn. That’s when maximum observation and learning happens.", "Henry Monteiro");
 
 //DESIGN
 design[0] = new Quote("Every Designer must only think with a pen, paper and a prototype.", "Mario Dcunha");
@@ -120,11 +119,22 @@ function setMode()
   {
     case 0: 
     count     = marioism.length; 
-    mainArray = marioism; break;
+    mainArray = marioism; 
+    fontchange('Satisfy', '2em', 400, '40px', 'green')
+    // $('#quote').css('font-family', 'Satisfy');
+    // $('#quote').css('font-size', '2em');
+    // $('#quote').css('font-weight', '400');
+
+    break;
 
     case 1:
     count     = inspiration.length; 
-    mainArray = inspiration; break;
+    mainArray = inspiration;
+    $('#quote').css('font-family', 'Lato');
+    $('#quote').css('font-size', '1.7em');
+    $('#quote').css('font-weight', 'bold');
+    break;
+
 
     case 2:
     count     = design.length; 
@@ -134,6 +144,7 @@ function setMode()
     count     = intuit.length; 
     mainArray = intuit; break;
   }
+
   $('#b'+mode).css('background-color', '#009eed');
   $('#b'+mode).css('color', '#fff');
   // $('#b'+mode).css('border', '#fff');
@@ -198,6 +209,18 @@ function modeSwitch(changeMode)
   resetButtons();
   randomQuote();
   console.log(mode);
+}
+
+
+
+
+function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor)
+{
+    $('#quote').css('font-family', fontFamily);
+    $('#quote').css('font-size', fontSize);
+    $('#quote').css('font-weight', fontWeight);
+    $('#quote').css('color', fontColor);
+    $('#quote').css('line-height', lineHeight);
 }
 
 
