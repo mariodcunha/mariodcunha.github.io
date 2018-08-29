@@ -110,6 +110,8 @@ design[9] = new Quote("A Paper Rocket is the ultimate symbol of childhood, creat
 design[10] = new Quote("Stand up, draw and visualize what people are saying. That’s when you will drive the meeting.", "Paul Goode");
 design[11] = new Quote("Embrace lo-fi. Don't let ideas become precious. Be ready to 'kill your darlings'.", "Morry Galonoy");
 design[12] = new Quote("Good Design must have an impact on people's lives, no matter how seemingly small.", "Garr Reynolds");
+design[13] = new Quote("Unpacking your rationality to someone else is first role of a designer.", "James Helms");
+
 
 //INTUIT
 intuit[0] = new Quote("Don't assume you know the customer, until you have sat with them.","Scott Cook");
@@ -134,7 +136,7 @@ intuit[18] = new Quote("Your design process is not hard to copy. What’s hard t
 intuit[19] = new Quote("Aim to be a 'learn it all' than a 'know it all'.","Adam Reed");
 intuit[20] = new Quote("Observation is everything: observations will drive insights, insights drive ideas and ideas change the world.","Adam Reed");
 intuit[21] = new Quote("Leadership is the power to influence someone just by being or behaviour and without being explicit about it.","Jolawn Victor");
-
+intuit[22] = new Quote("Unpacking your rationality to someone else is first role of a designer.", "James Helms");
 
 
 
