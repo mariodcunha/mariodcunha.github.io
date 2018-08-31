@@ -2,7 +2,7 @@
 //Mario Dcunha
 
 var mode=0;
-var r=0, temp=0, c=0;
+var r=0, temp=0, tempc='', c=0;
 var count=0;
 var mainArray = [];
 var me = "Mario Dcunha";
@@ -96,6 +96,10 @@ inspiration[3] = new Quote("Purpose of life, is a life of purpose.", "Robert Byr
 inspiration[4] = new Quote("If you only do your work, you will not grow, unless you are learning something new that advances you.", "Aaron Walter");
 inspiration[5] = new Quote("Use all your five senses to learn. That’s when maximum observation and learning happens.", "Henry Monteiro");
 inspiration[6] = new Quote("You have the capacity to learn anything, anyhow.", "Frank Dcunha");
+inspiration[7] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
+
+
+
 
 //DESIGN
 design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
@@ -112,6 +116,11 @@ design[10] = new Quote("Stand up, draw and visualize what people are saying. Tha
 design[11] = new Quote("Embrace lo-fi. Don't let ideas become precious. Be ready to 'kill your darlings'.", "Morry Galonoy");
 design[12] = new Quote("Good Design must have an impact on people's lives, no matter how seemingly small.", "Garr Reynolds");
 design[13] = new Quote("Unpacking your rationality to someone else is first role of a designer.", "James Helms");
+design[14] = new Quote("Design is a plan for arranging elements to accomplish a particular purpose.", "Charles Eames");
+design[15] = new Quote("Design is a problem that is elegantly solved.", "James Helms");
+design[16] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
+
+
 
 
 //INTUIT
@@ -142,9 +151,7 @@ intuit[22] = new Quote("Unpacking your rationality to someone else is first role
 
 //PARSONS
 parsons[0] = new Quote("Under Construction.","I know!");
-
-
-
+parsons[1] = new Quote("Your work doesn’t matter, until you make it matter.","David Carroll");
 
 
 
@@ -153,6 +160,7 @@ parsons[0] = new Quote("Under Construction.","I know!");
 function init()
 {
   mode=0;
+  loopButtons('#777','');
   randomQuote();
   buttonHover(0);
   buttonHover(1);
@@ -233,28 +241,85 @@ function setMode()
     count     = intuit.length; 
     mainArray = intuit; 
     fontchange('Montserrat', '1.7em', 500, '45px', 'white', 200, 255);
+    $('#b'+mode).text('intuit');
+    $('#b'+mode).css('font-family', 'Trebuchet MS');
+    $('#b'+mode).css('font-size', '17px');
+    $('#b'+mode).css('transition', 'all 0.3s');
     break;
 
     case 4:
     count     = parsons.length; 
     mainArray = parsons; 
-    fontchange('Lato', '1.7em', 500, '45px', 'white', 200, 255);
+    fontchange('Nueue-Bold', '1.7em', 400, '45px', 'black', 200, 255);
+    $('#b'+mode).text('PARSONS');
+    $('#b'+mode).css('font-family', 'Nueue-Wide');
+    $('#b'+mode).css('padding-bottom', '7px');
+    $('#b'+mode).css('transition', 'all 0.3s');
     break;
 
   }
+  if(mode<2)
+  {
+    $('#b'+mode).css('background-color', '#009eed');
+    $('#b'+mode).css('color', '#fff');    
+  }
+  else if(mode==2)
+  {
+    $('#b'+mode).css('background-color','rgb('+randomMath(50,100)+','+randomMath(50,100)+','+randomMath(50,100)+')');
+    $('#b'+mode).css('color', '#fff');    
+  }
+  else if(mode==3)
+  {
+    $('#b'+mode).css('background-color','rgb(0,110,'+randomMath(250,255)+')');
+    $('#b'+mode).css('color', '#fff');    
+    $('body').css('background-color','rgb('+randomMath(10,50)+','+randomMath(150,200)+','+randomMath(250,255)+')');
+  }
+  else if(mode==4)
+  {
+    $('#b'+mode).css('background-color','#EF3340');
+    $('#b'+mode).css('color', '#fff');    
 
-  $('#b'+mode).css('background-color', '#009eed');
-  // $('#b'+mode).css('border', '1px solid #009eed');
-  $('#b'+mode).css('color', '#fff');
+  }
 }
+
 
 function resetButtons()
 {
-  for(i=0; i<4; i++)
+  switch(mode)
   {
-      $('#b'+i).css('color', '#999');
-      $('#b'+i).css('background-color', '#fff');    
+    case 0: loopButtons('#777',''); break;
+
+    case 1: loopButtons('#fff',''); break;
+
+    case 2: loopButtons('#fff',''); break;
+
+    case 3: loopButtons('#fff',''); break;
+
+    case 4: loopButtons('#000',''); break;
   }
+  if(mode!=4)
+  {
+    $('#b4').text('#parsons');
+  }
+  if(mode!=3)
+  {
+    $('#b3').text('#intuit');
+  }
+
+}
+
+
+function loopButtons(textcolor, bgcolor)
+{
+    for(i=0; i<5; i++)
+    {
+      $('#b'+i).css('color', textcolor);
+      $('#b'+i).css('background-color', bgcolor);   
+      $('#b'+i).css('font-family', 'Lato');
+      $('#b'+i).css('padding-bottom', '10px');
+      $('#b'+i).css('transition', '0.3s');    
+      $('#b'+i).css('font-size', '15px');
+    }
 }
 
 
@@ -268,6 +333,7 @@ function buttonHover(buttonMode)
     }
     else
     {
+      tempc = $("#b"+buttonMode).css('color');
       $("#b"+buttonMode).css('background-color','#999');
       $("#b"+buttonMode).css('color','#fff');
     }
@@ -277,13 +343,14 @@ function buttonHover(buttonMode)
   $("#b"+buttonMode).mouseleave(
   function()
   {
-    if($("#b"+buttonMode).css('background-color')=='#009eed' || mode==buttonMode)
+    if(mode==buttonMode)
     {
     }
     else
     {
-      $("#b"+buttonMode).css('background-color','#fff');
-      $("#b"+buttonMode).css('color','#999');
+      console.log(tempc);
+      $("#b"+buttonMode).css('background-color','rgba(0, 0, 0, 0)');
+      $("#b"+buttonMode).css('color',tempc);
     }
   });
 
@@ -295,8 +362,8 @@ function buttonHover(buttonMode)
 function modeSwitch(changeMode)
 {
   mode = changeMode;
-  setMode();
   resetButtons();
+  setMode();
   randomQuote();
 }
 
@@ -306,14 +373,25 @@ function modeSwitch(changeMode)
 function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor, bgl, bgh)
 {
     $('#quote').css('font-family', fontFamily);
-    $('#author').css('font-family', fontFamily);
+    if(mode==4)
+    {
+      $('#author').css('text-transform', 'uppercase');
+      $('#author').css('font-family', 'Nueue-Black');
+      $('#author').css('font-size', '1em');
+    }
+    else
+    {
+      $('#author').css('font-family', fontFamily);
+      $('#author').css('text-transform', 'none');
+      $('#author').css('font-size', '1.3em');
+    }
     $('#quote').css('font-size', fontSize);
     $('#quote').css('font-weight', fontWeight);
     $('#quote').css('color', fontColor);
     $('#author').css('color', fontColor);
     $('#quote').css('line-height', lineHeight);
 
-    if(mode==0)
+    if(mode==0 || mode==4)
     {
       c = randomMath(bgl,bgh);
       $('body').css('background-color','rgb('+c+','+c+','+c+')');
@@ -323,23 +401,10 @@ function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor, bgl
       c = randomMath(bgl,bgh);
       $('body').css('background-color','rgb('+c+','+c+','+c+')');
     }
-
     else if(mode==2)
     {
       $('body').css('background-color','rgb('+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+')');
     }
-    else if(mode==3)
-    {
-      $('body').css('background-color','rgb('+randomMath(10,50)+','+randomMath(100,200)+','+randomMath(250,255)+')');
-      $('#b3').css('border','1px solid #fff');
-    }
-    else if(mode==4)
-    {
-      $('body').css('background-color','rgb('+randomMath(250,255)+','+randomMath(10,50)+','+randomMath(10,50)+')');
-      $('#b4').css('background-color','#000');
-      $('#b4').css('color','#fff');
-    }
-
 }
 
 

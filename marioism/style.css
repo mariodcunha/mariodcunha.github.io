@@ -2,6 +2,31 @@
 @import url('https://fonts.googleapis.com/css?family=Satisfy');
 @import url('https://fonts.googleapis.com/css?family=Montserrat:500');
 
+@font-face 
+{
+	font-family: "Nueue-Regular";
+	src: url("fonts/Neue-Regular.otf") format("opentype");
+}
+
+@font-face 
+{
+	font-family: "Nueue-Bold";
+	src: url("fonts/Neue-Bold.otf")  format("opentype");						
+}
+
+@font-face 
+{
+	font-family: "Nueue-Wide";
+	src: url("fonts/NeueDisplay-Wide.otf")  format("opentype");						
+}
+
+@font-face 
+{
+	font-family: "Nueue-Black";
+	src: url("fonts/NeueDisplay-Black.otf")  format("opentype");						
+}
+
+
 body
 {
 	color: black;
@@ -16,9 +41,9 @@ body
 }
 
 
-button
+.hash
 {
-	background: white;
+	background: rgba(0,0,0,0);
 }
 
 button:hover
@@ -61,7 +86,7 @@ button:hover
 {
 	font-family: Lato;
 	font-weight: 400;
-	font-size: 1.2em;
+	font-size: 1.3em;
 }
 
 .hash
@@ -454,7 +479,7 @@ body
 
 button
 {
-	background: white;
+	/*background: white;*/
 
 }
 
@@ -510,7 +535,7 @@ button:hover
     font-size: 3em;
     text-align: center;
     font-family: Lato;
-    color: #999;
+    color: #777;
     cursor: pointer;
     border: 0px;
 
