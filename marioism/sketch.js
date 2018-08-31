@@ -18,8 +18,9 @@ var marioism = [];
 var inspiration = [];
 var design = [];
 var intuit = [];
+var parsons = [];
 
-//MARIOISMmarioism[] = new Quote("Life’s funny, but I’m funnier!",me);
+//MARIOISM
 marioism[0] = new Quote("Life’s funny, but I’m funnier!",me);
 marioism[1] = new Quote("Don’t take ‘taking for granted’, for granted.",me);
 marioism[2] = new Quote("Life is not life, if its planned.",me);
@@ -76,7 +77,7 @@ marioism[52] = new Quote("A human being without an aim, is as good as an animal.
 marioism[53] = new Quote("A Church is made by the people and for the people. A Parish is made by the priests and for the priests only. ",me);
 marioism[54] = new Quote("Self Sacrifice that doesn’t benefit anyone at all is just useless. Why bring in more pain into the world even if its through you?",me);
 marioism[55] = new Quote("It’s not nice to be too nice.",me);
-marioism[56] = new Quote("Don’t judge success by your accomplishments but by the problems you overcame to accomplish them.",me);
+marioism[56] = new Quote("Don't judge success by your accomplishments but by the problems you overcame to accomplish them.",me);
 marioism[57] = new Quote("Drinking alcohol is a fight between you and the bottle. You win, if the bottle is closed tight. The bottle wins, if it makes you tight.",me);
 marioism[58] = new Quote("You can fight and try to bring out the truth. However, even with the truth, you can never change the perception.",me);
 marioism[59] = new Quote("Stars don’t sleep, they shine.",me);
@@ -139,6 +140,9 @@ intuit[21] = new Quote("Leadership is the power to influence someone just by bei
 intuit[22] = new Quote("Unpacking your rationality to someone else is first role of a designer.", "James Helms");
 
 
+//PARSONS
+parsons[0] = new Quote("Under Construction.","I know!");
+
 
 
 
@@ -154,6 +158,7 @@ function init()
   buttonHover(1);
   buttonHover(2);
   buttonHover(3);
+  buttonHover(4);
 
 }
 
@@ -229,6 +234,13 @@ function setMode()
     mainArray = intuit; 
     fontchange('Montserrat', '1.7em', 500, '45px', 'white', 200, 255);
     break;
+
+    case 4:
+    count     = parsons.length; 
+    mainArray = parsons; 
+    fontchange('Lato', '1.7em', 500, '45px', 'white', 200, 255);
+    break;
+
   }
 
   $('#b'+mode).css('background-color', '#009eed');
@@ -320,6 +332,12 @@ function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor, bgl
     {
       $('body').css('background-color','rgb('+randomMath(10,50)+','+randomMath(100,200)+','+randomMath(250,255)+')');
       $('#b3').css('border','1px solid #fff');
+    }
+    else if(mode==4)
+    {
+      $('body').css('background-color','rgb('+randomMath(250,255)+','+randomMath(10,50)+','+randomMath(10,50)+')');
+      $('#b4').css('background-color','#000');
+      $('#b4').css('color','#fff');
     }
 
 }
