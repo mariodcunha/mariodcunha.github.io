@@ -151,8 +151,10 @@ intuit[22] = new Quote("Unpacking your rationality to someone else is first role
 
 //PARSONS
 parsons[0] = new Quote("Under Construction.","I know!");
-parsons[1] = new Quote("Your work doesn’t matter, until you make it matter.","David Carroll");
-
+parsons[1] = new Quote("","Morry Galonoy");
+parsons[2] = new Quote("Designing for everyone, is designing for no-one.","Morry Galonoy");
+parsons[3] = new Quote("Your work doesn’t matter, until you make it matter.","David Carroll");
+parsons[4] = new Quote("Even a pencil is Technology. It's just an enabler.","Morry Galonoy");
 
 
 
