@@ -98,7 +98,7 @@ inspiration[5] = new Quote("Use all your five senses to learn. That’s when max
 inspiration[6] = new Quote("You have the capacity to learn anything, anyhow.", "Frank Dcunha");
 inspiration[7] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
 inspiration[8] = new Quote("Give me six hours to chop down a tree and I'll spend the first four sharpening the axe.", "President Abraham Lincoln");
-
+inspiration[8] = new Quote("Whenever you're low, trust your future self - it will tell you that it's going to be alright and you will come out victorious on the other side.", "Aakanksha Aggarwal");
 
 
 //DESIGN
@@ -243,10 +243,10 @@ function setMode()
     case 3:
     count     = intuit.length; 
     mainArray = intuit; 
-    fontchange('Montserrat', '1.7em', 500, '45px', 'white', 200, 255);
+    fontchange('Questrial', '1.7em', 500, '45px', 'white', 200, 255);
     $('#b'+mode).text('intuit');
-    $('#b'+mode).css('font-family', 'Trebuchet MS');
-    $('#b'+mode).css('font-size', '17px');
+    $('#b'+mode).css('font-family', 'Josefin Sans');
+    $('#b'+mode).css('font-size', '19px');
     $('#b'+mode).css('transition', 'all 0.3s');
     break;
 
