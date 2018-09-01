@@ -97,7 +97,7 @@ inspiration[4] = new Quote("If you only do your work, you will not grow, unless 
 inspiration[5] = new Quote("Use all your five senses to learn. That’s when maximum observation and learning happens.", "Henry Monteiro");
 inspiration[6] = new Quote("You have the capacity to learn anything, anyhow.", "Frank Dcunha");
 inspiration[7] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
-
+inspiration[8] = new Quote("Give me six hours to chop down a tree and I'll spend the first four sharpening the axe.", "President Abraham Lincoln");
 
 
 
@@ -119,6 +119,7 @@ design[13] = new Quote("Unpacking your rationality to someone else is first role
 design[14] = new Quote("Design is a plan for arranging elements to accomplish a particular purpose.", "Charles Eames");
 design[15] = new Quote("Design is a problem that is elegantly solved.", "James Helms");
 design[16] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
+design[17] = new Quote("Often you’ll be the only one at the table relying on your gut in addition to your head.", "Cameron Moll");
 
 
 
