@@ -1,7 +1,7 @@
 
 //Mario Dcunha
 
-var mode=0;
+var mode=0, max=30, maxElement=0, tempMax=30;
 var r=0, temp=0, tempc='', c=0;
 var count=0;
 var mainArray = [];
@@ -14,11 +14,15 @@ function Quote(quote, author)
   this.author = author;
 }
 
+
+var allArrays;
+
 var marioism = [];
 var inspiration = [];
 var design = [];
 var intuit = [];
 var parsons = [];
+
 
 //MARIOISM
 marioism[0] = new Quote("Life’s funny, but I’m funnier!",me);
@@ -84,8 +88,8 @@ marioism[59] = new Quote("Stars don’t sleep, they shine.",me);
 marioism[60] = new Quote("When in doubt, watch 'FRIENDS'.",me);
 marioism[61] = new Quote("Every Designer must always think with a pen, paper and a prototype.",me);
 marioism[62] = new Quote("A Paper Rocket is the ultimate symbol of childhood, creativity, travel, imagination and design.",me);
-marioism[63] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
-marioism[64] = new Quote("If you are in search of an Idea, stop searching. You will get it.", "Mario Dcunha");
+marioism[63] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", me);
+marioism[64] = new Quote("If you are in search of an Idea, stop searching. You will get it.", me);
 
 
 
@@ -161,10 +165,26 @@ parsons[3] = new Quote("Your work doesn’t matter, until you make it matter.","
 parsons[4] = new Quote("Even a pencil is Technology. It's just an enabler.","Morry Galonoy");
 
 
+//ADD ARRAY HERE
+allArrays = [marioism, inspiration, design, intuit, parsons];
+
 
 
 function init()
 {
+  for(let i=0; i<allArrays.length; i++)
+  {
+    findLongestQuote(allArrays[i]);
+  }
+
+  let a = max/6.5;
+  quoteMargin = max/6.5+1;
+  console.log(quoteMargin);
+  console.log(window.innerWidth);
+  console.log(window.innerHeight);
+
+  $('#navbuttons').css("top",quoteMargin+"em");
+
   mode=0;
   loopButtons('#777','');
   randomQuote();
@@ -176,10 +196,29 @@ function init()
 
 }
 
+function findLongestQuote(objArray)
+{
+
+  for(let i=0; i<objArray.length; i++)
+  {
+      tempMax = objArray[i].quote.length;
+      if(tempMax > max)
+      {
+        max = tempMax;
+        maxElement = i;
+      }
+  }
+}
+
 function write(serial,quoteObject)
 {
     $('#quote').text("\""+quoteObject[serial].quote+"\"");
     $('#author').text("- "+quoteObject[serial].author);
+
+    // let quoteMargin = max - quoteObject[serial].quote.length;
+    // console.log(quoteMargin);
+    // $('#quotes').css("margin-bottom",quoteMargin/15+"vh");
+    // $('#quotes').css("transition","0.5s");
 }
 
 function randomQuote()
@@ -354,7 +393,6 @@ function buttonHover(buttonMode)
     }
     else
     {
-      console.log(tempc);
       $("#b"+buttonMode).css('background-color','rgba(0, 0, 0, 0)');
       $("#b"+buttonMode).css('color',tempc);
     }

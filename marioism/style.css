@@ -55,26 +55,6 @@ button:hover
 }
 
 
-.nav
-{
-    margin-right: 2%;
-    padding: 10px 15px 10px 15px;
-    border: 0px;
-    border-radius: 400px;
-    font-size: 1em;
-    text-align: center;
-    font-family: Lato;
-    color: #777;
-    background-color: #fff;
-}
-
-.nav:hover
-{
-	cursor: pointer;
-	color: #fff;
-	background-color: #777;
-	
-}
 
 
 #quote
@@ -127,21 +107,44 @@ button:hover
 #quotes
 {
 	padding: 5% 0% 1% 0%;
+	/*margin-bottom: 7%;*/
 }
 
 #navbuttons
 {
 	float: left;
-	width: 20%;
-	bottom: 20%;
-	position: absolute;
+    width: 100vw;
+    padding-bottom: 5vw;
+    /*top: 10vh;*/
+    position: absolute;
     right: 20%; left: 20%;
 }
 
 
+.nav
+{
+    padding: 10px 15px 10px 15px;
+    border: 0px;
+    border-radius: 400px;
+    font-size: 1em;
+    text-align: center;
+    font-family: Lato;
+    color: #777;
+    background-color: #fff;
+}
 
+.nav:hover
+{
+	cursor: pointer;
+	color: #fff;
+	background-color: #777;
+	
+}
 
-
+#randombutton
+{
+	margin-left: 7%;
+}
 
 
 
@@ -462,6 +465,12 @@ button:hover
 
 
 /* Smartphones (portrait and landscape) ----------- */
+
+
+/*
+
+
+
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
 {
 
@@ -472,15 +481,12 @@ body
 	width: 100%;
 	display: block;
 	font-family: Lato;
-	/*background-repeat: no-repeat;*/
-	/*background-size: 1500px;*/
 	margin: auto;
 }
 
 
 button
 {
-	/*background: white;*/
 
 }
 
@@ -494,7 +500,6 @@ button:hover
 
 .nav
 {
-    margin-right: 2%;
     padding: 10px 15px 10px 15px;
     border: 0px;
     border-radius: 400px;
@@ -568,18 +573,20 @@ button:hover
 #navbuttons
 {
 	float: left;
-	width: 100%;
 	bottom: 10%;
 	position: absolute;
 }
 
 #randombutton
 {
-	float: right;
-	margin-right: 15%;
+	margin-left: 7%;
 }
 
 
 
 
 }
+
+*/
+
+
