@@ -84,11 +84,13 @@ marioism[59] = new Quote("Stars don’t sleep, they shine.",me);
 marioism[60] = new Quote("When in doubt, watch 'FRIENDS'.",me);
 marioism[61] = new Quote("Every Designer must always think with a pen, paper and a prototype.",me);
 marioism[62] = new Quote("A Paper Rocket is the ultimate symbol of childhood, creativity, travel, imagination and design.",me);
-
+marioism[63] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
+marioism[64] = new Quote("If you are in search of an Idea, stop searching. You will get it.", "Mario Dcunha");
 
 
 
 //INSPIRATION
+
 inspiration[0] = new Quote("If you want to Shine like the Sun, be ready to Burn like the Sun.", "President Abdul Kalam");
 inspiration[1] = new Quote("We don’t just need Education. We need Education with Values.", "President Abdul Kalam");
 inspiration[2] = new Quote("Dreams are not what you see in your sleep. Dreams are what does not let you sleep.", "President Abdul Kalam");
@@ -98,7 +100,8 @@ inspiration[5] = new Quote("Use all your five senses to learn. That’s when max
 inspiration[6] = new Quote("You have the capacity to learn anything, anyhow.", "Frank Dcunha");
 inspiration[7] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
 inspiration[8] = new Quote("Give me six hours to chop down a tree and I'll spend the first four sharpening the axe.", "President Abraham Lincoln");
-inspiration[8] = new Quote("Whenever you're low, trust your future self - it will tell you that it's going to be alright and you will come out victorious on the other side.", "Aakanksha Aggarwal");
+inspiration[9] = new Quote("Whenever you're low, trust your future self - it will tell you that it's going to be alright and you will come out victorious on the other side.", "Aakanksha Aggarwal");
+inspiration[10] = new Quote("Order is Heaven's first law", "Alexander Pope");
 
 
 //DESIGN
@@ -120,7 +123,7 @@ design[14] = new Quote("Design is a plan for arranging elements to accomplish a 
 design[15] = new Quote("Design is a problem that is elegantly solved.", "James Helms");
 design[16] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
 design[17] = new Quote("Often you’ll be the only one at the table relying on your gut in addition to your head.", "Cameron Moll");
-
+design[18] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
 
 
 
