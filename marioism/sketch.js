@@ -90,6 +90,7 @@ marioism[61] = new Quote("Every Designer must always think with a pen, paper and
 marioism[62] = new Quote("A Paper Rocket is the ultimate symbol of childhood, creativity, travel, imagination and design.",me);
 marioism[63] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", me);
 marioism[64] = new Quote("If you are in search of an Idea, stop searching. You will get it.", me);
+marioism[65] = new Quote("If you're sure you have your gut and your soul agreeing on something, stop everything, and start making it.", me);
 
 
 
@@ -106,7 +107,8 @@ inspiration[7] = new Quote("Creativity is seeing the same thing, but thinking di
 inspiration[8] = new Quote("Give me six hours to chop down a tree and I'll spend the first four sharpening the axe.", "President Abraham Lincoln");
 inspiration[9] = new Quote("Whenever you're low, trust your future self - it will tell you that it's going to be alright and you will come out victorious on the other side.", "Aakanksha Aggarwal");
 inspiration[10] = new Quote("Order is Heaven's first law", "Alexander Pope");
-
+inspiration[11] = new Quote("Where there is righteousness in the heart, there is beauty in the character. When there is beauty in the character, there is harmony in the home. When there is harmony in the home, there is order in the nation. When there is order in the nation, there is peace in the world.", "President Abdul Kalam");
+inspiration[12] = new Quote("The more you are clear of who you are, the more awesome work you will do.", "Lucille Tenazas");
 
 //DESIGN
 design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
@@ -128,7 +130,7 @@ design[15] = new Quote("Design is a problem that is elegantly solved.", "James H
 design[16] = new Quote("Creativity is seeing the same thing, but thinking differently.", "Albert Einstein");
 design[17] = new Quote("Often you’ll be the only one at the table relying on your gut in addition to your head.", "Cameron Moll");
 design[18] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
-
+design[19] = new Quote("No two people will look at information in the same way. You gotta make them to.", "William Bevington");
 
 
 //INTUIT
@@ -163,6 +165,15 @@ parsons[1] = new Quote("Don't marry your idea. Be ready to kill your darlings.",
 parsons[2] = new Quote("Designing for everyone, is designing for no-one.","Morry Galonoy");
 parsons[3] = new Quote("Your work doesn’t matter, until you make it matter.","David Carroll");
 parsons[4] = new Quote("Even a pencil is Technology. It's just an enabler.","Morry Galonoy");
+parsons[5] = new Quote("The Periodic Table is a perfect example of great information design.", "William Bevington");
+parsons[6] = new Quote("No two people will look at information in the same way. You gotta make them to.", "William Bevington");
+parsons[7] = new Quote("A computer is such a complex device that doesn't come with a user manual. However, a slide ruler comes with a 200-page manual.", "William Bevington");
+parsons[7] = new Quote("Smartphone is a pretty phenomenal thing. It brings photography, music, communication and navigation all together in one place.", "William Bevington");
+parsons[8] = new Quote("If you can attract children's attention, then you can teach them something.", "Kyle Li");
+parsons[9] = new Quote("You mind, your hands, your vision and your creative gut. That's what will be with you forever. Process, software, technology - all will change.", "Lucille Tenazas");
+parsons[10] = new Quote("Portfolio is just a beauty contest. You will be hired for you, how you are, your ambition, your passion.", "Lucille Tenazas");
+
+
 
 
 //ADD ARRAY HERE
