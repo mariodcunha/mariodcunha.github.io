@@ -160,7 +160,7 @@ intuit[22] = new Quote("Unpacking your rationality to someone else is first role
 
 
 //PARSONS
-parsons[0] = new Quote("Under Construction.","I know!");
+parsons[0] = new Quote("You mind, your hands, your vision and your creative gut. That's what will be with you forever. Process, software, technology - all will change.","Lucille Tenazas");
 parsons[1] = new Quote("Don't marry your idea. Be ready to kill your darlings.","Morry Galonoy");
 parsons[2] = new Quote("Designing for everyone, is designing for no-one.","Morry Galonoy");
 parsons[3] = new Quote("Your work doesn’t matter, until you make it matter.","David Carroll");
@@ -170,8 +170,7 @@ parsons[6] = new Quote("No two people will look at information in the same way. 
 parsons[7] = new Quote("A computer is such a complex device that doesn't come with a user manual. However, a slide ruler comes with a 200-page manual.", "William Bevington");
 parsons[7] = new Quote("Smartphone is a pretty phenomenal thing. It brings photography, music, communication and navigation all together in one place.", "William Bevington");
 parsons[8] = new Quote("If you can attract children's attention, then you can teach them something.", "Kyle Li");
-parsons[9] = new Quote("You mind, your hands, your vision and your creative gut. That's what will be with you forever. Process, software, technology - all will change.", "Lucille Tenazas");
-parsons[10] = new Quote("Portfolio is just a beauty contest. You will be hired for you, how you are, your ambition, your passion.", "Lucille Tenazas");
+parsons[9] = new Quote("Portfolio is just a beauty contest. You will be hired for you, how you are, your ambition, your passion.", "Lucille Tenazas");
 
 
 
