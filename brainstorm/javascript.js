@@ -1,351 +1,349 @@
 
 //Mario Dcunha
-//Javascript Final Project
 
-var randA, randB;
-var chosen, chosenURL;
+var mode=0, max=30, maxElement=0, tempMax=30;
+var r=0, temp=0, tempc='', c=0;
+var count=0;
+var mainArray = [];
+var me = "Mario Dcunha";
 
-var searchText="ball";
 
-function randomIcon()
+function Quote(quote, author) 
+{
+  this.quote = quote;
+  this.author = author;
+}
+
+
+var text = [];
+var marioism = [];
+var inspiration = [];
+var design = [];
+var intuit = [];
+var parsons = [];
+
+
+//TEXT
+text[0] = new Quote("TRAVEL EFFICIENCY");
+text[1] = new Quote("ITINERARY BUILDING");
+text[2] = new Quote("PLANNING A TRIP");
+text[3] = new Quote("SUSTAINABILITY IN TRAVEL");
+text[4] = new Quote("TRAVEL LOGGING AND PORTFOLIO");
+text[5] = new Quote("AIR POLLUTION");
+text[6] = new Quote("BELIEVING IN THE IMPOSSIBLE");
+text[7] = new Quote("CHILDREN'S HUNGER");
+text[8] = new Quote("CITY SANITATION AND CLEANLINESS");
+text[9] = new Quote("INSPIRING WITH FANTASY");
+text[10] = new Quote("TRAVEL");
+text[11] = new Quote("CODE THINKING");
+text[12] = new Quote("PLASTIC ACCUMULATON");
+text[13] = new Quote("IMMEDIATE GAINS VS NATIONAL FUTURE");
+text[14] = new Quote("SPECIFIC CODE LANGUAGES");
+text[15] = new Quote("IRONIES IN SOCIETY");
+text[16] = new Quote("GROWING HUMAN SENSITIVITY");
+text[17] = new Quote("FEAR OF GOING  AGAINST THE FLOW");
+text[18] = new Quote("EVILS OF MEDIA");
+text[19] = new Quote("MEDIA RESPONSIBILITY");
+text[20] = new Quote("PERCEPTION OVERRIDING JUDICIARY");
+text[21] = new Quote("FACT VS PERCEPTION");
+text[22] = new Quote("ECOMMERCE");
+text[23] = new Quote("RESERVATION VS DIVERSITY");
+text[24] = new Quote("EVILS OF POLITICS");
+text[25] = new Quote("MONEY TRAIL");
+text[26] = new Quote("SINGING");
+text[27] = new Quote("REPORTING RIGHTS AND PRIVACY");
+text[28] = new Quote("FAKE NEWS");
+text[29] = new Quote("RECOGNIZING SCALES");
+text[30] = new Quote("DESIGNERS IN GOVERNANCE");
+text[31] = new Quote("DATA ANALYSIS VS 'PROMISES'");
+text[32] = new Quote("PUBLIC AWARENESS");
+text[33] = new Quote("LEARNING MUSIC THEORY");
+text[34] = new Quote("CHILDREN'S EDUCATION");
+text[35] = new Quote("EDUCATION QUALITY AND VALUES");
+text[36] = new Quote("CLIMATE CHANGE");
+text[37] = new Quote("FUTURE LEADERSHIP");
+text[38] = new Quote("TEACHING CODE﻿");
+text[39] = new Quote("CULTURE SCATTERING AND COLONIAL HISTORY");
+text[40] = new Quote("SUPER HEROES");
+text[41] = new Quote("POLITICAL CANDIDATES");
+text[42] = new Quote("SAVING PAPER");
+text[43] = new Quote("SARCASM");
+text[44] = new Quote("EDUCATION INFRASTRUCTURE");
+text[45] = new Quote("WORKPLACE PRODUCTIVITY");
+text[46] = new Quote("SHOPPING EXPERIENCE");
+text[47] = new Quote("EFFECTS ON BUSINESS");
+text[48] = new Quote("DAILY DATA + HABITS");
+
+
+
+
+function init()
+{
+  mode=0;
+  randomQuote();
+  // let a = max/6.5;
+  // quoteMargin = max/6.5+1;
+  // console.log(quoteMargin);
+  // console.log(window.innerWidth);
+  // console.log(window.innerHeight);
+
+  // $('#navbuttons').css("top",quoteMargin+"em");
+
+  // loopButtons('#777','');
+  // buttonHover(0);
+  // buttonHover(1);
+  // buttonHover(2);
+  // buttonHover(3);
+  // buttonHover(4);
+
+}
+
+function findLongestQuote(objArray)
 {
 
-  $.get("https://api.thenounproject.com/icon/" + searchText, function(response)
+  for(let i=0; i<objArray.length; i++)
   {
-
-
-
-
-}
-
-
-
-
-function searchBooks()
-{
-
-  // var searchText = "harry potter";
-  var searchText = $("#books").val();
-
-    if(searchText == "")
-    {
-      $('#generatePage').empty();
-      $('#result').empty();
-
-       warning=$('<p id="noInput">Please enter a book name.</p>');
-       warning.appendTo('#result');
-      
-      //alert('Please enter a book name');
-      // title=$('<p class="center-align">Please enter a book name.</p>');
-      // title.appendTo('#result');
-    }
-
-    else
-    {
-      $('#generatePage').empty();   
-      $('#result').empty();
-      $('#bookInfo').empty();
-      var url = "";
-      var img = "";
-      var title = "";
-      var author = "";
-
-      
-
-
-      $.get("https://www.googleapis.com/books/v1/volumes?q=" + searchText, function(response)
+      tempMax = objArray[i].quote.length;
+      if(tempMax > max)
       {
-
-        // warning=$('<p id="noInput"></p>');
-        // $('#noInput').text(response.items.length+" books found");
-        // warning.appendTo('#result');
-
-        for(i=0; i < response.items.length; i++)
-        {
-
-           bookInfo=$('<div id="bookInfo'+i+'"></div>');
-           //console.log(bookInfo);  
-
-           title=$('<p id="title'+i+'" class="center-align">' + response.items[i].volumeInfo.title + '</p>');  
-           author=$('<p id="author'+i+'" class="center-align">by ' + response.items[i].volumeInfo.authors + '</p>');
-           img = $('<img id="thumbnail'+i+'" class="center-align" id="dynamic">');   
-           url= response.items[i].volumeInfo.imageLinks.thumbnail;
-           selectButton = $('<button id="selectButton'+i+'" class="btn">Select</button>');
-
-           title.appendTo(bookInfo);
-           author.appendTo(bookInfo);
-          
-           img.attr('src', url);
-           img.appendTo(bookInfo);
-           
-           selectButton.appendTo(bookInfo);
-           bookInfo.appendTo('#result');
-
-
-          selectButton.click(function() 
-          {
-            //console.log(this.id.slice(12));
-            chosen = this.id.slice(12);
-
-            bookObject.title[cartCounter] = $('#title'+chosen).text();
-            bookObject.author[cartCounter] = $('#author'+chosen).text().slice(3);
-            bookObject.cover[cartCounter] = response.items[chosen].volumeInfo.imageLinks.thumbnail;
-
-            //chosenURL
-            //console.log(chosenURL);
-            
-
-            $('#bookInfo'+chosen).empty();
-            $('#bookInfo'+chosen).css('padding','0');
-
-             console.log(bookObject);
-             cartCounter++;
-             cartUpdate();
-
-            // console.log($('#thumbnail'+chosen));
-            //   $('#bookInfo'+chosen).css('background-color','#f44335');
-
-          });
-
-        }
-
-       });
-    }
-
-}
-
-
-$("#myform").submit(function()
-{ 
-  searchBooks();
-  return  false;
-});
-
-
-
-
-//Clicking View Cart
-$('#cartButton').click(function()
-{
-    $('#generatePage').empty();
-    $('#collage').empty();
-    $('#result').empty();
-
-     for(i=0; i<cartCounter; i++)
-     {
-
-           bookInfo = $('<div id="bookInfo'+i+'"></div>');
-
-           title=$('<p id="title'+i+'" class="center-align">' + bookObject.title[i] + '</p>');  
-           author=$('<p id="author'+i+'" class="center-align">by ' + bookObject.author[i] + '</p>');
-           img = $('<img id="thumbnail'+i+'" class="center-align" id="dynamic">');   
-           url= bookObject.cover[i];
-           deleteButton = $('<button id="deleteButton'+i+'" class="btn">Delete</button>');
-
-           title.appendTo(bookInfo);
-           author.appendTo(bookInfo);
-          
-           img.attr('src', url);
-           img.appendTo(bookInfo);
-           
-           deleteButton.appendTo(bookInfo);
-           bookInfo.appendTo('#result');
-
-       
-          deleteButton.click(function() 
-          {
-            //console.log(this.id.slice(12));
-            chosen = this.id.slice(12);
-
-            //remove 1 element at 'chosen'
-            bookObject.title.splice(chosen, 1); 
-            bookObject.author.splice(chosen, 1); 
-            bookObject.cover.splice(chosen, 1); 
-
-            $('#bookInfo'+chosen).empty();
-            $('#bookInfo'+chosen).css('padding','0');
-
-             console.log(bookObject);
-             cartCounter--;
-             cartUpdate();
-
-            // console.log($('#thumbnail'+chosen));
-            //   $('#bookInfo'+chosen).css('background-color','#f44335');
-          }); 
-    }
-});
-
-
-//Clicking Generate
-$('#generate').click(function()
-{
-    $('#generatePage').empty();
-    $('#result').empty();
-
-    if(bookObject.cover.length<=0)
-    {
-          warning=$('<p id="noInput">Please add a books to cart</p>');
-          warning.appendTo('#result');
-
-    }
-
-    else
-    {
-      collage = $('<div id="collage"></div>');
-
-      for(i=0; i<bookObject.cover.length; i++)
-      { 
-
-        img = $('<img id="collageThumbnail'+i+'" class="center-align">');
-        url= bookObject.cover[i];
-
-        img.attr('src', url);
-        img.appendTo(collage);
-
-        img.css('opacity','0.'+(Math.floor(Math.random()*(9-7))+7));
-        // img.css('left',(Math.floor(Math.random()*(1-0))+1)+'vw');
-        img.css('top',(Math.floor(Math.random()*(20-0))+0)+'vh');
-
-        $('#frameColour').appendTo(generatePage);
+        max = tempMax;
+        maxElement = i;
       }
+  }
+}
 
-      // Frame Color
-      $('#collage').css('width',(bookObject.cover.length*10)+'%');
-      collage.appendTo(generatePage);
+function write(serial,quoteObject)
+{
+    $('#quote').text(quoteObject[serial].quote);
+    // $('#author').text("- "+quoteObject[serial].author);
 
-      frameLabel = $('<label id="frameLabel">Choose Frame Color</label>');
-      frameColour = $('<div id="frameColour" name="frames"></div>');
-      whiteFrame = $('<input id="whiteFrame" class="frameRadio" value="white" type="radio" name="frames"/><label for="whiteFrame">White</label>');
-      creamFrame = $('<input id="creamFrame" class="frameRadio" value="cream" type="radio" name="frames"/><label for="creamFrame">Cream</label>');
-      brownFrame = $('<input id="brownFrame" class="frameRadio" value="brown" type="radio" name="frames"/><label for="brownFrame">Brown</label>');
-      blackFrame = $('<input id="blackFrame" class="frameRadio" value="black" type="radio" name="frames" checked/><label for="blackFrame">Black</label>');
-      whiteFrame.appendTo(frameColour);
-      creamFrame.appendTo(frameColour);
-      brownFrame.appendTo(frameColour);
-      blackFrame.appendTo(frameColour);
-      frameColour.appendTo(generatePage);
-      frameLabel.appendTo(generatePage);
+    // let quoteMargin = max - quoteObject[serial].quote.length;
+    // console.log(quoteMargin);
+    // $('#quotes').css("margin-bottom",quoteMargin/15+"vh");
+    // $('#quotes').css("transition","0.5s");
+}
 
-      $('#whiteFrame').click(function() { $('#collage').css('border-color','white'); });
-      $('#creamFrame').click(function() { $('#collage').css('border-color','#ca9f4d'); });
-      $('#brownFrame').click(function() { $('#collage').css('border-color','#452a02'); });
-      $('#blackFrame').click(function() { $('#collage').css('border-color','black'); });
+function randomQuote()
+{
+  setMode();
 
-
-      // Frame Background Color
-      frameBackgroundLabel = $('<label id="frameBackgroundLabel">Choose Background Color</label>');
-      frameBackgroundColour = $('<div id="frameBackgroundColour" name="frameBackground"></div>');
-      whiteBackgroundFrame = $('<input id="whiteFrameBackground" class="frameRadio" value="white" type="radio" name="frameBackground" checked/><label for="whiteFrameBackground">White</label>');
-      greyBackgroundFrame = $('<input id="greyBackgroundFrame" class="frameRadio" value="grey" type="radio" name="frameBackground"/><label for="greyBackgroundFrame">Grey</label>');
-      blackBackgroundFrame = $('<input id="blackBackgroundFrame" class="frameRadio" value="black" type="radio" name="frameBackground"/><label for="blackBackgroundFrame">Black</label>');
-      whiteBackgroundFrame.appendTo(frameBackgroundColour);
-      greyBackgroundFrame.appendTo(frameBackgroundColour);
-      blackBackgroundFrame.appendTo(frameBackgroundColour);
-      frameBackgroundColour.appendTo(generatePage);
-      frameBackgroundLabel.appendTo(generatePage);
-
-      $('#whiteFrameBackground').click(function() { $('#collage').css('background-color','white'); });
-      $('#greyBackgroundFrame').click(function() { $('#collage').css('background-color','#cccccc'); });
-      $('#blackBackgroundFrame').click(function() { $('#collage').css('background-color','black'); });
+  temp = r;
+  while(temp == r)
+    r = randomInt(count);
   
+  write(r,mainArray);
+
+}
 
 
-      // Modifying Image Thumbnails
-      imageEffectsLabel = $('<label id="imageEffectsLabel">Add Cover Art Effects</label>');
-      imageEffects = $('<div id="imageEffects" name="imageEffects"></div>');
-      hueEffect = $('<input id="hueEffect" class="effect" value="hsue" type="radio" name="effect" /><label for="hueEffect">Hue</label>');
-      invertEffect = $('<input id="invertEffect" class="effect" value="invert" type="radio" name="effect" /><label for="invertEffect">Invert</label>');
-      greyEffect = $('<input id="greyEffect" class="effect" value="greyeffect" type="radio" name="effect" /><label for="greyEffect">Grayscale</label>');
-      normalEffect = $('<input id="normalEffect" class="effect" value="normal" type="radio" name="effect" /><label for="normalEffect">Normal</label>');
-      hueEffect.appendTo(imageEffects);
-      invertEffect.appendTo(imageEffects);
-      greyEffect.appendTo(imageEffects);
-      normalEffect.appendTo(imageEffects);
-      imageEffects.appendTo(generatePage);
-      imageEffectsLabel.appendTo(generatePage);
+function back()
+{
+  setMode();
 
-      $('#hueEffect').click(function() { $('img').css('filter','hue-rotate(90deg)'); });
-      $('#invertEffect').click(function() { $('img').css('filter','invert(90%)'); });
-      $('#greyEffect').click(function() { $('img').css('filter','grayscale(100%)'); });
-      $('#normalEffect').click(function() { $('img').css('filter','none'); });
+  if(r > 0) r--;
+  else      r=count-1;
+
+  write(r,mainArray);
+
+}
+
+
+function next()
+{
+  setMode();
+
+  if(r < count-1) r++;
+  else            r=0;
   
+  write(r,mainArray);
+
+}
 
 
 
+function setMode()
+{
+  switch (mode)
+  {
+    case 0: 
+    count     = text.length; 
+    mainArray = text; 
+    // fontchange('Satisfy', '2.2em', 400, '45px', 'black', 200, 245);
+    break;
 
-      //Toggle the Shape of Images
-      shapeToggle = $('<label class="shapeToggle"><input type="checkbox"><span id="toggleSlider" class="slider round"></span></label>');
-      shapeLabel = $('<label id="shapeLabel">Circle</label>');
-      shapeToggle.appendTo(generatePage);
-      shapeLabel.appendTo(generatePage);
+    case 1:
+    count     = inspiration.length; 
+    mainArray = inspiration;
+    fontchange('Lato', '1.7em', 'bold', '45px', 'white', 10, 100);
+    break;
 
-      $('#toggleSlider').click(function()
-      {
-        if(shapeLabel.text()=="Circle")
-        {
-          shapeLabel.text("Rectangle");
-          $('img').css('border-radius','0%');
-          $('img').css('height','13vh');
-        }
-        else
-        {
-          shapeLabel.text("Circle");
-          $('img').css('border-radius','100%');
-          $('img').css('height','5vw');
-        }
 
-    });
+    case 2:
+    count     = design.length; 
+    mainArray = design; 
+    fontchange('Lato', '1.7em', 'bold', '45px', 'white', 100, 200);
+    break;
+
+    case 3:
+    count     = intuit.length; 
+    mainArray = intuit; 
+    fontchange('Questrial', '1.7em', 500, '45px', 'white', 200, 255);
+    $('#b'+mode).text('intuit');
+    $('#b'+mode).css('font-family', 'Josefin Sans');
+    $('#b'+mode).css('font-size', '19px');
+    $('#b'+mode).css('transition', 'all 0.3s');
+    break;
+
+    case 4:
+    count     = parsons.length; 
+    mainArray = parsons; 
+    fontchange('Nueue-Bold', '1.7em', 400, '45px', 'black', 200, 255);
+    $('#b'+mode).text('PARSONS');
+    $('#b'+mode).css('font-family', 'Nueue-Wide');
+    $('#b'+mode).css('padding-bottom', '7px');
+    $('#b'+mode).css('transition', 'all 0.3s');
+    break;
 
   }
 
-    
-});
+}
+
+
+function resetButtons()
+{
+  switch(mode)
+  {
+    case 0: loopButtons('#777',''); break;
+
+    case 1: loopButtons('#fff',''); break;
+
+    case 2: loopButtons('#fff',''); break;
+
+    case 3: loopButtons('#fff',''); break;
+
+    case 4: loopButtons('#000',''); break;
+  }
+  if(mode!=4)
+  {
+    $('#b4').text('#parsons');
+  }
+  if(mode!=3)
+  {
+    $('#b3').text('#intuit');
+  }
+
+}
+
+
+function loopButtons(textcolor, bgcolor)
+{
+    for(i=0; i<5; i++)
+    {
+      $('#b'+i).css('color', textcolor);
+      $('#b'+i).css('background-color', bgcolor);   
+      $('#b'+i).css('font-family', 'Lato');
+      $('#b'+i).css('padding-bottom', '10px');
+      $('#b'+i).css('transition', '0.3s');    
+      $('#b'+i).css('font-size', '15px');
+    }
+}
+
+
+function buttonHover(buttonMode)
+{
+  $("#b"+buttonMode).mouseenter(
+  function()
+  {
+    if($("#b"+buttonMode).css('background-color')=='#009eed' || mode==buttonMode)
+    {
+    }
+    else
+    {
+      tempc = $("#b"+buttonMode).css('color');
+      $("#b"+buttonMode).css('background-color','#999');
+      $("#b"+buttonMode).css('color','#fff');
+    }
+  });
+
+
+  $("#b"+buttonMode).mouseleave(
+  function()
+  {
+    if(mode==buttonMode)
+    {
+    }
+    else
+    {
+      $("#b"+buttonMode).css('background-color','rgba(0, 0, 0, 0)');
+      $("#b"+buttonMode).css('color',tempc);
+    }
+  });
+
+}
 
 
 
 
-
-
-// var request = require('request');
-// apiKey = acc_a0c2e28aa0c8f80;
-// apiSecret = be22c86ed10c8994a62d57d258641fba;
-// imageUrl = 'http://docs.imagga.com/static/images/docs/sample/japan-605234_1280.jpg';
-
-// request.get('https://api.imagga.com/v1/colors?url='+encodeURIComponent(imageUrl), function (error, response, body) {
-// console.log('Status:', response.statusCode);
-// console.log('Headers:', JSON.stringify(response.headers));
-// console.log('Response:', body);
-// }).auth(apiKey, apiSecret, true);
-
-
-// '+randA+randB+'
-// response.items[i].volumeInfo.infoLink
+function modeSwitch(changeMode)
+{
+  mode = changeMode;
+  resetButtons();
+  setMode();
+  randomQuote();
+}
 
 
 
 
+function fontchange(fontFamily, fontSize, fontWeight, lineHeight, fontColor, bgl, bgh)
+{
+    $('#quote').css('font-family', fontFamily);
+    if(mode==4)
+    {
+      $('#author').css('text-transform', 'uppercase');
+      $('#author').css('font-family', 'Nueue-Black');
+      $('#author').css('font-size', '1em');
+    }
+    else
+    {
+      $('#author').css('font-family', fontFamily);
+      $('#author').css('text-transform', 'none');
+      $('#author').css('font-size', '1.3em');
+    }
+    $('#quote').css('font-size', fontSize);
+    $('#quote').css('font-weight', fontWeight);
+    $('#quote').css('color', fontColor);
+    $('#author').css('color', fontColor);
+    $('#quote').css('line-height', lineHeight);
+
+    if(mode==0 || mode==4)
+    {
+      c = randomMath(bgl,bgh);
+      $('body').css('background-color','rgb('+c+','+c+','+c+')');
+    }
+    else if(mode==1)
+    {
+      c = randomMath(bgl,bgh);
+      $('body').css('background-color','rgb('+c+','+c+','+c+')');
+    }
+    else if(mode==2)
+    {
+      $('body').css('background-color','rgb('+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+','+randomMath(bgl,bgh)+')');
+    }
+}
 
 
 
 
+function  randomMath(l, h)
+{
+  return Math.floor(Math.random() * (h - l)) + l;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function randomInt(n) 
+{
+  return Math.floor(Math.random() * (n - 0)) + 0;
+}
 
 
 
