@@ -50,7 +50,6 @@ text[22] = new Quote("ECOMMERCE");
 text[23] = new Quote("RESERVATION VS DIVERSITY");
 text[24] = new Quote("EVILS OF POLITICS");
 text[25] = new Quote("MONEY TRAIL");
-text[26] = new Quote("SINGING");
 text[27] = new Quote("REPORTING RIGHTS AND PRIVACY");
 text[28] = new Quote("FAKE NEWS");
 text[29] = new Quote("RECOGNIZING SCALES");
@@ -72,7 +71,7 @@ text[44] = new Quote("EDUCATION INFRASTRUCTURE");
 text[45] = new Quote("WORKPLACE PRODUCTIVITY");
 text[46] = new Quote("SHOPPING EXPERIENCE");
 text[47] = new Quote("EFFECTS ON BUSINESS");
-text[48] = new Quote("DAILY DATA + HABITS");
+text[26] = new Quote("DAILY DATA + HABITS");
 
 
 
