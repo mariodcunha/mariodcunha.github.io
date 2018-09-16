@@ -2,10 +2,11 @@
 //Mario Dcunha
 
 var mode=0, max=30, maxElement=0, tempMax=30;
-var r=0, r1=0,r2=0, temp=0, temp1=0, temp2=0, tempc='', c=0;
+var r=0, r1=0,r2=0, r3=0, temp=0, temp1=0, temp2=0, temp3=0, tempc='', c=0;
 var count=0;
 var mainArray = [];
 var me = "Mario Dcunha";
+var randomMode=1;
 
 
 function Quote(quote, author) 
@@ -97,12 +98,38 @@ function findLongestQuote(objArray)
   }
 }
 
+function randomMeter1()
+{
+    $('#quote').css('display','block');
+    $('#quote2').css('display','none');
+    $('#quote3').css('display','none');
+ 
+}
 
 
-function write(serial,serial2,quoteObject)
+function randomMeter2()
+{
+    $('#quote').css('display','block');
+    $('#quote2').css('display','block');
+    $('#quote3').css('display','none');
+ 
+}
+
+
+function randomMeter3()
+{
+    $('#quote').css('display','block');
+    $('#quote2').css('display','block');
+    $('#quote3').css('display','block');
+ 
+}
+
+
+function write(serial,serial2,serial3,quoteObject)
 {
     $('#quote').text(quoteObject[serial].quote);
     $('#quote2').text(quoteObject[serial2].quote);
+    $('#quote3').text(quoteObject[serial3].quote);
 }
 
 
@@ -111,15 +138,18 @@ function randomQuote()
 {
   setMode();
 
-  temp1= r1; temp2 = r2;
+  temp1= r1; temp2 = r2; temp3 = r3;
   
   while(temp1 == r1)
     r1 = randomInt(count);
   
   while(temp2 == r2)
     r2 = randomInt(count);
+
+  while(temp3 == r3)
+    r3 = randomInt(count);
   
-  write(r1,r2,mainArray);
+  write(r1,r2,r3,mainArray);
 
 }
 

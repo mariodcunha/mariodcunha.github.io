@@ -30,7 +30,7 @@ button:hover
 
 
 
-#quote
+#quote, #quote2, #quote3
 {
 	transition: all 0.5s;
 	font-weight: 900;
@@ -100,6 +100,32 @@ button:hover
     background-color: #fff;
 }
 
+
+
+.nav1
+{
+    padding: 10px 15px 10px 15px;
+    border: 0px;
+    border-radius: 400px;
+    font-size: 1em;
+    text-align: center;
+    font-family: Lato;
+    color: #777;
+    background-color: #fff;
+    margin-left: 100px;
+}
+
+.nav2
+{
+    padding: 10px 15px 10px 15px;
+    border: 0px;
+    border-radius: 400px;
+    font-size: 1em;
+    text-align: center;
+    font-family: Lato;
+    color: #777;
+    background-color: #fff;
+}
 .nav:hover
 {
 	cursor: pointer;
