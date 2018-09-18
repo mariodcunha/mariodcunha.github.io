@@ -131,6 +131,7 @@ design[16] = new Quote("Creativity is seeing the same thing, but thinking differ
 design[17] = new Quote("Often you’ll be the only one at the table relying on your gut in addition to your head.", "Cameron Moll");
 design[18] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
 design[19] = new Quote("No two people will look at information in the same way. You gotta make them to.", "William Bevington");
+design[20] = new Quote("Personas without scenario's are like characters without a plot.", "Kim Goodwin");
 
 
 //INTUIT
