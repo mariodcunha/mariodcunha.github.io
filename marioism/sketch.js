@@ -109,6 +109,9 @@ inspiration[9] = new Quote("Whenever you're low, trust your future self - it wil
 inspiration[10] = new Quote("Order is Heaven's first law", "Alexander Pope");
 inspiration[11] = new Quote("Where there is righteousness in the heart, there is beauty in the character. When there is beauty in the character, there is harmony in the home. When there is harmony in the home, there is order in the nation. When there is order in the nation, there is peace in the world.", "President Abdul Kalam");
 inspiration[12] = new Quote("The more you are clear of who you are, the more awesome work you will do.", "Lucille Tenazas");
+inspiration[13] = new Quote("If you fall off a horse, then get on a donkey, until you find your next horse.", "Morry Galonoy");
+
+
 
 //DESIGN
 design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
@@ -172,7 +175,7 @@ parsons[7] = new Quote("A computer is such a complex device that doesn't come wi
 parsons[7] = new Quote("Smartphone is a pretty phenomenal thing. It brings photography, music, communication and navigation all together in one place.", "William Bevington");
 parsons[8] = new Quote("If you can attract children's attention, then you can teach them something.", "Kyle Li");
 parsons[9] = new Quote("Portfolio is just a beauty contest. You will be hired for you, how you are, your ambition, your passion.", "Lucille Tenazas");
-
+parsons[10] = new Quote("If you fall off a horse, then get on a donkey, until you find your next horse.", "Morry Galonoy");
 
 
 
