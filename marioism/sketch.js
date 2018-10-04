@@ -135,6 +135,7 @@ design[17] = new Quote("Often you’ll be the only one at the table relying on y
 design[18] = new Quote("Design to me, is about creating specific order and organizing elements within it, which best accomplishes a task and establishes a framework for future improvements.", "Mario Dcunha");
 design[19] = new Quote("No two people will look at information in the same way. You gotta make them to.", "William Bevington");
 design[20] = new Quote("Personas without scenario's are like characters without a plot.", "Kim Goodwin");
+design[21] = new Quote("The Solution is the Model of the Problem.", "Charles Eames");
 
 
 //INTUIT
