@@ -193,7 +193,7 @@ function init()
   }
 
   let a = max/6.5;
-  quoteMargin = max/6.5+1;
+  quoteMargin = max/8.5;
   console.log(quoteMargin);
   console.log(window.innerWidth);
   console.log(window.innerHeight);
