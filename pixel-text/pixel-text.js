@@ -5,8 +5,12 @@
 
 var myImage, pixelate=9, minimum=4;
 
-var myName = ['m','a','r','i','o'];
-// var myName = ['M','A','R','I','O'];
+var myName = "marioisagoodboy";
+
+console.log(myName[0]);
+
+
+
 var nameCounter = 0;
 
 var randomColor, x1, y1;
@@ -14,7 +18,7 @@ var randomColor, x1, y1;
 
 function preload() 
 {
-    myImage = loadImage("images/mec.jpg"); 
+    myImage = loadImage("images/mc1.jpg"); 
 }
 
 
@@ -23,6 +27,7 @@ function setup()
     createCanvas(myImage.width, myImage.height);
     noStroke();   
 }
+
 
 
 
@@ -38,9 +43,6 @@ function draw()
         for (var x=0; x < myImage.width; x=x+randomInt(pixelate-5,pixelate)) 
         {
             var thisColor = color(myImage.get(x, y));
-            // var lighterColor = color(thisColor, 10);
-
-            // var textShade = lightness(lighterColor) / 255 * 100;
 
             
             textSize(pixelate+RandomNoise(1,2));
@@ -51,21 +53,25 @@ function draw()
 
             fill(thisColor,1);
             // rect(x1,y1,pixelate,pixelate);
-            if(nameCounter >= 5)
+            if(nameCounter >= myName.length)
             {
                 nameCounter=0;
             }
             // fill(255);
             text(myName[nameCounter++], x1,y1);
 
-            // rect(x, y, pixelate, pixelate);
-        
-        
         }
     }
 
     noSmooth();
     noLoop();
+
+
+    if(keyCode == ENTER || keyCode == RETURN)
+    {
+          save('myCanvas.jpg');
+    }
+
 }
 
 
@@ -80,8 +86,7 @@ function RandomNoise(argument)
 {
 
   return noise(argument)*random(argument);
-  // return noise(argument);
- 
+  
 }
 
 function RandomNoise(lowLimit, highLimit)
