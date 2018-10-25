@@ -5,7 +5,7 @@
 
 var myImage, pixelate=9, minimum=4;
 
-var myName = "marioisagoodboy";
+var myName = ['a','d','m','i','s','s','i','o','n'];
 
 console.log(myName[0]);
 
@@ -18,7 +18,7 @@ var randomColor, x1, y1;
 
 function preload() 
 {
-    myImage = loadImage("images/mc1.jpg"); 
+    myImage = loadImage("images/metrocard.jpg"); 
 }
 
 
