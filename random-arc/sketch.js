@@ -33,8 +33,8 @@ function setup()
 
 function draw() 
 {
-	
-	space = tileSize;
+	// background(255);
+	space = tileSize+2;
 
 	for(i=0;i<windowHeight/(tileSize/3); i++)
 	{	
@@ -58,6 +58,7 @@ function draw()
 		}
 	}
 
+	// frameRate(1);
 
 }
 
@@ -68,6 +69,7 @@ function drawTile(x, y, s)
 	var arcSegments = [0, HALF_PI, PI, PI+HALF_PI];
 	
 	fill(255,192,203);
+	// noFill();
 	rect(x, y, s+10, s+10);
 
 	stroke(219,112,147);
