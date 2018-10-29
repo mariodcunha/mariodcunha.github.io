@@ -1,0 +1,818 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,700');
+@import url('https://fonts.googleapis.com/css?family=Medula+One');
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+/*@import url('https://fonts.googleapis.com/css?family=Amatica+SC');*/
+/*@import url('https://fonts.googleapis.com/css?family=Oswald:300');*/
+
+/*
+font-family: 'Nunito', sans-serif;
+font-family: 'Amatica SC', cursive;
+font-family: 'Oswald', sans-serif;
+font-family: 'Medula One', cursive;
+font-family: 'Lato', sans-serif;
+*/
+
+*
+{
+	/*border: 1px solid black;*/
+}
+
+body
+{	
+	font-family: 'Lato', sans-serif;
+
+	width: 100%;
+    /*height: 880px;*/
+    margin-top: 0px;
+
+	position: absolute;
+
+	position-left: 0;
+	position-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+video 
+{ 
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	z-index: -100;
+	transform: translateX(-50%) translateY(-50%);
+	background-size: cover;
+	transition: 1s opacity;
+	/*filter: grayscale(0%);*/
+	/*opacity: 0.7;*/	
+}
+
+
+#header
+{
+	position: fixed, 0;
+	padding-top: 20px;
+	/*background: white;*/
+}
+
+#dashboard-header
+{
+	position: fixed;
+	width: 100%;
+}
+
+
+#dashboard-title-area
+{
+	width: 100%;
+	height: 80px;
+	padding-top: 5px;
+	padding-bottom: 10px;
+	/*background-color: #99ccff;*/
+	/*background: url('cloud-header.png');*/
+
+
+}
+
+
+#dashboard-title-area a
+{
+	filter: grayscale(100%);
+	opacity: 0.5;
+
+}
+
+
+
+#dashboard-title-area a:hover
+{
+	filter: grayscale(0%);
+	opacity: 1;
+	transition: all 1s;
+
+}
+
+#dashboard-header-logo
+{
+	width: 50px; height: 50px;
+	vertical-align: middle;
+	margin-bottom: 40px;
+	border-radius: 100px;
+	margin: 10px;
+	margin-left: 35px;
+
+}
+
+
+#welcome-title
+{
+	width: 300px;
+	text-align: left;
+}
+
+#dashboard-header-font, #welcome-title
+{
+	font-size: 20px;
+	padding: 0px;
+}
+
+
+
+
+
+#nav-area
+{
+	background-color: white;	
+    height: 60px;
+    text-transform: uppercase;
+    padding-left: 180px;
+    position: relative;
+    border-bottom: 1px dotted black;
+    width: auto;
+}
+
+
+
+#nav-area-main
+{
+	position: absolute;
+	margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 3;
+}
+
+nav ul 
+{
+	text-align: center;
+	margin: 0px;
+	padding: 15px;
+	padding-left: 0px;
+	padding-right: 10px;
+	/*border-bottom: 1px dotted black;*/
+}
+
+
+nav ul li 
+{
+	display: inline;
+	/*padding-right: 30px;*/
+	padding-left: 30px;
+
+}
+
+
+nav ul li a 
+{
+	text-decoration: none;
+	color: black;
+	font-size: 15px;
+	font-weight:700;
+}
+
+
+
+#title-area a img
+{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.5;
+    width: 100px;
+    height: 100px;
+}
+
+
+#title-area a img:hover
+{
+	opacity: 1;
+	transition: 0.5s;
+}
+
+
+
+#title-font a:hover
+{
+	color: white;
+	transition: all 0.5s;
+}
+
+
+
+#title-font
+{	
+	font-family: 'Medula One', cursive;
+	font-size: 65px;
+	text-align: center;
+	padding-top: 0px;
+
+}
+
+
+#create-area
+{
+	margin-top: 170px;
+	margin-bottom: 10px;
+	background-color: yellow;
+
+}
+
+
+/* link styles */
+a:visited 
+{
+	color: black;
+	text-decoration: none;
+}
+
+a:link
+{
+	color: black;
+	text-decoration: none;
+}
+
+
+/* Login Form */
+input
+{
+    width: 75%;
+    padding-bottom: 7px;
+   	padding-top: 10px;
+   	padding-left: 10px;
+
+    margin: 10px 0;
+    display: inline-block;
+	border: none;
+    border-bottom: 1px solid black;
+    background-color: transparent;  
+    outline:0; 
+	font-family: 'Lato', sans-serif;
+	font-size: 20px;
+	color: black;
+}
+
+::placeholder
+{
+	color: black;
+}
+
+:focus::placeholder
+{
+	color: white;
+	transition: all 0.5s;
+}
+:hover::placeholder
+{
+	color: white;
+	transition: all 0.5s;
+}
+
+
+input:hover
+{
+    border-color: white;
+    color: white;
+    transition: all 0.5s;
+}
+
+input:focus
+{
+    border-color: white;
+    color: white;
+    background-color: black;
+    opacity: 0.5;
+    transition: all 0.5s;
+}
+
+
+/* Set a style for all buttons */
+
+.login-button 
+{
+    color: black;
+	font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    width: 60%;
+    padding: 10px;
+    border-radius: 100px;
+    border: 1px solid black;
+    background-color: transparent;
+    outline: 0;
+
+    margin-top: 20px;
+    margin-left: 33px;
+    margin-right: 33px;
+}
+
+.login-button:hover 
+{
+    background-color: #ff3333;
+    transition: all 0.5s;
+    color: white;
+    border-color: white;
+}
+
+.sociallogin-button 
+{
+    color: black;
+	font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    width: 26%;
+    padding: 10px;
+    border-radius: 100px;
+    border: 1px solid black;
+    background-color: transparent;
+    outline: 0;
+
+    margin-top: 20px;
+    margin-left: 33px;
+}
+
+.sociallogin-button:hover 
+{
+    transition: all 0.5s;
+    color: white;
+    border-color: white;
+}
+
+#nav-menu 
+{
+    color: white;
+    /*padding: 10px;*/
+    background-color: #ff3333;
+    border-radius: 0;
+}
+
+
+#logout-button 
+{
+    color: black;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    width: 60%;
+    padding: 10px;
+    border-radius: 100px;
+    border: 1px solid black;
+    background-color: transparent;
+    outline: 0;
+
+    margin-top: 20px;
+    margin-left: 33px;
+    margin-right: 33px;
+}
+
+#logout-button:hover 
+{
+    background-color: #ff3333;
+    transition: all 0.5s;
+    color: white;
+    border-color: white;
+}
+
+
+
+#google-button:hover 
+{
+    background-color: #cc3333;
+}
+
+#facebook-button:hover 
+{
+    background-color: #3366cc;
+}
+
+
+.psw 
+{
+    padding-top: px;
+    margin-left: 90px;
+    margin-top: 20px;
+}
+
+.psw a:hover
+{
+    font-weight: bold;
+    color: white;
+    transition: all 0.5s;
+}
+
+
+.modal 
+{
+    display: none; /* Hidden by default */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    overflow: auto; /* Enable scroll if needed */
+    width: 10vw;
+}
+
+.container
+{
+	margin: auto;
+	position: absolute;
+	top:120%; left:40% 
+
+}
+
+#login-form
+{
+	display: block;
+    width: 50%;
+    margin: auto;
+}
+
+
+
+
+.menu-option
+{	
+    border-radius: 0;
+    padding: 10px;
+    letter-spacing: 2px;
+}
+
+
+
+
+/* Brackets go out */
+.menu-option:before, .menu-option:after
+{
+    /*position: absolute;*/
+    opacity: 0;
+    font-size: 20px;
+    transition: all 0.3s;
+    padding-left: 5px;
+    padding-right: 5px;
+
+}
+
+.menu-option:before
+{
+    content: '(';
+    left: 0px;
+    transform: translateX(10px);
+    color: black;
+}
+
+.menu-option:after
+{
+    content: ')';
+    right: 0px;
+    transform: translateX(-10px);
+    color: black;
+}
+
+.menu-option:hover:before, .menu-option:hover:after
+{
+    opacity: 1;
+    transform: translateX(0px);
+    color: black;
+    transition: all 0.5s;
+}
+
+
+#wrap
+{
+	z-index: -2;
+	position: absolute;
+	margin-left: 300px;
+	margin-left: 300px;
+}
+
+#wrap::after
+{
+	margin-top:180px;
+	content: "";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 880px;
+	z-index:-100;
+	/*background: url('https://www.funfrance.net/img/dessin-antistress-369.jpg');*/
+	/*background-size: cover;*/
+	/*background-repeat: no-repeat;*/
+	opacity: 0.2;
+}
+
+table
+{
+	margin: auto;
+}
+
+table td
+{
+	/*display: block;*/
+	width: 18vw;
+	margin: 3px;
+}
+
+
+
+td a img
+{
+	width: 18vw;
+	margin: 3px;
+
+}
+
+.trayheader
+{
+	font-family: 'Lato', sans-serif;
+	font-size: 20px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: black;
+	padding: 2px;
+	position: absolute;
+}
+/*
+td span
+{
+	top: 5px;
+    left: 20px;
+    right: 20px;
+    bottom: 50px;
+    margin: 0;
+}
+
+
+img.trayimg:hover
+{
+  opacity:0.1;
+  transition: all 0.7s;
+}
+
+
+.table-text
+{
+	top: 5px;
+    left: 20px;
+    right: 20px;
+    bottom: 50px;
+    margin: 0;
+    position: relative;
+    color: white;
+}
+
+
+
+.button-tray
+{
+	float: right;
+	position: absolute;
+}
+
+.button-edit
+{
+	height: 20px;
+    width: 20px;
+    background-color: transparent;
+    background-image: url('edit.png');
+    background-size: 20px;
+    border: 0;
+	}
+
+.button-delete
+{
+	height: 20px;
+    width: 20px;
+    background-color: transparent;
+    background-image: url('delete.png');
+    background-size: 20px;
+    border: 0;
+}
+.button-star
+{
+	height: 20px;
+    width: 20px;
+    background-color: transparent;
+    background-image: url('http://www.iconsdb.com/icons/preview/gray/star-5-xxl.png');
+    background-size: 20px;
+    border: 0;
+}
+
+
+
+button:hover
+{
+	transition: 0.5s;
+	opacity: 1;
+
+}
+
+*/
+
+
+.photo
+{
+	width: 27vw;
+	height: auto;
+	float: left;
+	margin-top: 20px;
+	background-image: url('images/8bit.jpg');
+}
+
+
+.photo:hover
+{
+	background-image: url('fullbit.jpg');
+	width: 27vw;
+	height: auto;
+}
+
+b:hover
+{
+	color: #6E6E6E;
+}
+
+
+#photo-about p
+{
+	width: 30vw;
+	line-height: 27px;	
+	font-size: 17px;
+	float: right;
+	margin-right: 20px;
+}
+
+#nav-button-img
+{
+	height: 30px;
+	width: 30px;
+	vertical-align: middle;
+	border-radius: 1000px;
+	background-color: white;
+	vertical-align: middle;
+}
+
+
+
+#register
+{
+	/*float: right;*/
+	margin-right: 30px;
+	position: absolute;
+	width: 350px;
+
+	top: 550px;
+    right: 0px;
+    left: 1050px;
+
+	color: white;
+}
+
+#register b
+{
+	color: white;
+}
+
+
+
+
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2,2);
+  }
+}
+
+
+footer
+{
+	margin-top: 430px;
+	margin-bottom: 50px;
+	text-align: center;
+	width: 100%;
+	height: 100px;
+	/*top: 87%;*/
+	color: white;
+	font-size: 15px;
+	opacity: 0.5;
+	position: fixed;
+
+	background-color: #666666;
+}
+
+
+#regular-footer img
+{
+	width: 70px; height: 70px;
+	vertical-align: middle;
+}
+
+
+/* 16.0 Social Links
+================================================== */
+.social-links
+{
+	margin-bottom: 10px;
+}
+
+.social-links a img
+{
+	display: inline;
+	border-radius: 300px;
+	/*border: 1px solid white;*/
+}
+
+
+.social-links a
+{
+	border-radius: 100px;
+	padding-top: 7px;
+	padding-bottom: 8px;
+	overflow: hidden;
+	width: 3px;
+}
+
+.social-links a[href*="facebook.com"]:hover 
+{
+	background-color: #3B5998;
+}
+
+.social-links a[href*="twitter.com"]:hover {
+	background-color: #33CCFF;
+	color: #FFF;
+}
+.social-links a[href*="youtube.com"]:hover {
+	background-color: #ff0033;
+	color: #FFF;
+}
+
+.social-links a[href*="instagram.com"]:hover {
+	background-color: #ff6699;
+	color: #FFF;
+}
+
+#regular-footer
+{
+	padding-top: 10px;
+}
+
+#footer-title
+{
+	font-family: 'Medula One', cursive;
+	font-size: 30px;
+}
+
+
+
+
+
+
+
+/* 
+
+TO DO
+
+header and menu should be fixed
+
+
+DOUBTS
+
+nav-area is inside header 
+so why doesnt it get the white backgroun, even if I change positions
+
+what is <div class="clear"></div> and why 
+ GIVE CLEAR A CLEAR:BOTH ELEMENT when have floats to continue normal document flow
+.clear {
+	clear: both;
+}
+
+<!DOCTYPE html> why doctype exactly
+Head can also have visual display
+Body can also have title or metadata
+
+What are two different styles separated by comma 
+font-family: 'Georgia', 'Times', serif;
+
+Nav vs div
+
+how to partially animate or add css effects to its children, when parents are triggered
+
+what is going wrong with about.page floats
+
+why the hover did not work on image
+
+
+*/
+

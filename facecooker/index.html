@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+
+	<title>FaceCooker</title>
+	
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+
+
+	<script type="text/javascript" src="js/dashboard.js"></script>
+
+
+</head>
+
+
+<body >
+
+	<div id="dashboard-header">
+		 <div id="nav-area-subtitle">
+			<nav>
+				<ul>
+					<li><a href="index.html"><img id="facecooker-logo" src="images/logo.png" /></a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+
+	<div id="wrap">
+
+ 	<table>
+		  <tr>
+		    <td>
+		    		<span class="button-tray">
+						<img class="button-edit" src="css/edit.png" />
+ 		    		</span>
+		    	<a href="">
+ 		    		<img class="trayimg" src="images/face1-brad.jpg"/></a>
+		    	</a>
+		    	<input class="sliders" id="slider1" type="range" min="1" max="100" value="50">
+		    	<span class="slidersval" id="slider1val">50%</span>
+		    	<script>
+						var slider1 = document.getElementById("slider1");
+						var output1 = document.getElementById("slider1val");
+						output1.innerHTML = slider1.value;
+
+						slider1.oninput = function () {
+						  output1.innerHTML = this.value+"%";
+						}
+				</script>
+		    	
+
+		    </td>
+
+		    <td>
+		    		<span class="button-tray">
+						<img class="button-edit" src="css/edit.png" />
+ 		    		</span>
+		    	<a href="#">
+ 		    		<img class="trayimg" src="images/face2-jgl.jpg"/>
+		    	</a>
+		    	<input class="sliders" id="slider2" type="range" min="1" max="100" value="50">
+		    	<span class="slidersval" id="slider2val">50%</span>
+		    	<script>
+						var slider2 = document.getElementById("slider2");
+						var output2 = document.getElementById("slider2val");
+						output2.innerHTML = slider2.value;
+
+						slider2.oninput = function () {
+						  output2.innerHTML = this.value+"%";
+						}
+				</script>
+		    </td>		  
+		   			   	
+		   	<td>
+		    		<span class="button-tray">
+ 		    			<img class="button-edit" src="css/edit.png" />
+ 		    		</span>
+		    	<a href="">
+ 		    		<img class="trayimg" src="images/face3-liam.jpg"/>
+		    	</a>
+		    	<input class="sliders" id="slider3" type="range" min="1" max="100" value="50">
+		    	<span class="slidersval" id="slider3val">50%</span>
+		    	<script>
+						var slider3 = document.getElementById("slider3");
+						var output3 = document.getElementById("slider3val");
+						output3.innerHTML = slider3.value;
+
+						slider3.oninput = function () {
+						  output3.innerHTML = this.value+"%";
+						}
+				</script>
+
+		    </td>		    
+		</tr>	  
+
+		</table>
+
+		<a href="result.html"><button id="cookButton">Cook</button></a>
+
+	</div>
+
+
+
+</body>
+</html>
