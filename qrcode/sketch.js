@@ -124,24 +124,30 @@ function central(value)
 
 function mouseWheel(event) 
 {
-    newCount += event.delta+10;
+    divisor += event.delta/1000;
 
-    if(newCount<Squares.length)
-    {
-      let randomSquare = randomInt(0,Squares.length);
-      if(Squares[randomSquare].color == 255)
-      {
-          Squares[randomSquare].color = 200;
-          draw();
-          // fill(Squares[randomSquare].sqColor);
-          // rect(Squares[randomSquare].x, Squares[randomSquare].y, factor+0.1, factor+0.1);
-      }
-      else
-      {
-        newCount += event.delta;
-      }
+    console.log(divisor);
 
-    }
+    createGrid();
+    draw();
+
+
+    // if(newCount<Squares.length)
+    // {
+    //   let randomSquare = randomInt(0,Squares.length);
+    //   if(Squares[randomSquare].color == 255)
+    //   {
+    //       Squares[randomSquare].color = 200;
+    //       draw();
+    //       // fill(Squares[randomSquare].sqColor);
+    //       // rect(Squares[randomSquare].x, Squares[randomSquare].y, factor+0.1, factor+0.1);
+    //   }
+    //   else
+    //   {
+    //     newCount += event.delta;
+    //   }
+
+    // }
 }
 
 
