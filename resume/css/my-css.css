@@ -1,0 +1,844 @@
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px)
+{
+
+		.sectionInfo-resume 
+		{
+			margin: 0 0 10px 0;
+		}
+
+
+		/*#primary
+		{
+			color: #434343;
+		}
+		*/
+		#rightSide
+		{
+			/*background-color: green;*/
+			/*float: right;*/
+			width: 100%;
+		}
+
+
+		#leftSide
+		{
+			/*float: left;*/
+			/*background-color: blue;*/
+			width: 100%;
+		}
+
+
+		.resumeFont
+		{
+		    font-size: 14px;
+		    font-weight: normal;
+		}
+
+
+		#resumeRight
+		{
+			/*background-color: rgba(0,0,255,0.1);*/
+			float: right;
+			width: 100%;
+			z-index: -5;
+		}
+
+
+		#resumeLeft
+		{
+			float: left;
+			width: 100%;
+			/*background-color: rgba(255,0,0,0.1);*/
+			padding-right: 20px;
+			z-index: -5;
+		}
+
+
+		#portfolioimages:hover
+		{
+			opacity: 0.7;
+			transition: all 0.3s;
+		}
+
+		#resumeContactStuff
+		{
+			font-size: 15px;
+		}
+
+		.dot
+		{
+			color: #4185c3;
+		}
+
+		#bottomContactInfo
+		{
+			font-size: 15px;
+		}
+
+		.themeBold
+		{
+				font-weight: 900;
+				color: #434343;
+		}
+
+		.themeBold:hover
+		{
+				color: #009eed;
+				font-weight: 900;
+		}
+
+		.themenotsoBold
+		{
+				font-weight: normal;
+				color: #434343;
+		}
+
+		.themenotsoBold:hover
+		{
+				color: #009eed;
+				font-weight: 700;
+				cursor: pointer;
+		}
+
+
+		.themeDot
+		{
+			font-size: 25px;
+			color: #009eed;
+		}
+
+
+		/*
+		.themeDot:hover
+		{
+			font-size: 33px;
+			color: #009eed;
+			transition: all 0.5s;
+		}
+		*/
+
+		.themeBullet
+		{
+			color: #009eed;
+			font-size: 14px;
+			float: left;
+		}
+
+		.bulletText
+		{
+			margin-left: 15px;
+		}
+
+		/*.themeBullet:hover
+		{
+			color: #009eed;
+			font-size: 23px;
+		}
+		*/
+
+		#resumeSummary
+		{
+			/*margin-right: 17px;*/
+			/*margin-left: 17px;*/
+			font-size: 14px;
+			font-style: italic;	
+		    margin-bottom: 0px;
+
+		}
+
+		.resumeHeading
+		{
+			font-weight: 900;
+			font-size: 19px;
+			margin-bottom: 5px;
+			margin-top: 15px;
+		}
+
+
+		.resumeSemiHeading
+		{
+			font-weight: 900;
+			font-size: 15px;
+			text-transform: uppercase;
+		}
+
+
+		.resumeDateHeading
+		{
+			color: #009eed; 
+			font-size: 15px;
+		}
+
+
+		.mobileShow
+		{
+			display: inline;
+			color: #009eed; 
+			font-size: 15px;
+		}
+
+		.mobileShow1
+		{
+			display: inline;
+			font-weight: 900;
+			font-size: 15px;
+		}
+
+		
+		.mobileHide
+		{
+			display: none;
+		}
+
+		.resumeSemiDateHeading
+		{
+			font-weight: 900;
+			font-size: 15px;
+			color: #009eed; 
+		}
+
+
+
+
+		#sticky_header_resume_mobile
+		{
+			background-color: #fff;
+		    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		    width: 100%;
+		    z-index: 999;
+		    margin-top: 50px;
+		}
+
+		#sticky_header_resume_desktop
+		{
+			display: none;
+		}
+
+
+		.resume-icons 
+		{
+			font-size: 12px;
+		}
+
+
+		#contactMeDrop
+		{
+			/*display: none;*/
+		}
+
+
+		.fa-envelope:before
+		{
+		    font-size: 12px;
+		}
+
+
+		.fa-twitter:before
+		{
+		    font-size: 13px;
+		}
+
+
+		.fa-phone:before 
+		{
+		    font-size: 13px;
+		}
+
+		#contactMeHeading
+		{
+			z-index: 2000;
+		}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Desktop ----------- */
+@media only screen and (min-device-width : 1440px) and (max-device-width : 2800px)
+{
+
+		a:hover
+		{
+			font-weight: 900;
+			transition: 0.3s;
+		}
+
+
+		.sectionInfo-resume 
+		{
+			margin: 0 0 10px 0;
+		}
+
+
+		/*#primary
+		{
+			color: #434343;
+		}
+		*/
+		#rightSide
+		{
+			/*background-color: green;*/
+			float: right;
+			width: 60%;
+		}
+
+
+		#leftSide
+		{
+			float: left;
+			/*background-color: blue;*/
+			width: 40%;
+		}
+
+
+		.resumeFont
+		{
+		    font-size: 14px;
+		    font-weight: normal;
+		}
+
+
+		#resumeRight
+		{
+			/*background-color: rgba(0,0,255,0.1);*/
+			float: right;
+			width: 47%;
+			z-index: -5;
+		}
+
+
+		#resumeLeft
+		{
+			float: left;
+			width: 53%;
+			/*background-color: rgba(255,0,0,0.1);*/
+			padding-right: 20px;
+			z-index: -5;
+		}
+
+
+		#portfolioimages:hover
+		{
+			opacity: 0.7;
+			transition: all 0.3s;
+		}
+
+		#resumeContactStuff
+		{
+			font-size: 15px;
+		}
+
+		.dot
+		{
+			color: #4185c3;
+		}
+
+		#bottomContactInfo
+		{
+			font-size: 15px;
+		}
+
+		.themeBold
+		{
+				font-weight: 900;
+				color: #434343;
+		}
+
+		.themeBold:hover
+		{
+				color: #009eed;
+				font-weight: 900;
+		}
+
+		.themenotsoBold
+		{
+				font-weight: normal;
+				color: #434343;
+		}
+
+		.themenotsoBold:hover
+		{
+				color: #009eed;
+				font-weight: 700;
+				cursor: pointer;
+		}
+
+
+		.themeDot
+		{
+			font-size: 29px;
+			color: #009eed;
+		}
+
+
+		/*
+		.themeDot:hover
+		{
+			font-size: 33px;
+			color: #009eed;
+			transition: all 0.5s;
+		}
+		*/
+
+		.themeBullet
+		{
+			color: #009eed;
+			font-size: 17px;
+			/*float: left;*/
+		}
+
+		.bulletText
+		{
+			margin-left: 20px;
+			margin-top: -27px;
+		}
+
+
+		/*.themeBullet:hover
+		{
+			color: #009eed;
+			font-size: 23px;
+		}
+		*/
+
+		#resumeSummary
+		{
+			margin-right: 17px;
+			margin-left: 17px;
+			font-size: 15px;
+			font-style: italic;	
+		    margin-bottom: 0px;
+
+		}
+
+		.resumeHeading
+		{
+			font-weight: 900;
+			font-size: 19px;
+			margin-bottom: 5px;
+			margin-top: 15px;
+		}
+
+
+		.resumeSemiHeading
+		{
+			font-weight: 900;
+			font-size: 15px;
+			text-transform: uppercase;
+		}
+
+
+		.resumeDateHeading
+		{
+			color: #009eed; 
+		}
+
+		.mobileShow, .mobileShow1
+		{
+			display: none;
+		}
+
+
+		.resumeSemiDateHeading
+		{
+			font-weight: 900;
+			font-size: 15px;
+			color: #009eed; 
+		}
+
+
+
+		#sticky_header_resume_desktop
+		{
+			background-color: #fff;
+		    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		    width: 100%;
+		    z-index: 999;
+		    margin-top: 1090px;
+		}
+
+		#sticky_header_resume_mobile
+		{
+			display: none;
+		}
+
+		.resume-icons 
+		{
+			font-size: 12px;
+		}
+
+
+		#contactMeDrop
+		{
+			/*display: none;*/
+		}
+
+
+		.fa-envelope:before
+		{
+		    font-size: 12px;
+		}
+
+
+		.fa-twitter:before
+		{
+		    font-size: 13px;
+		}
+
+
+		.fa-phone:before 
+		{
+		    font-size: 13px;
+		}
+
+		#contactMeHeading
+		{
+			z-index: 2000;
+		}
+
+
+}
+
+
