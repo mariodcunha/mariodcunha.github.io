@@ -105,7 +105,7 @@ function drawCircle()
 
 function mouseWheel(event)
 {
-    change += event.delta;
+    change += event.delta/3;
     // draw();
     // console.log(change*2);
 }
