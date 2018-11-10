@@ -41,41 +41,44 @@ var click = false;
 
 
 //Voice API from talater.com/annyang/
-if (annyang) 
-{
+// if (annyang) 
+// {
 
-  var commands = 
-  {
-    'change new': function() 
-    {
-    	currentChoice = choice;
+//   var commands = 
+//   {
+//     'change new': function() 
+//     {
+//     	currentChoice = choice;
 		
-		while(choice == currentChoice)
-			choice = Math.floor(Math.random()*7); build();
+// 		while(choice == currentChoice)
+// 			choice = Math.floor(Math.random()*7); build();
 
-    },
-    'change old': function() 
-    {
-    	currentChoice = choice;
+//     },
+//     'change old': function() 
+//     {
+//     	currentChoice = choice;
 		
-		while(choice == currentChoice)
-			choice = Math.floor(Math.random() * (13 - 7 + 1) ) + 7; build();
-    },
+// 		while(choice == currentChoice)
+// 			choice = Math.floor(Math.random() * (13 - 7 + 1) ) + 7; build();
+//     },
 
-    'hashtag *word': function() 
-    {
-      checkHashArray(word);
-      console.log(word);
-    },
+//     'hashtag *word': function() 
+//     {
+//       checkHashArray(word);
+//       console.log(word);
+//     },
 
-};
+// };
 
-  // Add our commands to annyang
-  annyang.addCommands(commands);
+//   // Add our commands to annyang
+//   annyang.addCommands(commands);
 
-  // Start listening.
-  annyang.start();
-}
+//   // Start listening.
+//   annyang.start();
+// }
+
+
+
 
 	
 function begin()

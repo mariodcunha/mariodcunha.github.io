@@ -5,34 +5,38 @@
 <head>
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>The Seven Wonders of the World</title>
+  <title>MeToo - A Data Visualization</title>
 
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- <script src="p5/p5.sound.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script> -->
 
-  <script src="p5/p5.js"></script>
-  <script src="p5/p5.sound.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+  <script src="js/javascript.js" type="text/javascript" ></script>
+  <script src="js/d3bubbles.js" type="text/javascript" ></script>
+
 
   
 </head>
 
-<body class="bg" background="images/new.jpg" onload="begin();" >  
+<body>  
 
-      <audio id="narration-sound" src="sound/sound-N.mp3" crossorigin autoplay ></audio>
+      <img class="bg" src="images/worldmap.png" />
 
-      <h1 id="main-title" >The <span id="toggle-word">NEW</span> 7 Wonders of the <span id="world" onclick="changeWorld();">World</span></h1>
+      <h1 id="wonder-title" onclick="choose();">#MeToo</h1>
+      <!-- <audio id="narration-sound" src="sound/sound-N.mp3" crossorigin autoplay ></audio> -->
 
-      <p id="built-info" onclick="choose();"><span id="built-by">Emperor Shah Jahan</span><span id="built-in">1653</span></p>
+      <!-- <h1 id="main-title" >The <span id="toggle-word">NEW</span> 7 Wonders of the <span id="world">World</span></h1> -->
+      <!-- onclick="changeWorld();" -->
 
-      <p id="hashtags"><span id="hash1" onclick="hash1Change();">#Tomb</span>&nbsp;<span id="hash2" onclick="hash2Change();">#Gift</span>&nbsp;<span id="hash3"onclick="hash3Change();"></span></p>
-      
-      <h1 id="wonder-title" onclick="choose();">The Taj Mahal, India</h1>
+      <!-- <p id="built-info" onclick="choose();"><span id="built-by">Emperor Shah Jahan</span><span id="built-in">1653</span></p> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
-    <script src="js/javascript.js" type="text/javascript" ></script>
-
+      <!-- <p id="hashtags"><span id="hash1" onclick="hash1Change();">#Tomb</span>&nbsp;<span id="hash2" onclick="hash2Change();">#Gift</span>&nbsp;<span id="hash3"onclick="hash3Change();"></span></p>
+       -->
   
 </body></html>
 
