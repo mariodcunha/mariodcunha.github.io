@@ -21,7 +21,7 @@ var wordsArray = [  "DISTURBED","DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE"
                     "DISSIPATE","DISBAND","DISCHARGE","DISLODGE","DISPEL","DISMANTLE",
                     "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
 
-var myFont;
+var myFont, shadeOpacity=15;
 
 function preload() 
 {
@@ -50,7 +50,7 @@ function setup()
     // canvas.parent('container'); //within the html
 
     noStroke(); 
-    noLoop();
+    // noLoop();
 
     //letter blend color
     //random color theme for the letters
@@ -60,6 +60,7 @@ function setup()
 
     textFont(myFont);
     createLetters();
+    console.log(shadeOpacity);
 
 }
 
@@ -96,15 +97,18 @@ function createLetters()
 function draw() 
 {
     colorMode(RGB);
-    background(20);
+    background('#00004a');
     drawLetter(letters.length);
+    drawShade();
+    console.log(shadeOpacity);
+
 }
 
 
 function drawLetter(lettercount)
 {
     colorMode(RGB);
-    background(20);
+    // background('#00004a');
 
 
     for(var i=0; i<lettercount; i++)
@@ -125,14 +129,65 @@ function drawLetter(lettercount)
             fill(myColor);
 
             //mouse motion should allow letter rotation in all directions of screen
-            moveX = map(mouseX, 0, width, -2, 2);
-            moveY = map(mouseY, 0, height, -2, 2);
+
+            if(i%2==1)
+            {
+                moveX = map(RandomNoise(mouseX), 0, width, -2, 2);
+                moveY = map(RandomNoise(mouseY), 0, height, -2, 2);                    
+            }
+            else
+            {
+                moveX = map(mouseX, 0, width, -2, 2);
+                moveY = map(mouseY, 0, height, -2, 2);                                    
+            }
+
 
             text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir));
         }
 
     }
 }
+
+
+
+function drawShade()
+{
+    colorMode(RGB);
+
+    for(var i=0; i<letters.length; i++)
+    {
+        //draw each letter's shaded blending
+        //which is many letters behind single one, with decreasing size
+
+        LetterArray[i].x += random(-3,3)*noise(6,6);
+        LetterArray[i].y += random(-3,3)*noise(6,6);
+
+        letterSize = width/(0.5*wl);
+        
+        for(let j=1; j<3; j++)
+        {
+            //letterSize can be scrolled, check mouseWheel()
+            textSize(letterSize);
+
+            //blending the color shade
+            spectrumFrom = color(255, 80, 0, shadeOpacity-5);
+            spectrumTo = color(255, 0, 150, shadeOpacity-10);
+
+            myColor = lerpColor(fromColor, toColor, j/50);
+            fill(myColor);
+
+            //mouse motion should allow letter rotation in all directions of screen
+            moveX = map(mouseX, 0, width, -2, 2);
+            moveY = map(mouseY, 0, height, -2, 2);
+
+            text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir)+RandomNoise(1), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir)+RandomNoise(1));
+        }
+
+    }
+}
+
+
+
 
 function mouseMoved(event) 
 {
@@ -159,10 +214,20 @@ function mouseWheel(event)
 }
 
 
-function keyPressed()
-{
+// function keyPressed()
+// {
   
-}
+//     if(mode==1)
+//     {
+//         mode=0;
+//     }
+//     else
+//     {
+//         mode=1
+//     }
+// }
+
+
 
 
 function randomInt(n)
