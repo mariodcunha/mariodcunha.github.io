@@ -149,7 +149,7 @@ img[id*='collageThumbnail']
 	
 	border-radius: 100%;
 	width: 5vw; height: 5vw;
-	/*width: 5vw; height: 13vh;*/
+	width: 5vw; height: 13vh;
 	transition: 0.5s;
 }
 

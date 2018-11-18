@@ -30,8 +30,8 @@ var selectButton, deleteButton;
 function searchBooks()
 {
 
-  // var searchText = "harry potter";
-  var searchText = $("#books").val();
+  var searchText = "harry potter";
+  // var searchText = $("#books").val();
 
     if(searchText == "")
     {
