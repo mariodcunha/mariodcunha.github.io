@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang = "en">
+
+
+<head>
+   
+   <title>Stranger Diary</title>
+    <meta charset = "UTF-8" />
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="shortcut icon" href="https://mariodcunha.github.io/images/favicon.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+    
+</head>
+
+<body onload="init()" background="images/old-paper1.jpg">
+<!-- <body onload="init()" > -->
+
+  <div id='container'>
+
+    <p id="heading">When Strangers Meet</p>
+    <br>
+
+    <div id="quotes">
+        <h1 id="author"></h1>
+        <h1 id="quote"></h1>
+    
+        <div id="navbuttons"> 
+          <button class="nav" id="backbutton" onclick="back()">Back</button>
+          <button class="nav" id="nextbutton" onclick="next()">Next</button>
+          <button class="nav" id="randombutton" onclick="randomQuote()">Random</button>
+        </div>
+        
+    </div>
+
+  <video id="myvideo" width="640" height="480" autoplay muted="muted" ></video>
+
+  </div>
+
+  
+
+</body>
+</html>
+

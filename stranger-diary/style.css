@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css?family=IM+Fell+DW+Pica|IM+Fell+English');
+
+
+body
+{
+	color: black;
+	margin: auto;
+	width: 100%;
+	display: block;
+	font-family: 'IM Fell English', serif;
+	background-size: 1500px;
+	margin: auto;
+	transition: all 0.5s;
+	/*background-image: "old"*/
+	outline: none;
+}
+
+
+
+#heading
+{
+	font-size: 30px;
+	opacity: 0.3;
+
+}
+
+button
+{
+	background-color: rgba(0,0,0,0);
+	outline: none;
+}
+
+
+
+button:hover
+{
+    cursor: pointer;
+    transition: all 0.3s;
+    text-shadow: 2px 2px 4px #AAA;
+    
+}
+
+
+
+
+#quote
+{
+	transition: all 0.5s;
+	/*font-size: 10px;*/
+}
+
+
+#author
+{
+	font-family: 'IM Fell English', serif;
+	font-weight: 400;
+	font-size: 1.3em;
+}
+
+.hash
+{
+    margin-right: 0.5%;
+    padding: 10px 15px 10px 15px;
+    border-radius: 400px;
+    font-size: 1em;
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+    color: #999;
+    cursor: pointer;
+    border: 0px;
+
+}
+
+
+
+#container
+{
+	position: absolute;
+    margin-top: 5%;
+    width: 50%;
+    /*text-align: center;*/
+    right: 20%; left: 20%;
+    /*float: left;*/
+}
+
+#hashtags
+{
+	float: left;
+	width: 100%;
+	padding-bottom: 5%;
+	text-transform: lowercase;
+}
+
+#quotes
+{
+	padding: 0% 0% 1% 0%;
+	/*margin-bottom: 7%;*/
+}
+
+#navbuttons
+{
+	padding-top: 3vw;
+	/*float: left;*/
+    /*width: 100vw;*/
+}
+
+
+.nav
+{
+    /*padding: 10px 15px 10px 15px;*/
+    border: 0px;
+    /*border-radius: 400px;*/
+    font-size: 1.2em;
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+    color: #777;
+    /*background-color: #fff;*/
+}
+
+.nav:hover
+{
+	cursor: pointer;
+	color: #4d0000;
+	/*background-color: #777;*/
+	
+}
+
+#randombutton
+{
+	margin-left: 7%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
