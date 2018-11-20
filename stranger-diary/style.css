@@ -131,7 +131,14 @@ button:hover
 }
 
 
-
+#myvideo 
+{
+    /*background-color: #000;*/
+    width: 640px;
+    height: 480px;
+    /*opacity: 0.5;*/
+    border: 1px #000;
+}
 
 
 

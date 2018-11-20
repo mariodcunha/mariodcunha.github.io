@@ -51,9 +51,15 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
  	navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) 
  	{
  		webvideo.srcObject = stream;
+ 		// $('#myvideo')[0].play();
+ 		// $('#myvideo')[0].load();
  		$('#myvideo')[0].play();
  		console.log("web cam loaded");
- 	});
+ 	})
+ 	.catch(function(error) 
+ 	{
+    	console.log("Something went wrong with WebCam!");
+  	});
 }
 
 
