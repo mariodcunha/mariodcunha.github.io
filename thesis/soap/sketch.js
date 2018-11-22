@@ -2,7 +2,7 @@
 
 let pos;
 var diameter = 50;
-let speed = 20;
+let speed = 4;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -139,7 +139,7 @@ function draw()
   rect(0, 0, windowWidth, windowHeight);
   // background(bgColor, 10);
 
-  let targetPos = createVector(pos.x+xOrient, pos.y+yOrient);
+  let targetPos = createVector(pos.x+yOrient, pos.y+xOrient);
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
