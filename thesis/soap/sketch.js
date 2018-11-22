@@ -99,7 +99,7 @@ function setup()
   mic.start();
 
   createCanvas(windowWidth, windowHeight);
-  pos = createVector(xOrient, yOrient);
+  pos = createVector(mouseX, mouseY);
   noCursor();
   colorRight = color(222, 30, 30);
   colorLeft = color(126, 227, 212);
@@ -142,6 +142,9 @@ function draw()
   let targetPos = createVector(xOrient, yOrient);
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
+
+  console.log(pos.x);
+  console.log(xOrient);
 
 
   //mic---
@@ -187,13 +190,13 @@ function draw()
   if (millis() > 10000 && (pos.x < diameter * 2)) 
   {
     // alert('Left Player Wins')
-    window.location.reload(false);
+    // window.location.reload(false);
   }
 
   if (millis() > 10000 && (pos.x > windowWidth - diameter * 2)) 
   {
     // alert('Right Player Wins');
-    window.location.reload(false);
+    // window.location.reload(false);
   }
 }
 
