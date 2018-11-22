@@ -33,7 +33,7 @@ var parsons = [];
 
 //MARIOISM
 marioism[0] = new Quote("Life’s funny, but I’m funnier!", "Friday, November 16th, 2018");
-marioism[1] = new Quote("Lisdffe’s funny, but I’m funnier!", "Friday, November 16th, 2018");
+marioism[1] = new Quote("I was at the Grand Central Station, roaming around the Holiday Market.", "Friday, November 16th, 2018");
 
 
 
