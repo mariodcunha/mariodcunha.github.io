@@ -2,7 +2,7 @@
 
 let pos;
 var diameter = 50;
-let speed = 4;
+let speed = 20;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -304,8 +304,8 @@ function keyPressed()
           console.log(model.quaternion.fromArray(sensor.quaternion));
           console.log(model.quaternion.fromArray(sensor.quaternion)._w);
 
-          xOrient = model.quaternion.fromArray(sensor.quaternion)._x;
-          yOrient = model.quaternion.fromArray(sensor.quaternion)._y;
+          xOrient = model.quaternion.fromArray(sensor.quaternion).inverse()._x;
+          yOrient = model.quaternion.fromArray(sensor.quaternion).inverse()._y;
 
           pos.x += xOrient;
           pos.y += yOrient;
