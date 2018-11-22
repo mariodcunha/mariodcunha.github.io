@@ -13,6 +13,8 @@ let obstacles = [];
 var Freezer1;
 let amt;
 
+var xOrient = 0, yOrient=0;
+
 
 class Obstacle 
 {
@@ -85,6 +87,8 @@ class Freezer
   }
 }
 
+
+
 function setup() 
 {
 
@@ -95,7 +99,7 @@ function setup()
   mic.start();
 
   createCanvas(windowWidth, windowHeight);
-  pos = createVector(mouseX, mouseY);
+  pos = createVector(xOrient, yOrient);
   noCursor();
   colorRight = color(222, 30, 30);
   colorLeft = color(126, 227, 212);
@@ -135,7 +139,7 @@ function draw()
   rect(0, 0, windowWidth, windowHeight);
   // background(bgColor, 10);
 
-  let targetPos = createVector(mouseX, mouseY);
+  let targetPos = createVector(xOrient, yOrient);
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
@@ -149,7 +153,7 @@ function draw()
   fill(0);
   noStroke();
   // ellipse(pos.x, pos.y, diameter+soundx);
-  image(soap, pos.x, pos.y);
+  image(soap, pos.x+xOrient, pos.y+yOrient, 300,200);
 
 
   // //obstacles
@@ -207,3 +211,120 @@ function keyPressed()
 
 
 
+
+  
+
+  const params = new URLSearchParams(new URL(window.location.href).search.slice(1));
+  const relative = !!Number(params.get("relative"));
+  const coordinateSystem = params.get("coord");
+
+  let container, sensor, camera, scene, renderer, model;
+
+  initScene();
+  if (navigator.permissions) {
+      // https://w3c.github.io/orientation-sensor/#model
+      Promise.all([navigator.permissions.query({ name: "accelerometer" }),
+                   navigator.permissions.query({ name: "magnetometer" }),
+                   navigator.permissions.query({ name: "gyroscope" })])
+             .then(results => {
+                  if (results.every(result => result.state === "granted")) {
+                      initSensor();
+                  } else {
+                      console.log("Permission to use sensor was denied.");
+                  }
+             }).catch(err => {
+                  console.log("Integration with Permissions API is not enabled, still try to start app.");
+                  initSensor();
+             });
+  } else {
+      console.log("No Permissions API, still try to start app.");
+      initSensor();
+  }
+
+  renderScene();
+
+  function initScene() {
+      container = document.createElement('div');
+      // document.body.appendChild(container);
+
+      camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 200);
+      camera.position.z = 10;
+
+      scene = new THREE.Scene();
+
+      // var ambientLight = new THREE.AmbientLight(0x404040, 6);
+      // scene.add(ambientLight);
+
+      var manager = new THREE.LoadingManager();
+      var mtlLoader = new THREE.MTLLoader(manager);
+      mtlLoader.setTexturePath('resources/');
+      mtlLoader.load('resources/phone.mtl', materials => {
+          materials.preload();
+          var objLoader = new THREE.OBJLoader(manager);
+          objLoader.setMaterials(materials);
+          objLoader.load('resources/phone.obj', object => {
+              model = object;
+              scene.add(model);
+        });
+      });
+
+      renderer = new THREE.WebGLRenderer({ alpha: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+      }, false);
+
+      document.addEventListener('mousedown', () => document.documentElement.requestFullscreen());
+      document.addEventListener('fullscreenchange', () => {
+          if (document.fullscreenElement != null) {
+              screen.orientation.lock("natural")
+          }
+      });
+  }
+
+  function initSensor() 
+  {
+      const options = { frequency: 60, coordinateSystem };
+      console.log(JSON.stringify(options));
+      sensor = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+      
+      //Orientation values
+      sensor.onreading = function() 
+      {
+          model.quaternion.fromArray(sensor.quaternion);
+          // console.log(sensor.quaternion);
+          console.log(model.quaternion.fromArray(sensor.quaternion));
+          console.log(model.quaternion.fromArray(sensor.quaternion)._w);
+
+          xOrient = model.quaternion.fromArray(sensor.quaternion)._x;
+          yOrient = model.quaternion.fromArray(sensor.quaternion)._y;
+          draw();
+      }
+
+
+      sensor.onerror = (event) => {
+        if (event.error.name == 'NotReadableError') {
+          console.log("Sensor is not available.");
+        }
+      }
+      sensor.start();
+  }
+
+  function renderScene() {
+      requestAnimationFrame(renderScene);
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+  }
+
+  let log = console.log;
+  console.log = (message, ...rest) => {
+      const div = document.querySelector('#console');
+      // div.innerText = message;
+      log.call(console, message, ...rest);
+  }
+            

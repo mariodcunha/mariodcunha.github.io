@@ -29,11 +29,11 @@
             import {
               AbsoluteOrientationSensor,
               RelativeOrientationSensor
-            } from '../sensor-polyfills/motion-sensors.js';
+            } from './js/motion-sensors.js';
 
             const params = new URLSearchParams(new URL(window.location.href).search.slice(1));
             const relative = !!Number(params.get("relative"));
-	    const coordinateSystem = params.get("coord");
+	        const coordinateSystem = params.get("coord");
 
             let container, sensor, camera, scene, renderer, model;
 
@@ -62,15 +62,15 @@
 
             function initScene() {
                 container = document.createElement('div');
-                document.body.appendChild(container);
+                // document.body.appendChild(container);
 
                 camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 200);
                 camera.position.z = 10;
 
                 scene = new THREE.Scene();
 
-                var ambientLight = new THREE.AmbientLight(0x404040, 6);
-                scene.add(ambientLight);
+                // var ambientLight = new THREE.AmbientLight(0x404040, 6);
+                // scene.add(ambientLight);
 
                 var manager = new THREE.LoadingManager();
                 var mtlLoader = new THREE.MTLLoader(manager);
@@ -108,7 +108,13 @@
                 const options = { frequency: 60, coordinateSystem };
                 console.log(JSON.stringify(options));
                 sensor = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
-                sensor.onreading = () => model.quaternion.fromArray(sensor.quaternion).inverse();
+                sensor.onreading = function() 
+                {
+                    model.quaternion.fromArray(sensor.quaternion);
+                    console.log(sensor.quaternion);
+                }
+
+
                 sensor.onerror = (event) => {
                   if (event.error.name == 'NotReadableError') {
                     console.log("Sensor is not available.");
@@ -126,11 +132,11 @@
             let log = console.log;
             console.log = (message, ...rest) => {
                 const div = document.querySelector('#console');
-                div.innerText = message;
+                // div.innerText = message;
                 log.call(console, message, ...rest);
             }
 
         </script>
-        <div id="console"></div>
+        <!-- <div id="console"></div> -->
     </body>
 </html>
