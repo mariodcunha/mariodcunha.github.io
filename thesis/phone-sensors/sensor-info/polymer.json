@@ -1,0 +1,30 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/sensors-app.html",
+  "fragments": [
+    "src/sensors-app.html"
+  ],
+  "sources": [
+   "src/**/*",
+   "images/**/*",
+   "bower.json"
+  ],
+  "extraDependencies": [
+    "manifest.json"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    {
+      "name": "bundled",
+      "bundle": true,
+      "js": {"minify": true, "compile": true},
+      "css": {"minify": true},
+      "html": {"minify": true},
+      "addServiceWorker": true,
+      "addPushManifest": true,
+      "insertPrefetchLinks": true
+    }
+  ]
+}
