@@ -1,3 +1,5 @@
+
+
 let pos;
 var diameter = 50;
 let speed = 0.99;
@@ -9,6 +11,8 @@ let vol;
 let soundx;
 let obstacles = [];
 var Freezer1;
+let amt;
+
 
 class Obstacle 
 {
@@ -81,7 +85,8 @@ class Freezer
   }
 }
 
-function setup() {
+function setup() 
+{
 
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
@@ -106,10 +111,16 @@ function setup() {
   
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
-}
-let amt;
+  soap = loadImage("images/soap.png");
 
-function draw() {
+}
+
+
+
+
+function draw() 
+
+{
   amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
   let bgColor;
   if (pos.x > windowWidth / 2) {
@@ -129,29 +140,30 @@ function draw() {
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
 
-
-
   //mic---
   vol = mic.getLevel();
   soundx = map(vol, 0, 1, 1, 100);
 
-  fill(255);
+  //main object
+  //soap
+  fill(0);
   noStroke();
-  ellipse(pos.x, pos.y, diameter+soundx);
+  // ellipse(pos.x, pos.y, diameter+soundx);
+  image(soap, pos.x, pos.y);
 
 
-  //obstacles
-  for (let i = 0; i < obstacles.length; i++) {
-    obstacles[i].move();
-    obstacles[i].show();
-    if (obstacles[i].isInvisible())
-      obstacles[i].resetPos();
+  // //obstacles
+  // for (let i = 0; i < obstacles.length; i++) {
+  //   obstacles[i].move();
+  //   obstacles[i].show();
+  //   if (obstacles[i].isInvisible())
+  //     obstacles[i].resetPos();
 
-    if (obstacles[i].touch(pos.x, pos.y, diameter)) {
-      diameter -= 1;
-      // window.location.reload(false);
-    }
-  }
+  //   if (obstacles[i].touch(pos.x, pos.y, diameter)) {
+  //     diameter -= 1;
+  //     // window.location.reload(false);
+  //   }
+  // }
 
 
   //freezer
@@ -168,22 +180,30 @@ function draw() {
   
   
   
-  
-  if (millis() > 10000 && (pos.x < diameter * 2)) {
-    alert('Left Player Wins')
+  if (millis() > 10000 && (pos.x < diameter * 2)) 
+  {
+    // alert('Left Player Wins')
     window.location.reload(false);
   }
 
-  if (millis() > 10000 && (pos.x > windowWidth - diameter * 2)) {
-    alert('Right Player Wins');
+  if (millis() > 10000 && (pos.x > windowWidth - diameter * 2)) 
+  {
+    // alert('Right Player Wins');
     window.location.reload(false);
   }
 }
 
-function keyPressed() {
+
+
+function keyPressed() 
+{
   //console.log("obj");
   if (key == " ") {
     pos.x = windowWidth / 2;
     pos.y = windowHeight / 2;
   }
 }
+
+
+
+
