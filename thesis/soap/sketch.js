@@ -139,7 +139,7 @@ function draw()
   rect(0, 0, windowWidth, windowHeight);
   // background(bgColor, 10);
 
-  let targetPos = createVector(xOrient, yOrient);
+  let targetPos = createVector(pos.x+xOrient, pos.y+yOrient);
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
@@ -306,6 +306,10 @@ function keyPressed()
 
           xOrient = model.quaternion.fromArray(sensor.quaternion)._x;
           yOrient = model.quaternion.fromArray(sensor.quaternion)._y;
+
+          pos.x += xOrient;
+          pos.y += yOrient;
+
           draw();
       }
 
