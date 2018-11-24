@@ -382,28 +382,28 @@ function initSensor()
 
     // Orientation Sensor or GYROSCOPE START
 
-    sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+    // sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
     
-    sensor_orientation.onreading = function() 
-    {
-        model.quaternion.fromArray(sensor_orientation.quaternion);
-        // console.log(sensor.quaternion);
+    // sensor_orientation.onreading = function() 
+    // {
+    //     model.quaternion.fromArray(sensor_orientation.quaternion);
+    //     // console.log(sensor.quaternion);
 
-        xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
-        yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
+    //     xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
+    //     yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
-        pos.x += xOrient;
-        pos.y += yOrient;
+    //     pos.x += xOrient;
+    //     pos.y += yOrient;
 
-        draw();
-    }
+    //     draw();
+    // }
 
-    sensor_orientation.onerror = (event) => {
-      if (event.error.name == 'NotReadableError') {
-        console.log("Orientation Sensor is not available.");
-      }
-    }
-    sensor_orientation.start();
+    // sensor_orientation.onerror = (event) => {
+    //   if (event.error.name == 'NotReadableError') {
+    //     console.log("Orientation Sensor is not available.");
+    //   }
+    // }
+    // sensor_orientation.start();
 
 
 
