@@ -17,6 +17,7 @@ var xOrient=0, yOrient=0;
 var ambience=0;
 var num_hearts=3, temp_num_hearts=0;
 
+document.addEventListener('onload', () => document.documentElement.requestFullscreen());
 
 class Obstacle 
 {
