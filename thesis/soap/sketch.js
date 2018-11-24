@@ -150,10 +150,6 @@ function draw()
   image(heart, 30, 30, 100,100);
   image(faded_heart, 160, 30, 100,100);
 
-  console.log(sensor_ambientlight.luminance);
-
-
-
 
 
   amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
