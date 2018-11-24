@@ -399,7 +399,7 @@ function initSensor()
         }
         else
         {
-          if(ambience > 10 && num_hearts < 3)
+          if(ambience > 60 && num_hearts < 3)
             {
               temp_num_hearts = num_hearts;
 
