@@ -131,17 +131,6 @@ function setup()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 function draw() 
 {
 
@@ -166,8 +155,10 @@ function draw()
               break;
   }
 
-  if(ambience < 10 && num_hearts < 4)
+  console.log(ambience);
+  if(ambience < 10 && num_hearts <= 3)
     num_hearts++;
+  // else if(num_hearts)
 
 
 
