@@ -13,9 +13,9 @@ let obstacles = [];
 var Freezer1;
 let amt;
 
-var xOrient = 0, yOrient=0;
-var ambience = 0;
-var num_hearts = 1;
+var xOrient=0, yOrient=0;
+var ambience=0;
+var num_hearts=1, temp_num_hearts=0;
 
 
 class Obstacle 
@@ -381,8 +381,25 @@ function initSensor()
         ambience = sensor_ambientlight.illuminance;
         console.log(ambience);
 
-        if(ambience < 10 && num_hearts < 3)
-          num_hearts++;
+        if(temp_num_hearts == num_hearts)
+        {
+            if(ambience < 10 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
+
+              num_hearts++;
+            }
+        }
+        else
+        {
+          if(ambience > 10 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
+
+              num_hearts++;
+            }
+        }
+
 
         console.log(num_hearts);
 
@@ -415,9 +432,6 @@ function initSensor()
 //   // details.innerHTML = 'It looks like your browser doesnt support this feature'; 
 //   console.log('AmbientLightSensor not supported.');
 // }
-
-
-
 
 }
 
