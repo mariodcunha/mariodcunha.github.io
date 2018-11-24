@@ -323,74 +323,59 @@ function keyPressed()
 
 
 
-  //Initialising all Sensors 
-  function initSensor() 
-  {
-      
-      //Enable the Options
-      const options = { frequency: 60, coordinateSystem };
-      // console.log(JSON.stringify(options));
 
 
 
-      // ___________ Orientation Sensor or GYROSCOPE START______________
+ // Initializing All Sensors
 
-      sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
-      
-      sensor_orientation.onreading = function() 
-      {
-          model.quaternion.fromArray(sensor_orientation.quaternion);
-          // console.log(sensor.quaternion);
+function initSensor() 
+{
+    
+    //Enable the "Options" for the Gyroscope system
+    const options = { frequency: 60, coordinateSystem };
+    // console.log(JSON.stringify(options));
 
-          xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
-          yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
-          pos.x += xOrient;
-          pos.y += yOrient;
 
-          draw();
+    // Orientation Sensor or GYROSCOPE START
+
+    sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+    
+    sensor_orientation.onreading = function() 
+    {
+        model.quaternion.fromArray(sensor_orientation.quaternion);
+        // console.log(sensor.quaternion);
+
+        xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
+        yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
+
+        pos.x += xOrient;
+        pos.y += yOrient;
+
+        draw();
+    }
+
+    sensor_orientation.onerror = (event) => {
+      if (event.error.name == 'NotReadableError') {
+        console.log("Orientation Sensor is not available.");
       }
-
-      sensor_orientation.onerror = (event) => {
-        if (event.error.name == 'NotReadableError') {
-          console.log("Orientation Sensor is not available.");
-        }
-      }
-      sensor_orientation.start();
-      // ___________ Orientation Sensor or GYROSCOPE END________________
+    }
+    sensor_orientation.start();
 
 
 
+    // Ambient Light Sensor
 
+    sensor_ambientlight = new AmbientLightSensor();
+    sensor_ambientlight.start();
+    
+    sensor_ambientlight.onreading = function()
+    {
+        console.log(sensor_mario.illuminance);          
 
-      // ___________ AmbientLight Sensor START______________
+        draw();
+    }
 
-      sensor_ambientlight = new AmbientLightSensor();
-      sensor_ambientlight.start();
-      
-      console.log(sensor_ambientlight);
-
-      sensor_ambientlight.onreading = function()
-      {
-          console.log("yes ok" );          
-
-          draw();
-      }
-
-      // sensor_ambientlight.start();
-
-
-// // Feature detection
-// if (window.AmbientLightSensor)
-// {
-//     // console.log("AmbientLightSensor is there");
-//     try{
-//       const sensor = new AmbientLightSensor();
-//       sensor.start();
-
-//       // console.log(sensor);
-
-//       // Detect changes in the light
 //       sensor_mario.onreading = () => {
 //         // details.innerHTML = sensor_mario.illuminance;
 //         console.log("AmbientLightSensor is working");
@@ -421,7 +406,7 @@ function keyPressed()
 
 
 
-  }
+}
 
 
 
