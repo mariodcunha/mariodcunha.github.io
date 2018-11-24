@@ -14,6 +14,7 @@ var Freezer1;
 let amt;
 
 var xOrient = 0, yOrient=0;
+var num_hearts = 0;
 
 
 class Obstacle 
@@ -95,8 +96,8 @@ function setup()
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
   // put setup code here
-  mic = new p5.AudioIn();
-  mic.start();
+  // mic = new p5.AudioIn();
+  // mic.start();
 
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
@@ -115,16 +116,47 @@ function setup()
   
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
+  //Loading Images
   soap = loadImage("images/soap.png");
+  heart = loadImage("images/heart.png");
+  faded_heart = loadImage("images/heart-faded.png");
 
 }
 
 
 
 
-function draw() 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function draw() 
 {
+
+  //Main Bar
+
+  //Heart
+  image(heart, 30, 30, 100,100);
+  image(faded_heart, 160, 30, 100,100);
+
+  // console.log(sensor_ambientlight);
+  console.log(sensor_ambientlight.luminance);
+
+
+
+
+
   amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
   let bgColor;
   if (pos.x > windowWidth / 2) {
@@ -143,13 +175,10 @@ function draw()
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
-  console.log(pos.x);
-  console.log(xOrient);
-
 
   //mic---
-  vol = mic.getLevel();
-  soundx = map(vol, 0, 1, 1, 100);
+  // vol = mic.getLevel();
+  // soundx = map(vol, 0, 1, 1, 100);
 
   //main object
   //soap
@@ -198,6 +227,8 @@ function draw()
     // alert('Right Player Wins');
     // window.location.reload(false);
   }
+
+
 }
 
 
@@ -224,7 +255,8 @@ function keyPressed()
   let container, sensor, camera, scene, renderer, model;
 
   initScene();
-  if (navigator.permissions) {
+  if (navigator.permissions) 
+  {
       // https://w3c.github.io/orientation-sensor/#model
       Promise.all([navigator.permissions.query({ name: "accelerometer" }),
                    navigator.permissions.query({ name: "magnetometer" }),
@@ -290,22 +322,29 @@ function keyPressed()
       });
   }
 
+
+
+  //Initialising all Sensors 
   function initSensor() 
   {
-      const options = { frequency: 60, coordinateSystem };
-      console.log(JSON.stringify(options));
-      sensor = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
       
-      //Orientation values
-      sensor.onreading = function() 
-      {
-          model.quaternion.fromArray(sensor.quaternion);
-          // console.log(sensor.quaternion);
-          console.log(model.quaternion.fromArray(sensor.quaternion));
-          console.log(model.quaternion.fromArray(sensor.quaternion)._w);
+      //Enable the Options
+      const options = { frequency: 60, coordinateSystem };
+      // console.log(JSON.stringify(options));
 
-          xOrient = model.quaternion.fromArray(sensor.quaternion).inverse()._x;
-          yOrient = model.quaternion.fromArray(sensor.quaternion).inverse()._y;
+
+
+      // ___________ Orientation Sensor or GYROSCOPE START______________
+
+      sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+      
+      sensor_orientation.onreading = function() 
+      {
+          model.quaternion.fromArray(sensor_orientation.quaternion);
+          // console.log(sensor.quaternion);
+
+          xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
+          yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
           pos.x += xOrient;
           pos.y += yOrient;
@@ -313,25 +352,99 @@ function keyPressed()
           draw();
       }
 
-
-      sensor.onerror = (event) => {
+      sensor_orientation.onerror = (event) => {
         if (event.error.name == 'NotReadableError') {
-          console.log("Sensor is not available.");
+          console.log("Orientation Sensor is not available.");
         }
       }
-      sensor.start();
+      sensor_orientation.start();
+      // ___________ Orientation Sensor or GYROSCOPE END________________
+
+
+
+      // ___________ AmbientLight Sensor START______________
+
+      sensor_ambientlight = new AmbientLightSensor();
+      // console.log(sensor_ambientlight);
+      sensor_ambientlight.start();
+
+      sensor_ambientlight.onreading = () =>
+      {          
+          alert(sensor_ambientlight.illuminance);
+          console.log(sensor_ambientlight.illuminance);
+          draw();
+      }
+
+      // sensor_ambientlight.start();
+
+
+// // Feature detection
+// if (window.AmbientLightSensor)
+// {
+//     // console.log("AmbientLightSensor is there");
+//     try{
+//       const sensor = new AmbientLightSensor();
+//       sensor.start();
+
+//       // console.log(sensor);
+
+//       // Detect changes in the light
+//       sensor_mario.onreading = () => {
+//         // details.innerHTML = sensor_mario.illuminance;
+//         console.log("AmbientLightSensor is working");
+//         console.log(sensor_mario.illuminance);
+
+//           // Read the light levels in lux 
+//           // < 50 is dark room
+//           if (sensor_mario.illuminance < 50) {
+//             document.body.className = 'darkLight';
+//             console.log("AmbientLightSensor is working");
+//           } else {
+//             document.body.className = 'brightLight';
+//           }
+
+//       }
+
+//       // Has an error occured?
+//       sensor.onerror = event => document.getElementById("details").innerHTML = event.error.message;
+//       sensor_mario.start();
+//     } catch(err) {
+//       // details.innerHTML = err.message;
+//     }
+// } else {
+//   // details.innerHTML = 'It looks like your browser doesnt support this feature'; 
+//   console.log('AmbientLightSensor not supported.');
+// }
+
+
+
+
   }
 
-  function renderScene() {
+
+
+
+
+
+
+
+
+  function renderScene() 
+  {
       requestAnimationFrame(renderScene);
       camera.lookAt(scene.position);
       renderer.render(scene, camera);
   }
 
   let log = console.log;
-  console.log = (message, ...rest) => {
+  console.log = (message, ...rest) => 
+  {
       const div = document.querySelector('#console');
       // div.innerText = message;
       log.call(console, message, ...rest);
   }
             
+
+
+
+
