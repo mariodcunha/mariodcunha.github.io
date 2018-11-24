@@ -15,7 +15,7 @@ let amt;
 
 var xOrient = 0, yOrient=0;
 var ambience = 0;
-var num_hearts = 0;
+var num_hearts = 1;
 
 
 class Obstacle 
@@ -148,9 +148,26 @@ function draw()
   //Main Bar
 
   //Heart
-  image(faded_heart, 30, 30, 100,100);
-  image(faded_heart, 160, 30, 100,100);
-  image(faded_heart, 290, 30, 100,100);
+  switch(num_hearts)
+  {
+    case 1:   image(heart, 30, 30, 100,100);
+              image(faded_heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+    case 2:   image(heart, 30, 30, 100,100);
+              image(heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+    case 3:   image(heart, 30, 30, 100,100);
+              image(heart, 160, 30, 100,100);
+              image(heart, 290, 30, 100,100);
+              break;
+  }
+
+  if(ambience < 10 && num_hearts < 4)
+    num_hearts++;
 
 
 
