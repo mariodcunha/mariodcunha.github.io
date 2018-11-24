@@ -148,8 +148,9 @@ function draw()
   //Main Bar
 
   //Heart
-  image(heart, 30, 30, 100,100);
+  image(faded_heart, 30, 30, 100,100);
   image(faded_heart, 160, 30, 100,100);
+  image(faded_heart, 290, 30, 100,100);
 
 
 
