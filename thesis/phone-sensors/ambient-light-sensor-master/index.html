@@ -1,45 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Ambient Light Sensor</title>
+    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+    <style> body {padding: 0; margin: 0;} </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/98/three.min.js"></script>    
+
+    <script src="js/three.min.js"></script>
+    <script src="js/OBJLoader.js"></script>
+    <script src="js/MTLLoader.js"></script>
+
+    <script src="sketch.js"></script>
+
+    <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+    <link rel="shortcut icon" href="https://mariodcunha.github.io/images/favicon.png" type="image/x-icon">
 
   </head>
-  <body class="brightLight">
-    <h1>Ambient Light Sensor</h1>
-    <p>Current Light Levels</p>
-    <div id="details"></div>  
+  <body>
+
+
+       <script type="module">
+            import {
+              AbsoluteOrientationSensor,
+              RelativeOrientationSensor
+            } from './js/motion-sensors.js';
+
+
+
+        </script>
+
   </body>
-  <script>
-    const details = document.getElementById("details");
-    
-    // Feature detection
-    if (window.AmbientLightSensor){
-        try{
-          const sensor = new AmbientLightSensor();
-
-          // Detect changes in the light
-          sensor.onreading = () => {
-            details.innerHTML = sensor.illuminance;
-            
-              // Read the light levels in lux 
-              // < 50 is dark room
-              if (sensor.illuminance < 50) {
-                document.body.className = 'darkLight';
-              } else {
-                document.body.className = 'brightLight';
-              }
-          }
-          
-          // Has an error occured?
-          sensor.onerror = event => document.getElementById("details").innerHTML = event.error.message;
-          sensor.start();
-        } catch(err) {
-          details.innerHTML = err.message;
-        }
-    } else {
-      details.innerHTML = 'It looks like your browser doesnt support this feature'; 
-    }
-
-  </script>
 </html>

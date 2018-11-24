@@ -150,7 +150,8 @@ function draw()
   image(heart, 30, 30, 100,100);
   image(faded_heart, 160, 30, 100,100);
 
-  console.log(sensor_ambientlight.luminance);
+  // console.log(sensor_ambientlight);
+  // console.log(sensor_ambientlight.luminance);
 
 
 
@@ -373,7 +374,8 @@ function keyPressed()
       sensor_ambientlight.onreading = function()
       {
           console.log("yes ok" );          
-
+          // alert(sensor_ambientlight.illuminance);
+          // console.log(sensor_ambientlight.illuminance);
           draw();
       }
 
