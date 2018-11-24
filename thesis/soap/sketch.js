@@ -413,32 +413,6 @@ function initSensor()
         draw();
     }
 
-//       sensor_mario.onreading = () => {
-//         // details.innerHTML = sensor_mario.illuminance;
-//         console.log("AmbientLightSensor is working");
-//         console.log(sensor_mario.illuminance);
-
-//           // Read the light levels in lux 
-//           // < 50 is dark room
-//           if (sensor_mario.illuminance < 50) {
-//             document.body.className = 'darkLight';
-//             console.log("AmbientLightSensor is working");
-//           } else {
-//             document.body.className = 'brightLight';
-//           }
-
-//       }
-
-//       // Has an error occured?
-//       sensor.onerror = event => document.getElementById("details").innerHTML = event.error.message;
-//       sensor_mario.start();
-//     } catch(err) {
-//       // details.innerHTML = err.message;
-//     }
-// } else {
-//   // details.innerHTML = 'It looks like your browser doesnt support this feature'; 
-//   console.log('AmbientLightSensor not supported.');
-// }
 
 }
 
