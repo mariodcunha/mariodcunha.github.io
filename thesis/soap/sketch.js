@@ -2,7 +2,7 @@
 
 let pos;
 var diameter = 50;
-let speed = 30;
+let speed = 40;
 let colorRight;
 let colorMiddle;
 let colorLeft;
