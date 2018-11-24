@@ -155,9 +155,8 @@ function draw()
               break;
   }
 
-  console.log(ambience);
-  if(ambience < 10 && num_hearts <= 3)
-    num_hearts++;
+  // if(ambience < 10 && num_hearts <= 3)
+  //   num_hearts++;
   // else if(num_hearts)
 
 
@@ -381,6 +380,11 @@ function initSensor()
     {
         ambience = sensor_ambientlight.illuminance;
         console.log(ambience);
+
+        if(ambience < 10 && num_hearts < 3)
+          num_hearts++;
+
+        console.log(num_hearts);
 
         draw();
     }
