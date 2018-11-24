@@ -15,7 +15,7 @@ let amt;
 
 var xOrient=0, yOrient=0;
 var ambience=0;
-var num_hearts=0, temp_num_hearts=0;
+var num_hearts=3, temp_num_hearts=0;
 
 
 class Obstacle 
@@ -91,8 +91,18 @@ class Freezer
 
 
 
+
+function preload() 
+{
+  bitfont = loadFont('font/8bit-font.ttf');
+}
+
+
+
 function setup() 
 {
+
+  textFont(bitfont);
 
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
@@ -186,7 +196,6 @@ function draw()
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
-
   //mic---
   // vol = mic.getLevel();
   // soundx = map(vol, 0, 1, 1, 100);
@@ -196,7 +205,28 @@ function draw()
   fill(0);
   noStroke();
   // ellipse(pos.x, pos.y, diameter+soundx);
-  image(soap, pos.x+xOrient, pos.y+yOrient, 300,200);
+  if(pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0)
+  {
+        pos.x = window.innerWidth / 2;
+        pos.y = window.innerHeight / 2;
+
+        console.log(window.innerWidth);
+
+        if(num_hearts>=0)
+            num_hearts--;
+  }
+
+  if(num_hearts>=0)
+  {
+    image(soap, pos.x+xOrient, pos.y+yOrient, 300,200);
+  }
+  else if(num_hearts<0)
+  {
+    fill(255);
+    textSize(120);
+    textFont(bitfont);
+    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
+  }
 
 
   // //obstacles
