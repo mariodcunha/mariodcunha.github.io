@@ -100,7 +100,7 @@ function setup()
   // mic = new p5.AudioIn();
   // mic.start();
 
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(window.innerWidth, window.innerHeight);
   pos = createVector(mouseX, mouseY);
   noCursor();
   colorRight = color(222, 30, 30);
