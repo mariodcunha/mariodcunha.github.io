@@ -15,7 +15,7 @@ let amt;
 
 var xOrient=0, yOrient=0;
 var ambience=0;
-var num_hearts=1, temp_num_hearts=0;
+var num_hearts=0, temp_num_hearts=0;
 
 
 class Obstacle 
@@ -265,7 +265,11 @@ function keyPressed()
 
   let container, sensor, camera, scene, renderer, model;
 
-  initScene();
+  // initScene();
+
+
+  // Sensor Permissions
+
   if (navigator.permissions) 
   {
       // https://w3c.github.io/orientation-sensor/#model
