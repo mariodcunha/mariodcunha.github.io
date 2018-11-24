@@ -382,67 +382,67 @@ function initSensor()
 
     // Orientation Sensor or GYROSCOPE START
 
-    // sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+    sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
     
-    // sensor_orientation.onreading = function() 
-    // {
-    //     model.quaternion.fromArray(sensor_orientation.quaternion);
-    //     // console.log(sensor.quaternion);
+    sensor_orientation.onreading = function() 
+    {
+        model.quaternion.fromArray(sensor_orientation.quaternion);
+        // console.log(sensor.quaternion);
 
-    //     xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
-    //     yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
+        xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
+        yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
-    //     pos.x += xOrient;
-    //     pos.y += yOrient;
+        pos.x += xOrient;
+        pos.y += yOrient;
 
-    //     draw();
-    // }
+        draw();
+    }
 
-    // sensor_orientation.onerror = (event) => {
-    //   if (event.error.name == 'NotReadableError') {
-    //     console.log("Orientation Sensor is not available.");
-    //   }
-    // }
-    // sensor_orientation.start();
+    sensor_orientation.onerror = (event) => {
+      if (event.error.name == 'NotReadableError') {
+        console.log("Orientation Sensor is not available.");
+      }
+    }
+    sensor_orientation.start();
 
 
 
     // Ambient Light Sensor
 
-    sensor_ambientlight = new AmbientLightSensor();
-    sensor_ambientlight.start();
+    // sensor_ambientlight = new AmbientLightSensor();
+    // sensor_ambientlight.start();
 
-    ambience = sensor_ambientlight.illuminance;
+    // ambience = sensor_ambientlight.illuminance;
     
-    sensor_ambientlight.onreading = function()
-    {
-        ambience = sensor_ambientlight.illuminance;
-        console.log(ambience);
+    // sensor_ambientlight.onreading = function()
+    // {
+    //     ambience = sensor_ambientlight.illuminance;
+    //     console.log(ambience);
 
-        if(temp_num_hearts == num_hearts)
-        {
-            if(ambience < 10 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
+    //     if(temp_num_hearts == num_hearts)
+    //     {
+    //         if(ambience < 10 && num_hearts < 3)
+    //         {
+    //           temp_num_hearts = num_hearts;
 
-              num_hearts++;
-            }
-        }
-        else
-        {
-          if(ambience > 60 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
+    //           num_hearts++;
+    //         }
+    //     }
+    //     else
+    //     {
+    //       if(ambience > 60 && num_hearts < 3)
+    //         {
+    //           temp_num_hearts = num_hearts;
 
-              num_hearts++;
-            }
-        }
+    //           num_hearts++;
+    //         }
+    //     }
 
 
-        console.log(num_hearts);
+    //     console.log(num_hearts);
 
-        draw();
-    }
+    //     draw();
+    // }
 
 
 }
