@@ -14,6 +14,7 @@ var Freezer1;
 let amt;
 
 var xOrient = 0, yOrient=0;
+var ambience = 0;
 var num_hearts = 0;
 
 
@@ -364,10 +365,13 @@ function initSensor()
 
     sensor_ambientlight = new AmbientLightSensor();
     sensor_ambientlight.start();
+
+    ambience = sensor_ambientlight.illuminance;
     
     sensor_ambientlight.onreading = function()
     {
-        console.log(sensor_ambientlight.illuminance);          
+        ambience = sensor_ambientlight.illuminance;
+        console.log(ambience);
 
         draw();
     }
