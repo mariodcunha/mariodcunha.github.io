@@ -15,7 +15,7 @@ let amt;
 
 var xOrient=0, yOrient=0;
 var ambience=0;
-var num_hearts=1, temp_num_hearts=0;
+var num_hearts=0, temp_num_hearts=0;
 
 
 class Obstacle 
@@ -139,6 +139,13 @@ function draw()
   //Heart
   switch(num_hearts)
   {
+
+    case 0:   image(faded_heart, 30, 30, 100,100);
+              image(faded_heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+
     case 1:   image(heart, 30, 30, 100,100);
               image(faded_heart, 160, 30, 100,100);
               image(faded_heart, 290, 30, 100,100);
