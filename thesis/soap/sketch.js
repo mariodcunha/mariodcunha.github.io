@@ -371,7 +371,7 @@ function initSensor()
     
     sensor_ambientlight.onreading = function()
     {
-        console.log(sensor_mario.illuminance);          
+        console.log(sensor_ambientlight.illuminance);          
 
         draw();
     }
