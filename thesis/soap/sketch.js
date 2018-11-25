@@ -2,7 +2,7 @@
 
 let pos;
 var diameter = 50;
-let speed = 40;
+let speed = 20;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -409,40 +409,40 @@ function initSensor()
 
     // Ambient Light Sensor
 
-    // sensor_ambientlight = new AmbientLightSensor();
-    // sensor_ambientlight.start();
+    sensor_ambientlight = new AmbientLightSensor();
+    sensor_ambientlight.start();
 
-    // ambience = sensor_ambientlight.illuminance;
+    ambience = sensor_ambientlight.illuminance;
     
-    // sensor_ambientlight.onreading = function()
-    // {
-    //     ambience = sensor_ambientlight.illuminance;
-    //     console.log(ambience);
+    sensor_ambientlight.onreading = function()
+    {
+        ambience = sensor_ambientlight.illuminance;
+        console.log(ambience);
 
-    //     if(temp_num_hearts == num_hearts)
-    //     {
-    //         if(ambience < 10 && num_hearts < 3)
-    //         {
-    //           temp_num_hearts = num_hearts;
+        if(temp_num_hearts == num_hearts)
+        {
+            if(ambience < 10 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
 
-    //           num_hearts++;
-    //         }
-    //     }
-    //     else
-    //     {
-    //       if(ambience > 60 && num_hearts < 3)
-    //         {
-    //           temp_num_hearts = num_hearts;
+              num_hearts++;
+            }
+        }
+        else
+        {
+          if(ambience > 60 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
 
-    //           num_hearts++;
-    //         }
-    //     }
+              num_hearts++;
+            }
+        }
 
 
-    //     console.log(num_hearts);
+        console.log(num_hearts);
 
-    //     draw();
-    // }
+        draw();
+    }
 
 
 }
