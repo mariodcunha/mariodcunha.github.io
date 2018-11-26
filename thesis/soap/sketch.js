@@ -32,24 +32,34 @@ function initialize_variables()
 
 // Fullscreen
 
-var docElm = document.documentElement;
+ // var goFS = $('body');
+  // goFS.addEventListener("click", function() 
+  // {
+      var docElm = document.documentElement;
+      docElm.requestFullscreen();
 
-if (docElm.requestFullscreen) 
-{
-    docElm.requestFullscreen();
-}
-else if (docElm.mozRequestFullScreen) 
-{
-    docElm.mozRequestFullScreen();
-}
-else if (docElm.webkitRequestFullScreen) 
-{
-    docElm.webkitRequestFullScreen();
-}
-else if (docElm.msRequestFullscreen) 
-{
-    docElm.msRequestFullscreen();
-}
+      console.log("fullscreen might work");
+
+  // }, false);
+
+// var docElm = document.documentElement;
+
+// if (docElm.requestFullscreen) 
+// {
+//     docElm.requestFullscreen();
+// }
+// else if (docElm.mozRequestFullScreen) 
+// {
+//     docElm.mozRequestFullScreen();
+// }
+// else if (docElm.webkitRequestFullScreen) 
+// {
+//     docElm.webkitRequestFullScreen();
+// }
+// else if (docElm.msRequestFullscreen) 
+// {
+//     docElm.msRequestFullscreen();
+// }
 
 
 
@@ -285,6 +295,7 @@ function draw()
     text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
     textSize(120);
     text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
+    document.location.reload();
   }
 
 

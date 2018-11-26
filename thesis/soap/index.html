@@ -2,8 +2,15 @@
 <html>
   <head>
     <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0 content="minimal-ui">
-    <meta name="mobile-web-app-capable" content="yes">
     <!-- <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
+      
+    <!-- Launch fullscreen on mobile browser from homescreen -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+
+    <!-- How your web app appears when it is installed to the home screen -->
+    <link rel="manifest" href="manifest.json">
 
 
     <title>Thesis Prototype</title>
@@ -12,6 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/98/three.min.js"></script>    
 
@@ -28,7 +36,7 @@
     <link rel="shortcut icon" href="https://mariodcunha.github.io/images/favicon.png" type="image/x-icon">
 
   </head>
-  <body>
+  <body id="mainbody">
 
        <script type="module">
             import {
