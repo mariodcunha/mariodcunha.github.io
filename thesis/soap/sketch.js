@@ -228,8 +228,9 @@ function draw()
       push();
       console.log(xOrient);
 
+      //Soap Starting point
       translate(pos.x+xOrient, pos.y+yOrient);
-      rotate((xOrient+yOrient)*20);
+      rotate((xOrient+yOrient)*200);
 
       imageMode(CENTER);
       image(soap, 0+xOrient, 0+yOrient, soapWidth, soapHeight);
@@ -327,7 +328,6 @@ function initSensor()
     sensor_orientation.onreading = function() 
     {
         model.quaternion.fromArray(sensor_orientation.quaternion);
-        // console.log(sensor.quaternion);
 
         xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
         yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
