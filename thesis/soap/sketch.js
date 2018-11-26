@@ -52,16 +52,16 @@ function toggleFullscreen()
   }
   else if(fullscreen==1)
   {
-    if (document.exitFullscreen)
-      document.exitFullscreen();
-    else if (document.mozCancelFullScreen)
-      document.mozCancelFullScreen();
-    else if (document.webkitExitFullscreen)
-      document.webkitExitFullscreen();
-    else if (document.msExitFullscreen)
-      document.msExitFullscreen();
+    // if (document.exitFullscreen)
+    //   document.exitFullscreen();
+    // else if (document.mozCancelFullScreen)
+    //   document.mozCancelFullScreen();
+    // else if (document.webkitExitFullscreen)
+    //   document.webkitExitFullscreen();
+    // else if (document.msExitFullscreen)
+    //   document.msExitFullscreen();
 
-    fullscreen=0;
+    // fullscreen=0;
   }
   
 }
