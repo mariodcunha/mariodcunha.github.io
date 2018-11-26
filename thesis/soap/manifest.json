@@ -5,7 +5,7 @@
 
   "description": "Two player co-op game exploring the small joys of life",
 
-  "display": "fullscreen",
+  "display": "standalone",
 
   "orientation": "portrait",
 
