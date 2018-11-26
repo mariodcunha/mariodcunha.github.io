@@ -1,6 +1,4 @@
 
-
-let pos;
 var diameter = 50;
 let speed = 50;
 let colorRight;
@@ -13,11 +11,14 @@ let obstacles = [];
 var Freezer1;
 let amt;
 
+//Thesis
+
+var pos;
 var xOrient, yOrient;
 var ambience;
 var num_hearts, temp_num_hearts;
-
 var soapWidth, soapHeight, soapDissolve;
+var fullscreen;
 
 
 function initialize_variables()
@@ -25,6 +26,7 @@ function initialize_variables()
     soapWidth=300, soapHeight=200, soapDissolve=3;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
+    fullscreen=1;
 }
 
 
@@ -32,34 +34,40 @@ function initialize_variables()
 
 // Fullscreen
 
- // var goFS = $('body');
-  // goFS.addEventListener("click", function() 
-  // {
-      // var docElm = document.documentElement;
-      // docElm.requestFullscreen();
+var elem = document.documentElement;
+function toggleFullscreen() 
+{
+  if(fullscreen==0)
+  {
+    if (elem.requestFullscreen)
+      elem.requestFullscreen();
+    else if (elem.mozRequestFullScreen)  /* Firefox */
+      elem.mozRequestFullScreen();
+    else if (elem.webkitRequestFullscreen)  /* Chrome, Safari & Opera */
+      elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen)  /* IE/Edge */
+      elem.msRequestFullscreen();
 
-      // console.log("fullscreen might work");
+    fullscreen=1;
+  }
+  else if(fullscreen==1)
+  {
+    if (document.exitFullscreen)
+      document.exitFullscreen();
+    else if (document.mozCancelFullScreen)
+      document.mozCancelFullScreen();
+    else if (document.webkitExitFullscreen)
+      document.webkitExitFullscreen();
+    else if (document.msExitFullscreen)
+      document.msExitFullscreen();
 
-  // }, false);
+    fullscreen=0;
+  }
+  
+}
 
-// var docElm = document.documentElement;
 
-// if (docElm.requestFullscreen) 
-// {
-//     docElm.requestFullscreen();
-// }
-// else if (docElm.mozRequestFullScreen) 
-// {
-//     docElm.mozRequestFullScreen();
-// }
-// else if (docElm.webkitRequestFullScreen) 
-// {
-//     docElm.webkitRequestFullScreen();
-// }
-// else if (docElm.msRequestFullscreen) 
-// {
-//     docElm.msRequestFullscreen();
-// }
+
 
 
 
@@ -156,7 +164,7 @@ function setup()
   // mic = new p5.AudioIn();
   // mic.start();
 
-  createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
   noCursor();
   colorRight = color(222, 30, 30);
@@ -552,6 +560,12 @@ function initSensor()
   }
             
 
+//mariodcunha.js
+
+function refresh()
+{
+  document.location.reload();
+}
 
 
 function  randomMath(l, h)
