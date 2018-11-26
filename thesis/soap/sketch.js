@@ -216,7 +216,7 @@ function draw()
   fill(0);
   noStroke();
 
-  // Soap Disssolves with sound
+  // Soap Disssolves and Sound can save it
   // ellipse(pos.x, pos.y, diameter+soundx);
   if(pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0)
   {
@@ -225,12 +225,12 @@ function draw()
 
         console.log(window.innerWidth);
 
-        // if(num_hearts>=0)
-        //     num_hearts--;
+        if(num_hearts>=0)
+            num_hearts--;
   }
 
-  // if(num_hearts>=0)
-  // {
+  if(num_hearts>=0)
+  {
 
       push();
       console.log(xOrient);
@@ -244,14 +244,14 @@ function draw()
       pop();
 
 
-  // }
-  // else if(num_hearts<0)
-  // {
-  //   fill(255);
-  //   textSize(120);
-  //   textFont(bitfont);
-  //   text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
-  // }
+  }
+  else if(num_hearts<0)
+  {
+    fill(255);
+    textSize(120);
+    textFont(bitfont);
+    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
+  }
 
 
   // //obstacles
@@ -268,31 +268,29 @@ function draw()
   // }
 
 
-  //freezer
-    Freezer1.show();
-    if (Freezer1.isInvisible())
-      Freezer1.resetPos();
+  // //freezer
+  //   Freezer1.show();
+  //   if (Freezer1.isInvisible())
+  //     Freezer1.resetPos();
 
-    if (Freezer1.touch(pos.x, pos.y, diameter)) 
-    {
-      diameter -= 1;
-      // window.location.reload(false);
-    }
+  //   if (Freezer1.touch(pos.x, pos.y, diameter)) 
+  //   {
+  //     diameter -= 1;
+  //     // window.location.reload(false);
+  //   }
   
   
-  
-  
-  if (millis() > 10000 && (pos.x < diameter * 2)) 
-  {
-    // alert('Left Player Wins')
-    // window.location.reload(false);
-  }
+  // if (millis() > 10000 && (pos.x < diameter * 2)) 
+  // {
+  //   // alert('Left Player Wins')
+  //   // window.location.reload(false);
+  // }
 
-  if (millis() > 10000 && (pos.x > windowWidth - diameter * 2)) 
-  {
-    // alert('Right Player Wins');
-    // window.location.reload(false);
-  }
+  // if (millis() > 10000 && (pos.x > windowWidth - diameter * 2)) 
+  // {
+  //   // alert('Right Player Wins');
+  //   // window.location.reload(false);
+  // }
 
 
 }
@@ -351,7 +349,7 @@ function initSensor()
 
 
 
-    Ambient Light Sensor
+    // Ambient Light Sensor
 
     sensor_ambientlight = new AmbientLightSensor();
     sensor_ambientlight.start();
