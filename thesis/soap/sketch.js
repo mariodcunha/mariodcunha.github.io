@@ -149,67 +149,74 @@ function setup()
 function draw() 
 {
 
-  //Main Bar
+  //Background Color 
+  
+  amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
+  let bgColor;
+  if (pos.x > windowWidth / 2) 
+  {
+    bgColor = lerpColor(colorMiddle, colorRight, amt);
 
-  //Heart
-  // switch(num_hearts)
-  // {
+  } 
+  else 
+  {
+    bgColor = lerpColor(colorMiddle, colorLeft, -amt);
+  }
 
-  //   case 0:   image(faded_heart, 30, 30, 100,100);
-  //             image(faded_heart, 160, 30, 100,100);
-  //             image(faded_heart, 290, 30, 100,100);
-  //             break;
+  // bgColor.setAlpha(30);
+  fill(bgColor);
+  rect(0, 0, windowWidth, windowHeight);
+  // background(bgColor, 10);
 
 
-  //   case 1:   image(heart, 30, 30, 100,100);
-  //             image(faded_heart, 160, 30, 100,100);
-  //             image(faded_heart, 290, 30, 100,100);
-  //             break;
 
-  //   case 2:   image(heart, 30, 30, 100,100);
-  //             image(heart, 160, 30, 100,100);
-  //             image(faded_heart, 290, 30, 100,100);
-  //             break;
 
-  //   case 3:   image(heart, 30, 30, 100,100);
-  //             image(heart, 160, 30, 100,100);
-  //             image(heart, 290, 30, 100,100);
-  //             break;
-  // }
+  // Main Top Bar
+
+  // Hearts
+  switch(num_hearts)
+  {
+
+    case 0:   image(faded_heart, 30, 30, 100,100);
+              image(faded_heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+
+    case 1:   image(heart, 30, 30, 100,100);
+              image(faded_heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+    case 2:   image(heart, 30, 30, 100,100);
+              image(heart, 160, 30, 100,100);
+              image(faded_heart, 290, 30, 100,100);
+              break;
+
+    case 3:   image(heart, 30, 30, 100,100);
+              image(heart, 160, 30, 100,100);
+              image(heart, 290, 30, 100,100);
+              break;
+  }
 
 
   // if(ambience < 10 && num_hearts <= 3)
   //   num_hearts++;
   // else if(num_hearts)
+  //    to be filled
 
 
-
-  amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
-  let bgColor;
-  if (pos.x > windowWidth / 2) {
-    bgColor = lerpColor(colorMiddle, colorRight, amt);
-
-  } else {
-    bgColor = lerpColor(colorMiddle, colorLeft, -amt);
-  }
-
-  bgColor.setAlpha(30);
-  fill(bgColor);
-  rect(0, 0, windowWidth, windowHeight);
-  // background(bgColor, 10);
+  // Soap Placement
 
   let targetPos = createVector(pos.x+yOrient, pos.y+xOrient);
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
-  //mic---
-  // vol = mic.getLevel();
-  // soundx = map(vol, 0, 1, 1, 100);
-
-  //main object
   //soap
   fill(0);
   noStroke();
+
+  // Soap Disssolves with sound
   // ellipse(pos.x, pos.y, diameter+soundx);
   if(pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0)
   {
@@ -234,9 +241,8 @@ function draw()
 
       imageMode(CENTER);
       image(soap, 0+xOrient, 0+yOrient, soapWidth, soapHeight);
-
-
       pop();
+
 
   // }
   // else if(num_hearts<0)
@@ -345,40 +351,40 @@ function initSensor()
 
 
 
-    // Ambient Light Sensor
+    Ambient Light Sensor
 
-    // sensor_ambientlight = new AmbientLightSensor();
-    // sensor_ambientlight.start();
+    sensor_ambientlight = new AmbientLightSensor();
+    sensor_ambientlight.start();
 
-    // ambience = sensor_ambientlight.illuminance;
+    ambience = sensor_ambientlight.illuminance;
     
-    // sensor_ambientlight.onreading = function()
-    // {
-    //     ambience = sensor_ambientlight.illuminance;
-    //     console.log(ambience);
+    sensor_ambientlight.onreading = function()
+    {
+        ambience = sensor_ambientlight.illuminance;
+        console.log(ambience);
 
-    //     if(temp_num_hearts == num_hearts)
-    //     {
-    //         if(ambience < 10 && num_hearts < 3)
-    //         {
-    //           temp_num_hearts = num_hearts;
+        if(temp_num_hearts == num_hearts)
+        {
+            if(ambience < 10 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
 
-    //           num_hearts++;
-    //         }
-    //     }
-    //     else
-    //     {
-    //       if(ambience > 60 && num_hearts < 3)
-    //         {
-    //           temp_num_hearts = num_hearts;
+              num_hearts++;
+            }
+        }
+        else
+        {
+          if(ambience > 60 && num_hearts < 3)
+            {
+              temp_num_hearts = num_hearts;
 
-    //           num_hearts++;
-    //         }
-    //     }
+              num_hearts++;
+            }
+        }
 
 
-    //     console.log(num_hearts);
-    // }
+        console.log(num_hearts);
+    }
 
 }
 
@@ -493,17 +499,17 @@ function initSensor()
       renderer.render(scene, camera);
   }
 
+
+  //Motion of Gyroscope
+
   let log = console.log;
   console.log = (message, ...rest) => 
   {
       const div = document.querySelector('#console');
       // div.innerText = message;
-      log.call(console, message, ...rest);
+      // log.call(console, message, ...rest);
   }
             
-
-
-
 
 
 
