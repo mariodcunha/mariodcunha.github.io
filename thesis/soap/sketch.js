@@ -17,7 +17,7 @@ var xOrient=0, yOrient=0;
 var ambience=0;
 var num_hearts=3, temp_num_hearts=0;
 
-var soapWidth=300, soapHeight=200;
+var soapWidth=300, soapHeight=200, soapDissolve=0.1;
 
 document.addEventListener('onload', () => document.documentElement.requestFullscreen());
 
@@ -223,24 +223,22 @@ function draw()
         pos.x = window.innerWidth / 2;
         pos.y = window.innerHeight / 2;
 
-        console.log(window.innerWidth);
-
         if(num_hearts>=0)
             num_hearts--;
+
   }
 
   if(num_hearts>=0)
   {
 
       push();
-      console.log(xOrient);
 
       //Soap Starting point
       translate(pos.x+xOrient, pos.y+yOrient);
       rotate((xOrient+yOrient)*200);
 
       imageMode(CENTER);
-      image(soap, 0+xOrient, 0+yOrient, soapWidth, soapHeight);
+      image(soap, 0+xOrient, 0+yOrient, soapWidth-soapDissolve, soapHeight-soapDissolve);
       pop();
 
 
@@ -252,6 +250,10 @@ function draw()
     textFont(bitfont);
     text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
   }
+
+
+  console.log(soapDissolve);
+  soapDissolve = soapDissolve + 0.1;
 
 
   // //obstacles
@@ -291,6 +293,8 @@ function draw()
   //   // alert('Right Player Wins');
   //   // window.location.reload(false);
   // }
+
+
 
 
 }
@@ -359,7 +363,7 @@ function initSensor()
     sensor_ambientlight.onreading = function()
     {
         ambience = sensor_ambientlight.illuminance;
-        console.log(ambience);
+        // console.log(ambience);
 
         if(temp_num_hearts == num_hearts)
         {
