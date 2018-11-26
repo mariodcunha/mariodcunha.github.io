@@ -284,7 +284,7 @@ function draw()
     textFont(bitfont);
     text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
     textSize(120);
-    text('Shake to \nContinue', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
+    text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
   }
 
 
