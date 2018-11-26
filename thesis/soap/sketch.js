@@ -13,11 +13,21 @@ let obstacles = [];
 var Freezer1;
 let amt;
 
-var xOrient=0, yOrient=0;
-var ambience=0;
-var num_hearts=3, temp_num_hearts=0;
+var xOrient, yOrient;
+var ambience;
+var num_hearts, temp_num_hearts;
 
-var soapWidth=300, soapHeight=200, soapDissolve=0.1;
+var soapWidth, soapHeight, soapDissolve;
+
+
+function initialize_variables()
+{
+    soapWidth=300, soapHeight=200, soapDissolve=0.1;
+    num_hearts=3, temp_num_hearts=0;
+    xOrient=0, yOrient=0, ambience=0;
+}
+
+
 
 
 // Fullscreen
@@ -119,6 +129,7 @@ class Freezer
 
 function preload() 
 {
+  initialize_variables();
   bitfont = loadFont('font/8bit-font.ttf');
 }
 
@@ -261,7 +272,7 @@ function draw()
 
       imageMode(CENTER);
       image(soap, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
-      console.log("sdf");
+
       pop();
 
 
@@ -269,14 +280,20 @@ function draw()
   else if(num_hearts<0)
   {
     fill(255);
-    textSize(120);
+    textSize(150);
     textFont(bitfont);
-    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
+    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
+    textSize(120);
+    text('Shake to \nContinue', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
   }
 
 
-  console.log(soapDissolve);
-  soapDissolve = soapDissolve + 0.1;
+  if((soapDissolve*1.5)<soapWidth)
+  {
+    soapDissolve = soapDissolve + 2;
+  }
+  else
+    num_hearts = -1;
 
 
   // //obstacles
@@ -379,14 +396,14 @@ function initSensor()
     // Ambient Light Sensor
 
     sensor_ambientlight = new AmbientLightSensor();
-    sensor_ambientlight.start();
+    // sensor_ambientlight.start();
 
     ambience = sensor_ambientlight.illuminance;
     
     sensor_ambientlight.onreading = function()
     {
         ambience = sensor_ambientlight.illuminance;
-        // console.log(ambience);
+        console.log("asd");
 
         if(temp_num_hearts == num_hearts)
         {
@@ -523,17 +540,6 @@ function initSensor()
       camera.lookAt(scene.position);
       renderer.render(scene, camera);
   }
-
-
-  //Motion of Gyroscope
-
-  let log = console.log;
-  console.log = (message, ...rest) => 
-  {
-      const div = document.querySelector('#console');
-      // div.innerText = message;
-      // log.call(console, message, ...rest);
-  }
             
 
 
@@ -555,7 +561,7 @@ function randomInt(n)
   shakeEvent.start();
   window.addEventListener('shake', function()
   {
-      alert("Shook");
+      initialize_variables();
   },  false);
 
   //stop listening
@@ -570,3 +576,20 @@ function randomInt(n)
 
 
 
+
+
+  // Other Snippets
+
+
+  /*
+
+  let log = console.log;
+  console.log = (message, ...rest) => 
+  {
+      const div = document.querySelector('#console');
+      // div.innerText = message;
+      log.call(console, message, ...rest);
+  }
+
+
+  */
