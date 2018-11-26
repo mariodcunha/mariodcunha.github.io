@@ -22,7 +22,7 @@ var soapWidth, soapHeight, soapDissolve;
 
 function initialize_variables()
 {
-    soapWidth=300, soapHeight=200, soapDissolve=0.1;
+    soapWidth=300, soapHeight=200, soapDissolve=2;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
 }
