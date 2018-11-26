@@ -19,8 +19,29 @@ var num_hearts=3, temp_num_hearts=0;
 
 var soapWidth=300, soapHeight=200, soapDissolve=0.1;
 
-// document.addEventListener('onload', () => document.documentElement.requestFullscreen());
-// document.body.requestFullscreen();
+
+// Fullscreen
+
+var docElm = document.documentElement;
+
+if (docElm.requestFullscreen) 
+{
+    docElm.requestFullscreen();
+}
+else if (docElm.mozRequestFullScreen) 
+{
+    docElm.mozRequestFullScreen();
+}
+else if (docElm.webkitRequestFullScreen) 
+{
+    docElm.webkitRequestFullScreen();
+}
+else if (docElm.msRequestFullscreen) 
+{
+    docElm.msRequestFullscreen();
+}
+
+
 
 class Obstacle 
 {
