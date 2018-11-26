@@ -24,28 +24,28 @@
               "sizes": "32x32"
             }, 
             {
-              "src": "images/app-icon-48.png",
+              "src": "images/icon.png",
 
               "type": "image/png",
 
               "sizes": "48x48"
             }, 
             {
-              "src": "images/app-icon-128.png",
+              "src": "images/icon.png",
 
               "type": "image/png",
 
               "sizes": "128x128"
             }, 
             {
-              "src": "images/app-icon-144.png",
+              "src": "images/icon.png",
 
               "type": "image/png",
 
               "sizes": "144x144"
             }, 
             {
-              "src": "images/app-icon-192.png",
+              "src": "images/icon.png",
 
               "type": "image/png",
 
