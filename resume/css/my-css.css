@@ -157,6 +157,7 @@
 			font-size: 14px;
 			/*font-style: italic;	*/
 		    margin-bottom: 0px;
+		    margin-top: -10px;
 
 		}
 
@@ -793,8 +794,8 @@
 			margin-left: 17px;*/
 			font-style: italic;	
 			font-size: 14px;
-		    margin-top: -5px;
-		    margin-bottom: 30px;
+		    margin-top: -10px;
+		    margin-bottom: 10px;
 		    color: #555;
 		}
 
