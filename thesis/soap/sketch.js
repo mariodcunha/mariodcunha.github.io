@@ -35,10 +35,10 @@ function initialize_variables()
  // var goFS = $('body');
   // goFS.addEventListener("click", function() 
   // {
-      var docElm = document.documentElement;
-      docElm.requestFullscreen();
+      // var docElm = document.documentElement;
+      // docElm.requestFullscreen();
 
-      console.log("fullscreen might work");
+      // console.log("fullscreen might work");
 
   // }, false);
 
@@ -295,7 +295,6 @@ function draw()
     text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
     textSize(120);
     text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
-    document.location.reload();
   }
 
 
@@ -572,7 +571,7 @@ function randomInt(n)
   shakeEvent.start();
   window.addEventListener('shake', function()
   {
-      initialize_variables();
+      document.location.reload();
   },  false);
 
   //stop listening
