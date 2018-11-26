@@ -19,7 +19,8 @@ var num_hearts=3, temp_num_hearts=0;
 
 var soapWidth=300, soapHeight=200, soapDissolve=0.1;
 
-document.addEventListener('onload', () => document.documentElement.requestFullscreen());
+// document.addEventListener('onload', () => document.documentElement.requestFullscreen());
+// document.body.requestFullscreen();
 
 class Obstacle 
 {
@@ -486,12 +487,12 @@ function initSensor()
           renderer.setSize(window.innerWidth, window.innerHeight);
       }, false);
 
-      document.addEventListener('mousedown', () => document.documentElement.requestFullscreen());
-      document.addEventListener('fullscreenchange', () => {
-          if (document.fullscreenElement != null) {
-              screen.orientation.lock("natural")
-          }
-      });
+      // document.addEventListener('mousedown', () => document.documentElement.requestFullscreen());
+      // document.addEventListener('fullscreenchange', () => {
+      //     if (document.fullscreenElement != null) {
+      //         screen.orientation.lock("natural")
+      //     }
+      // });
   }
 
 
