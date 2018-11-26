@@ -148,30 +148,31 @@ function draw()
   //Main Bar
 
   //Heart
-  switch(num_hearts)
-  {
+  // switch(num_hearts)
+  // {
 
-    case 0:   image(faded_heart, 30, 30, 100,100);
-              image(faded_heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 0:   image(faded_heart, 30, 30, 100,100);
+  //             image(faded_heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
 
-    case 1:   image(heart, 30, 30, 100,100);
-              image(faded_heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 1:   image(heart, 30, 30, 100,100);
+  //             image(faded_heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
-    case 2:   image(heart, 30, 30, 100,100);
-              image(heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 2:   image(heart, 30, 30, 100,100);
+  //             image(heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
-    case 3:   image(heart, 30, 30, 100,100);
-              image(heart, 160, 30, 100,100);
-              image(heart, 290, 30, 100,100);
-              break;
-  }
+  //   case 3:   image(heart, 30, 30, 100,100);
+  //             image(heart, 160, 30, 100,100);
+  //             image(heart, 290, 30, 100,100);
+  //             break;
+  // }
+
 
   // if(ambience < 10 && num_hearts <= 3)
   //   num_hearts++;
@@ -213,21 +214,21 @@ function draw()
 
         console.log(window.innerWidth);
 
-        if(num_hearts>=0)
-            num_hearts--;
+        // if(num_hearts>=0)
+        //     num_hearts--;
   }
 
-  if(num_hearts>=0)
-  {
+  // if(num_hearts>=0)
+  // {
     image(soap, pos.x+xOrient, pos.y+yOrient, 300,200);
-  }
-  else if(num_hearts<0)
-  {
-    fill(255);
-    textSize(120);
-    textFont(bitfont);
-    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
-  }
+  // }
+  // else if(num_hearts<0)
+  // {
+  //   fill(255);
+  //   textSize(120);
+  //   textFont(bitfont);
+  //   text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/4), window.innerHeight/2);
+  // }
 
 
   // //obstacles
@@ -288,7 +289,115 @@ function keyPressed()
 
 
 
-  
+
+
+
+
+ // Initializing All Sensors
+
+function initSensor() 
+{
+    
+    //Enable the "Options" for the Gyroscope system
+    const options = { frequency: 60, coordinateSystem };
+    // console.log(JSON.stringify(options));
+
+
+
+    // Orientation Sensor or GYROSCOPE START
+
+    sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
+    
+    sensor_orientation.onreading = function() 
+    {
+        model.quaternion.fromArray(sensor_orientation.quaternion);
+        // console.log(sensor.quaternion);
+
+        xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
+        yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
+
+        pos.x += xOrient;
+        pos.y += yOrient;
+
+        draw();
+    }
+
+    sensor_orientation.onerror = (event) => {
+      if (event.error.name == 'NotReadableError') {
+        console.log("Orientation Sensor is not available.");
+      }
+    }
+    sensor_orientation.start();
+
+
+
+    // Ambient Light Sensor
+
+    // sensor_ambientlight = new AmbientLightSensor();
+    // sensor_ambientlight.start();
+
+    // ambience = sensor_ambientlight.illuminance;
+    
+    // sensor_ambientlight.onreading = function()
+    // {
+    //     ambience = sensor_ambientlight.illuminance;
+    //     console.log(ambience);
+
+    //     if(temp_num_hearts == num_hearts)
+    //     {
+    //         if(ambience < 10 && num_hearts < 3)
+    //         {
+    //           temp_num_hearts = num_hearts;
+
+    //           num_hearts++;
+    //         }
+    //     }
+    //     else
+    //     {
+    //       if(ambience > 60 && num_hearts < 3)
+    //         {
+    //           temp_num_hearts = num_hearts;
+
+    //           num_hearts++;
+    //         }
+    //     }
+
+
+    //     console.log(num_hearts);
+
+    //     draw();
+    // }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Sensor Permissions
 
   const params = new URLSearchParams(new URL(window.location.href).search.slice(1));
   const relative = !!Number(params.get("relative"));
@@ -363,96 +472,6 @@ function keyPressed()
           }
       });
   }
-
-
-
-
-
-
- // Initializing All Sensors
-
-function initSensor() 
-{
-    
-    //Enable the "Options" for the Gyroscope system
-    const options = { frequency: 60, coordinateSystem };
-    // console.log(JSON.stringify(options));
-
-
-
-    // Orientation Sensor or GYROSCOPE START
-
-    sensor_orientation = relative ? new RelativeOrientationSensor(options) : new AbsoluteOrientationSensor(options);
-    
-    sensor_orientation.onreading = function() 
-    {
-        model.quaternion.fromArray(sensor_orientation.quaternion);
-        // console.log(sensor.quaternion);
-
-        xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
-        yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
-
-        pos.x += xOrient;
-        pos.y += yOrient;
-
-        draw();
-    }
-
-    sensor_orientation.onerror = (event) => {
-      if (event.error.name == 'NotReadableError') {
-        console.log("Orientation Sensor is not available.");
-      }
-    }
-    sensor_orientation.start();
-
-
-
-    // Ambient Light Sensor
-
-    sensor_ambientlight = new AmbientLightSensor();
-    sensor_ambientlight.start();
-
-    ambience = sensor_ambientlight.illuminance;
-    
-    sensor_ambientlight.onreading = function()
-    {
-        ambience = sensor_ambientlight.illuminance;
-        console.log(ambience);
-
-        if(temp_num_hearts == num_hearts)
-        {
-            if(ambience < 10 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
-
-              num_hearts++;
-            }
-        }
-        else
-        {
-          if(ambience > 60 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
-
-              num_hearts++;
-            }
-        }
-
-
-        console.log(num_hearts);
-
-        draw();
-    }
-
-
-}
-
-
-
-
-
-
-
 
 
   function renderScene() 
