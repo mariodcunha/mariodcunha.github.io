@@ -238,7 +238,8 @@ function draw()
       rotate((xOrient+yOrient)*200);
 
       imageMode(CENTER);
-      image(soap, 0+xOrient, 0+yOrient, soapWidth-soapDissolve, soapHeight-soapDissolve);
+      image(soap, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      console.log("sdf");
       pop();
 
 
@@ -527,7 +528,7 @@ function randomInt(n)
 
 
  // Shake Event
- 
+
   var shakeEvent = new Shake({threshold: 15});
   shakeEvent.start();
   window.addEventListener('shake', function()
