@@ -2,7 +2,7 @@
 
 let pos;
 var diameter = 50;
-let speed = 20;
+let speed = 50;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -16,6 +16,8 @@ let amt;
 var xOrient=0, yOrient=0;
 var ambience=0;
 var num_hearts=3, temp_num_hearts=0;
+
+var soapWidth=300, soapHeight=200;
 
 document.addEventListener('onload', () => document.documentElement.requestFullscreen());
 
@@ -133,6 +135,8 @@ function setup()
   heart = loadImage("images/heart.png");
   faded_heart = loadImage("images/heart-faded.png");
 
+  angleMode(DEGREES);
+
 }
 
 
@@ -220,7 +224,19 @@ function draw()
 
   // if(num_hearts>=0)
   // {
-    image(soap, pos.x+xOrient, pos.y+yOrient, 300,200);
+
+      push();
+      console.log(xOrient);
+
+      translate(pos.x+xOrient, pos.y+yOrient);
+      rotate((xOrient+yOrient)*20);
+
+      imageMode(CENTER);
+      image(soap, 0+xOrient, 0+yOrient, soapWidth, soapHeight);
+
+
+      pop();
+
   // }
   // else if(num_hearts<0)
   // {
@@ -318,8 +334,6 @@ function initSensor()
 
         pos.x += xOrient;
         pos.y += yOrient;
-
-        draw();
     }
 
     sensor_orientation.onerror = (event) => {
@@ -364,8 +378,6 @@ function initSensor()
 
 
     //     console.log(num_hearts);
-
-    //     draw();
     // }
 
 }
@@ -491,5 +503,18 @@ function initSensor()
             
 
 
+
+
+
+
+function  randomMath(l, h)
+{
+  return Math.floor(Math.random() * (h - l)) + l;
+}
+
+function randomInt(n) 
+{
+  return Math.floor(Math.random() * (n - 0)) + 0;
+}
 
 
