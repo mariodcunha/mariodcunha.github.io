@@ -414,7 +414,7 @@ function initSensor()
     // Ambient Light Sensor
 
     sensor_ambientlight = new AmbientLightSensor();
-    // sensor_ambientlight.start();
+    sensor_ambientlight.start();
 
     ambience = sensor_ambientlight.illuminance;
     
