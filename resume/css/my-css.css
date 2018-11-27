@@ -39,7 +39,10 @@
 			cursor: pointer;
 		}
 
-
+		.mobileShow2
+		{
+			display: none;
+		}
 
 		.sectionInfo-resume 
 		{
@@ -895,6 +898,11 @@
 		.mobileShow, .mobileShow1
 		{
 			display: none;
+		}
+
+		.mobileShow2
+		{
+			display: inline;
 		}
 
 
