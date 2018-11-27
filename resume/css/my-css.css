@@ -217,7 +217,7 @@
 		    font-size: 16px;
 		    text-transform: uppercase;
 		    letter-spacing: 1px;
-		    color: #555;
+		    color: #333;
 		}
 
 
@@ -702,8 +702,7 @@
 		.bulletText a, .resumeSemiHeading a, .resumeFont a
 		{
 			font-weight: bold;
-			color: #000;
-			opacity: 0.7;
+			color: #555;
 		}
 
 		a:hover
@@ -882,7 +881,7 @@
 		    font-size: 16px;
 		    text-transform: uppercase;
 		    letter-spacing: 1px;
-		    color: #555;
+		    color: #333;
 		}
 
 
