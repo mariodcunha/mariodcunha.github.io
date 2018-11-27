@@ -13,7 +13,7 @@ $(".resumeHeading").mouseover
 (
 	function()
 	{
-		alert("test");
+		// alert("test");
 	}
 );
 
