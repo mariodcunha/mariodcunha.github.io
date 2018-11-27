@@ -4,16 +4,23 @@
 /* All Devices */
 
 
-	
-
-
-
-
 
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
 {
+		/*.container, .boxed-layout #page, .boxed-layout-small #page
+		{
+			width: 400px;
+			margin-left: 3vw;
+			margin-right: 3vw;
 
+		}
+*/
+/*		#content, #masthead
+		{
+		    margin: auto;
+		}
+*/
 		.sectionInfo-resume 
 		{
 			margin: 0 0 10px 0;
@@ -640,12 +647,6 @@
 		    background-color: #ffffff;
 		    max-width: 1000px;
 		    padding: 0px;
-		}
-
-		#content, #masthead
-		{
-		    width: 800px;
-		    margin: auto;
 		}
 
 
