@@ -745,8 +745,9 @@
 
 		.themenotsoBold
 		{
-				font-weight: normal;
+				font-weight: 400;
 				color: #434343;
+				opacity: 0.7;
 		}
 
 		.themenotsoBold:hover
