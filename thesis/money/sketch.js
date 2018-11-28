@@ -23,6 +23,7 @@ var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
 var fullscreen;
 
+var moneyMode=0;
 
 
 function initialize_variables()
@@ -187,7 +188,7 @@ function setup()
   
   //Loading Images
   emptywallet = loadImage("images/emptywallet.png");
-  money = loadImage("images/money.png");
+  fullwallet = loadImage("images/fullwallet.png");
   // heart = loadImage("images/heart.png");
   // faded_heart = loadImage("images/heart-faded.png");
 
@@ -260,8 +261,10 @@ function draw()
 
 
   // Soap Placement
-
-  image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
+  if(moneyMode==0)
+    image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
+  else
+    image(fullwallet, width/2-width/4, height/2-height/8, 500, 410);
 
   
 
@@ -333,28 +336,12 @@ function initSensor()
     {
         ambience = sensor_ambientlight.illuminance;
         console.log("Ambient Light Sensor is working");
+        
+          if(ambience < 5)
+          {
+              moneyMode = 1;
+          }
 
-        if(temp_num_hearts == num_hearts)
-        {
-            if(ambience < 10 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
-
-              num_hearts++;
-            }
-        }
-        else
-        {
-          if(ambience > 60 && num_hearts < 3)
-            {
-              temp_num_hearts = num_hearts;
-
-              num_hearts++;
-            }
-        }
-
-
-        console.log(num_hearts);
     }
 
 
