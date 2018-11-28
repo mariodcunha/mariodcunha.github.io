@@ -42,7 +42,7 @@ function initialize_variables()
 var elem = document.documentElement;
 function toggleFullscreen() 
 {
-  if(fullscreen==0)
+  if(fullscreen==1)
   {
     if (elem.requestFullscreen)
       elem.requestFullscreen();
@@ -55,7 +55,7 @@ function toggleFullscreen()
 
     fullscreen=1;
   }
-  else if(fullscreen==1)
+  else if(fullscreen==0)
   {
     // if (document.exitFullscreen)
     //   document.exitFullscreen();
