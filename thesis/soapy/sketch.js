@@ -148,7 +148,7 @@ class Freezer
 function preload() 
 {
   initialize_variables();
-  bitfont = loadFont('https://mariodcunha.github.io/thesis/font/8bit-font.ttf');
+  bitfont = loadFont('/font/8bit-font.ttf');
 }
 
 
@@ -182,8 +182,8 @@ function setup()
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
   //Loading Images
-  soapBlue = loadImage("https://mariodcunha.github.io/thesis/images/soapBlue.png");
-  soapOrange = loadImage("https://mariodcunha.github.io/thesis/images/soapOrange.png");
+  soapBlue = loadImage("/images/soapBlue.png");
+  soapOrange = loadImage("/images/soapOrange.png");
   // heart = loadImage("images/heart.png");
   // faded_heart = loadImage("images/heart-faded.png");
 
@@ -278,8 +278,8 @@ function draw()
         pos.x = window.innerWidth / 2;
         pos.y = window.innerHeight / 2;
 
-        if(num_hearts>=0)
-            num_hearts--;
+        // if(num_hearts>=0)
+        //     num_hearts--;
 
   }
 
@@ -289,11 +289,11 @@ function draw()
       push();
 
       //Soap Starting point
-      translate(pos.x+xOrient, pos.y+yOrient);
+      translate(pos.x, pos.y);
       rotate((xOrient+yOrient)*200);
 
       imageMode(CENTER);
-      image(soap, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      image(soapOrange, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
 
       pop();
 
