@@ -1,6 +1,6 @@
 
 var diameter = 50;
-let speed = 2;
+let speed = 50;
 let colorRight;
 let colorMiddle;
 let colorLeft;
