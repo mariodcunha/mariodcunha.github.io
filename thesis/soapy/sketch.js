@@ -152,7 +152,7 @@ class Freezer
 function preload() 
 {
   initialize_variables();
-  bitfont = loadFont('/font/8bit-font.ttf');
+  bitfont = loadFont('font/8bit-font.ttf');
 }
 
 
