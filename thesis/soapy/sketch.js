@@ -186,8 +186,8 @@ function setup()
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
   //Loading Images
-  soapBlue = loadImage("/images/soapBlue.png");
-  soapOrange = loadImage("/images/soapOrange.png");
+  soapBlue = loadImage("images/soapBlue.png");
+  soapOrange = loadImage("images/soapOrange.png");
   heart = loadImage("images/heart.png");
   // faded_heart = loadImage("images/heart-faded.png");
 
