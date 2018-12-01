@@ -37,7 +37,7 @@ function initialize_variables()
 var elem = document.documentElement;
 function toggleFullscreen() 
 {
-  if(fullscreen==0)
+  if(fullscreen==1)
   {
     if (elem.requestFullscreen)
       elem.requestFullscreen();
@@ -148,7 +148,7 @@ class Freezer
 function preload() 
 {
   initialize_variables();
-  bitfont = loadFont('font/8bit-font.ttf');
+  bitfont = loadFont('/../font/8bit-font.ttf');
 }
 
 
@@ -225,30 +225,30 @@ function draw()
   // Main Top Bar
 
   // Hearts
-  switch(num_hearts)
-  {
+  // switch(num_hearts)
+  // {
 
-    case 0:   image(faded_heart, 30, 30, 100,100);
-              image(faded_heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 0:   image(faded_heart, 30, 30, 100,100);
+  //             image(faded_heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
 
-    case 1:   image(heart, 30, 30, 100,100);
-              image(faded_heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 1:   image(heart, 30, 30, 100,100);
+  //             image(faded_heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
-    case 2:   image(heart, 30, 30, 100,100);
-              image(heart, 160, 30, 100,100);
-              image(faded_heart, 290, 30, 100,100);
-              break;
+  //   case 2:   image(heart, 30, 30, 100,100);
+  //             image(heart, 160, 30, 100,100);
+  //             image(faded_heart, 290, 30, 100,100);
+  //             break;
 
-    case 3:   image(heart, 30, 30, 100,100);
-              image(heart, 160, 30, 100,100);
-              image(heart, 290, 30, 100,100);
-              break;
-  }
+  //   case 3:   image(heart, 30, 30, 100,100);
+  //             image(heart, 160, 30, 100,100);
+  //             image(heart, 290, 30, 100,100);
+  //             break;
+  // }
 
 
   // if(ambience < 10 && num_hearts <= 3)
