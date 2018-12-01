@@ -19,7 +19,7 @@ var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
 var fullscreen;
-
+var temp;
 
 function initialize_variables()
 {
@@ -187,10 +187,12 @@ function setup()
   // heart = loadImage("images/heart.png");
   // faded_heart = loadImage("images/heart-faded.png");
 
-  drainBlue = loadImage("images/soap.png");
-  drainOrange = loadImage("images/soap.png");
+  drainBlue = loadImage("images/drain-bit-blue.png");
+  drainOrange = loadImage("images/drain-bit-orange.png");
 
   angleMode(DEGREES);
+
+  temp = randomMath(-200,200);
 
 }
 
@@ -286,16 +288,32 @@ function draw()
   if(num_hearts>=0)
   {
 
-      push();
+      imageMode(CENTER);
 
       //Soap Starting point
+      push();
       translate(pos.x, pos.y);
-      rotate((xOrient+yOrient)*200);
-
-      imageMode(CENTER);
-      image(soapOrange, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
-
+      rotate((xOrient+yOrient)*200);      
+      image(soapOrange, 0+xOrient,0+xOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
+
+      push();
+      translate(pos.x+temp, pos.y+temp);
+      rotate((xOrient+yOrient)*100);      
+      image(soapBlue, 0+(xOrient/2)+temp, 0+(yOrient/2)+temp, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      pop();
+      
+      image(drainOrange, windowWidth/2, windowHeight/6, 200, 200);
+      image(drainBlue, windowWidth/2, windowHeight-windowHeight/6, 200, 200);
+
+      var temp1x = pos.x + xOrient;
+      var temp1y = pos.y + yOrient;
+
+      var temp2x = pos.x + xOrient/2 + temp;
+      var temp2y = pos.y + yOrient/2 + temp;
+
+      console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
+      console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
 
 
   }
@@ -312,7 +330,7 @@ function draw()
 
   if((soapDissolve*1.5)<soapWidth)
   {
-    soapDissolve = soapDissolve + 0.1;
+    // soapDissolve = soapDissolve + 0.1;
   }
   else
     num_hearts = -1;
