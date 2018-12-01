@@ -1,6 +1,6 @@
 
 var diameter = 50;
-let speed = 50;
+let speed = 2;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -21,12 +21,16 @@ var soapWidth, soapHeight, soapDissolve;
 var fullscreen;
 var temp;
 
+var drainSize;
+var a=50;
+
 function initialize_variables()
 {
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
     fullscreen=1;
+    drainSize = 200;
 }
 
 
@@ -184,7 +188,7 @@ function setup()
   //Loading Images
   soapBlue = loadImage("/images/soapBlue.png");
   soapOrange = loadImage("/images/soapOrange.png");
-  // heart = loadImage("images/heart.png");
+  heart = loadImage("images/heart.png");
   // faded_heart = loadImage("images/heart-faded.png");
 
   drainBlue = loadImage("images/drain-bit-blue.png");
@@ -205,6 +209,8 @@ function setup()
 
 function draw() 
 {
+
+  console.log(a);
 
   //Background Color 
   
@@ -285,7 +291,7 @@ function draw()
 
   }
 
-  if(num_hearts>=0)
+  if(a!=5)
   {
 
       imageMode(CENTER);
@@ -303,8 +309,8 @@ function draw()
       image(soapBlue, 0+(xOrient/2)+temp, 0+(yOrient/2)+temp, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
-      image(drainOrange, windowWidth/2, windowHeight/6, 200, 200);
-      image(drainBlue, windowWidth/2, windowHeight-windowHeight/6, 200, 200);
+      image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
+      image(drainBlue, windowWidth/2, windowHeight-windowHeight/6, drainSize, drainSize);
 
       var temp1x = pos.x + xOrient;
       var temp1y = pos.y + yOrient;
@@ -315,17 +321,41 @@ function draw()
       console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
       console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
 
+      if( ((temp2x > windowWidth/2-100) && (temp2x < windowWidth/2+100)) && 
+          ((temp2y > (windowHeight-windowHeight/6)-100) && (temp2y < (windowHeight-windowHeight/6)+100)) 
+          &&
+          ((temp1x > windowWidth/2-100) && (temp1x < windowWidth/2+100)) && 
+          ((temp1y > (windowHeight/6)-100) && (temp2y < (windowHeight/6)+100))
+        )
+        a=5;
 
-  }
-  else if(num_hearts<0)
-  {
-    fill(255);
-    textSize(150);
-    textFont(bitfont);
-    text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
-    textSize(120);
-    text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
-  }
+    }
+    else if(a==5)
+    {
+
+      soapDissolve = soapWidth / 1.5;
+      drainSize = 0;
+
+      image(heart, windowWidth/2, windowHeight/4, 100,100);
+
+      fill(255);
+      textSize(150);
+      textFont(bitfont);
+      text('YAAY', (window.innerWidth/2)-(window.innerWidth/6), window.innerHeight/2-100);
+      textSize(120);
+      text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
+
+    }
+  // }
+  // else if(num_hearts<0)
+  // {
+  //   fill(255);
+  //   textSize(150);
+  //   textFont(bitfont);
+  //   text('GAME OVER', (window.innerWidth/2)-(window.innerWidth/3), window.innerHeight/2-300);
+  //   textSize(120);
+  //   text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
+  // }
 
 
   if((soapDissolve*1.5)<soapWidth)
