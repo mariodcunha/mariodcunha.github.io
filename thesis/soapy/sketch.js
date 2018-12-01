@@ -148,7 +148,7 @@ class Freezer
 function preload() 
 {
   initialize_variables();
-  bitfont = loadFont('/../font/8bit-font.ttf');
+  bitfont = loadFont('https://mariodcunha.github.io/thesis/font/8bit-font.ttf');
 }
 
 
@@ -182,9 +182,13 @@ function setup()
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
   //Loading Images
-  soap = loadImage("images/soap.png");
-  heart = loadImage("images/heart.png");
-  faded_heart = loadImage("images/heart-faded.png");
+  soapBlue = loadImage("images/soap.png");
+  soapOrange = loadImage("images/soap.png");
+  // heart = loadImage("images/heart.png");
+  // faded_heart = loadImage("images/heart-faded.png");
+
+  drainBlue = loadImage("images/soap.png");
+  drainOrange = loadImage("images/soap.png");
 
   angleMode(DEGREES);
 
