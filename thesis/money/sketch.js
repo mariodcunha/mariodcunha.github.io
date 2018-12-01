@@ -264,7 +264,7 @@ function draw()
   if(moneyMode==0)
     image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
   else
-    image(fullwallet, width/2-width/4, height/2-height/8, 500, 450);
+    image(fullwallet, width/2-width/4, height/2-height/5.5, 500, 510);
 
   
 

@@ -32,9 +32,9 @@ var parsons = [];
 */
 
 //MARIOISM
-marioism[0] = new Quote("Life’s funny, but I’m funnier!", "Friday, November 16th, 2018");
-marioism[1] = new Quote("I was at the Grand Central Station, roaming around the Holiday Market.", "Friday, November 16th, 2018");
-
+marioism[0] = new Quote("Life’s funny, but I’m funnier!", "Everyday.");
+marioism[1] = new Quote("I was at the Grand Central Station, roaming around the Holiday Market. A kid was passing by with his other hand being held by his parent. He randomly looked to me on the side, and screamed, 'Happy Holidays!'", "Friday, November 16th, 2018");
+marioism[2] = new Quote("I was already late for my class, and so was rushing to get out of the station, walking swiftly. In that rush, a young girl, probably a year or two younger than me, was walking against my direction, and she just stopped me. She said 'Hey, do you know where I can find the brightest smile around here?' I could feel a bubble burst in my mind with that question. And then I was like, wait, what...? and I smiled widely! She immediately said 'Ah! There it is!' And she just took off!", "April, 2018");
 
 
 
