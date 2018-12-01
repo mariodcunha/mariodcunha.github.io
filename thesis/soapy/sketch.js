@@ -306,7 +306,7 @@ function draw()
       push();
       translate(pos.x+temp, pos.y+temp);
       rotate((xOrient+yOrient)*100);      
-      image(soapBlue, 0+(xOrient/2)+temp, 0+(yOrient/2)+temp, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      image(soapBlue, 0+(yOrient/2)+temp, 0+(xOrient/2)+temp, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
       image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
