@@ -261,7 +261,7 @@ function draw()
 
 
   // Soap Placement
-  console.log(seconds()%30);
+  // console.log(seconds()%30);
 
   if(moneyMode==0 || seconds()%30<3)
     image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
