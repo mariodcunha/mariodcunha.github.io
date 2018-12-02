@@ -13,7 +13,7 @@ let amt;
 
 //Thesis
 
-var pos;
+var pos, pos2;
 var xOrient, yOrient;
 var ambience;
 var num_hearts, temp_num_hearts;
@@ -24,6 +24,8 @@ var temp, tempx, tempy;
 var drainSize;
 var a=50;
 
+
+
 function initialize_variables()
 {
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
@@ -32,8 +34,6 @@ function initialize_variables()
     fullscreen=1;
     drainSize = 200;
 }
-
-
 
 
 // Fullscreen
@@ -54,7 +54,7 @@ function toggleFullscreen()
 
     fullscreen=1;
   }
-  else if(fullscreen==1)
+  else if(fullscreen==0)
   {
     // if (document.exitFullscreen)
     //   document.exitFullscreen();
@@ -75,79 +75,6 @@ function toggleFullscreen()
 
 
 
-class Obstacle 
-{
-  constructor(x, y, id) {
-    this.x = x;
-    this.y = y;
-    this.id = id;
-  }
-
-  move() {
-    let velX = (noise(millis() * 0.001 + this.id * 500) - 0.5) * 10;
-    let velY = (noise(millis() * 0.001 + this.id * 10000) - 0.5) * 10;
-
-    this.x += velX;
-    this.y += velY;
-    this.d = 20;
-  }
-
-  show() {
-    noStroke();
-    fill(191, 117, 226);
-    ellipse(this.x, this.y, this.d);
-  }
-
-  isInvisible() {
-    if (this.x < 0 || this.x > windowWidth || this.y < 0 || this.y > windowHeight)
-      return true;
-  }
-
-  resetPos() {
-    this.x = random(0, windowWidth);
-    this.y = random(0, windowHeight);
-  }
-
-  touch(x, y, d) {
-    if (dist(this.x, this.y, x, y) < (this.d + d) / 2)
-      return true;
-  }
-}
-
-
-
-class Freezer
-{
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    //this.id = id;
-  }
-
-  show() {
-    noStroke();
-    fill(191, 117, 255);
-    rect(this.x, this.y, this.d*2);
-  }
-
-  isInvisible() {
-    if (this.x < 0 || this.x > windowWidth || this.y < 0 || this.y > windowHeight)
-      return true;
-  }
-
-  resetPos() {
-    this.x = random(0, windowWidth);
-    this.y = random(0, windowHeight);
-  }
-
-  touch(x, y, d) {
-    if (dist(this.x, this.y, x, y) < (this.d + d) / 2)
-      return true;
-  }
-}
-
-
-
 
 function preload() 
 {
@@ -162,6 +89,11 @@ function setup()
 
   textFont(bitfont);
 
+  temp = randomMath(-200,200);
+  tempx = randomMath(-50,50);
+  tempy = randomMath(-50,50);
+
+
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
   // put setup code here
@@ -170,6 +102,8 @@ function setup()
 
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
+  pos2 = createVector(mouseX, mouseY);
+
   noCursor();
   colorRight = color(222, 30, 30);
   colorLeft = color(126, 227, 212);
@@ -195,10 +129,6 @@ function setup()
   drainOrange = loadImage("images/drain-bit-orange.png");
 
   angleMode(DEGREES);
-
-  temp = randomMath(-200,200);
-  tempx = randomMath(-200,200);
-  tempy = randomMath(-200,200);
 
 
 }
@@ -275,6 +205,11 @@ function draw()
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
+  let targetPos2 = createVector(pos2.x+xOrient, pos2.y+yOrient);
+  pos2.x = tempx + targetPos.x * (1 - speed) + pos2.x * speed;
+  pos2.y = tempy + targetPos.y * (1 - speed) + pos2.y * speed;
+
+
 
   //soap
   fill(0);
@@ -297,8 +232,8 @@ function draw()
       pop();
 
       push();
-      translate(pos.x+temp, pos.y+temp);
-      rotate((yOrient+xOrient)*100);      
+      translate(pos2.x, pos2.y);
+      rotate((xOrient+yOrient)*200);      
       image(soapBlue, 0+(yOrient/2)+temp, 0+(xOrient/2), soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
@@ -308,8 +243,8 @@ function draw()
       var temp1x = pos.x + xOrient;
       var temp1y = pos.y + yOrient;
 
-      var temp2x = pos.x + xOrient/2 + temp;
-      var temp2y = pos.y + yOrient/2 + temp;
+      var temp2x = pos2.x + xOrient/2 + temp;
+      var temp2y = pos2.y + yOrient/2 + temp;
 
       // console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
       // console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
@@ -457,18 +392,11 @@ function initSensor()
         xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
         yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
-        if(((millis()/1000)%2)==0)
-        {
             pos.x += xOrient;
             pos.y += yOrient;          
-        }
-        else
-        {
-            pos.x -= yOrient*2;
-            pos.y -= xOrient*2;          
 
-        }
-
+            pos2.x += xOrient;
+            pos2.y += yOrient;          
 
 
     }
@@ -688,3 +616,76 @@ function randomInt(n)
 
 
   */
+
+
+
+class Obstacle 
+{
+  constructor(x, y, id) {
+    this.x = x;
+    this.y = y;
+    this.id = id;
+  }
+
+  move() {
+    let velX = (noise(millis() * 0.001 + this.id * 500) - 0.5) * 10;
+    let velY = (noise(millis() * 0.001 + this.id * 10000) - 0.5) * 10;
+
+    this.x += velX;
+    this.y += velY;
+    this.d = 20;
+  }
+
+  show() {
+    noStroke();
+    fill(191, 117, 226);
+    ellipse(this.x, this.y, this.d);
+  }
+
+  isInvisible() {
+    if (this.x < 0 || this.x > windowWidth || this.y < 0 || this.y > windowHeight)
+      return true;
+  }
+
+  resetPos() {
+    this.x = random(0, windowWidth);
+    this.y = random(0, windowHeight);
+  }
+
+  touch(x, y, d) {
+    if (dist(this.x, this.y, x, y) < (this.d + d) / 2)
+      return true;
+  }
+}
+
+
+
+class Freezer
+{
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    //this.id = id;
+  }
+
+  show() {
+    noStroke();
+    fill(191, 117, 255);
+    rect(this.x, this.y, this.d*2);
+  }
+
+  isInvisible() {
+    if (this.x < 0 || this.x > windowWidth || this.y < 0 || this.y > windowHeight)
+      return true;
+  }
+
+  resetPos() {
+    this.x = random(0, windowWidth);
+    this.y = random(0, windowHeight);
+  }
+
+  touch(x, y, d) {
+    if (dist(this.x, this.y, x, y) < (this.d + d) / 2)
+      return true;
+  }
+}
