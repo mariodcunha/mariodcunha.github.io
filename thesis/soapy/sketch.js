@@ -1,6 +1,6 @@
 
 var diameter = 50;
-let speed = 50;
+let speed = 70;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -230,7 +230,7 @@ function draw()
       //Soap Starting point
       push();
       translate(pos.x, pos.y);
-      console.log("Orange: "+pos.x+", "+pos.y);
+      // console.log("Orange: "+pos.x+", "+pos.y);
       rotate((xOrient+yOrient)*200);      
       image(soapOrange, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       // image(soapOrange, 0,0, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
@@ -238,9 +238,9 @@ function draw()
 
       push();
       translate(pos.x, pos.y);
-      console.log("Blue: "+pos2.x+", "+pos2.y);
+      // console.log("Blue: "+pos2.x+", "+pos2.y);
       rotate(zOrient*10);      
-      image(soapBlue, pos.x+xOrient, pos.x+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      image(soapBlue, pos.x+xOrient+tempx, pos.x+yOrient-tempy, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
       image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
