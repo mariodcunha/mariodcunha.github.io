@@ -21,7 +21,7 @@ var xOrient, yOrient;
 var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
-var fullscreen;
+var fullscreen=1;
 
 var moneyMode=0;
 
@@ -156,6 +156,7 @@ function preload()
   initialize_variables();
   bitfont = loadFont('font/8bit-font.ttf');
   champagnePopSound = loadSound('sound/champagnePop.mp3');
+  champagnePopSound.setVolume(2);
 }
 
 
@@ -265,7 +266,6 @@ function draw()
   // Soap Placement
   // moneyMode=1;
   // console.log(seconds()%30);
-  moneyMode=1;
   if(moneyMode==0 || seconds()%20<3)
     image(champagne, width/2-(champagne.width*1.2/2), height-(champagne.height*1.2), champagne.width*1.2, champagne.height*1.2);
   else
@@ -355,7 +355,6 @@ function initSensor()
     shakeEvent.start();
     window.addEventListener('shake', function()
     {
-        champagnePopSound.setVolume(0.9);
         champagnePopSound.play();
         
         if(seconds%4<2)
