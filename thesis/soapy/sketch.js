@@ -84,19 +84,19 @@ function preload()
 }
 
 
+var templimits = 30;
 
 function setup() 
 {
 
   textFont(bitfont);
 
-  // temp = randomMath(-200,200);
-  tempx = randomMath(-50,50);
-  tempy = randomMath(-50,50);
-  temp = 0;
-  tempx = 0;
-  tempy = 0;
-
+  temp = randomMath(-templimits,templimits);
+  tempx = randomMath(-templimits,templimits);
+  tempy = randomMath(-templimits,templimits);
+  // temp = 0;
+  // tempx = 0;
+  // tempy = 0;s
 
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
@@ -106,7 +106,7 @@ function setup()
 
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
-  pos2 = createVector(mouseX, mouseY);
+  pos2 = createVector(mouseX+tempx, mouseY+tempy);
 
   noCursor();
   colorRight = color(222, 30, 30);
@@ -237,10 +237,10 @@ function draw()
       pop();
 
       push();
-      translate(pos2.x, pos2.y);
+      translate(pos.x, pos.y);
       console.log("Blue: "+pos2.x+", "+pos2.y);
-      rotate((xOrient+yOrient)*200);      
-      image(soapBlue, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      rotate((xOrient+yOrient)*500);      
+      image(soapBlue, pos.x+xOrient, pos.x+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
       image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
@@ -405,8 +405,8 @@ function initSensor()
         pos.x += xOrient;
         pos.y += yOrient;          
 
-        pos2.x = pos2.x + xOrient + temp2x;
-        pos2.y = pos2.y + yOrient + temp2y;          
+        pos2.x = pos2.x - yOrient - tempx;
+        pos2.y = pos2.y - xOrient - tempy;          
 
 
     }
