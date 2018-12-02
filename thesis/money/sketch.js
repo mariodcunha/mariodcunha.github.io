@@ -31,7 +31,7 @@ function initialize_variables()
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
-    fullscreen=1;
+    fullscreen=0;
 }
 
 
@@ -264,7 +264,7 @@ function draw()
   if(moneyMode==0)
     image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
   else
-    image(fullwallet, width/2-width/4, height/2-height/5.5, 500, 510);
+    image(fullwallet, width/2-width/4, height/2-height/5.7, 500, 510);
 
   
 
