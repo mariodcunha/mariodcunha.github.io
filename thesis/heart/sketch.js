@@ -31,7 +31,7 @@ function initialize_variables()
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
-    fullscreen=1;
+    fullscreen=0;
 }
 
 
@@ -67,6 +67,7 @@ function toggleFullscreen()
     //   document.msExitFullscreen();
 
     // fullscreen=0;
+    console.log("no fullscreen");
   }
   
 }
@@ -187,10 +188,10 @@ function setup()
   Freezer1 = new Freezer(random(0, windowWidth), random(0, windowHeight));
   
   //Loading Images
-  emptywallet = loadImage("images/emptywallet.png");
-  fullwallet = loadImage("images/fullwallet.png");
-  // heart = loadImage("images/heart.png");
-  // faded_heart = loadImage("images/heart-faded.png");
+  // emptywallet = loadImage("images/emptywallet.png");
+  // fullwallet = loadImage("images/fullwallet.png");
+  heart = loadImage("images/heart.png");
+  faded_heart = loadImage("images/heart-faded.png");
 
   // angleMode(DEGREES);
 
@@ -261,10 +262,17 @@ function draw()
 
 
   // Soap Placement
-  if(moneyMode==0)
-    image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
+  // moneyMode=1;
+  console.log(seconds()%20);
+  if(moneyMode==0 || seconds()%20<3)
+    image(faded_heart, width/2-width/4, height/2-height/8, 500, 510);
   else
-    image(fullwallet, width/2-width/4, height/2-height/5.5, 500, 510);
+  {
+    if(millis()%500<50)
+      image(heart, width/2-width/4, height/2-height/5.7, 500, 510);
+    else
+      image(heart, width/2-width/4-50, height/2-height/5.7-50, 600, 610);
+  }
 
   
 
@@ -481,6 +489,12 @@ function initSensor()
             
 
 //mariodcunha.js
+
+function seconds()
+{
+  return millis()/1000;
+}
+
 
 function refresh()
 {
