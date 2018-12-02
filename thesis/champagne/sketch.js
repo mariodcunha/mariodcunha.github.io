@@ -265,17 +265,11 @@ function draw()
   // Soap Placement
   // moneyMode=1;
   // console.log(seconds()%30);
+  moneyMode=1;
   if(moneyMode==0 || seconds()%20<3)
     image(champagne, width/2-(champagne.width*1.2/2), height-(champagne.height*1.2), champagne.width*1.2, champagne.height*1.2);
   else
-  {
       image(champagnePop, width/2-(champagnePop.width*1.2/2), height-(champagnePop.height*1.2), champagnePop.width*1.2, champagnePop.height*1.2);
-      champagnePopSound.setVolume(0.9);
-      champagnePopSound.play();
-  }
-  
-
-  
 
 
 }
@@ -361,6 +355,12 @@ function initSensor()
     shakeEvent.start();
     window.addEventListener('shake', function()
     {
+        champagnePopSound.setVolume(0.9);
+        champagnePopSound.play();
+        
+        if(seconds%4<2)
+          champagnePopSound.stop();
+        
         moneyMode = 1;
     },  false);
 
