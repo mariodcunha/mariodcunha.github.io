@@ -457,7 +457,7 @@ function initSensor()
         xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
         yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
-        if(((millis()/1000)%9)==0)
+        if(((millis()/1000)%2)==0)
         {
             pos.x += xOrient;
             pos.y += yOrient;          
