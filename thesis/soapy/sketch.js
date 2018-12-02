@@ -91,8 +91,8 @@ function setup()
   textFont(bitfont);
 
   // temp = randomMath(-200,200);
-  // tempx = randomMath(-50,50);
-  // tempy = randomMath(-50,50);
+  tempx = randomMath(-50,50);
+  tempy = randomMath(-50,50);
   temp = 0;
   tempx = 0;
   tempy = 0;
@@ -405,8 +405,8 @@ function initSensor()
         pos.x += xOrient;
         pos.y += yOrient;          
 
-        pos2.x = yOrient;
-        pos2.y = xOrient;          
+        pos2.x = pos2.x + xOrient + temp2x;
+        pos2.y = pos2.y + yOrient + temp2y;          
 
 
     }
