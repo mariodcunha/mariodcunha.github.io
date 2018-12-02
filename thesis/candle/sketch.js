@@ -269,6 +269,15 @@ function draw()
   vol = mic.getLevel() * 100;
   console.log(vol);
 
+  if(vol <60 && vol > 55)
+  {
+    moneyMode = 1;
+  }
+
+  // translate();
+  // rotate(-90);
+
+
   if(moneyMode==0 || seconds()%15 < 3)
   {
     background(255, 255, 153);
