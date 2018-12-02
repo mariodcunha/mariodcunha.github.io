@@ -19,7 +19,7 @@ var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
 var fullscreen;
-var temp;
+var temp, tempx, tempy;
 
 var drainSize;
 var a=50;
@@ -197,6 +197,9 @@ function setup()
   angleMode(DEGREES);
 
   temp = randomMath(-200,200);
+  tempx = randomMath(-200,200);
+  tempy = randomMath(-200,200);
+
 
 }
 
@@ -209,10 +212,7 @@ function setup()
 
 function draw() 
 {
-
-  console.log(a);
-
-  //Background Color 
+  //Background Color
   
   amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
   let bgColor;
@@ -275,22 +275,14 @@ function draw()
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
+
   //soap
   fill(0);
   noStroke();
 
   // Soap Disssolves and Sound can save it
   // ellipse(pos.x, pos.y, diameter+soundx);
-  if(pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0)
-  {
-        pos.x = window.innerWidth / 2;
-        pos.y = window.innerHeight / 2;
-
-        // if(num_hearts>=0)
-        //     num_hearts--;
-
-  }
-
+  
   if(a!=5)
   {
 
@@ -300,13 +292,14 @@ function draw()
       push();
       translate(pos.x, pos.y);
       rotate((xOrient+yOrient)*200);      
-      image(soapOrange, 0+xOrient,0+xOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      image(soapOrange, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      // image(soapOrange, 0,0, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
 
       push();
       translate(pos.x+temp, pos.y+temp);
-      rotate((xOrient+yOrient)*100);      
-      image(soapBlue, 0+(yOrient/2)+temp, 0+(xOrient/2)+temp, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      rotate((yOrient+xOrient)*100);      
+      image(soapBlue, 0+(yOrient/2)+temp, 0+(xOrient/2), soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
       image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
@@ -318,8 +311,8 @@ function draw()
       var temp2x = pos.x + xOrient/2 + temp;
       var temp2y = pos.y + yOrient/2 + temp;
 
-      console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
-      console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
+      // console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
+      // console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
 
       if( ((temp2x > windowWidth/2-100) && (temp2x < windowWidth/2+100)) && 
           ((temp2y > (windowHeight-windowHeight/6)-100) && (temp2y < (windowHeight-windowHeight/6)+100)) 
@@ -346,6 +339,18 @@ function draw()
       text('Shake to \nRestart', (window.innerWidth/2)-(window.innerWidth/5), window.innerHeight/2+200);
 
     }
+
+    if( pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0 ||
+        pos.x+temp > window.innerWidth || pos.x+temp < 0 || pos.y+temp > window.innerHeight || pos.y+temp < 0
+      )
+    {
+        pos.x = window.innerWidth / 2;
+        pos.y = window.innerHeight / 2;
+
+        // if(num_hearts>=0)
+        //     num_hearts--;
+    }
+
   // }
   // else if(num_hearts<0)
   // {
@@ -447,11 +452,16 @@ function initSensor()
     {
         model.quaternion.fromArray(sensor_orientation.quaternion);
 
+        console.log("Orientation Sensor is  available.");
+
         xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
         yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
 
         pos.x += xOrient;
         pos.y += yOrient;
+
+        console.log(pos.x);
+        console.log(pos.y);
     }
 
     sensor_orientation.onerror = (event) => {
