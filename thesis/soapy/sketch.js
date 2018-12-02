@@ -464,8 +464,8 @@ function initSensor()
         }
         else
         {
-            pos.x -= xOrient*2;
-            pos.y -= yOrient*2;          
+            pos.x -= yOrient*2;
+            pos.y -= xOrient*2;          
 
         }
 
