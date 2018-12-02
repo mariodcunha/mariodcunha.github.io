@@ -1,6 +1,6 @@
 
 var diameter = 50;
-let speed = 50;
+let speed = 5;
 let colorRight;
 let colorMiddle;
 let colorLeft;
@@ -14,7 +14,7 @@ let amt;
 //Thesis
 
 var pos, pos2;
-var xOrient, yOrient;
+var xOrient, yOrient, zOrient;
 var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
@@ -90,9 +90,12 @@ function setup()
 
   textFont(bitfont);
 
-  temp = randomMath(-200,200);
-  tempx = randomMath(-50,50);
-  tempy = randomMath(-50,50);
+  // temp = randomMath(-200,200);
+  // tempx = randomMath(-50,50);
+  // tempy = randomMath(-50,50);
+  temp = 0;
+  tempx = 0;
+  tempy = 0;
 
 
   mouseX = windowWidth/2;
@@ -206,7 +209,7 @@ function draw()
   pos.x = targetPos.x * (1 - speed) + pos.x * speed;
   pos.y = targetPos.y * (1 - speed) + pos.y * speed;
 
-  let targetPos2 = createVector(pos2.x+xOrient, pos2.y+yOrient);
+  let targetPos2 = createVector(pos2.x+yOrient, pos2.y+xOrient);
   pos2.x = tempx + targetPos.x * (1 - speed) + pos2.x * speed;
   pos2.y = tempy + targetPos.y * (1 - speed) + pos2.y * speed;
 
@@ -227,6 +230,7 @@ function draw()
       //Soap Starting point
       push();
       translate(pos.x, pos.y);
+      console.log("Orange: "+pos.x+", "+pos.y);
       rotate((xOrient+yOrient)*200);      
       image(soapOrange, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       // image(soapOrange, 0,0, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
@@ -234,8 +238,9 @@ function draw()
 
       push();
       translate(pos2.x, pos2.y);
+      console.log("Blue: "+pos2.x+", "+pos2.y);
       rotate((xOrient+yOrient)*200);      
-      image(soapBlue, 0+(yOrient/2)+temp, 0+(xOrient/2), soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
+      image(soapBlue, 0+xOrient, 0+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
       image(drainOrange, windowWidth/2, windowHeight/6, drainSize, drainSize);
@@ -244,8 +249,8 @@ function draw()
       var temp1x = pos.x + xOrient;
       var temp1y = pos.y + yOrient;
 
-      var temp2x = pos2.x + xOrient/2 + temp;
-      var temp2y = pos2.y + yOrient/2 + temp;
+      var temp2x = pos2.x + yOrient + temp;
+      var temp2y = pos2.y + xOrient + temp;
 
       // console.log("Orange x: "+temp1x+" and Orange y: "+temp1y);
       // console.log("Blue x: "+temp2x+" and Orange y: "+temp2y);
@@ -276,12 +281,15 @@ function draw()
 
     }
 
-    if( pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0 ||
-        pos.x+temp > window.innerWidth || pos.x+temp < 0 || pos.y+temp > window.innerHeight || pos.y+temp < 0
+    if( pos.x > window.innerWidth || pos.x < 0 || pos.y > window.innerHeight || pos.y < 0 || 
+        pos2.x > window.innerWidth || pos2.x < 0 || pos2.y > window.innerHeight || pos2.y < 0
       )
     {
-        pos.x = window.innerWidth / 2;
-        pos.y = window.innerHeight / 2;
+        // pos.x = window.innerWidth / 2;
+        // pos.y = window.innerHeight / 2;
+
+        pos2.x = window.innerWidth / 2;
+        pos2.y = window.innerHeight / 2;
 
         // if(num_hearts>=0)
         //     num_hearts--;
@@ -392,12 +400,13 @@ function initSensor()
 
         xOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._x;
         yOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._y;
+        zOrient = model.quaternion.fromArray(sensor_orientation.quaternion).inverse()._z;
 
-            pos.x += xOrient;
-            pos.y += yOrient;          
+        pos.x += xOrient;
+        pos.y += yOrient;          
 
-            pos2.x += xOrient;
-            pos2.y += yOrient;          
+        pos2.x = yOrient;
+        pos2.y = xOrient;          
 
 
     }
