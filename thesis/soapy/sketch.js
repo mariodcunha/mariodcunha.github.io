@@ -239,7 +239,7 @@ function draw()
       push();
       translate(pos.x, pos.y);
       console.log("Blue: "+pos2.x+", "+pos2.y);
-      rotate((xOrient+yOrient)*500);      
+      rotate((xOrient+yOrient)*150);      
       image(soapBlue, pos.x+xOrient, pos.x+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
@@ -405,8 +405,8 @@ function initSensor()
         pos.x += xOrient;
         pos.y += yOrient;          
 
-        pos2.x = pos2.x - yOrient - tempx;
-        pos2.y = pos2.y - xOrient - tempy;          
+        pos2.x = pos2.x - xOrient - tempx;
+        pos2.y = pos2.y - yOrient - tempy;          
 
 
     }
