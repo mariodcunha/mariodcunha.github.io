@@ -155,6 +155,7 @@ function preload()
 {
   initialize_variables();
   bitfont = loadFont('font/8bit-font.ttf');
+  champagnePopSound = loadSound('sound/champagnePop.mp3');
 }
 
 
@@ -267,7 +268,11 @@ function draw()
   if(moneyMode==0 || seconds()%20<3)
     image(champagne, width/2-(champagne.width*1.2/2), height-(champagne.height*1.2), champagne.width*1.2, champagne.height*1.2);
   else
+  {
       image(champagnePop, width/2-(champagnePop.width*1.2/2), height-(champagnePop.height*1.2), champagnePop.width*1.2, champagnePop.height*1.2);
+      champagnePopSound.setVolume(0.9);
+      champagnePopSound.play();
+  }
   
 
   
