@@ -261,7 +261,9 @@ function draw()
 
 
   // Soap Placement
-  if(moneyMode==0)
+  console.log(seconds()%30);
+
+  if(moneyMode==0 || seconds()%30<3)
     image(emptywallet, width/2-width/4, height/2-height/8, 500, 410);
   else
     image(fullwallet, width/2-width/4, height/2-height/5.7, 500, 510);
@@ -481,6 +483,12 @@ function initSensor()
             
 
 //mariodcunha.js
+
+function seconds()
+{
+  return millis()/1000;
+}
+
 
 function refresh()
 {
