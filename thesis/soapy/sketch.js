@@ -239,7 +239,7 @@ function draw()
       push();
       translate(pos.x, pos.y);
       console.log("Blue: "+pos2.x+", "+pos2.y);
-      rotate((xOrient+yOrient)*150);      
+      rotate(zOrient*10);      
       image(soapBlue, pos.x+xOrient, pos.x+yOrient, soapWidth-(soapDissolve*1.5), soapHeight-soapDissolve);
       pop();
       
