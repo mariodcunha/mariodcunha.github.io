@@ -4,8 +4,6 @@ let speed = 50;
 let colorRight;
 let colorMiddle;
 let colorLeft;
-let mic;
-let vol;
 let soundx;
 let obstacles = [];
 var Freezer1;
@@ -21,9 +19,8 @@ var xOrient, yOrient;
 var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
-var fullscreen=1;
 
-var moneyMode=0;
+var fullscreen, moneyMode;
 
 
 function initialize_variables()
@@ -31,7 +28,7 @@ function initialize_variables()
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
-    fullscreen=0;
+    fullscreen=0; moneyMode=0;
 }
 
 
@@ -155,8 +152,8 @@ function preload()
 {
   initialize_variables();
   bitfont = loadFont('font/8bit-font.ttf');
-  champagnePopSound = loadSound('sound/champagnePop.mp3');
-  champagnePopSound.setVolume(2);
+  // champagnePopSound = loadSound('sound/champagnePop.mp3');
+  // champagnePopSound.setVolume(2);
 }
 
 
@@ -168,9 +165,11 @@ function setup()
 
   mouseX = windowWidth/2;
   mouseY = windowHeight/2;
-  // put setup code here
-  // mic = new p5.AudioIn();
-  // mic.start();
+
+  // Microphone
+
+  mic = new p5.AudioIn();
+  mic.start();
 
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
@@ -192,8 +191,8 @@ function setup()
   //Loading Images
   // emptywallet = loadImage("images/emptywallet.png");
   // fullwallet = loadImage("images/fullwallet.png");
-  champagne = loadImage("images/champagne.png");
-  champagnePop = loadImage("images/champagne-pop.png");
+  candle = loadImage("images/candle.png");
+  candleOff = loadImage("images/candleOff.png");
 
   // angleMode(DEGREES);
 
@@ -208,21 +207,21 @@ function draw()
 
   //Background Color 
   
-  amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
-  let bgColor;
-  if (pos.x > windowWidth / 2) 
-  {
-    bgColor = lerpColor(colorMiddle, colorRight, amt);
+  // amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
+  // let bgColor;
+  // if (pos.x > windowWidth / 2) 
+  // {
+  //   bgColor = lerpColor(colorMiddle, colorRight, amt);
 
-  } 
-  else 
-  {
-    bgColor = lerpColor(colorMiddle, colorLeft, -amt);
-  }
+  // } 
+  // else 
+  // {
+  //   bgColor = lerpColor(colorMiddle, colorLeft, -amt);
+  // }
 
-  // bgColor.setAlpha(30);
-  fill(bgColor);
-  rect(0, 0, windowWidth, windowHeight);
+  // // bgColor.setAlpha(30);
+  // fill(bgColor);
+  // rect(0, 0, windowWidth, windowHeight);
   // background(bgColor, 10);
 
 
@@ -266,10 +265,20 @@ function draw()
   // Soap Placement
   // moneyMode=1;
   // console.log(seconds()%30);
-  if(moneyMode==0 || seconds()%20 < 3)
-    image(champagne, width/2-(champagne.width*1.2/2), height-(champagne.height*1.2), champagne.width*1.2, champagne.height*1.2);
+
+  vol = mic.getLevel() * 100;
+  console.log(vol);
+
+  if(moneyMode==0 || seconds()%15 < 3)
+  {
+    background(255, 255, 153);
+    image(candle, width/2-(candle.width*1.2/2), height-(candle.height*1.2), candle.width*1.2, candle.height*1.2);
+  }
   else
-      image(champagnePop, width/2-(champagnePop.width*1.2/2), height-(champagnePop.height*1.2), champagnePop.width*1.2, champagnePop.height*1.2);
+  { 
+      background(10);
+      image(candleOff, width/2-(candleOff.width*1.2/2), height-(candleOff.height*1.2), candleOff.width*1.2, candleOff.height*1.2);
+  }
 
 
 }
@@ -340,10 +349,10 @@ function initSensor()
         ambience = sensor_ambientlight.illuminance;
         console.log("Ambient Light Sensor is working");
         
-          if(ambience < 5)
-          {
-              moneyMode = 0;
-          }
+          // if(ambience < 5)
+          // {
+          //     moneyMode = 0;
+          // }
 
     }
 
@@ -354,13 +363,8 @@ function initSensor()
     var shakeEvent = new Shake({threshold: 15});
     shakeEvent.start();
     window.addEventListener('shake', function()
-    {
-        champagnePopSound.play();
-        
-        if(seconds()%4<2)
-          champagnePopSound.stop();
-        
-        moneyMode = 1;
+    {        
+        // moneyMode = 1;
     },  false);
 
     //stop listening
