@@ -269,7 +269,7 @@ function draw()
   vol = mic.getLevel() * 100;
   // console.log(vol);
 
-  if(vol < 30 && vol > 25)
+  if(vol < 25)
   {
     moneyMode = 1;
   }
