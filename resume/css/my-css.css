@@ -14,7 +14,7 @@
 {
 		.boxed-layout-small .container
 		{
-			margin-left: 3vw;
+			/*margin-left: 3vw;*/
     		/*margin-right: 10px;*/
     		max-width: 90vw;
 		}
@@ -44,6 +44,10 @@
     		padding: 10vw 0 0 0;
 		}
 
+		aside#search-19.widget.widget_search
+		{
+			width: 90vw;
+		}
 
 		#page
 		{
