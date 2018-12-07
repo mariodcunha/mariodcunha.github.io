@@ -55,6 +55,11 @@
 			cursor: pointer;
 		}
 
+		.mobileShow2.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-2568
+		{
+			display: none;
+		}
+
 		.mobileShow2
 		{
 			display: none;
