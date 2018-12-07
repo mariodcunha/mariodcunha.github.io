@@ -1,19 +1,40 @@
 
 
-// console.log("kakka");
 
-// $('#contactMeHeading').mouseover(function() 
-// {
-// 	alert("test");
-//   // $( "#contactMeDrop" ).css("display","initial");
-// });
-
-
-$(".resumeHeading").mouseover
-(
-	function()
+$(document).ready(function() 
+{
+	console.log("doc ready");
+	$('.knowMore').click(function()
 	{
-		// alert("test");
-	}
-);
+		console.log("clicked-1");
+		// $('.knowMore').slideUp();
+		// $('#mobileShow3').css("display","inline");
+		// $('#mobileShow3').slideDown("slow");
+	});
+});
 
+
+
+
+
+$(document).ready(function() 
+{
+	console.log("doc ready");
+	$('.knowMore').click(function()
+	{
+		console.log("clicked");
+		$('.knowMore').slideUp();
+		$('#mobileShow3').css("display","inline");
+		$('#mobileShow3').slideDown("slow");
+	});
+});
+
+
+
+// $( document.body ).click(function () {
+//   if ( $( "div:first" ).is( ":hidden" ) ) {
+//     $( "div" ).slideDown( "slow" );
+//   } else {
+//     $( "div" ).hide();
+//   }
+// });

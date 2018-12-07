@@ -12,6 +12,12 @@
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
 {
+		.knowMore
+		{
+			/*font-weight: bold;*/
+			color: #009eed;
+		}
+
 		.boxed-layout-small .container
 		{
 			/*margin-left: 3vw;*/
@@ -91,6 +97,11 @@
 		}
 
 		.mobileShow2
+		{
+			display: none;
+		}
+
+		.mobileShow3
 		{
 			display: none;
 		}
@@ -945,6 +956,10 @@
 			display: inline;
 		}
 
+		.mobileShow3
+		{
+			display: inline;
+		}
 
 		.resumeSemiDateHeading
 		{
