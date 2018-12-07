@@ -25,10 +25,19 @@
 			/*margin-right: 3vw;*/
 		}
 
+
+		.header-image 
+		{
+		    max-width: 100vw;
+		    width: 100vw;
+		}
+
+
 		#masthead
 		{
 			margin-left: -5vw;
 		}
+
 
 		#content 
 		{
