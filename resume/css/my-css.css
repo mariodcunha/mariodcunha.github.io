@@ -14,8 +14,25 @@
 {
 		.boxed-layout-small .container
 		{
-			margin-left: 0px;
-    		margin-right: 0px;
+			margin-left: 3vw;
+    		/*margin-right: 10px;*/
+    		max-width: 90vw;
+		}
+
+		.container.clearfix
+		{
+			margin-left: 5px;
+			/*margin-right: 3vw;*/
+		}
+
+		#masthead
+		{
+			margin-left: -5vw;
+		}
+
+		#content 
+		{
+    		padding: 10vw 0 0 0;
 		}
 
 
