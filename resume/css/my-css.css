@@ -6,8 +6,24 @@
 
 
 /* Smartphones (portrait and landscape) ----------- */
+
+
+
+
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
 {
+		.boxed-layout-small .container
+		{
+			margin-left: 0px;
+    		margin-right: 0px;
+		}
+
+
+		#page
+		{
+			margin: 0px;
+		}
+
 		#contactMeHeading
 		{
 			font-weight: normal;
@@ -16,7 +32,7 @@
 		b
 		{
 			color: #555;
-			/*font-weight: 400;*/
+			/*//font-weight: 400;*/
 		}
 
 		.fa-play:before
@@ -50,23 +66,23 @@
 		}
 
 
-		/*#primary
-		{
-			color: #434343;
-		}
-		*/
+/*		// #primary
+		// {
+		//	color: #434343;
+		// }*/
+		
 		#rightSide
 		{
-			/*background-color: green;*/
-			/*float: right;*/
+/*			// background-color: green;
+			// float: right;*/
 			width: 100%;
 		}
 
 
 		#leftSide
 		{
-			/*float: left;*/
-			/*background-color: blue;*/
+/*			// float: left;
+			// background-color: blue;*/
 			width: 100%;
 		}
 
@@ -80,7 +96,7 @@
 
 		#resumeRight
 		{
-			/*background-color: rgba(0,0,255,0.1);*/
+			/*// background-color: rgba(0,0,255,0.1);*/
 			float: right;
 			width: 100%;
 			z-index: -5;
@@ -91,7 +107,7 @@
 		{
 			float: left;
 			width: 100%;
-			/*background-color: rgba(255,0,0,0.1);*/
+			/*// background-color: rgba(255,0,0,0.1);*/
 			padding-right: 20px;
 			z-index: -5;
 		}
@@ -146,20 +162,20 @@
 
 		.themeDot
 		{
-/*			font-size: 25px;
-			color: #009eed;
-*/			
+/*			// font-size: 25px;
+			// color: #009eed;*/
+			
 		}
 
 
-		/*
+		
 		.themeDot:hover
 		{
-			font-size: 33px;
-			color: #009eed;
-			transition: all 0.5s;
+/*			// font-size: 33px;
+			// color: #009eed;
+			// transition: all 0.5s;*/
 		}
-		*/
+		
 
 		.themeBullet
 		{
@@ -173,12 +189,12 @@
 			margin-left: 15px;
 		}
 
-		/*.themeBullet:hover
+		.themeBullet:hover
 		{
-			color: #009eed;
-			font-size: 23px;
+/*			// color: #009eed;
+			// font-size: 23px;*/
 		}
-		*/
+		
 
 		#colophon .widget-area 
 		{
@@ -189,9 +205,9 @@
 
 		#resumeSummary
 		{
-/*			margin-right: 17px;
-			margin-left: 17px;*/
-			font-style: italic;	
+/*			// margin-right: 17px;
+			// margin-left: 17px;
+*/			font-style: italic;
 			font-size: 14px;
 		    margin-top: -10px;
 		    margin-bottom: 10px;
@@ -227,20 +243,6 @@
 			font-family: 'Rajdhani';
 			font-weight: 500;
 			font-size: 14px;
-
-		}
-
-
-
-
-		#resumeSummary
-		{
-			/*margin-right: 17px;*/
-			/*margin-left: 17px;*/
-			font-size: 14px;
-			font-style: italic;	
-		    margin-bottom: 0px;
-		    margin-top: -10px;
 
 		}
 
@@ -299,7 +301,7 @@
 
 		#contactMeDrop
 		{
-			/*display: none;*/
+			/*// display: none;*/
 		}
 
 
@@ -674,6 +676,14 @@
 @media only screen and (min-device-width : 1440px) and (max-device-width : 2800px)
 {
 
+		#contactMeHeading
+		{
+			z-index: 2000;
+			font-weight: normal;
+			color: black;
+		}
+
+
 		.themenotsoBold
 		{
 				font-weight: normal;
@@ -688,10 +698,6 @@
 				font-weight: 700;
 		}
 
-		#contactMeHeading
-		{
-			font-weight: normal;
-		}
 
 		b
 		{
@@ -856,7 +862,7 @@
 /*			margin-right: 17px;
 			margin-left: 17px;*/
 			font-style: italic;	
-			font-size: 14px;
+			font-size: 15px;
 		    margin-top: -10px;
 		    margin-bottom: 10px;
 		    color: #555;
@@ -957,10 +963,6 @@
 		    font-size: 13px;
 		}
 
-		#contactMeHeading
-		{
-			z-index: 2000;
-		}
 
 		.fa-play:before
 		{
@@ -970,5 +972,6 @@
 
 
 }
+
 
 

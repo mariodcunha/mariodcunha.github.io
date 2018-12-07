@@ -24,6 +24,7 @@ var intuit = [];
 var parsons = [];
 
 
+
 //MARIOISM
 marioism[0] = new Quote("Life’s funny, but I’m funnier!",me);
 marioism[1] = new Quote("Don’t take ‘taking for granted’, for granted.",me);
