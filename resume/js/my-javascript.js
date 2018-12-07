@@ -1,22 +1,5 @@
 
 
-
-$(document).ready(function() 
-{
-	console.log("doc ready");
-	$('.knowMore').click(function()
-	{
-		console.log("clicked-1");
-		// $('.knowMore').slideUp();
-		// $('#mobileShow3').css("display","inline");
-		// $('#mobileShow3').slideDown("slow");
-	});
-});
-
-
-
-
-
 $(document).ready(function() 
 {
 	console.log("doc ready");
