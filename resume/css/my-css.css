@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Hind:400,700|Rajdhani:500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700,900|Rajdhani:500,600,700');
 
 
 /* All Devices */
@@ -16,6 +16,17 @@
 		{
 			/*font-weight: bold;*/
 			color: #009eed;
+		}
+
+		input.search-field 
+		{
+		    /*width: 63vw;*/
+		    margin-left: -40vw;
+		}
+
+		#colophon .widget-area 
+		{
+    		padding: 20px 0px 0px;
 		}
 
 		.boxed-layout-small .container
@@ -50,10 +61,6 @@
     		padding: 10vw 0 0 0;
 		}
 
-		aside#search-19.widget.widget_search
-		{
-			width: 85vw;
-		}
 
 		#page
 		{
@@ -241,13 +248,6 @@
 			// font-size: 23px;*/
 		}
 		
-
-		#colophon .widget-area 
-		{
-			padding: 20px 0 20px;
-		}
-
-
 
 		#resumeSummary
 		{
@@ -1021,6 +1021,20 @@
 			opacity: 0.8;
 		}
 
+
+		/*form.search-form
+		{
+		    margin-left: 10vw;
+		}
+
+		input.search-field
+		{
+			width: 35vw;
+		    margin-left: -10vw;
+		    margin-top: auto;
+		    margin-bottom: auto;
+			margin-right: auto;
+		}*/
 
 }
 
