@@ -39,15 +39,15 @@ function draw()
   background(51);
 
   if(trigger==0)
-    image(closedImage, window.innerWidth/10, 0, window.innerWidth-window.innerWidth/5, window.innerHeight);
+    image(closedImage, 0, -window.innerHeight/6, window.innerWidth, window.innerHeight+window.innerHeight/4);
   else
-    image(openImage, window.innerWidth/10, 0, window.innerWidth-window.innerWidth/5, window.innerHeight);
+    image(openImage, 0, -window.innerHeight/6, window.innerWidth, window.innerHeight+window.innerHeight/4);
 
-  xll = 0.62 * window.innerWidth;
-  xhl = 0.66 * window.innerWidth;
+  xll = 0.65 * window.innerWidth;
+  xhl = 0.695 * window.innerWidth;
 
-  yll = 0.43 * window.innerHeight;
-  yhl = 0.57 * window.innerHeight;
+  yll = 0.38 * window.innerHeight;
+  yhl = 0.54 * window.innerHeight;
 
   
   fill(150);
