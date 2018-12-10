@@ -9,13 +9,16 @@ let soundx;
 
 var closedImage, openImage;
 var xll, xhl, yll, yhl;
-var trigger=0;
+var trigger=0, sound=0;
 
 function preload() 
 {
 
-  openSound = loadSound('champagnePop.mp3');
-  // closedSound = loadSound('sound/champagnePop.mp3');
+  openSound = loadSound('openDoor.mp3');
+  closedSound = loadSound('closeDoor.mp3');
+  closedImage = loadImage("closed.jpg");
+  openImage = loadImage("open.jpg");
+
 }
 
 function setup() 
@@ -24,11 +27,8 @@ function setup()
   createCanvas(window.innerWidth, window.innerHeight);
   pos = createVector(mouseX, mouseY);
 
-  closedImage = loadImage("closed.jpg");
-  openImage = loadImage("open.jpg");
-
   console.log(window.innerHeight);
-  
+
 }
 
 
@@ -39,44 +39,43 @@ function draw()
   background(51);
 
   if(trigger==0)
-    image(closedImage, window.innerWidth/10,0, window.innerWidth-window.innerWidth/5, window.innerHeight);
+    image(closedImage, window.innerWidth/10, 0, window.innerWidth-window.innerWidth/5, window.innerHeight);
   else
-    image(openImage, window.innerWidth/10,0, window.innerWidth-window.innerWidth/5, window.innerHeight);
+    image(openImage, window.innerWidth/10, 0, window.innerWidth-window.innerWidth/5, window.innerHeight);
 
-  console.log(trigger);
+  xll = 0.62 * window.innerWidth;
+  xhl = 0.66 * window.innerWidth;
 
-  xll = 0.63 * window.innerWidth;
-  xhl = 0.68 * window.innerWidth;
+  yll = 0.43 * window.innerHeight;
+  yhl = 0.57 * window.innerHeight;
 
-  yll = 0.42 * window.innerHeight;
-  yhl = 0.58 * window.innerHeight;
+  
+  fill(150);
+  textSize(10);
+  // textFont('Georgia');
+  // text('Georgia', 12, 30);
+  text('Font: Ultimate Serial Heavy', window.innerWidth/30, window.innerHeight-window.innerHeight/20);
+}
 
-  console.log(xll);
-  console.log(mouseX);
 
+function mouseClicked() 
+{
   if(mouseX < xhl && mouseX > xll && mouseY > yll && mouseY < yhl)
   {
-    trigger=1;
-    // playSound();
+      if(trigger==0)
+      {
+          trigger=1;
+          openSound.play();
+      }
+      else
+      {
+        trigger=0;
+        closedSound.play();
+      }
   }
-  else
-  {
-    trigger=0;
-  }
 
+  draw();
 }
-
-
-function playSound()
-{
-    if(trigger==1)
-    {
-      // openSound.play(0, 1, 1, 0, 2);
-      // openSound.stop(0);
-    }
-
-}
-
 
 
 
