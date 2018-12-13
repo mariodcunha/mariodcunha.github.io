@@ -17,8 +17,8 @@ var oldWord, newWord;
 var wl; //wordLength
 oldWord="DIRECTIONS", newWord="DIMENSIONS";
 
-var wordsArray = [  "DISTURBED","DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE",
-                    "DISSIPATE","DISBAND","DISCHARGE","DISLODGE","DISPEL","DISMANTLE",
+var wordsArray = [  "WEINSTEIN","AFFLECK","HANNITY","PATEKAR","SAJID KHAN",
+                    "POLANSKI","TRUMP","TAKEI","BERGANZA","DISPEL","DISMANTLE",
                     "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
 
 var myFont, shadeOpacity=15;
