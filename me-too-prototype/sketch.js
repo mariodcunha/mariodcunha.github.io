@@ -18,8 +18,8 @@ var wl; //wordLength
 oldWord="DIRECTIONS", newWord="DIMENSIONS";
 
 var wordsArray = [  "WEINSTEIN","AFFLECK","HANNITY","PATEKAR","SAJID KHAN",
-                    "POLANSKI","TRUMP","TAKEI","BERGANZA","DISPEL","DISMANTLE",
-                    "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
+                    "POLANSKI","TRUMP","TAKEI","BERGANZA","BATALI","RAMSEY",
+                    "KRATOCHVIL"];
 
 var myFont, shadeOpacity=15;
 
