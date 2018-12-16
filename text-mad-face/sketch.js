@@ -57,7 +57,7 @@ function draw()
     background(255);
 
 
-    blink = millis()%(randomInt(500,600));
+    blink = millis()%(randomInt(8,9));
     // blink =200;
 
     if(colorFlip==0) //red
@@ -65,24 +65,33 @@ function draw()
     else
         fill('rgba(0,0,255, '+opacity+')');
 
+
+    //a
     textSize(W/6);
     text('a', (W/2-W/8)+crazy(1), (H/2-H/8)+crazy(1));
 
-    
-
+    //D
     push();
-    translate(W/2.05+crazy(1), H/9.5+crazy(1));
-    rotate(90);
     textSize(W/4.7);
-    console.log(millis()%(randomInt(500,600)));
-    if(blink > 150)
+    if(blink > 1)
+    {
+        translate(W/2.05+crazy(1), H/9.5+crazy(1));
+        rotate(90);
         text('D', 0,0);
+    }
     else
+    {
+        translate(W/2.05+crazy(1), H/3.5+crazy(1));
+        rotate(90);
         text('I', 0,0);
+    }
     pop();
 
+    //m
     textSize(W/6);
     text('m', W/2.33+crazy(1), H/1.6+crazy(1));
+
+
 
 
     if(colorFlip==0) //blue
@@ -90,25 +99,33 @@ function draw()
     else
         fill('rgba(255,0,0, '+opacity+')');
     
+    //a
     textSize(W/6);
-    text('a', (W/2-W/8)+crazy(3), (H/2-H/8)+crazy(3));
+    text('a', (W/2-W/8)+crazy(5), (H/2-H/8)+crazy(5));
 
-
+    //D
     push();
-    translate(W/2.05+crazy(3), H/9.5+crazy(3));
-    rotate(90);
     textSize(W/4.7);
-    if(blink > 150)
+    if(blink > 1)
+    {
+        translate(W/2.05+crazy(5), H/9.5+crazy(5));
+        rotate(90);
         text('D', 0,0);
+    }
     else
+    {
+        translate(W/2.05+crazy(5), H/3.5+crazy(5));
+        rotate(90);
         text('I', 0,0);
+    }
     pop();
 
+    //m
     textSize(W/6);
-    text('m', W/2.33+crazy(3), H/1.6+crazy(3));
+    text('m', W/2.33+crazy(5), H/1.6+crazy(5));
 
 
-    frameRate(25);
+    frameRate(15);
 
 }
 
