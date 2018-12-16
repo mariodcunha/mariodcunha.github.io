@@ -19,122 +19,144 @@ oldWord="DIRECTIONS", newWord="DIMENSIONS";
 
 var wordsArray = ["maD","maD","maD","maD","maD","maD","maD","maD"];
 
-var myFont;
+var myFont, colorFlip=0;
+var W, H, F;
+
+var opacity=0.5;
+
 
 function preload() 
 {
-  myFont = loadFont('fonts/NeueDisplay-Random.otf');
+  myFont = loadFont('fonts/Futura.otf');
 }
 
-var Letter = function(x,y,a,d)
-{
-    //Position to start drawing the letter
-    this.x = x;
-    this.y = y;
-    this.text = a;
-    this.dir = d;
-
-    //random color of the letter
-    // this.triColorR = myRandom(255);
-    // this.triColorG = myRandom(255);
-    // this.triColorB = myRandom(255);
-}
 
 
 
 function setup() 
 {
-    createCanvas(windowWidth, windowHeight);
-    // canvas.parent('container'); //within the html
+    createCanvas(window.innerWidth, window.innerHeight);
 
-    noStroke(); 
-    noLoop();
-
-    //letter blend color
-    //random color theme for the letters
-    colorMode(RGB);
-    spectrumFrom = color(255, 80, 0, 50);
-    spectrumTo = color(255, 0, 150, 10);
-
+    angleMode(DEGREES);
     textFont(myFont);
-    createLetters();
 
 }
 
-function createLetters()
-{
-    colorMode(HSB);
-    fromColor = lerpColor(spectrumFrom, spectrumTo, random(1));
-    toColor = lerpColor(spectrumFrom, spectrumTo, random(1));
 
-    // fromColor = color(randomInt(10,100), randomInt(10,100), randomInt(10,100), 200);
-    // toColor = color(randomInt(110,255), randomInt(110,255), randomInt(110,255), 10);
 
-    //do not repeat oldWord
-    oldWord = newWord;
-    newWord = wordsArray[randomInt(wordsArray.length)];
 
-    while(oldWord == newWord)
-        newWord = wordsArray[randomInt(wordsArray.length)];
-
-    letters = [];
-    for(let i=0; i<newWord.length; i++)
-        letters.push(newWord.slice(i,i+1));
-
-    wl = letters.length;
-
-    for(let i=0; i<wl; i++)
-    {
-        LetterArray[i] = new Letter(randomInt(((width/wl)*(i)), ((width/wl/1.1)*(i+1))), 
-                                    randomInt((height/wl),(height-(height/wl))), letters[i], randomInt(-2,2)+noise(1));
-        
-    }
-}
 
 function draw() 
 {
-    colorMode(RGB);
-    background(20);
-    drawLetter(letters.length);
+
+    colorFlip = randomInt(0,3);
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    background(255);
+
+
+    blink = millis()%(randomInt(500,600));
+    // blink =200;
+
+    if(colorFlip==0) //red
+        fill('rgba(255,0,0, '+opacity+')');
+    else
+        fill('rgba(0,0,255, '+opacity+')');
+
+    textSize(W/6);
+    text('a', (W/2-W/8)+crazy(1), (H/2-H/8)+crazy(1));
+
+    
+
+    push();
+    translate(W/2.05+crazy(1), H/9.5+crazy(1));
+    rotate(90);
+    textSize(W/4.7);
+    console.log(millis()%(randomInt(500,600)));
+    if(blink > 150)
+        text('D', 0,0);
+    else
+        text('I', 0,0);
+    pop();
+
+    textSize(W/6);
+    text('m', W/2.33+crazy(1), H/1.6+crazy(1));
+
+
+    if(colorFlip==0) //blue
+        fill('rgba(0,0,255, '+opacity+')');
+    else
+        fill('rgba(255,0,0, '+opacity+')');
+    
+    textSize(W/6);
+    text('a', (W/2-W/8)+crazy(3), (H/2-H/8)+crazy(3));
+
+
+    push();
+    translate(W/2.05+crazy(3), H/9.5+crazy(3));
+    rotate(90);
+    textSize(W/4.7);
+    if(blink > 150)
+        text('D', 0,0);
+    else
+        text('I', 0,0);
+    pop();
+
+    textSize(W/6);
+    text('m', W/2.33+crazy(3), H/1.6+crazy(3));
+
+
+    frameRate(25);
+
 }
 
 
-function drawLetter(lettercount)
+function crazy(n)
 {
-    colorMode(RGB);
-    background(20);
+    var l = -3, h = 3;
 
-
-    for(var i=0; i<lettercount; i++)
-    {
-        //draw each letter's shaded blending
-        //which is many letters behind single one, with decreasing size        
-        letterSize = width/(2.5*wl);
-        for(let j=1, k=100; j<50; j++)
-        {
-            //letterSize can be scrolled, check mouseWheel()
-            textSize(k+letterSize);
-
-            //decreasing size for next alphabet
-            k--;
-
-            //blending the color shade
-            myColor = lerpColor(fromColor, toColor, j/50);
-            fill(myColor);
-
-            //mouse motion should allow letter rotation in all directions of screen
-            moveX = map(mouseX, 0, width, -2, 2);
-            moveY = map(mouseY, 0, height, -2, 2);
-
-            text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir));
-        }
-
-    }
+    // return (noise(l,h)+randomInt(l,h))*n;
+    return randomInt(noise(l,h)+randomInt(l,h))*n;
 }
+
+
+function randomInt(n)
+{
+
+  return Math.floor(random(0,n));
+}
+
+
+function randomInt(l,h)
+{
+  return Math.floor(random(l,h));
+}
+
+
+
+function noiseLevel(l,h)
+{
+
+  return noise(l,h);
+ 
+}
+
+
+
 
 function mouseMoved(event) 
 {
-    draw();
+    // draw();
+
+    // opacity = opacity + (-1)mouseX/(W*10);
+
+    // if(opacity > 1)
+    //     opacity = opacity - 0.001;
+    // else if (opacity < 0)
+    //     opacity = opacity + 0.001;
+        
 
     // var eventChanges = event.movementX/2+event.movementY/2;
     // change = eventChanges/2;
@@ -144,41 +166,14 @@ function mouseMoved(event)
 
 function mouseClicked()
 {
-    createLetters();
-    draw();
+    // createLetters();
+    // draw();
 }
 
 
-
-function mouseWheel(event) 
+function mouseWheel()
 {
-    letterSize += event.delta*0.1;
-    draw();
+    opacity = opacity + event.deltaY/1000;
+
 }
-
-
-function keyPressed()
-{
-  
-}
-
-
-function randomInt(n)
-{
-  return Math.floor(random(0,n));
-}
-
-function randomInt(l,h)
-{
-  return Math.floor(random(l,h));
-}
-
-
-function RandomNoise(n)
-{
-
-  return noise(n)*randomInt(n);
- 
-}
-
 
