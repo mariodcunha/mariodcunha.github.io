@@ -5,7 +5,7 @@
 
 var myImage, pixelate=9, minimum=4;
 
-var myName = ['a','d','m','i','s','s','i','o','n'];
+var myName = ['m','a','r','i','o','d','c','u','n','h','a'];
 
 console.log(myName[0]);
 
@@ -18,7 +18,7 @@ var randomColor, x1, y1;
 
 function preload() 
 {
-    myImage = loadImage("images/metrocard.jpg"); 
+    myImage = loadImage("images/mec.jpg"); 
 }
 
 

@@ -7,7 +7,7 @@ var myImage, pixelate=20, minimum=10;
 
 function preload() 
 {
-    myImage = loadImage("images/me.jpg"); 
+    myImage = loadImage("images/mec.jpg"); 
 }
 
 function setup() 
