@@ -1,11 +1,8 @@
 
 //Dimensions 
 
-var pos_x = window.innerWidth/2, pos_y=window.innerHeight/2;
-var mx, my;
 
 var r=0, g=0, b=0, bgcolor=255;
-var equiv=50, diff=0, opacity=40, mode=1;
 var md=0, change, moveX, moveY;
 var letterSize=50, dir=1;
 var fromColor, toColor;
@@ -13,16 +10,11 @@ var fromColor, toColor;
 var LetterArray = [];
 var letters = ['D','I','M','E','N','S','I','O','N','S'];
 
-var oldWord, newWord;
-var wl; //wordLength
-oldWord="DIRECTIONS", newWord="DIMENSIONS";
-
-var wordsArray = ["maD","maD","maD","maD","maD","maD","maD","maD"];
 
 var myFont, colorFlip=0;
 var W, H, F;
 
-var opacity=0.5;
+var opacity=0.5, blink=0;
 
 
 function preload() 
@@ -57,7 +49,7 @@ function draw()
     background(255);
 
 
-    blink = millis()%(randomInt(8,9));
+    // blink = millis()%(randomInt(8,9));
     // blink =200;
 
     if(colorFlip==0) //red
@@ -126,6 +118,7 @@ function draw()
 
 
     frameRate(15);
+    blink++;
 
 }
 
@@ -181,10 +174,12 @@ function mouseMoved(event)
 }
 
 
-function mouseClicked()
+function mouseReleased()
 {
     // createLetters();
     // draw();
+    blink = 0;
+    draw();
 }
 
 
