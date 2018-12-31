@@ -3,13 +3,13 @@
 //Mario Dcunha
 
 
-var myImage, myImage1, myImage2, pixelate=3, minimum=5;
+var myImage, myImage1, myImage2, pixelate=7, minimum=5;
 
 function preload() 
 {
-    myImage1 = loadImage("images/book7.jpg"); 
-    myImage2 = loadImage("images/book8.jpg"); 
-    myImage3 = loadImage("images/book9.jpg"); 
+    myImage1 = loadImage("images/book10.jpg"); 
+    myImage2 = loadImage("images/book12.jpg"); 
+    myImage3 = loadImage("images/book11.jpg"); 
 }
 
 function setup() 
@@ -29,8 +29,13 @@ var noOfBooks=3, randomColor, firstColor, secondColor, thisColor, toggle=0;
 
 function draw() 
 {
+    // background(0);
+
     noCursor();
     // background(20);
+
+    // atom = pixelate / (noOfBooks);
+    atom = pixelate;
 
     // strokeWeight(pixelate/30);
 
@@ -49,7 +54,7 @@ function draw()
                 thisColor = color(myImage1.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, pixelate, pixelate);
+                ellipse(x, y, atom, atom);
             }
 
             else if(toggle%noOfBooks==1)
@@ -57,7 +62,7 @@ function draw()
                 thisColor = color(myImage2.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, pixelate, pixelate);
+                ellipse(x, y, atom, atom);
 
             }
             else if(toggle%noOfBooks==2)
@@ -65,7 +70,7 @@ function draw()
                 thisColor = color(myImage3.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, pixelate, pixelate);
+                ellipse(x, y, atom, atom);
 
             }
             toggle++;
