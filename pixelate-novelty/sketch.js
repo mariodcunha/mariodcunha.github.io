@@ -3,13 +3,13 @@
 //Mario Dcunha
 
 
-var myImage, myImage1, myImage2, pixelate=7, minimum=5;
+var myImage, myImage1, myImage2, pixelate=4, minimum=5;
 
 function preload() 
 {
-    myImage1 = loadImage("images/book10.jpg"); 
-    myImage2 = loadImage("images/book12.jpg"); 
-    myImage3 = loadImage("images/book11.jpg"); 
+    myImage1 = loadImage("images/book16.jpg"); 
+    myImage2 = loadImage("images/book17.jpg"); 
+    myImage3 = loadImage("images/book18.jpg"); 
 }
 
 function setup() 
@@ -34,8 +34,9 @@ function draw()
     noCursor();
     // background(20);
 
-    // atom = pixelate / (noOfBooks);
-    atom = pixelate;
+    // atom = pixelate / (noOfBooks-1);
+    atom = pixelate - (pixelate/noOfBooks-1);
+    // atom = pixelate;
 
     // strokeWeight(pixelate/30);
 
