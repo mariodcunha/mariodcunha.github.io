@@ -3,7 +3,7 @@
 //Mario Dcunha
 
 
-var myImage, myImage1, myImage2, pixelate=4, minimum=5;
+var myImage, myImage1, myImage2, pixelate=3, minimum=5;
 
 function preload() 
 {
@@ -50,12 +50,17 @@ function draw()
             // thisColor = color(myImage1.get(x, y));
             // thisColor = color(thisColor, noise(10,255));
 
+            // console.log(randomInt(0,2));
+
             if(toggle%noOfBooks==0)
             {
                 thisColor = color(myImage1.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, atom, atom);
+                if(randomInt(0,2)==0)
+                    ellipse(x, y, atom, atom);
+                else
+                    rect(x, y, atom, atom);
             }
 
             else if(toggle%noOfBooks==1)
@@ -63,7 +68,11 @@ function draw()
                 thisColor = color(myImage2.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, atom, atom);
+                if(randomInt(0,2)==0)
+                    ellipse(x, y, atom, atom);
+                else
+                    rect(x, y, atom, atom);
+
 
             }
             else if(toggle%noOfBooks==2)
@@ -71,7 +80,11 @@ function draw()
                 thisColor = color(myImage3.get(x, y));
                 thisColor = color(thisColor, noise(10,255));
                 fill(thisColor);
-                ellipse(x, y, atom, atom);
+                if(randomInt(0,2)==0)
+                    ellipse(x, y, atom, atom);
+                else
+                    rect(x, y, atom, atom);
+
 
             }
             toggle++;
