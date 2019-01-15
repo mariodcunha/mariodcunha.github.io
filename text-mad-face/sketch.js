@@ -49,8 +49,8 @@ function draw()
     background(255);
 
 
-    // blink = millis()%(randomInt(8,9));
-    // blink =200;
+    blink = millis()%(randomInt(8,9));
+    blink =200;
 
     if(colorFlip==0) //red
         fill('rgba(255,0,0, '+opacity+')');
@@ -128,7 +128,7 @@ function crazy(n)
     var l = -3, h = 3;
 
     // return (noise(l,h)+randomInt(l,h))*n;
-    return randomInt(noise(l,h)+randomInt(l,h))*n;
+    return randomInt(noise(l,h)+randomInt(l,h))*(n+1);
     // return null;
 }
 
