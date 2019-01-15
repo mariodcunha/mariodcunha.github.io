@@ -17,11 +17,9 @@ var oldWord, newWord;
 var wl; //wordLength
 oldWord="DIRECTIONS", newWord="DIMENSIONS";
 
-var wordsArray = [  "TYPOGRAPHY"," "];
-
-// DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE",
-//                     "DISSIPATE","DISBAND","DISCHARGE","DISLODGE","DISPEL","DISMANTLE",
-//                     "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
+var wordsArray = ["DISTRIBUTED","DIMENSIONS","DISPERSED","DIFFUSE",
+                    "DISSIPATE","DISBAND","DISCHARGE","DISLODGE","DISPEL","DISMANTLE",
+                     "DISSOLVE","DISBURSE","DISSEMINATE","DIRECTIONS","DRIFT","DISGUISE"];
 
 var myFont, shadeOpacity=15;
 
