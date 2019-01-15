@@ -50,7 +50,7 @@ function draw()
 
 
     blink = millis()%(randomInt(8,9));
-    blink =200;
+    // blink =200;
 
     if(colorFlip==0) //red
         fill('rgba(255,0,0, '+opacity+')');
@@ -73,7 +73,7 @@ function draw()
     }
     else
     {
-        translate(0.49*W+crazy(1), 0.05*W+crazy(1));
+        translate(0.49*W+crazy(1), 0.15*W+crazy(1));
         rotate(90);
         text('I', 0,0);
     }
@@ -106,7 +106,7 @@ function draw()
     }
     else
     {
-        translate(0.49*W+crazy(1), 0.05*W+crazy(1));
+        translate(0.49*W+crazy(1), 0.15*W+crazy(1));
         rotate(90);
         text('I', 0,0);
     }
