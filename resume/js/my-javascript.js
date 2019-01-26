@@ -2,7 +2,7 @@
 
 $(document).ready(function() 
 {
-	console.log("doc ready");
+	// console.log("doc ready");
 	$('.knowMore').click(function()
 	{
 		console.log("clicked");
