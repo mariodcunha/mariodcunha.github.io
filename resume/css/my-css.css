@@ -5,12 +5,11 @@
 
 
 
+
 /* Smartphones (portrait and landscape) ----------- */
 
 
-
-
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px)
+@media only screen and (min-device-width : 320px) and (max-device-width : 769px)
 {
 		.knowMore
 		{
@@ -505,6 +504,22 @@
 
 
 
+/* iPad only */
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 769px)
+{
+	#page
+	{
+		padding-left: 5vw;
+	}
+
+	input.search-field 
+	{
+    	 /*width: 63vw; */
+    	 margin-left: -5vw; 
+	}
+}
+
 
 
 
@@ -720,7 +735,7 @@
 
 
 /* Desktop ----------- */
-@media only screen and (min-device-width : 760px) and (max-device-width : 2800px)
+@media only screen and (min-device-width : 770px) and (max-device-width : 2800px)
 {
 
 		#contactMeHeading
