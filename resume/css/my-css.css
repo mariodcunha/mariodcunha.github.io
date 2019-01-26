@@ -83,8 +83,13 @@
 			opacity: 0.8;
 		}
 
+		 .resumeSemiHeading a
+		 {
+		 	color: #666;
+		 }
 
-		.bulletText a, .resumeSemiHeading a, .resumeFont a
+
+		.bulletText a, .resumeFont a
 		{
 			font-weight: bold;
 			color: #000;
@@ -145,6 +150,10 @@
 		    font-weight: normal;
 		}
 
+		p
+		{
+			line-height: 200%;
+		}
 
 		#resumeRight
 		{
@@ -267,7 +276,7 @@
 			font-size: 21px;
 			margin-bottom: 5px;
 			margin-top: 15px;
-			color: #555;
+			color: #444;
 
 		}
 
@@ -738,6 +747,11 @@
 @media only screen and (min-device-width : 770px) and (max-device-width : 2800px)
 {
 
+		.para
+		{
+			line-height: 1.8;
+		}
+
 		#contactMeHeading
 		{
 			z-index: 2000;
@@ -767,7 +781,12 @@
 			/*font-weight: 400;*/
 		}
 
-		.bulletText a, .resumeSemiHeading a, .resumeFont a
+		.resumeSemiHeading a
+		{
+			color: #666;
+		}
+
+		.bulletText a, .resumeFont a
 		{
 			font-weight: bold;
 			color: #555;
@@ -938,7 +957,7 @@
 			font-size: 20px;
 			margin-bottom: 5px;
 			margin-top: 15px;
-			color: #555;
+			color: #444;
 		}
 
 
