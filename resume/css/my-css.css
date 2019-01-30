@@ -749,7 +749,8 @@
 
 		.para
 		{
-			line-height: 1.8;
+			line-height: 1.6;
+			padding-bottom: 5px;
 		}
 
 		#contactMeHeading
@@ -1053,6 +1054,7 @@
 		{
 			font-size: 9px;
 			opacity: 0.8;
+			vertical-align: top;
 		}
 
 
