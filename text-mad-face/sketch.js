@@ -117,7 +117,7 @@ function draw()
     text('m', 0.43*W+crazy(1), 0.30*W+crazy(1));
 
 
-    frameRate(15);
+    frameRate(10);
     blink++;
 
 }
@@ -125,10 +125,11 @@ function draw()
 
 function crazy(n)
 {
-    var l = -3, h = 3;
+    var l = -3000, h = 3000;
 
     // return (noise(l,h)+randomInt(l,h))*n;
-    return randomInt(noise(l,h)+randomInt(l,h))*(n+1);
+    return sin (randomInt(l,h))*3;
+    // return randomInt(noise(l,h)+randomInt(l,h))*(n+1);
     // return null;
 }
 
