@@ -11,6 +11,11 @@
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 769px)
 {
+		#portfolioLink
+		{
+			margin-top: 10px;
+		}
+
 		.knowMore
 		{
 			/*font-weight: bold;*/
@@ -128,6 +133,7 @@
 			/*background-color: green;*/
 			float: right;
 			width: 50%;
+			margin-bottom: 30px;
 		}
 
 
@@ -136,6 +142,7 @@
 			float: left;
 			/*background-color: blue;*/
 			width: 50%;
+			margin-bottom: 30px;
 		}
 
 
@@ -331,10 +338,10 @@
 		#sticky_header_resume_mobile
 		{
 			background-color: #fff;
-		    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		    border: none;
 		    width: 100%;
 		    z-index: 999;
-		    margin-top: 50px;
+		    /*margin-top: 50px;*/
 		}
 
 		#sticky_header_resume_desktop
@@ -349,9 +356,9 @@
 		}
 
 
-		#contactMeDrop
+		.contactMeDrop
 		{
-			/*// display: none;*/
+			margin-bottom: 15px;
 		}
 
 
@@ -522,6 +529,11 @@
     	 /*width: 63vw; */
     	 margin-left: -5vw; 
 	}
+
+	#portfolioLink
+		{
+			margin-top: 10px;
+		}
 }
 
 
@@ -741,6 +753,10 @@
 /* Desktop ----------- */
 @media only screen and (min-device-width : 770px) and (max-device-width : 2800px)
 {
+		#portfolioLink
+		{
+			margin-top: 20px;
+		}
 
 		.para
 		{
