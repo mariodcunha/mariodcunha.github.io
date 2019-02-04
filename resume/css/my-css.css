@@ -122,25 +122,20 @@
 			margin: 0 0 10px 0;
 		}
 
-
-/*		// #primary
-		// {
-		//	color: #434343;
-		// }*/
 		
-		#rightSide
+			#rightSide
 		{
-/*			// background-color: green;
-			// float: right;*/
-			width: 100%;
+			/*background-color: green;*/
+			float: right;
+			width: 50%;
 		}
 
 
 		#leftSide
 		{
-/*			// float: left;
-			// background-color: blue;*/
-			width: 100%;
+			float: left;
+			/*background-color: blue;*/
+			width: 50%;
 		}
 
 
