@@ -515,31 +515,6 @@
 
 
 
-/* iPad only */
-
-@media only screen and (min-device-width : 768px) and (max-device-width : 769px)
-{
-	#page
-	{
-		padding-left: 5vw;
-	}
-
-	input.search-field 
-	{
-    	 /*width: 63vw; */
-    	 margin-left: -5vw; 
-	}
-
-	#portfolioLink
-		{
-			margin-top: 10px;
-		}
-}
-
-
-
-
-
 
 
 
@@ -1083,6 +1058,36 @@
 			margin-right: auto;
 		}*/
 
+}
+
+
+
+
+
+
+
+
+
+/* iPad only */
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 769px)
+{
+	#page
+	{
+		padding-left: 5vw;
+	}
+
+	input.search-field 
+	{
+    	 /*width: 63vw; */
+    	 margin-left: -5vw; 
+    	 width: 60vw;
+	}
+
+	#portfolioLink
+		{
+			margin-top: 10px;
+		}
 }
 
 
