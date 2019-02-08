@@ -617,114 +617,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Desktop ----------- */
 @media only screen and (min-device-width : 770px) and (max-device-width : 2800px)
 {
@@ -1068,9 +960,77 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* Smartphone Landscapes */
+
+@media only screen and (min-device-width : 667px) and (max-device-width : 823px)
+{
+	#page
+	{
+		padding-left: 0vw;
+	}
+
+	input.search-field 
+	{
+    	 margin-left: 17vw; 
+    	 width: 57vw;
+	}
+
+	#portfolioLink
+		{
+			margin-top: 10px;
+		}
+	
+	#primary-menu
+	{
+		width: 100%;
+    margin-left: 2vw;
+/*     margin-right: 1vw;	 */
+	}
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* iPad only */
 
-@media only screen and (min-device-width : 768px) and (max-device-width : 769px)
+@media only screen and (min-device-width : 768px) and (max-device-width : 768px)
 {
 	#page
 	{
@@ -1079,16 +1039,25 @@
 
 	input.search-field 
 	{
-    	 /*width: 63vw; */
-    	 margin-left: -5vw; 
-    	 width: 60vw;
+    	 margin-left: -7vw; 
+    	 width: 50vw;
 	}
 
 	#portfolioLink
 		{
 			margin-top: 10px;
 		}
+	
+	#primary-menu
+	{
+		width: 100%;
+    margin-left: 2vw;
+/*     margin-right: 1vw;	 */
+	}
+	
+	
 }
+
 
 
 
