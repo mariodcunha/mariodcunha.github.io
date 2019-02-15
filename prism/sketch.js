@@ -1,213 +1,256 @@
 
-//Mario Dcunha
+//Dimensions 
+
+var pos_x = window.innerWidth/2, pos_y=window.innerHeight/2;
+var mx, my;
+
+var r=0, g=0, b=0, bgcolor=255;
+var equiv=50, diff=0, opacity=40, mode=1;
+var md=0, change, moveX, moveY;
+var letterSize=50, dir=1;
+var fromColor, toColor;
+
+var LetterArray = [];
+// var letters = ['D','i','M','E','N','s','I','O','n','S'];
+var letters = ['P','R','I','S','M'];
+// var smallLetters = ['d','i','m','e','n','s','i','o','n','s'];
+
+var oldWord, newWord;
+var wl; //wordLength
+oldWord="DIMENSIONS", newWord="DIMENSIONS";
+var wordsArray = ["DiMENsIOnS"];
+// var wordsArray2 = ["dimensions"];
+
+var myFont, shadeOpacity=15;
 
 
-var pos_x = window.innerWidth/2, pos_y=window.innerHeight/2, mx, my;
-
-var r =0, g=0, b=0, bgcolor=255;
-
-var TriangleArray = [];
-var triangleCount = 1; 
-
-var equiv=50, diff=0, opacity=40, mode=0;
-//controls=1;
-
-
-
-var Triangle = function()
+$(document).ready(function()
 {
+    $('.dates').mouseover(function()
+    {
+        $('.dates').css("color","cyan");
+        $('#dimensionsTitle').css("color","cyan");
+    });
 
-    //Random vertices
-    // this.vertex = [];
-    // for(var v=0; v<6; v++)
-    // {
-    //     vertex[v] = myRandom(50);
-    // }
+    $('#dimensionsTitle').mouseover(function()
+    {
+        $('.dates').css("color","cyan");
+        $('#dimensionsTitle').css("color","cyan");
+    });
 
-    // this.factor = equiv;
+    $('.dates').mouseout(function()
+    {
+        $('.dates').css("color","white");
+        $('#dimensionsTitle').css("color","white");
+    });
 
-    //Equilateral Triangle Vertices
-    this.x = pos_x;
-    this.y = pos_y;
-
-    this.x1 = this.x - equiv;
-    this.y1 = this.y + equiv;
-
-    this.x2 = this.x;
-    this.y2 = this.y;
-
-    this.x3 = this.x + equiv;
-    this.y3 = this.y + equiv;
-
-    this.triColorR = myRandom(255);
-    this.triColorG = myRandom(255);
-    this.triColorB = myRandom(255);
+    $('#dimensionsTitle').mouseout(function()
+    {
+        $('.dates').css("color","white");
+        $('#dimensionsTitle').css("color","white");
+    });
+        
+});
 
 
+
+
+function preload() 
+{
+  myFont = loadFont('fonts/NeueDisplay-Random.otf');
+}
+
+var Letter = function(x,y,a,d)
+{
+    //Position to start drawing the letter
+    this.x = x;
+    this.y = y;
+    this.text = a;
+    this.dir = d;
+
+    //random color of the letter
+    // this.triColorR = myRandom(255);
+    // this.triColorG = myRandom(255);
+    // this.triColorB = myRandom(255);
 }
 
 
 
 function setup() 
 {
-    var canvas = createCanvas(window.innerWidth-50, window.innerHeight-50);
-    canvas.parent('container');
-    // canvas.hide();
-
-    console.log(window.innerHeight);
+    createCanvas(windowWidth, windowHeight);
+    // canvas.parent('container'); //within the html
 
     noStroke(); 
-    noLoop();
-    background(255);
+    // noLoop();
 
-    TriangleArray[0] = new Triangle();
+    //letter blend color
+    //random color theme for the letters
+    colorMode(RGB);
+    spectrumFrom = color(255, 80, 0, 50);
+    spectrumTo = color(255, 0, 150, 10);
 
+    textFont(myFont);
+    createLetters();
 
-    // targetCount = myRandom(15)+5;
-    
-    // for(i=0; i<targetCount; i++)
-    // {
-    //   TargetArray[i] = new Target();
-    // }
-
-    // var text = createP('Controls');
-
-
-    // var colorpos = createP('Ring Color');
-    // color_picker = createInput("#e52727", "color");
-
-    // var equivpos = createP('equiv');
-    // equiv_slider = createSlider(10, 200, 100);
-    // equivpos.class('labels');
-    // equiv_slider.class('sliders');
-    // equivpos.parent('params'); equiv_slider.parent('params');
 }
 
+function createLetters()
+{
+    colorMode(HSB);
+    fromColor = lerpColor(spectrumFrom, spectrumTo, random(1));
+    toColor = lerpColor(spectrumFrom, spectrumTo, random(1));
 
+
+    wl = letters.length;
+
+    for(let i=0; i<wl; i++)
+    {
+        LetterArray[i] = new Letter(randomInt(((width/wl)*(i)), ((width/wl/1.1)*(i+1))), 
+                                    randomInt((height/wl),(height-(height/wl))), letters[i], randomInt(-2,2)+noise(1));
+        
+    }
+}
 
 function draw() 
 {
-    drawTriangles(TriangleArray.length);
+    colorMode(RGB);
+    background('#00004a');
+    drawLetters();
+    drawShade();
+
+
 }
 
 
-
-function drawTriangles(count)
+function drawLetters()
 {
-    if(mode==0)
-        background(bgcolor);
+    colorMode(RGB);
 
-    noFill();
-
-    for(var i=0; i<count; i++)
+    for(var i=0; i<letters.length; i++)
     {
-        //draw the clicked main triangles
-        fill(TriangleArray[i].triColorR-diff, TriangleArray[i].triColorB-diff, TriangleArray[i].triColorB-diff, 150);
+        //draw each letter's shaded blending
+        //which is many letters behind single one, with decreasing size
 
-        triangle(   TriangleArray[i].x - equiv, TriangleArray[i].y + equiv, 
-                    TriangleArray[i].x, TriangleArray[i].y,
-                    TriangleArray[i].x + equiv, TriangleArray[i].y + equiv   );
+        LetterArray[i].x += random(-3,3)*noise(6,6);
+        LetterArray[i].y += random(-3,3)*noise(6,6);
 
-        //draw the side shades
-        stroke(10, 10, 10, 4);
-        strokeWeight(3);
-        fill(TriangleArray[i].triColorR-diff, TriangleArray[i].triColorB-diff, TriangleArray[i].triColorB-diff, opacity);
-        triangle(   TriangleArray[i].x - equiv, TriangleArray[i].y + equiv, 
-                    mx, my,
-                    TriangleArray[i].x, TriangleArray[i].y);
-        triangle(   TriangleArray[i].x, TriangleArray[i].y, 
-                    mx, my,
-                    TriangleArray[i].x + equiv, TriangleArray[i].y + equiv);
-        triangle(   TriangleArray[i].x - equiv, TriangleArray[i].y + equiv, 
-                    mx, my,
-                    TriangleArray[i].x + equiv, TriangleArray[i].y + equiv);
+        letterSize = width/(2*wl);
 
-        // triangle(   TriangleArray[i].x1, TriangleArray[i].y1, 
-        //             TriangleArray[i].x2, TriangleArray[i].y2,
-        //             TriangleArray[i].x3, TriangleArray[i].y3   );
+        for(let j=1, k=100; j<50; j++)
+        {
+            //letterSize can be scrolled, check mouseWheel()
+            textSize(k+letterSize);
+
+            //decreasing size for next alphabet
+            k--;
+
+            //blending the color shade
+            myColor = lerpColor(fromColor, toColor, j/50);
+            fill(myColor);
+
+            //mouse motion should allow letter rotation in all directions of screen
+            moveX = map(mouseX, 0, width, -2, 2);
+            moveY = map(mouseY, 0, height, -2, 2);
+
+            text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir)+RandomNoise(1), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir)+RandomNoise(1));
+        }
 
     }
-
-
-
 }
 
+
+
+function drawShade()
+{
+    colorMode(RGB);
+
+    for(var i=0; i<letters.length; i++)
+    {
+        //draw each letter's shaded blending
+        //which is many letters behind single one, with decreasing size
+
+        LetterArray[i].x += random(-3,3)*noise(6,6);
+        LetterArray[i].y += random(-3,3)*noise(6,6);
+
+        letterSize = width/(0.5*wl);
+        
+        for(let j=1; j<3; j++)
+        {
+            //letterSize can be scrolled, check mouseWheel()
+            textSize(letterSize);
+
+            //blending the color shade
+            spectrumFrom = color(255, 80, 0, shadeOpacity);
+            spectrumTo = color(255, 0, 150, shadeOpacity-10);
+
+            myColor = lerpColor(fromColor, toColor, j/50);
+            fill(myColor);
+
+            //mouse motion should allow letter rotation in all directions of screen
+            moveX = map(mouseX, 0, width, -2, 2);
+            moveY = map(mouseY, 0, height, -2, 2);
+
+            text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir)+RandomNoise(1), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir)+RandomNoise(1));
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+function mouseMoved(event) 
+{
+    draw();
+
+    // var eventChanges = event.movementX/2+event.movementY/2;
+    // change = eventChanges/2;
+    // md += eventChanges/2;
+}
 
 
 function mouseClicked()
 {
-    pos_x = mouseX; pos_y = mouseY;
-
-    TriangleArray.push(new Triangle());
-    
-    drawTriangles(TriangleArray.length);
-}
-
-
-
-function mouseMoved() 
-{
-    mx = mouseX; my = mouseY;
-    drawTriangles(TriangleArray.length);
-
+    createLetters();
+    draw();
 }
 
 
 
 function mouseWheel(event) 
 {
-    equiv += event.delta*0.1;
-    drawTriangles(TriangleArray.length);
-
+    letterSize += event.delta*0.1;
+    draw();
 }
 
 
 function keyPressed()
 {
-    if(key == ' ')
-    {
-        if(bgcolor == 255)
-       {
-            bgcolor = 50; diff=myRandom(50); opacity = 100;
-        }
-        else
-        {
-            bgcolor = 255; diff=0; opacity = 40;
-        }
-    }
-    else if(key == 'M' || key == 'm')
-    {
-        if(mode==1)
-            mode = 0;
-        else
-            mode = 1;
-    }
-    else if(key == 'H' || key == 'h')
-    {
-        if(controls==1)
-            controls = 0;
-        else
-            controls = 1;
-
-    }
-    
-    drawTriangles(TriangleArray.length);
+  
 }
 
-// if(controls==0)
-// {
-//     $('#info').css("display","hidden");
-//     console.log(controls);
-// }
 
-
-
-
-
-function myRandom(num)
+function randomInt(n)
 {
-    return Math.floor(random(num));
+  return Math.floor(random(0,n));
 }
 
+function randomInt(l,h)
+{
+  return Math.floor(random(l,h));
+}
+
+
+function RandomNoise(n)
+{
+
+  return noise(n)*randomInt(n);
+ 
+}
 
 

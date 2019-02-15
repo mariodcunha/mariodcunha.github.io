@@ -1,29 +1,412 @@
-@import url(https://fonts.googleapis.com/css?family=Lato);
-
-
-#container
-{
-	position: absolute;
-	font-family: Lato;
-	font-size: 15px;
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic);
+@font-face {
+  font-family: "Neue-Regular";
+  src: url("fonts/Neue-Regular.otf");
+  src: url("fonts/Neue-Regular.otf") format("opentype");
+  /*url("css/fonts/Harabara.svg#filename") format("svg");*/
 }
 
-#info
-{
-	position: absolute;
-	background-color: rgba(200, 200, 200, 0.5);
-
-	padding: 15px;
-	border-radius: 10px;
-
-	margin: 10px;
-	margin-left: 15px;
-
-	bottom: 1%;
+@font-face {
+  font-family: "NeueDisplay-Random";
+  src: url("fonts/NeueDisplay-Random.otf");
+  src: url("fonts/NeueDisplay-Random.otf") format("opentype");
+  /*url("css/fonts/Harabara.svg#filename") format("svg");*/
 }
 
-#info:hover
-{
-	background-color: rgba(10, 10, 10, 0.9);
-	color: rgb(250,250,250);
+@font-face {
+  font-family: "Neue-Bold";
+  src: url("fonts/Neue-Bold.otf");
+  src: url("fonts/Neue-Bold.otf") format("opentype");
+  /*url("css/fonts/Harabara.svg#filename") format("svg");*/
 }
+
+body {
+  margin: 0;
+  /*overflow:hidden;*/
+  font-family: "Neue-Regular";
+  font-size;
+  1em;
+  background-color: #00004a;
+  color: #16C1B4;
+}
+
+a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+b {
+  font-family: "Neue-Bold";
+}
+
+.main-wrapper {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+}
+
+#info {
+  position: absolute;
+  z-index: 10;
+  margin: 0 auto;
+  border: 2px solid #FFF;
+  /* margin-top: 5%; */
+  /* min-width: 300px; */
+  /* bottom: 1%; */
+  height: calc(100% - 280px);
+  width: calc(100% - 280px);
+  color: #fff;
+  padding: 40px;
+  margin: 16px 100px 100px;
+  /* background-color: rgba(0,0,0, 0); */
+}
+
+
+#infoLayout {
+  position: absolute;
+  z-index: 10;
+  margin: 0 auto;
+  border: 2px solid #FFF;
+  /* margin-top: 5%; */
+  /* min-width: 300px; */
+  /* bottom: 1%; */
+  height: calc(100% - 280px);
+  width: calc(100% - 280px);
+  color: #fff;
+  padding: 40px;
+  margin: 16px 100px 100px;
+  background-color: rgba(50,50,50, 0.7); 
+}
+
+
+h1 {
+  font-size: 35px;
+  margin: unset;
+  font-family: "NeueDisplay-Random";
+}
+
+h2 {
+  font-size: 15px;
+  margin: unset;
+  letter-spacing: 0.8px;
+  font-family: "NeueDisplay-Random";
+  font-weight: 700;
+}
+
+.heading-container {
+  padding: 40px;
+  /*border: 5px solid #FFF;*/
+  margin-left: -45px;
+  margin-top: -45px;
+  width: 165px;
+  display: inline-block;
+}
+
+.heading {
+  font-weight: 700;
+  display: block;
+  width: 170px;
+}
+
+h1 .heading.major {
+  line-height: 30px;
+}
+
+h1 .heading#flip {
+  transform: scaleY(-1);
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+h2#dimensionsTitle {
+  font-size: 18px;
+  letter-spacing: 1px;
+  line-height: 3px;
+}
+
+.dates {
+  font-weight: bold;
+  font-family: "NeueDisplay-Random";
+  font-size: 1.2em;
+  /*cursor: pointer;*/
+}
+
+p {
+  bottom: 0;
+  line-height: 1.6;
+  margin-bottom: 0px;
+  /*background: rgba(0,0,0,0.3);*/
+}
+
+.copy 
+{
+  position: absolute;
+  width: 600px;
+  bottom: 40px;
+}
+.copyLayout
+{ 
+  position: absolute;
+  width: 600px;
+  bottom: 40px;
+
+}
+
+
+#datetime {
+  display: inline-block;
+  float: right;
+  text-align: right;
+  margin-top: -10px;
+}
+
+#parsonsLogo {
+  width: 202px;
+  padding: 35px 0 0 63px;
+}
+
+
+#layoutImage 
+{
+  width: 100%;
+  position: relative;
+  margin-top: 50%;
+  /*padding-top: 1000px;*/
+  /*top: 10%;*/
+  /*padding: 35px 0 0 63px;*/
+}
+
+
+#note {
+  /* float: left; */
+  font-size: 0.8em;
+  /* margin-top: 10%; */
+}
+
+.button {
+  bottom: 3px;
+  right: 3px;
+  padding: 35px 35px 30px;
+  position: absolute;
+  font-size: 15pt;
+  line-height: 10pt;
+  font-weight: 700;
+  transition: all 0.3s;
+  margin-bottom: -5px;
+  margin-right: -5px;
+  /*border: 5px solid #fff;*/
+  color: #fff;
+  letter-spacing: 1px;
+  font-family: "NeueDisplay-Random";
+
+}
+
+.button:hover 
+{
+  color: #01003B;
+  background: #FFF;
+}
+
+#button1 
+{
+  right: 320px;
+  /*margin-right: -5px;*/
+}
+
+#button2
+{
+  right: 140px;
+  /*margin-right: -5px;*/
+}
+
+#map:hover
+{
+  color: cyan;
+}
+
+.dt
+{
+  border-bottom: 1px solid white;
+}
+
+.dt:hover
+{
+  color: cyan;
+  border-bottom: 1px solid cyan;
+  transition: 0.3s;
+
+}
+
+
+#teamInfo 
+{
+  position: absolute;
+  margin: 0 auto;
+  color: #fff;
+  padding: 40px;
+  margin: 70vh 7vw 7vw;
+  font-family: "NeueDisplay-Random";
+}
+
+#teamInfo:hover
+  {
+    color: cyan;
+    cursor: pointer;
+  }
+
+  #teamON
+  {
+    color: cyan;
+  }
+/*
+#team
+{
+  position: absolute;
+  color: white;
+  font-family: "NeueDisplay-Random";
+  left: 140px;
+  bottom: 50px;
+}*/
+
+
+/* iPad */
+
+@media only screen and (max-width: 1025px) {
+  a {
+    color: #fff;
+    padding-bottom: 2px;
+    text-decoration: none;
+  }
+  b {
+    font-family: "Neue-Bold";
+  }
+  #info {
+    position: absolute;
+    color: #fff;
+    width: unset;
+    padding: 20px;
+    margin: 20px;
+    height:  unset;
+  }
+  .heading-container {
+    margin: unset;
+    margin-top: -25px;
+    margin-left: -25px;
+  }
+
+    .heading-containerLayout {
+    margin: unset;
+    margin-top: -25px;
+    margin-left: -25px;
+    margin-bottom: 100px;
+  }
+
+  .heading {
+    font-weight: 700;
+  }
+  .dates {
+    font-weight: bold;
+    font-family: "NeueDisplay-Random";
+    font-size: 1.2em;
+    /*cursor: pointer;*/
+  }
+  p {
+    line-height: 1.6;
+    margin-bottom: 0px;
+  }
+  #datetime {
+    position: relative;
+    float: unset;
+    text-align: left;
+    display: block;
+    margin-top: 20px;
+  }
+  .copy {
+    position: relative;
+    bottom: unset;
+    margin-bottom: 100px;
+    width:  unset;
+  }
+
+  #parsonsLogo {
+    padding: 25px;
+    padding-bottom: unset;
+  }
+
+  #teamInfo 
+  {
+    position: absolute;
+    margin: 0 auto;
+    color: #fff;
+    padding: 40px;
+    margin: 92vh 2vw 3vw;
+    font-family: "NeueDisplay-Random";
+  }
+
+
+}
+
+
+/* Mobile */
+@media only screen and (max-width: 450px) 
+{
+  .heading-container {
+    padding: 20px;
+  }
+  #datetime {
+    margin-top: 30px;
+  }
+  #parsonsLogo {
+    padding: 15px;
+  }
+
+
+    .button {
+      bottom: 3px;
+      right: 3px;
+      padding: 35px 35px 30px;
+      position: absolute;
+      font-size: 10pt;
+      line-height: 10pt;
+      font-weight: 700;
+      transition: all 0.3s;
+      margin-bottom: -5px;
+      margin-right: -5px;
+      /*border: 5px solid #fff;*/
+      color: #fff;
+      letter-spacing: 1px;
+      font-family: "NeueDisplay-Random";
+    }
+
+    #button1 
+    {
+      right: 200px;
+    }
+
+    #button2
+    {
+      right: 90px;
+    }
+
+
+  #teamInfo 
+  {
+    position: absolute;
+    /*margin: 0 auto;*/
+    color: #fff;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    /*bottom: 10px;*/
+    top: 240px;
+    font-family: "NeueDisplay-Random";
+  }
+
+
+
+}
+
+
+
+
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Major Major - A Show of Major Studio 2 Projects Spring 2015</title>
+<style>
+	@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic);
+
+	body{
+		margin:0;
+		overflow:hidden;
+		font-family: "Roboto", sans-serif;
+		font-size; 1em;
+		background-color: #000;
+	}
+
+	#info {
+		position: absolute;
+		z-index: 10;
+		width: 50%;
+		left: 0;
+		right: 0;
+		bottom: 40px;
+		margin: 0 auto;
+		min-width: 300px;
+		bottom: 10%;
+		color: #ffffff;
+		padding: 20px;
+		background-color: rgba(0,0,0, 0.8);
+	}
+
+	h1 {
+		font-size: 2em;
+		margin-top: 0px;
+	}
+
+	p {
+		line-height: 1.6;
+		margin-bottom: 0px;
+	}
+</style>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/ColladaLoader.js"></script>
+<script type="text/javascript" src="js/blender_white.js"></script>
+
+<body>
+
+	<div id="info" style="display:none;"><h1><span style="font-weight: 700;">Major</span> <span style="font-weight: 700; font-style: italic">Major</span></h1>
+	<p><span style="font-style: italic; border-bottom: 0px solid #FFFFFF; padding-bottom: 2px;">May 10th, 12-6 pm, </span>
+	<br><span style="font-style: normal; border-bottom: 0px solid #FF0000; padding-bottom: 2px;">6 E 16th St, NY, 12th Floor</span>
+	<br>
+	<br>
+	We invite you to join us, the MFA Design + Technology class of 2016, to showcase our work of our Spring 2015 Studios. It will undoubtedly be an unforgettable afternoon of novel ideas, unexpected interactions, dancing, food and drinks. Bring your Mom or anyone who serves that role in your life.
+	<br><br>It's going to be 
+	<span style="font-weight: 400;">Major</span> 
+	<span style="font-style: italic; font-weight: 500;">Major</span> 
+	<span style="font-weight: 700;">Major</span> 
+	<span style="font-style: italic; font-weight: 900;">Major!</span>
+
+	</p></div>
+	<div id ="webGL-container"></div>
+	
+</body>
+</html>
