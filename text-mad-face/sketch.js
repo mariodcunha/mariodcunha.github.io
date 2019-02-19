@@ -46,7 +46,7 @@ function draw()
     W = window.innerWidth;
     H = window.innerHeight;
 
-    background(255);
+    background(250);
 
 
     blink = millis()%(randomInt(8,9));
