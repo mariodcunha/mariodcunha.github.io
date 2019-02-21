@@ -3,13 +3,16 @@
 //Mario Dcunha
 
 
-var myImage, myImage1, myImage2, pixelate=3, minimum=5;
+var myImage, myImage1, myImage2, myImage3, myImage4, myImage5;
+var pixelate=10, minimum=12;
 
 function preload() 
 {
-    myImage1 = loadImage("images/book16.jpg"); 
-    myImage2 = loadImage("images/book17.jpg"); 
-    myImage3 = loadImage("images/book18.jpg"); 
+    myImage1 = loadImage("images/book21.jpg"); 
+    myImage2 = loadImage("images/book22.jpg"); 
+    myImage3 = loadImage("images/book23.jpg"); 
+    // myImage4 = loadImage("images/book19.jpg"); 
+    // myImage5 = loadImage("images/book20.jpg"); 
 }
 
 function setup() 
@@ -60,7 +63,7 @@ function draw()
                 if(randomInt(0,2)==0)
                     ellipse(x, y, atom, atom);
                 else
-                    rect(x, y, atom, atom);
+                    ellipse(x, y, atom, atom);
             }
 
             else if(toggle%noOfBooks==1)
@@ -71,7 +74,7 @@ function draw()
                 if(randomInt(0,2)==0)
                     ellipse(x, y, atom, atom);
                 else
-                    rect(x, y, atom, atom);
+                    ellipse(x, y, atom, atom);
 
 
             }
@@ -83,7 +86,7 @@ function draw()
                 if(randomInt(0,2)==0)
                     ellipse(x, y, atom, atom);
                 else
-                    rect(x, y, atom, atom);
+                    ellipse(x, y, atom, atom);
 
 
             }
