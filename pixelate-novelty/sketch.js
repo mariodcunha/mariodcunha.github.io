@@ -4,15 +4,15 @@
 
 
 var myImage, myImage1, myImage2, myImage3, myImage4, myImage5;
-var pixelate=10, minimum=12;
+var pixelate=13, minimum=1;
 
 function preload() 
 {
-    myImage1 = loadImage("images/book21.jpg"); 
-    myImage2 = loadImage("images/book22.jpg"); 
-    myImage3 = loadImage("images/book23.jpg"); 
-    // myImage4 = loadImage("images/book19.jpg"); 
-    // myImage5 = loadImage("images/book20.jpg"); 
+    myImage1 = loadImage("images/book19.jpg"); 
+    myImage2 = loadImage("images/book20.jpg"); 
+    myImage3 = loadImage("images/book21.jpg"); 
+    myImage4 = loadImage("images/book22.jpg"); 
+    myImage5 = loadImage("images/book23.jpg"); 
 }
 
 function setup() 
@@ -28,7 +28,7 @@ function setup()
     
 }
 
-var noOfBooks=3, randomColor, firstColor, secondColor, thisColor, toggle=0;
+var noOfBooks=5, randomColor, firstColor, secondColor, thisColor, toggle=0;
 
 function draw() 
 {
@@ -87,9 +87,31 @@ function draw()
                     ellipse(x, y, atom, atom);
                 else
                     ellipse(x, y, atom, atom);
-
-
             }
+            else if(toggle%noOfBooks==3)
+            {
+                thisColor = color(myImage4.get(x, y));
+                thisColor = color(thisColor, noise(10,255));
+                fill(thisColor);
+                if(randomInt(0,2)==0)
+                    ellipse(x, y, atom, atom);
+                else
+                    ellipse(x, y, atom, atom);
+            }
+
+            else if(toggle%noOfBooks==4)
+            {
+                thisColor = color(myImage5.get(x, y));
+                thisColor = color(thisColor, noise(10,255));
+                fill(thisColor);
+                if(randomInt(0,2)==0)
+                    ellipse(x, y, atom, atom);
+                else
+                    ellipse(x, y, atom, atom);
+            }
+
+
+
             toggle++;
         }
         toggle=toggle+2;
