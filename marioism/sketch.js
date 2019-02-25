@@ -139,6 +139,7 @@ design[19] = new Quote("No two people will look at information in the same way. 
 design[20] = new Quote("Personas without scenario's are like characters without a plot.", "Kim Goodwin");
 design[21] = new Quote("The Solution is the Model of the Problem.", "Charles Eames");
 design[22] = new Quote("Good usability is just that I should not be embarassed by the product.", "Don Norman");
+design[23] = new Quote("Everything in design research always leads to something but that's not always linear.", "John Sharp");
 
 
 //INTUIT

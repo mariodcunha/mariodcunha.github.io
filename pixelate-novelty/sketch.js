@@ -4,15 +4,13 @@
 
 
 var myImage, myImage1, myImage2, myImage3, myImage4, myImage5;
-var pixelate=13, minimum=1;
+var pixelate=8, minimum=1;
 
 function preload() 
 {
-    myImage1 = loadImage("images/book19.jpg"); 
-    myImage2 = loadImage("images/book20.jpg"); 
-    myImage3 = loadImage("images/book21.jpg"); 
-    myImage4 = loadImage("images/book22.jpg"); 
-    myImage5 = loadImage("images/book23.jpg"); 
+    myImage1 = loadImage("images/book24.jpg"); 
+    myImage2 = loadImage("images/book25.jpg"); 
+    // myImage3 = loadImage("images/book28.jpg"); 
 }
 
 function setup() 
@@ -28,7 +26,7 @@ function setup()
     
 }
 
-var noOfBooks=5, randomColor, firstColor, secondColor, thisColor, toggle=0;
+var noOfBooks=2, randomColor, firstColor, secondColor, thisColor, toggle=0;
 
 function draw() 
 {
