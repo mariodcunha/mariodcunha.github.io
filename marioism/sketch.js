@@ -93,6 +93,8 @@ marioism[63] = new Quote("Design to me, is about creating specific order and org
 marioism[64] = new Quote("If you are in search of an Idea, stop searching. You will get it.", me);
 marioism[65] = new Quote("If you're sure you have your gut and your soul agreeing on something, stop everything, and start making it.", me);
 marioism[66] = new Quote("Everyone is sweet... until you taste them.", me);
+marioism[67] = new Quote("The most frustrating part of releasing your prototype to user testing is that, the users suddenly become designers, and you need to tell them to go back to being users.", me);
+
 
 
 //INSPIRATION
