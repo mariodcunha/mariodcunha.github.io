@@ -7,7 +7,6 @@ let colorLeft;
 let mic;
 let vol;
 let soundx;
-let obstacles = [];
 var Freezer1;
 let amt;
 
@@ -19,6 +18,7 @@ var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
 var fullscreen;
+let obstacles = [];
 
 
 function initialize_variables()

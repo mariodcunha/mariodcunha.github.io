@@ -94,11 +94,10 @@ marioism[64] = new Quote("If you are in search of an Idea, stop searching. You w
 marioism[65] = new Quote("If you're sure you have your gut and your soul agreeing on something, stop everything, and start making it.", me);
 marioism[66] = new Quote("Everyone is sweet... until you taste them.", me);
 marioism[67] = new Quote("The most frustrating part of releasing your prototype to user testing is that, the users suddenly become designers, and you need to tell them to go back to being users.", me);
-
+marioism[68] = new Quote("If you are calling out to the universe, you have the wrong idea of the universe. Call into the universe.", me);
 
 
 //INSPIRATION
-
 inspiration[0] = new Quote("If you want to Shine like the Sun, be ready to Burn like the Sun.", "President Abdul Kalam");
 inspiration[1] = new Quote("We don’t just need Education. We need Education with Values.", "President Abdul Kalam");
 inspiration[2] = new Quote("Dreams are not what you see in your sleep. Dreams are what does not let you sleep.", "President Abdul Kalam");
