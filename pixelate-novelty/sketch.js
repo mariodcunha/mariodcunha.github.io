@@ -10,7 +10,7 @@ function preload()
 {
     myImage1 = loadImage("images/book34.jpg"); 
     myImage2 = loadImage("images/book10.jpg"); 
-    myImage3 = loadImage("images/book36.jpg"); 
+    myImage3 = loadImage("images/book35.jpg"); 
 }
 
 function setup() 
