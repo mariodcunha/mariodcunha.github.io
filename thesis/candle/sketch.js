@@ -20,7 +20,7 @@ var ambience;
 var num_hearts, temp_num_hearts;
 var soapWidth, soapHeight, soapDissolve;
 
-var fullscreen, moneyMode;
+var fullscreen, candleMode;
 
 
 function initialize_variables()
@@ -28,7 +28,7 @@ function initialize_variables()
     soapWidth=300, soapHeight=200, soapDissolve=0.1;
     num_hearts=3, temp_num_hearts=0;
     xOrient=0, yOrient=0, ambience=0;
-    fullscreen=0; moneyMode=0;
+    fullscreen=0; candleMode=1;
 }
 
 
@@ -173,7 +173,7 @@ function setup()
 
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
-  noCursor();
+  // noCursor();
   colorRight = color(222, 30, 30);
   colorLeft = color(126, 227, 212);
   colorMiddle = color(253, 228, 9);
@@ -267,18 +267,18 @@ function draw()
   // console.log(seconds()%30);
 
   vol = mic.getLevel() * 100;
-  // console.log(vol);
+  console.log(vol);
 
-  if(vol < 25)
+  if(vol > 40)
   {
-    moneyMode = 1;
+    candleMode = 0;
   }
 
   // translate();
   // rotate(-90);
 
 
-  if(moneyMode==0 || seconds()%15 < 3)
+  if(candleMode==1)
   {
     background(255, 255, 153);
     image(candle, width/2-(candle.width*1.2/2), height-(candle.height*1.2), candle.width*1.2, candle.height*1.2);
