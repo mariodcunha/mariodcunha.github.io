@@ -11,19 +11,21 @@ var md=0, change, moveX, moveY;
 var letterSize=50, dir=1;
 var fromColor, toColor;
 var noiseCount=10;
-var theta=0;
-var mouseClick=0, mouseSaveX, mouseSaveY;
+var mouseClick=0;
 
 var x1, y1, x2, y2, x3, y3;
+
+var theta=0, rotateSpeed=0.1;
 
 var bgcolorArray = [20, 255];
 var myFont, shadeOpacity=15;
 
-
-
-
-
-
+var boxSizes = [];
+var boxSpeeds = [];
+var boxPositionsX = [];
+var boxPositionsY = [];
+var boxPositionsZ = [];
+var boxCount=5;
 
 
 
@@ -60,16 +62,17 @@ function setup()
         spectrumTo = color(255, 255, 255, 10);
     }
 
-    checkCssBG();
+    checkCssBG();    
 
-    //testing vertices
-    x1 = randomInt(width/4,width/2);
-    x2 = randomInt(width/4,width/2);
-    x3 = randomInt(width/4,width/2);
+    for (let i=0; i<=boxCount; i++) 
+    {
+        boxSizes[i] = randomInt(w/8, w/4);
+        boxSpeeds[i] = noise(randomInt(50))/10;
+        boxPositionsX[i] = randomInt(-w/3,w/3);
+        boxPositionsY[i] = randomInt(-w/3,w/3);
+        boxPositionsZ[i] = randomInt(-w/8,w/8);
+    }
 
-    y1 = randomInt(height/8,height/2);
-    y2 = randomInt(height/8,height/2);
-    y3 = randomInt(height/8,height/2);
 
 }
 
@@ -83,85 +86,55 @@ function checkCssBG()
 }
 
 
-function createLetters()
-{
-    colorMode(HSB);
-    fromColor = lerpColor(spectrumFrom, spectrumTo, random(1));
-    toColor = lerpColor(spectrumFrom, spectrumTo, random(1));
 
-    // fromColor = color(randomInt(10,100), randomInt(10,100), randomInt(10,100), 200);
-    // toColor = color(randomInt(110,255), randomInt(110,255), randomInt(110,255), 10);
-
-    //do not repeat oldWord
-    oldWord = newWord;
-    newWord = wordsArray[randomInt(wordsArray.length)];
-
-    while(oldWord == newWord)
-        newWord = wordsArray[randomInt(wordsArray.length)];
-
-    letters = [];
-    for(let i=0; i<newWord.length; i++)
-        letters.push(newWord.slice(i,i+1));
-
-    wl = letters.length;
-
-    for(let i=0; i<wl; i++)
-    {
-        LetterArray[i] = new Letter(randomInt(((width/wl)*(i)), ((width/wl/1.1)*(i+1))), 
-                                    randomInt((height/wl),(height-(height/wl))), letters[i], randomInt(-2,2)+noise(1));
-        
-    }
-}
 
 function draw() 
 {
-    colorMode(RGB);
-    // background('#00004a');
-    background(255);
-    drawLetter(letters.length);
-    drawShade();
-    // console.log(shadeOpacity);
+
+    background(bgcolor);
 
     let locX = mouseX - width / 2;
     let locY = mouseY - height / 2;
 
-  // pointLight(255, 0, 0, locX, locX, 100);
-  pointLight(255, 255, 0, locX, locX, 100);
-    // noStroke();
-    // sphere(25);
+    pointLight(255, 0, 0, locX, locY, 100);
+    pointLight(0, 255, 0, locX, locX, 100);
+    pointLight(0, 0, 255, locY, locX, 100);
+    pointLight(255, 255, 0, locY, locY, 100);
+    pointLight(255, 0, 255, locX/2, locY/2, 100);
+    pointLight(0, 255, 255, locX*2, locY*2, 100);
+    pointLight(100, 0, 30, locY/4, locY/4, 100);
 
 
     // let dirX = (mouseX / width - 0.5) * 2;
-  // let dirY = (mouseY / height - 0.5) * 2;
-  // directionalLight(250, 250, 250, -dirX, -dirY, 0.25);
+    // let dirY = (mouseY / height - 0.5) * 2;
+    // directionalLight(250, 250, 250, -dirX, -dirY, 0.25);
 
-    fill(255,0,0);
-    if(mouseClick==1)
-        ellipse(mouseSaveX, mouseSaveY, 50);  
+    texture(img);
+    // drawCuboid(w/8, 0.1, 0, 0, 0);
+    // drawCuboid(w/10, 0.01, 50, 200, 400);
+    // drawCuboid(w/6, 0.05, 200, 150, 300);
+    for(i=0; i<=boxCount; i++)
+    {
+        drawCuboid(boxSizes[i], boxSpeeds[i], boxPositionsX[i], boxPositionsY[i], boxPositionsZ[i]);
+    }
 
-    // translate(440, 0, 0);
-
-    //   texture(img);
-    //   box(200,200,200);
-
-      // texture(img);
-      // fill(0);
-      // shapeDraw(514, 112, 100, 415, 202, 100, 576, 250, 100);
-    // push();
-    //   rotateZ(theta * 0.1);
-    //   rotateX(theta * 0.1);
-    //   rotateY(theta * 0.1);
-      // pop();
-
-      theta += 0.05;
-
-      // let dist=500;
-      // triangleDraw(-100, -150, 0, -200, -25, 0, 0, 0, 0);
-      // triangleDraw(-100+dist, -150, 0+dist/200, -200, -25, 0, 0, 0, 0);
-
-
+    theta = theta + (0.1);
 
 }
+
+
+function drawCuboid(boxSize, rotateSpeed, x, y, z)
+{
+    let rs = rotateSpeed;
+    push();
+        translate(x, y, z);
+        rotateZ(theta * rotateSpeed);
+        rotateX(theta * rotateSpeed);
+        rotateY(theta * rotateSpeed);
+        box(boxSize, boxSize/2, boxSize/4);
+    pop(); 
+}
+
 
 
 function triangleDraw(x1, y1, z1, x2, y2, z2, x3, y3, z3)
@@ -187,113 +160,15 @@ function shapeDraw(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4)
 
 
 
-function drawLetter(lettercount)
-{
-    colorMode(RGB);
-    // background('#00004a');
-
-
-    for(var i=0; i<lettercount; i++)
-    {
-        //draw each letter's shaded blending
-        //which is many letters behind single one, with decreasing size        
-        letterSize = width/(2.5*wl);
-        for(let j=1, k=100; j<50; j++)
-        {
-            //letterSize can be scrolled, check mouseWheel()
-            textSize(k+letterSize);
-
-            //decreasing size for next alphabet
-            k--;
-
-            //blending the color shade
-            myColor = lerpColor(fromColor, toColor, j/50);
-            fill(myColor);
-
-            
-            //Shaded blending either goes rough as per mouseXY direction or stays smooth
-            // if(i%2==1)
-            // {
-            //     moveX = map(RandomNoise(mouseX), 0, width, -2, 2);
-            //     moveY = map(RandomNoise(mouseY), 0, height, -2, 2);                    
-            // }
-            // else
-            // {
-                //mouse motion should allow letter rotation in all directions of screen
-                moveX = map(mouseX, 0, width, -2, 2);
-                moveY = map(mouseY, 0, height, -2, 2);                                    
-            // }
-
-            //draw each letter in repeat
-            //text(str, x, y, [x2], [y2])
-            // text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir));
-
-            //triangle(x1, y1, x2, y2, x3, y3)
-            moveX = -3;
-            moveY = -3;
-
-            // triangle(
-            //     x1+(j*(moveX)*LetterArray[i].dir), y1+(j*(moveX)*LetterArray[i].dir), 
-            //     x2+(j*(moveX)*LetterArray[i].dir), y2+(j*(moveY)*LetterArray[i].dir), 
-            //     x3+(j*(moveX)*LetterArray[i].dir), y3+(j*(moveY)*LetterArray[i].dir));
-
-            noiseCount++;
-            // text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir));
-
-        }
-
-    }
-}
-
-
-
-function drawShade()
-{
-    colorMode(RGB);
-
-    for(var i=0; i<letters.length; i++)
-    {
-        //draw each letter's shaded blending
-        //which is many letters behind single one, with decreasing size
-
-        LetterArray[i].x += random(-3,3)*noise(6,6);
-        LetterArray[i].y += random(-3,3)*noise(6,6);
-
-        letterSize = width/(0.5*wl);
-        
-        for(let j=1; j<3; j++)
-        {
-            //letterSize can be scrolled, check mouseWheel()
-            // textSize(letterSize);
-
-            //blending the color shade
-            // spectrumFrom = color(255, 255, 255, shadeOpacity-5);
-            // spectrumTo = color(0, 0, 0, shadeOpacity-10);
-
-            myColor = lerpColor(fromColor, toColor, j/50);
-            fill(myColor);
-
-            //mouse motion should allow letter rotation in all directions of screen
-            moveX = map(mouseX, 0, width, -2, 2);
-            moveY = map(mouseY, 0, height, -2, 2);
-
-            //The Big Bold very transparent letters in the background
-            // text(LetterArray[i].text, LetterArray[i].x+(j*(moveX)*LetterArray[i].dir)+RandomNoise(1), LetterArray[i].y+(j*(moveY)*LetterArray[i].dir)+RandomNoise(1));
-        }
-
-    }
-}
-
-
 
 
 function mouseMoved(event) 
 {
-    draw();
-
-    // var eventChanges = event.movementX/2+event.movementY/2;
+    // draw();
+    var eventChanges = event.movementX/2+event.movementY/2;
     // change = eventChanges/2;
     // md += eventChanges/2;
+    theta = theta + 0.1 + noise(eventChanges)/7;
 }
 
 
@@ -303,11 +178,7 @@ function mouseClicked()
     mouseSaveX = mouseX;
     mouseSaveY = mouseY;
 
-    console.log("saveX: "+mouseSaveX+" saveY: "+mouseSaveY);
-
     draw();
-
-
 }
 
 
