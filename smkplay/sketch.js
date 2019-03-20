@@ -10,7 +10,7 @@ var capture;
 var tracker
 var w, h;
 
-var millisecs;
+var millisecs, timeToRefresh=2000, opacity=0.4;
 
 
 
@@ -61,6 +61,8 @@ function setup()
   w = window.innerWidth;
   h = window.innerHeight;
 
+  noCursor();
+
   canvas = createCanvas(w,h);
 
   // labelSetup();
@@ -79,10 +81,10 @@ function setup()
       height: h
     }
   }, function() {
-      console.log('capture ready.')
+      // console.log('capture ready.')
   });
     
-  capture.elt.setAttribute('playsinline', '');
+  // capture.elt.setAttribute('playsinline', '');
   createCanvas(w, h);
   capture.size(w, h);
   capture.hide();
@@ -100,11 +102,11 @@ function draw()
 {
 
     millisecs = millis();
-    console.log(millisecs%2000);
+    // console.log(millisecs%2000);
 
-    if(millisecs%10000>1 && millisecs%10000<100)
+    if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
     {
-      fill('rgba(20,20,20,'+0.25+')');
+      fill('rgba(20,20,20,'+opacity+')');
       rect(0,0,w,h);
       // background(20);
     }
