@@ -215,7 +215,7 @@ function draw()
     // setFrameRate(frameRate);
 
 
-    image(frame, 10, 10, w, h);
+    image(frame, 0, 0, w, h);
 
 }
 
