@@ -10,7 +10,7 @@ var capture;
 var tracker
 var w, h;
 
-var millisecs, timeToRefresh=10000, opacity=0.4;
+var millisecs, timeToRefresh=20000, opacity=0.4;
 
 
 
@@ -96,7 +96,7 @@ function setup()
   tracker.init();
   tracker.start(capture.elt);
 
-  image(artimage, 0, 0, w, h);
+  
 
 }
 
@@ -111,7 +111,7 @@ function draw()
     {
       fill('rgba(20,20,20,'+opacity+')');
       // rect(0,0,w,h);
-      
+      image(artimage, 0, 0, w, h);
       // background(20);
     }
 
