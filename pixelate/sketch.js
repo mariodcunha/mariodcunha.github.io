@@ -1,14 +1,14 @@
-
-
 //Mario Dcunha
 
 
 var myImage, pixelate=20, minimum=5;
 
+
 function preload() 
 {
-    myImage = loadImage("images/moon.jpg"); 
+    myImage = loadImage("images/moon.jpg");
 }
+
 
 function setup() 
 {
@@ -17,9 +17,8 @@ function setup()
     strokeWeight(1);
     stroke(0,0,0,100);
     // noCursor();
-
-    
 }
+
 
 var randomColor;
 
