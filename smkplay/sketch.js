@@ -59,7 +59,7 @@ function setup()
 
 
 
-  labelSetup();
+  // labelSetup();
 
   // noStroke();
   // createDots(0,numberDots);
