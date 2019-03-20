@@ -10,7 +10,7 @@ var capture;
 var tracker
 var w, h;
 
-var millisecs, timeToRefresh=2000, opacity=0.4;
+var millisecs, timeToRefresh=10000, opacity=0.4;
 
 
 
