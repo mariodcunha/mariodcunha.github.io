@@ -10,6 +10,7 @@ var capture;
 var tracker
 var w, h;
 
+var millisecs;
 
 
 
@@ -94,6 +95,18 @@ function setup()
 
 function draw() 
 {
+    millisecs = millis();
+    console.log(millisecs%2000);
+
+    if(millisecs%10000>1 && millisecs%10000<100)
+    {
+      fill('rgba(0,255,0,'+0.25+')');
+      rect(0,0,w,h);
+      // background(20);
+    }
+
+
+
     // Dots[2].diameter += 1 + something;
 
     // image(capture, 0, 0, w, h);
@@ -101,17 +114,21 @@ function draw()
 
     noFill();
     stroke(255);
-    beginShape();
-    for (var i = 0; i < positions.length; i++) {
-        vertex(positions[i][0], positions[i][1]);
-    }
-    endShape();
+
+    //face lines
+    // beginShape();
+    // for (var i = 0; i < positions.length; i++) {
+    //     vertex(positions[i][0], positions[i][1]);
+    // }
+    // endShape();
 
     noStroke();
     for (var i = 0; i < positions.length; i++) {
         fill(map(i, 0, positions.length, 0, 360), 50, 100);
+
+        //dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
-        text(i, positions[i][0], positions[i][1]);
+        // text(i, positions[i][0], positions[i][1]);
     }
 
     if (positions.length > 0) {
@@ -124,7 +141,8 @@ function draw()
         // uncomment for a surprise
         noStroke();
         fill(0, 255, 255);
-        ellipse(positions[62][0], positions[62][1], 50, 50);
+        //nose
+        ellipse(positions[62][0], positions[62][1], 40, 40);
     }
 
 
@@ -132,14 +150,7 @@ function draw()
 
 
 
-
-
-
-
-
-
-
-    // colorMode(RGB);
+   // colorMode(RGB);
 
     // if(mode%2 == 0) //even mode
     //   background(50);
@@ -197,6 +208,8 @@ function draw()
     // noLoop();  
     // setFrameRate(frameRate);
 }
+
+
 
 
 
