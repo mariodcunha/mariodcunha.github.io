@@ -50,7 +50,8 @@ function Dot(x, y, diameter, amtColor)
 
 function preload() 
 {
-    frame = loadImage("frame.png"); 
+    frame = loadImage("frame.png");
+    artimage = loadImage("image1.png"); 
 }
 
 
@@ -95,6 +96,8 @@ function setup()
   tracker.init();
   tracker.start(capture.elt);
 
+  image(artimage, 0, 0, w, h);
+
 }
 
 
@@ -107,7 +110,8 @@ function draw()
     if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
     {
       fill('rgba(20,20,20,'+opacity+')');
-      rect(0,0,w,h);
+      // rect(0,0,w,h);
+      
       // background(20);
     }
 
@@ -115,7 +119,7 @@ function draw()
 
     // Dots[2].diameter += 1 + something;
 
-    // image(capture, 0, 0, w, h);
+    // image(artimage, 0, 0, w, h);
     var positions = tracker.getCurrentPosition();
 
     noFill();
@@ -130,7 +134,8 @@ function draw()
 
     noStroke();
     for (var i = 0; i < positions.length; i++) {
-        fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        // fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        fill(20);
 
         //dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
@@ -146,7 +151,8 @@ function draw()
 
         // uncomment for a surprise
         noStroke();
-        fill(0, 255, 255);
+        // fill(0, 255, 255);
+        fill(20);
         //nose
         ellipse(positions[62][0], positions[62][1], 40, 40);
     }
