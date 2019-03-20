@@ -110,9 +110,9 @@ function draw()
     if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
     {
       fill('rgba(20,20,20,'+opacity+')');
-      // rect(0,0,w,h);
+      rect(0,0,w,h);
       // tint(255, 127);
-      image(artimage, 0, 0, w, h);
+      // image(artimage, 0, 0, w, h);
       // fill(20);
 
 
