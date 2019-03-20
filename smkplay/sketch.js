@@ -100,7 +100,7 @@ function draw()
 
     if(millisecs%10000>1 && millisecs%10000<100)
     {
-      fill('rgba(0,255,0,'+0.25+')');
+      fill('rgba(20,20,20,'+0.25+')');
       rect(0,0,w,h);
       // background(20);
     }
