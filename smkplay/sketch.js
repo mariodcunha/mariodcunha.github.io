@@ -48,6 +48,11 @@ function Dot(x, y, diameter, amtColor)
   this.rangeYH = this.y + (this.radius);
 }
 
+function preload() 
+{
+    frame = loadImage("frame.png"); 
+}
+
 
 
 function setup() 
@@ -57,8 +62,6 @@ function setup()
   h = window.innerHeight;
 
   canvas = createCanvas(w,h);
-
-
 
   // labelSetup();
 
@@ -95,6 +98,7 @@ function setup()
 
 function draw() 
 {
+
     millisecs = millis();
     console.log(millisecs%2000);
 
@@ -207,6 +211,10 @@ function draw()
 
     // noLoop();  
     // setFrameRate(frameRate);
+
+
+    image(frame, 10, 10, w, h);
+
 }
 
 
