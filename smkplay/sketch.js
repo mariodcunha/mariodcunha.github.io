@@ -10,7 +10,7 @@ var capture;
 var tracker
 var w, h;
 
-var millisecs, timeToRefresh=20000, opacity=0.4;
+var millisecs, timeToRefresh=15000, opacity=0.4;
 
 
 
@@ -111,7 +111,12 @@ function draw()
     {
       fill('rgba(20,20,20,'+opacity+')');
       // rect(0,0,w,h);
+      // tint(255, 127);
       image(artimage, 0, 0, w, h);
+      // fill(20);
+
+
+      // rect(0, 0, w, h);
       // background(20);
     }
 
@@ -134,8 +139,8 @@ function draw()
 
     noStroke();
     for (var i = 0; i < positions.length; i++) {
-        // fill(map(i, 0, positions.length, 0, 360), 50, 100);
-        fill(20);
+        fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        // fill(20);
 
         //dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
@@ -151,8 +156,8 @@ function draw()
 
         // uncomment for a surprise
         noStroke();
-        // fill(0, 255, 255);
-        fill(20);
+        fill(0, 255, 255);
+        // fill('rgba(20,20,20,'+1+')');
         //nose
         ellipse(positions[62][0], positions[62][1], 40, 40);
     }
