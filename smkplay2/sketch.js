@@ -56,7 +56,7 @@ var capture;
 var tracker;
 var w, h;
 
-var millisecs, secs, wordTimer=6; 
+var millisecs, secs, wordTimer=9; 
 var timeToRefresh=10000, opacity=0.4, opacityChange=1.0;
 var textFlag=1, textColor=255;
 
@@ -68,10 +68,10 @@ var fromColor, toColor, chosenColor;
 var tempChange, delta;
 var revealColor, revealColorAlpha=255;
 
+var mic, vol, soundx;
 
 
-
-var instructions = ["Did you see it?", "Step Closer", " "];
+var instructions = ["Can you speak to it?", "Step Closer", "Talk. Clap! Shout!"];
 
 
 
@@ -92,6 +92,9 @@ function setup()
   h = window.innerHeight;
 
   noCursor();
+  mic = new p5.AudioIn();
+  mic.start();
+
 
   canvas = createCanvas(w,h);
 
@@ -127,8 +130,8 @@ function setup()
 
   imageMode(CORNER);
   
-  artimage1.mask(artimage);
-  image(artimage1, 0, 0, w, h);
+  // artimage1.mask(artimage);
+  // image(artimage1, 0, 0, w, h);
 
 }
 
@@ -143,19 +146,17 @@ function setup()
 // prototype 1 DRAW
 function draw() 
 {   
-    
-
-    if(delta)
-      revealColorAlpha = revealColorAlpha - 0.5;
-
-    revealColor = color('rgba(255,255,255,'+revealColorAlpha+')');
-
-    console.log(revealColorAlpha);
-
-    fill(revealColor);
     noStroke();
-    rect(50,50,w-100,h-100);
+    // revealColor = color(255,255,255);
+    // fill(revealColor);    
+    // rect(0, 0, w, h);
 
+    vol = mic.getLevel();
+    soundx = map(vol, 0, 1, 1, 100);    
+
+    // revealColor.setAlpha(revealColorAlpha);
+    // revealColorAlpha = revealColorAlpha - soundx/10;
+    
     textAlign(CENTER);
     millisecs = millis();
     secs = floor(millisecs/1000);
@@ -166,15 +167,22 @@ function draw()
 
     let interval = secs%wordTimer;
 
-    if(interval>=0 && interval<wordTimer/2 && textFlag==1)
+    console.log(interval);
+
+    if(interval>=0 && interval<3 && textFlag==1)
     {
-      // background(20);
+      background(20);
       text(instructions[0], w/2, h/2);
     }
-    else if(interval>=wordTimer/2 && interval<wordTimer && textFlag==1)
+    else if(interval>=3 && interval<6 && textFlag==1)
     {
-      // background(20);
+      background(20);
       text(instructions[1], w/2, h/2);  
+    }
+    else if(interval>=6 && interval<9 && textFlag==1)
+    {
+      background(20);
+      text(instructions[2], w/2, h/2);  
     }
     
 
@@ -201,9 +209,10 @@ function draw()
     for (var i = 0; i < positions.length; i++) 
     {
         fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        // fill('rgba('+map(0, i, positions.length, 0, 360)+', 50, 100,0.5)');
 
         // dots on the face and all other parts except nose
-        ellipse(positions[i][0], positions[i][1], 4, 4);
+        ellipse(positions[i][0], positions[i][1], soundx, soundx);
         delta = tempChange - positions[62][0];
         // text(i, positions[i][0], positions[i][1]);
 
@@ -225,16 +234,19 @@ function draw()
         
         noStroke();
         noseColor = color(0,255,255);
-        noseColor.setAlpha(128 + 128 * sin(millis() / 1000));
+        noseColor.setAlpha(100);
 
         tempChange = positions[62][0];
 
         //nose
         fill(noseColor);
-        ellipse(positions[62][0], positions[62][1], 40, 40);
+        ellipse(positions[62][0], positions[62][1], soundx*5, soundx*5);
 
     }
+
     image(frame, 0, 0, w, h);
+
+    // remove();
 
 }
 
