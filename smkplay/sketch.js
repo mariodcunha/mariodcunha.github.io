@@ -120,7 +120,7 @@ function draw()
       text(instructions[1], w/2, h/2);  
     }
     
-    console.log("secsMod: "+secs%5+", m: "+m);
+    // console.log("secsMod: "+secs%5+", m: "+m);
 
 
     if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)

@@ -186,12 +186,12 @@ function draw()
     }
     
 
-    // if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
-    // {
-    //   fill('rgba(20,20,20,'+opacity+')');
-    //   rect(0,0,w,h);
-    //   textFlag=1; textColor=255;
-    // }
+    if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
+    {
+      fill('rgba(20,20,20,'+opacity+')');
+      rect(0,0,w,h);
+      textFlag=1; textColor=255;
+    }
 
 
 
@@ -212,7 +212,7 @@ function draw()
         // fill('rgba('+map(0, i, positions.length, 0, 360)+', 50, 100,0.5)');
 
         // dots on the face and all other parts except nose
-        ellipse(positions[i][0], positions[i][1], soundx, soundx);
+        // ellipse(positions[i][0], positions[i][1], soundx*2, soundx*2);
         delta = tempChange - positions[62][0];
         // text(i, positions[i][0], positions[i][1]);
 
