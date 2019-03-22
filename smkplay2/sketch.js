@@ -1,7 +1,53 @@
 
-//Mario Dcunha
-// https://kylemcdonald.github.io/cv-examples/
-// https://github.com/kylemcdonald/AppropriatingNewTechnologies/wiki/Week-2
+// let bg;
+// function setup() 
+// {
+//   pixelDensity(1);
+//   createCanvas(100, 100);
+//   stroke(255);
+//   fill(0);
+
+//   // create and draw the background image
+//   bg = createGraphics(100, 100);
+//   bg.background(200);
+//   bg.ellipse(50, 50, 80, 80);
+// }
+
+// function draw() 
+// {
+//   let t = millis() / 1000;
+//   // draw the background
+//   if (bg) {
+//     image(bg, frameCount % 100, 0);
+//     image(bg, frameCount % 100 - 100, 0);
+//   }
+//   // draw the foreground
+//   let p = p5.Vector.fromAngle(t, 35).add(50, 50);
+
+//   let colorM = color(0,0,0);
+//   colorM.setAlpha(3);
+
+//   noStroke();
+//   fill(colorM);
+//   ellipse(p.x, p.y, 30);
+// }
+
+
+// function mouseClicked() {
+//   // remove the background
+//   if (bg) 
+//   {
+//     bg.remove();
+//     bg = null;
+//   }
+// }
+
+
+
+
+// //Mario Dcunha
+// // https://kylemcdonald.github.io/cv-examples/
+// // https://github.com/kylemcdonald/AppropriatingNewTechnologies/wiki/Week-2
 
 
 
@@ -14,23 +60,16 @@ var millisecs, secs, wordTimer=6;
 var timeToRefresh=10000, opacity=0.4, opacityChange=1.0;
 var textFlag=1, textColor=255;
 
-
-
 var myColor, x, y, m=0;
 
-var numberDots=100;
-
-var smallDistance=10, largeDistance=300;
-
-var lrange=5, hrange=20;
-
-var Dots= [];
-
+var noseColor;
 var fromColor, toColor, chosenColor;
 
-var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
+var tempChange, delta;
+var revealColor, revealColorAlpha=20;
 
-var something=0;
+
+
 
 var instructions = ["Did you see it?", "Step Closer", " "];
 
@@ -80,11 +119,16 @@ function setup()
   capture.size(w, h);
   capture.hide();
 
-  colorMode(HSB);
+  // colorMode(HSB);
 
   tracker = new clm.tracker();
   tracker.init();
   tracker.start(capture.elt);
+
+  imageMode(CORNER);
+  
+  artimage1.mask(artimage);
+  image(artimage1, 0, 0, w, h);
 
 }
 
@@ -98,7 +142,18 @@ function setup()
 
 // prototype 1 DRAW
 function draw() 
-{
+{   
+    revealColor = color('rgba(255,255,255,'+revealColorAlpha+')');
+    revealColorAlpha = revealColorAlpha + delta*2;
+    // revealColorAlpha = 255;
+
+    revealColor.setAlpha(revealColorAlpha);
+    console.log(delta*5);
+
+    fill(revealColor);
+    noStroke();
+    rect(50,50,w-100,h-100);
+
     textAlign(CENTER);
     millisecs = millis();
     secs = floor(millisecs/1000);
@@ -111,30 +166,27 @@ function draw()
 
     if(interval>=0 && interval<wordTimer/2 && textFlag==1)
     {
-      background(20);
+      // background(20);
       text(instructions[0], w/2, h/2);
     }
     else if(interval>=wordTimer/2 && interval<wordTimer && textFlag==1)
     {
-      background(20);
+      // background(20);
       text(instructions[1], w/2, h/2);  
     }
     
-    console.log("secsMod: "+secs%5+", m: "+m);
+
+    // if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
+    // {
+    //   fill('rgba(20,20,20,'+opacity+')');
+    //   rect(0,0,w,h);
+    //   textFlag=1; textColor=255;
+    // }
 
 
-    if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
-    {
-      fill('rgba(20,20,20,'+opacity+')');
-      rect(0,0,w,h);
-      textFlag=1; textColor=255;
-    }
 
     // image(artimage, 0, 0, w, h);
     var positions = tracker.getCurrentPosition();
-
-    noFill();
-    stroke(255);
 
     //face lines
     // beginShape();
@@ -150,6 +202,7 @@ function draw()
 
         // dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
+        delta = tempChange - positions[62][0];
         // text(i, positions[i][0], positions[i][1]);
 
         textFlag=0;
@@ -166,125 +219,22 @@ function draw()
         // rect(140, 100, smile * 3, 5, 100);
 
         // uncomment for a surprise
+        
+        
         noStroke();
-        fill(0, 255, 255);
-        // fill('rgba(20,20,20,'+1+')');
+        noseColor = color(0,255,255);
+        noseColor.setAlpha(128 + 128 * sin(millis() / 1000));
+
+        tempChange = positions[62][0];
 
         //nose
+        fill(noseColor);
         ellipse(positions[62][0], positions[62][1], 40, 40);
-    }
 
+    }
     image(frame, 0, 0, w, h);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// // prototype 2 DRAW
-// function draw() 
-// {
-
-//     artimage.mask(mask);
-//     // image(artimage1, 50, 50);
-//     image(capture, 0, 0);
-      
-//     // fill('rgba(20,20,20,'+opacityChange+')');
-//     // rect(0,0,w,h);
-
-
-//     millisecs = millis();
-//     // console.log(millisecs%2000);
-
-//     if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
-//     {
-//       fill('rgba(20,20,20,'+opacity+')');
-//       rect(0,0,w,h);
-//     }
-
-//     // image(artimage, 0, 0, w, h);
-//     var positions = tracker.getCurrentPosition();
-
-//     noFill();
-//     stroke(255);
-
-//     //face lines
-//     // beginShape();
-//     // for (var i = 0; i < positions.length; i++) {
-//     //     vertex(positions[i][0], positions[i][1]);
-//     // }
-//     // endShape();
-
-//     noStroke();
-//     for (var i = 0; i < positions.length; i++) 
-//     {
-//         fill(map(i, 0, positions.length, 0, 360), 50, 100);
-
-//         // dots on the face and all other parts except nose
-//         // ellipse(positions[i][0], positions[i][1], 4, 4);
-//         image(artimage, positions[i][0], positions[i][1], 40, 40);
-//         // text(i, positions[i][0], positions[i][1]);
-//     }
-
-
-//     if (positions.length > 0) 
-//     {
-//         var mouthLeft = createVector(positions[44][0], positions[44][1]);
-//         var mouthRight = createVector(positions[50][0], positions[50][1]);
-//         var smile = mouthLeft.dist(mouthRight);
-//         // uncomment the line below to show an estimate of amount "smiling"
-//         // rect(140, 100, smile * 3, 5, 100);
-
-//         // uncomment for a surprise
-//         noStroke();
-//         fill(0, 255, 255);
-//         // fill('rgba(20,20,20,'+1+')');
-
-//         //nose
-//         image(artimage, positions[62][0], positions[62][1], 30, 30);
-
-//         //delta move
-
-//         console.log(positions[62][0]);
-//         // ellipse(positions[62][0], positions[62][1], 40, 40);
-//     }
-//     image(frame, 0, 0, w, h);
-
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
