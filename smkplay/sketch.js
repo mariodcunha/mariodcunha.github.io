@@ -7,14 +7,16 @@
 
 //for video capture
 var capture;
-var tracker
+var tracker;
 var w, h;
 
-var millisecs, timeToRefresh=15000, opacity=0.4;
+var millisecs, secs, wordTimer=6; 
+var timeToRefresh=10000, opacity=0.4, opacityChange=1.0;
+var textFlag=1, textColor=255;
 
 
 
-var myColor, x, y;
+var myColor, x, y, m=0;
 
 var numberDots=100;
 
@@ -30,28 +32,16 @@ var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
 
 var something=0;
 
+var instructions = ["Did you see it?", "Step Closer", " "];
 
-function Dot(x, y, diameter, amtColor)
-{
-  this.x = x;
-  this.y = y;
-  this.diameter = diameter;
-  this.amtColor = amtColor;
-  // this.angle = angle;
 
-  this.radius = this.diameter/2; 
-
-  this.rangeXL = this.x - (this.radius);
-  this.rangeXH = this.x + (this.radius);
-
-  this.rangeYL = this.y - (this.radius);
-  this.rangeYH = this.y + (this.radius);
-}
 
 function preload() 
 {
     frame = loadImage("frame.png");
-    artimage = loadImage("image1.png"); 
+    artimage = loadImage("image1.png");
+    artimage1 = loadImage("image2.png"); 
+    mask = loadImage("image8.png"); 
 }
 
 
@@ -96,33 +86,49 @@ function setup()
   tracker.init();
   tracker.start(capture.elt);
 
-  
-
 }
 
 
+
+
+
+
+
+
+
+// prototype 1 DRAW
 function draw() 
 {
-
+    textAlign(CENTER);
     millisecs = millis();
-    // console.log(millisecs%2000);
+    secs = floor(millisecs/1000);
+    // m = millisecs/1000;
+
+    fill(textColor);
+    textSize(30);
+
+    let interval = secs%wordTimer;
+
+    if(interval>=0 && interval<wordTimer/2 && textFlag==1)
+    {
+      background(20);
+      text(instructions[0], w/2, h/2);
+    }
+    else if(interval>=wordTimer/2 && interval<wordTimer && textFlag==1)
+    {
+      background(20);
+      text(instructions[1], w/2, h/2);  
+    }
+    
+    console.log("secsMod: "+secs%5+", m: "+m);
+
 
     if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
     {
       fill('rgba(20,20,20,'+opacity+')');
       rect(0,0,w,h);
-      // tint(255, 127);
-      // image(artimage, 0, 0, w, h);
-      // fill(20);
-
-
-      // rect(0, 0, w, h);
-      // background(20);
+      textFlag=1; textColor=255;
     }
-
-
-
-    // Dots[2].diameter += 1 + something;
 
     // image(artimage, 0, 0, w, h);
     var positions = tracker.getCurrentPosition();
@@ -138,93 +144,35 @@ function draw()
     // endShape();
 
     noStroke();
-    for (var i = 0; i < positions.length; i++) {
+    for (var i = 0; i < positions.length; i++) 
+    {
         fill(map(i, 0, positions.length, 0, 360), 50, 100);
-        // fill(20);
 
-        //dots on the face and all other parts except nose
+        // dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
         // text(i, positions[i][0], positions[i][1]);
+
+        textFlag=0;
+        // instructions[0]="";
+        // instructions[1]="";
     }
 
-    if (positions.length > 0) {
+    if (positions.length > 0) 
+    {
         var mouthLeft = createVector(positions[44][0], positions[44][1]);
         var mouthRight = createVector(positions[50][0], positions[50][1]);
         var smile = mouthLeft.dist(mouthRight);
         // uncomment the line below to show an estimate of amount "smiling"
-        // rect(20, 20, smile * 3, 20);
+        // rect(140, 100, smile * 3, 5, 100);
 
         // uncomment for a surprise
         noStroke();
         fill(0, 255, 255);
         // fill('rgba(20,20,20,'+1+')');
+
         //nose
         ellipse(positions[62][0], positions[62][1], 40, 40);
     }
-
-
-
-
-
-
-   // colorMode(RGB);
-
-    // if(mode%2 == 0) //even mode
-    //   background(50);
-
-    // fromColor = color(255, 80, 0);
-    // toColor = color(255, 0, 150);
-
-    // colorMode(HSB);  
-
-
-    // for (var i=0; i < Dots.length; i++) 
-    // {
-    //     myColor = lerpColor(fromColor, toColor, Dots[i].amtColor);
-
-    //     if((Dots[i].amtColor == chosenColor) && mode != 2)
-    //     {
-    //       Dots[i].x += RandomNoise(-50,50);
-    //       Dots[i].y += RandomNoise(-50,50);
-
-    //       if(e==1)  //Eraser Mode
-    //       {
-    //         colorMode(HSB); 
-    //         fill(19.6);
-
-    //         drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
-    //       }
-    //       else //Normal (No-eraser) Mode
-    //       {
-    //         colorMode(HSB); 
-    //         fill(myColor);
-
-    //         drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
-
-    //       }
-
-    //     }
-    //     else if(mode==2 || mode==3)
-    //     {
-    //       Dots[i].x += RandomNoise(-50,50);//+mouseX;
-    //       Dots[i].y += RandomNoise(-50,50); //+mouseY;
-
-    //       fill(myColor);
-    //       drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
-    //     }
-
-    //     else
-    //     {
-    //       fill(myColor);
-    //       drawShape(Dots[i].x, Dots[i].y, Dots[i].diameter);
-    //     }
-        
-    // }
-
-
-    // noLoop();  
-    // setFrameRate(frameRate);
-
 
     image(frame, 0, 0, w, h);
 
@@ -233,11 +181,25 @@ function draw()
 
 
 
-
-function central(value)
+function Dot(x, y, diameter, amtColor)
 {
-  return (randomInt(100,value-100)+randomInt(100,value-100))/2;
+  this.x = x;
+  this.y = y;
+  this.diameter = diameter;
+  this.amtColor = amtColor;
+  // this.angle = angle;
+
+  this.radius = this.diameter/2; 
+
+  this.rangeXL = this.x - (this.radius);
+  this.rangeXH = this.x + (this.radius);
+
+  this.rangeYL = this.y - (this.radius);
+  this.rangeYH = this.y + (this.radius);
 }
+
+
+
 
 
 
@@ -283,159 +245,7 @@ function mouseWheel(event)
 
 
 
-function createDots(l, h)
-{
-  var i=0;
-  
-  for (i = l; i < h; i++) 
-  {
-      diameter = randomInt(lrange,hrange);
 
-      var amtColor = map(diameter, lrange,hrange,0,1);
-      
-      smallDistance = map(amtColor, 0, 1, (largeDistance-50), largeDistance);
-      largeDistance = map(amtColor, 0, 1, largeDistance, 10);
-
-      x = central(width) + randomInt(smallDistance,largeDistance) + RandomNoise(0,5);
-      y = central(height) + randomInt(smallDistance,largeDistance) + RandomNoise(0,5);;
-
-      Dots[i] = new Dot(x, y, diameter, amtColor);
-  }
-
-}
-
-
-
-function mouseClicked(event) 
-{
-  var posX, posY, posRadius, posColor, posRangeXL, posRrangeXH, posRangeYL, posRangeYH;
-
-  for (let i=0; i < Dots.length; i++) 
-  {
-    
-    posX = Dots[i].x; 
-    posY = Dots[i].y;
-    posColor = Dots[i].amtColor;
-    posRadius = Dots[i].radius;
-
-    Dots[i].rangeXL = posX - posRadius;
-    Dots[i].rangeXH = posX + posRadius;
-
-    Dots[i].rangeYL = posY - posRadius;
-    Dots[i].rangeYH = posY + posRadius;
-
-    posRangeXL = Dots[i].rangeXL;
-    posRangeXH = Dots[i].rangeXH;
-
-    posRangeYL = Dots[i].rangeYL;
-    posRangeYH = Dots[i].rangeYH;
-
-    if((mouseX >= posRangeXL && mouseX <= posRangeXH) && (mouseY >= posRangeYL && mouseY <= posRangeYH))
-    {
-      chosenColor = posColor;
-    }
-        // console.log("CLICKED!\n");
-        // console.log("Element: "+i);
-        // console.log(mouseX+" : "+mouseY);
-        // console.log(Dots[i].x+", "+Dots[i].y);
-        // console.log("Diameter: "+Dots[i].diameter);
-        // console.log(Dots[i].rangeXL+"-"+Dots[i].rangeXH+" : "+Dots[i].rangeYL+"-"+Dots[i].rangeYH+"\n\n");      
-  }
-
-  draw();
-
-}
-
-
-function keyPressed()
-{
-  if(key == " ")
-  {
-    if(mode==0)
-      mode=1;
-    else if(mode==1)
-      mode=2;
-    else if(mode==2)
-      mode=3;
-    else
-      mode=0;
-  }
-
-   if(key == "a" || key == "A")
-  {
-      if(mode != 3)
-        mode = 3;
-      else if(mode==3)
-        mode = 0;
-  }
-
-   if(key == "e" || key == "E")
-  {
-      if(e==0)
-        e = 1;
-      else 
-        e = 0;
-  }
-
-   if(key == "t" || key == "T")
-  {
-      if(tri==0)
-      {
-        tri=1; circle=0; square=0;
-      }
-      else 
-      {
-        tri=0; circle=1; square=0;
-      }
-  }
-
-
-   if(key == "s" || key == "S")
-  {
-      if(square==0)
-      {
-        tri=0; circle=0; square=1;
-      }
-      else 
-      {
-        tri=0; circle=1; square=0;
-      }
-  }
-
-  if(key == "d" || key == "D")
-  {
-      if(circle==0)
-      {
-        tri=0; circle=1; square=0;
-      }
-      else 
-      {
-        tri=0; circle=1; square=0;
-      }
-
-  }
-
-  if(key == "g" || key == "G")
-  {
-      if(grid==0)
-      {
-        grid=1;
-      }
-      else 
-      {
-        grid=0;
-      }
-
-  }
-
-  if(keyCode == ENTER || keyCode == RETURN)
-  {
-      save('myCanvas.jpg');
-  }
-
-  draw();
-
-}
 
 
 function labelSetup() 
@@ -518,6 +328,7 @@ function drawShape(x, y, d)
 
 }
 // console.log("asd");
+
 
 function downloadArt()
 {
