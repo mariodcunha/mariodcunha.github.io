@@ -33,7 +33,9 @@ var square=0, tri=0, circle=1, mode=0, e=0, grid=0;
 var something=0;
 
 var instructions = ["Did you see it?", "Step Closer", " "];
+var prototype1=1, prototype2=0;
 
+var mic, vol, soundx;
 
 
 function preload() 
@@ -99,6 +101,10 @@ function setup()
 // prototype 1 DRAW
 function draw() 
 {
+
+  if(prototype1 == 1)
+  {
+    prototype2=0;
     textAlign(CENTER);
     millisecs = millis();
     secs = floor(millisecs/1000);
@@ -179,8 +185,117 @@ function draw()
         //nose
         ellipse(positions[62][0], positions[62][1], 40, 40);
     }
-
     // image(frame, 0, 0, w, h);
+  }
+
+
+
+  else if (prototype2==1)
+  {
+    prototype1=0;
+
+        noStroke();
+    // revealColor = color(255,255,255);
+    // fill(revealColor);    
+    // rect(0, 0, w, h);
+
+    vol = mic.getLevel();
+    soundx = map(vol, 0, 1, 1, 100);    
+
+    // revealColor.setAlpha(revealColorAlpha);
+    // revealColorAlpha = revealColorAlpha - soundx/10;
+    
+    textAlign(CENTER);
+    millisecs = millis();
+    secs = floor(millisecs/1000);
+    // m = millisecs/1000;
+
+    fill(textColor);
+    textSize(30);
+
+    let interval = secs%wordTimer;
+
+    console.log(interval);
+
+    if(interval>=0 && interval<3 && textFlag==1)
+    {
+      background(20);
+      text(instructions[0], w/2, h/2);
+    }
+    else if(interval>=3 && interval<6 && textFlag==1)
+    {
+      background(20);
+      text(instructions[1], w/2, h/2);  
+    }
+    else if(interval>=6 && interval<9 && textFlag==1)
+    {
+      background(20);
+      text(instructions[2], w/2, h/2);  
+    }
+    
+
+    if(millisecs%timeToRefresh>1 && millisecs%timeToRefresh<100)
+    {
+      fill('rgba(20,20,20,'+opacity+')');
+      rect(0,0,w,h);
+      textFlag=1; textColor=255;
+    }
+
+
+
+    // image(artimage, 0, 0, w, h);
+    var positions = tracker.getCurrentPosition();
+
+    //face lines
+    // beginShape();
+    // for (var i = 0; i < positions.length; i++) {
+    //     vertex(positions[i][0], positions[i][1]);
+    // }
+    // endShape();
+
+    noStroke();
+    for (var i = 0; i < positions.length; i++) 
+    {
+        fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        // fill('rgba('+map(0, i, positions.length, 0, 360)+', 50, 100,0.5)');
+
+        // dots on the face and all other parts except nose
+        // ellipse(positions[i][0], positions[i][1], soundx*2, soundx*2);
+        delta = tempChange - positions[62][0];
+        // text(i, positions[i][0], positions[i][1]);
+
+        textFlag=0;
+        // instructions[0]="";
+        // instructions[1]="";
+    }
+
+    if (positions.length > 0) 
+    {
+        var mouthLeft = createVector(positions[44][0], positions[44][1]);
+        var mouthRight = createVector(positions[50][0], positions[50][1]);
+        var smile = mouthLeft.dist(mouthRight);
+        // uncomment the line below to show an estimate of amount "smiling"
+        // rect(140, 100, smile * 3, 5, 100);
+
+        // uncomment for a surprise
+        
+        
+        noStroke();
+        noseColor = color(0,255,255);
+        noseColor.setAlpha(100);
+
+        tempChange = positions[62][0];
+
+        //nose
+        fill(noseColor);
+        ellipse(positions[62][0], positions[62][1], soundx*5, soundx*5);
+
+    }
+
+  }
+
+
+    
 
 }
 
@@ -343,4 +458,28 @@ function downloadArt()
 
 }
 
+
+
+
+function keyPressed()
+{
+  
+  if(keyCode == ENTER || keyCode == RETURN)
+  {
+      save('myCanvas.jpg');
+  }
+
+  if(key == 'a'|| key == 'A')
+  {
+    prototype1=1; prototype2=0;
+  }
+
+  if(key == 'b'|| key == 'B')
+  {
+    prototype1=0; prototype2=1;
+  }
+
+  draw();
+
+}
 
