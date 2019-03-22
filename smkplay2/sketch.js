@@ -66,7 +66,7 @@ var noseColor;
 var fromColor, toColor, chosenColor;
 
 var tempChange, delta;
-var revealColor, revealColorAlpha=20;
+var revealColor, revealColorAlpha=255;
 
 
 
@@ -143,12 +143,14 @@ function setup()
 // prototype 1 DRAW
 function draw() 
 {   
-    revealColor = color('rgba(255,255,255,'+revealColorAlpha+')');
-    revealColorAlpha = revealColorAlpha + delta*2;
-    // revealColorAlpha = 255;
+    
 
-    revealColor.setAlpha(revealColorAlpha);
-    console.log(delta*5);
+    if(delta)
+      revealColorAlpha = revealColorAlpha - 0.5;
+
+    revealColor = color('rgba(255,255,255,'+revealColorAlpha+')');
+
+    console.log(revealColorAlpha);
 
     fill(revealColor);
     noStroke();

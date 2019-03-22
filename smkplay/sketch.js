@@ -11,10 +11,10 @@ var tracker;
 var w, h;
 
 var millisecs, secs, wordTimer=6; 
-var timeToRefresh=10000, opacity=0.4, opacityChange=1.0;
+var timeToRefresh=20000, opacity=0.4, opacityChange=1.0;
 var textFlag=1, textColor=255;
 
-
+var faceColor;
 
 var myColor, x, y, m=0;
 
@@ -146,7 +146,13 @@ function draw()
     noStroke();
     for (var i = 0; i < positions.length; i++) 
     {
-        fill(map(i, 0, positions.length, 0, 360), 50, 100);
+
+        // fill(map(i, 0, positions.length, 0, 360), 50, 100);
+        // fill('rgba('+map(i, 0, positions.length, 0, 360)+',50,100,100)');
+        faceColor = color(map(i, 0, positions.length, 0, 360), 50, 100);
+        faceColor.setAlpha(100);
+
+        fill(faceColor);
 
         // dots on the face and all other parts except nose
         ellipse(positions[i][0], positions[i][1], 4, 4);
@@ -167,7 +173,7 @@ function draw()
 
         // uncomment for a surprise
         noStroke();
-        fill(0, 255, 255);
+        fill('rgba(255,0,0,100)');
         // fill('rgba(20,20,20,'+1+')');
 
         //nose
