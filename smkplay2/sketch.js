@@ -57,7 +57,7 @@ var tracker;
 var w, h;
 
 var millisecs, secs, wordTimer=9; 
-var timeToRefresh=10000, opacity=0.4, opacityChange=1.0;
+var timeToRefresh=10000, opacity=0.2, opacityChange=1.0;
 var textFlag=1, textColor=255;
 
 var myColor, x, y, m=0;
@@ -71,7 +71,7 @@ var revealColor, revealColorAlpha=255;
 var mic, vol, soundx;
 
 
-var instructions = ["Can you speak to it?", "Step Closer", "Talk. Clap! Shout!"];
+var instructions = ["Can you speak to it?", "Step Closer", "Sing. Clap. Shout!"];
 
 
 

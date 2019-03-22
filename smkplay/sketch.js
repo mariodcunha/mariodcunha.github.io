@@ -11,7 +11,7 @@ var tracker;
 var w, h;
 
 var millisecs, secs, wordTimer=6; 
-var timeToRefresh=20000, opacity=0.4, opacityChange=1.0;
+var timeToRefresh=20000, opacity=0.2, opacityChange=1.0;
 var textFlag=1, textColor=255;
 
 var faceColor;
