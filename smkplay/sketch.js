@@ -180,7 +180,7 @@ function draw()
         ellipse(positions[62][0], positions[62][1], 40, 40);
     }
 
-    image(frame, 0, 0, w, h);
+    // image(frame, 0, 0, w, h);
 
 }
 

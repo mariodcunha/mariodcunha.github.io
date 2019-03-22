@@ -244,7 +244,7 @@ function draw()
 
     }
 
-    image(frame, 0, 0, w, h);
+    // image(frame, 0, 0, w, h);
 
     // remove();
 
