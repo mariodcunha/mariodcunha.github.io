@@ -54,7 +54,10 @@ function setup()
   w = window.innerWidth;
   h = window.innerHeight;
 
-  noCursor();
+    noCursor();
+  mic = new p5.AudioIn();
+  mic.start();
+
 
   canvas = createCanvas(w,h);
 
@@ -261,7 +264,7 @@ function draw()
 
         // dots on the face and all other parts except nose
         // ellipse(positions[i][0], positions[i][1], soundx*2, soundx*2);
-        delta = tempChange - positions[62][0];
+        // delta = tempChange - positions[62][0];
         // text(i, positions[i][0], positions[i][1]);
 
         textFlag=0;
@@ -322,47 +325,6 @@ function Dot(x, y, diameter, amtColor)
 
 
 
-
-
-function mouseWheel(event) 
-{
-
-  let previous = numberDots;
-
-  // something += event.delta;
- 
-  if(Dots.length > 0)
-  {
-    numberDots += event.delta-1;
-  }
-  else if(Dots.length == 0 && event.delta < 0)
-  { 
-    numberDots = 0;
-  }
-  else if (numberDots < 0)
-  {
-    numberDots = 0;
-  }
-  else
-  {
-    numberDots += event.delta-1;
-  }
-
-  if(numberDots < previous)
-  {
-      for (i=numberDots; i < previous; i++) 
-      {
-         Dots.pop();
-      }       
-  }
-  else if(numberDots > previous)
-  {
-      createDots(previous, numberDots);
-  }
-
-  draw();
-
-}
 
 
 
