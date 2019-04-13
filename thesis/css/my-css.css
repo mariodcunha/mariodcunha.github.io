@@ -1,0 +1,198 @@
+.sectionInfo-resume 
+{
+	margin: 0 0 10px 0;
+}
+
+
+/*#primary
+{
+	color: #434343;
+}
+*/
+#rightSide
+{
+	/*background-color: green;*/
+	float: right;
+	width: 50%;
+}
+
+
+#leftSide
+{
+	float: left;
+	/*background-color: blue;*/
+	width: 50%;
+}
+
+
+.resumeFont
+{
+    font-size: 14px;
+    font-weight: normal;
+}
+
+
+#resumeRight
+{
+	/*background-color: rgba(0,0,255,0.1);*/
+	float: right;
+	width: 47%;
+	z-index: -5;
+}
+
+
+#resumeLeft
+{
+	float: left;
+	width: 53%;
+	/*background-color: rgba(255,0,0,0.1);*/
+	padding-right: 20px;
+	z-index: -5;
+}
+
+
+#portfolioimages:hover
+{
+	opacity: 0.7;
+	transition: all 0.3s;
+}
+
+#resumeContactStuff
+{
+	font-size: 15px;
+}
+
+.dot
+{
+	color: #4185c3;
+}
+
+#bottomContactInfo
+{
+	font-size: 15px;
+}
+
+.themeBold
+{
+		font-weight: 900;
+		color: #434343;
+}
+
+.themeBold:hover
+{
+		color: #009eed;
+		font-weight: 900;
+}
+
+.themenotsoBold
+{
+		font-weight: normal;
+		color: #434343;
+}
+
+.themenotsoBold:hover
+{
+		color: #009eed;
+		font-weight: 700;
+		cursor: pointer;
+}
+
+
+.themeDot
+{
+	font-size: 29px;
+	color: #009eed;
+}
+
+.themeBullet
+{
+	color: #009eed;
+	font-size: 17px;
+}
+
+#resumeSummary
+{
+	margin-right: 17px;
+	margin-left: 17px;
+	font-size: 15px;
+	font-style: italic;
+}
+
+.resumeHeading
+{
+	font-weight: 900;
+	font-size: 19px;
+	margin-bottom: 5px;
+	margin-top: 15px;
+}
+
+
+.resumeSemiHeading
+{
+	font-weight: 900;
+	font-size: 15px;
+	text-transform: uppercase;
+}
+
+
+.resumeDateHeading
+{
+	color: #009eed; 
+}
+
+
+.resumeSemiDateHeading
+{
+	font-weight: 900;
+	font-size: 15px;
+	color: #009eed; 
+}
+
+
+
+#sticky_header_resume
+{
+	background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    width: 100%;
+    z-index: 999;
+    margin-top: 930px;
+}
+
+
+.resume-icons 
+{
+	font-size: 12px;
+}
+
+
+#contactMeDrop
+{
+	/*display: none;*/
+}
+
+
+.fa-envelope:before
+{
+    font-size: 12px;
+}
+
+
+.fa-twitter:before
+{
+    font-size: 13px;
+}
+
+
+.fa-phone:before 
+{
+    font-size: 13px;
+}
+
+#contactMeHeading
+{
+	z-index: 2000;
+}
+
+
+
