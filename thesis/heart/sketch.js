@@ -170,6 +170,8 @@ function setup()
   // mic = new p5.AudioIn();
   // mic.start();
 
+  Haptics.heartbeat([500, 500, 500]);
+
   createCanvas(windowWidth, windowHeight);
   pos = createVector(mouseX, mouseY);
   noCursor();
@@ -272,8 +274,6 @@ function draw()
       image(heart, width/2-width/4, height/2-height/5.7, 500, 510);
     else
       image(heart, width/2-width/4-50, height/2-height/5.7-50, 600, 610);
-
-    Haptics.heartbeat([500, 500, 500]);
   }
 
   
@@ -350,6 +350,7 @@ function initSensor()
           if(ambience < 5)
           {
               moneyMode = 1;
+              Haptics.heartbeat([500, 500, 500]);
           }
 
     }
