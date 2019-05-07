@@ -64,7 +64,7 @@ function makeRequest()
 
     if (!httpRequest)
     {
-      aliases.innerHTML = "Shame! Shame!";s
+      aliases.innerHTML = "Shame! Shame!";
       return false;
     }
 

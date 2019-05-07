@@ -421,7 +421,7 @@ function initSensor()
     sensor_ambientlight.onreading = function()
     {
         ambience = sensor_ambientlight.illuminance;
-        console.log("asd");
+        
 
         if(temp_num_hearts == num_hearts)
         {
@@ -443,7 +443,7 @@ function initSensor()
         }
 
 
-        console.log(num_hearts);
+        // console.log(num_hearts);
     }
 
 }

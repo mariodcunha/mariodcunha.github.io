@@ -263,7 +263,7 @@ function draw()
 
   // Soap Placement
   // moneyMode=1;
-  console.log(seconds()%20);
+  // console.log(seconds()%20);
   if(moneyMode==0 || seconds()%20<3)
     image(faded_heart, width/2-width/4, height/2-height/8, 500, 510);
   else
@@ -272,6 +272,8 @@ function draw()
       image(heart, width/2-width/4, height/2-height/5.7, 500, 510);
     else
       image(heart, width/2-width/4-50, height/2-height/5.7-50, 600, 610);
+
+    Haptics.heartbeat([500, 500, 500]);
   }
 
   
