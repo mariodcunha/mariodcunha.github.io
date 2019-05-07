@@ -6,6 +6,9 @@
  */
 
 
+console.log("haptics is being read");
+
+
 "use strict";
 
 (function (global) {
