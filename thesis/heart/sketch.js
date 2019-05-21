@@ -208,20 +208,20 @@ function draw()
 
   //Background Color 
   
-  amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
-  let bgColor;
-  if (pos.x > windowWidth / 2) 
-  {
-    bgColor = lerpColor(colorMiddle, colorRight, amt);
+  // amt = map(pos.x, 0, windowWidth, -1.0, 1.0, true);
+  // let bgColor;
+  // if (pos.x > windowWidth / 2) 
+  // {
+  //   bgColor = lerpColor(colorMiddle, colorRight, amt);
 
-  } 
-  else 
-  {
-    bgColor = lerpColor(colorMiddle, colorLeft, -amt);
-  }
+  // } 
+  // else 
+  // {
+  //   bgColor = lerpColor(colorMiddle, colorLeft, -amt);
+  // }
 
   // bgColor.setAlpha(30);
-  fill(bgColor);
+  fill(255);
   rect(0, 0, windowWidth, windowHeight);
   // background(bgColor, 10);
 
