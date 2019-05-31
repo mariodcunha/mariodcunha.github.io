@@ -114,7 +114,7 @@ inspiration[12] = new Quote("The more you are clear of who you are, the more awe
 inspiration[13] = new Quote("If you fall off a horse, then get on a donkey, until you find your next horse.", "Morry Galonoy");
 inspiration[14] = new Quote("We are not just part of the process. We are the process.", "Archit Kaushik");
 inspiration[15] = new Quote("Speaking is silver, but silence is Golden. ", "The Egyptians, Thomas Carlyle, my late Grandpa.");
-
+inspiration[16] = new Quote("It’s good to have an end to journey towards; but it is the journey that matters, in the end.", "Ernest Hemingway");
 
 //DESIGN
 design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
