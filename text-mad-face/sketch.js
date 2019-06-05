@@ -8,7 +8,7 @@ var letterSize=50, dir=1;
 var fromColor, toColor;
 
 var LetterArray = [];
-var letters = ['D','I','M','E','N','S','I','O','N','S'];
+// var letters = ['D','I','M','E','N','S','I','O','N','S'];
 
 
 var myFont, colorFlip=0;
@@ -123,12 +123,15 @@ function draw()
 }
 
 
+
+
 function crazy(n)
 {
     var l = -3000, h = 3000;
 
     // return (noise(l,h)+randomInt(l,h))*n;
-    return sin (randomInt(l,h))*3;
+    return sin (randomInt(l,h))*3.5;
+    // return sin ( noise(randomInt(1,200))*20 );
     // return randomInt(noise(l,h)+randomInt(l,h))*(n+1);
     // return null;
 }
@@ -157,9 +160,24 @@ function noiseLevel(l,h)
 
 
 
+function keyPressed()
+{ 
+
+  if(keyCode == ENTER || keyCode == RETURN)
+  {
+      save('myCanvas.jpg');
+  }
+
+  draw();
+
+}
+
+
 
 function mouseMoved(event) 
 {
+    opacity = opacity + event.movementX/1000;
+    console.log(event.movementX/100);
     // draw();
 
     // opacity = opacity + (-1)mouseX/(W*10);
@@ -187,7 +205,7 @@ function mouseReleased()
 
 function mouseWheel()
 {
-    opacity = opacity + event.deltaY/1000;
+    
 
 }
 
