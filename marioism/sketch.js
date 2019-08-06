@@ -98,7 +98,6 @@ marioism[68] = new Quote("If you are calling out to the universe, you have the w
 marioism[69] = new Quote("There's one thing in the World that is really progressing super fast... Irony", me);
 marioism[70] = new Quote("A single rose is beautiful. But a rose garden looks like a mess!", me);
 marioism[71] = new Quote("A dragon must not just rely on breathing fire or flying away in rage. A dragon must remember that it can simply stay calm coz it's got tough skin.", me);
-marioism[72] = new Quote("Take your childhood to the grave.", me);
 
 
 
@@ -121,7 +120,7 @@ inspiration[13] = new Quote("If you fall off a horse, then get on a donkey, unti
 inspiration[14] = new Quote("We are not just part of the process. We are the process.", "Archit Kaushik");
 inspiration[15] = new Quote("Speaking is silver, but silence is Golden. ", "The Egyptians, Thomas Carlyle, my late Grandpa.");
 inspiration[16] = new Quote("It’s good to have an end to journey towards; but it is the journey that matters, in the end.", "Ernest Hemingway");
-
+inspiration[17] = new Quote("Take your childhood to the grave.", "Vishal Ravikumar");
 
 
 
