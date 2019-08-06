@@ -95,6 +95,12 @@ marioism[65] = new Quote("If you're sure you have your gut and your soul agreein
 marioism[66] = new Quote("Everyone is sweet... until you taste them.", me);
 marioism[67] = new Quote("The most frustrating part of releasing your prototype to user testing is that, the users suddenly become designers, and you need to tell them to go back to being users.", me);
 marioism[68] = new Quote("If you are calling out to the universe, you have the wrong idea of the universe. Call into the universe.", me);
+marioism[69] = new Quote("There's one thing in the World that is really progressing super fast... Irony", me);
+marioism[70] = new Quote("A single rose is beautiful. But a rose garden looks like a mess!", me);
+marioism[71] = new Quote("A dragon must not just rely on breathing fire or flying away in rage. A dragon must remember that it can simply stay calm coz it's got tough skin.", me);
+marioism[72] = new Quote("Take your childhood to the grave.", me);
+
+
 
 
 //INSPIRATION
@@ -115,6 +121,9 @@ inspiration[13] = new Quote("If you fall off a horse, then get on a donkey, unti
 inspiration[14] = new Quote("We are not just part of the process. We are the process.", "Archit Kaushik");
 inspiration[15] = new Quote("Speaking is silver, but silence is Golden. ", "The Egyptians, Thomas Carlyle, my late Grandpa.");
 inspiration[16] = new Quote("It’s good to have an end to journey towards; but it is the journey that matters, in the end.", "Ernest Hemingway");
+
+
+
 
 //DESIGN
 design[0] = new Quote("Every Designer must always think with a pen, paper and a prototype.", "Mario Dcunha");
