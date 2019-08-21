@@ -98,7 +98,8 @@ marioism[68] = new Quote("If you are calling out to the universe, you have the w
 marioism[69] = new Quote("There's one thing in the World that is really progressing super fast... Irony", me);
 marioism[70] = new Quote("A single rose is beautiful. But a rose garden looks like a mess!", me);
 marioism[71] = new Quote("A dragon must not just rely on breathing fire or flying away in rage. A dragon must remember that it can simply stay calm coz it's got tough skin.", me);
-
+marioism[72] = new Quote("If you ever felt you can never do it again, well... try again.", me);
+marioism[73] = new Quote("The Universe begins with U.", me);
 
 
 
