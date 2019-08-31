@@ -122,6 +122,9 @@ inspiration[14] = new Quote("We are not just part of the process. We are the pro
 inspiration[15] = new Quote("Speaking is silver, but silence is Golden. ", "The Egyptians, Thomas Carlyle, my late Grandpa.");
 inspiration[16] = new Quote("It’s good to have an end to journey towards; but it is the journey that matters, in the end.", "Ernest Hemingway");
 inspiration[17] = new Quote("Take your childhood to the grave.", "Vishal Ravikumar");
+inspiration[18] = new Quote("There will be people that will try to tame your passion, but your inner thoughts will tell you to push forward beyond their doubt, and your own.", "J. B. Chaykowsky");
+inspiration[19] = new Quote("What lies behind us and ahead of us, is nothing compared to what lies within us.", "Ralph Walso Emerson");
+
 
 
 
