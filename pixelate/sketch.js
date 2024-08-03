@@ -6,7 +6,7 @@ var myImage, pixelate=20, minimum=5;
 
 function preload() 
 {
-    myImage = loadImage("images/moon.jpg");
+    myImage = loadImage("images/city.jpg");
 }
 
 
