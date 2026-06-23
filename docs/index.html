@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aakanksha's Bay Area Weekend — Jun 26–29, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1c2b;
+    --paper:#fcfaf6;
+    --card:#ffffff;
+    --muted:#6b6b7b;
+    --line:#e9e4da;
+    --amber:#e2873c;
+    --coral:#e5604d;
+    --sp-red:#e5604d;
+    --sp-orange:#f2a03d;
+    --sp-yellow:#edc23f;
+    --sp-green:#4fa86b;
+    --sp-blue:#3e7cb1;
+    --sp-violet:#8b5ca8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:48px 28px 80px;}
+
+  /* ---------- Header ---------- */
+  .masthead{margin-bottom:8px;}
+  .eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--amber);margin:0 0 14px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;font-size:clamp(34px,7vw,52px);
+    line-height:1.02;margin:0 0 18px;letter-spacing:-.01em;
+  }
+  h1 .spectrum{
+    background:linear-gradient(90deg,var(--sp-red),var(--sp-orange),var(--sp-yellow),var(--sp-green),var(--sp-blue),var(--sp-violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .meta{
+    display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;
+    font-size:14px;color:var(--muted);padding-top:6px;
+  }
+  .meta b{color:var(--ink);font-weight:600;}
+  .spectrum-rule{
+    height:4px;border-radius:4px;margin:26px 0 8px;
+    background:linear-gradient(90deg,var(--sp-red),var(--sp-orange),var(--sp-yellow),var(--sp-green),var(--sp-blue),var(--sp-violet));
+  }
+
+  /* ---------- Timeline ---------- */
+  .day{
+    position:relative;
+    padding:34px 0 6px 38px;
+    border-left:2px solid var(--line);
+    margin-left:6px;
+  }
+  .day::before{
+    content:"";position:absolute;left:-9px;top:42px;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--amber);border:3px solid var(--paper);
+    box-shadow:0 0 0 1px var(--line);
+  }
+  .day.pride::before{
+    background:conic-gradient(var(--sp-red),var(--sp-orange),var(--sp-yellow),var(--sp-green),var(--sp-blue),var(--sp-violet),var(--sp-red));
+    width:20px;height:20px;left:-11px;
+  }
+  .day-date{
+    font-family:'Space Mono',monospace;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;
+  }
+  .day-title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:25px;
+    margin:0 0 4px;letter-spacing:-.01em;
+  }
+  .day.pride .day-title{
+    background:linear-gradient(90deg,var(--sp-red),var(--sp-orange),var(--sp-green),var(--sp-blue),var(--sp-violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .day-sub{font-size:14px;color:var(--muted);margin:0 0 18px;}
+
+  /* ---------- Line map (per-day route strip) ---------- */
+  .lmwrap{margin:0 0 26px;}
+  .lm{width:100%;height:auto;max-width:540px;display:block;}
+  .lm text{font-family:'Space Mono',monospace;}
+  .lm-dir{font-size:9px;fill:var(--muted);letter-spacing:.07em;}
+  .lm-city{font-size:10px;fill:var(--ink);text-anchor:middle;}
+  .lm-city.dim{fill:#bdb8ad;}
+  .lm-city.home{fill:var(--amber);font-weight:700;}
+  .day.pride .lm-city.home{fill:var(--sp-blue);}
+  .lm-num{font-size:10px;font-weight:700;fill:#fff;text-anchor:middle;}
+  .lmcap{font-size:12.5px;color:#3c3c4a;margin:4px 0 0;max-width:540px;line-height:1.5;}
+  .lmcap b{color:var(--amber);font-family:'Space Mono',monospace;font-size:11px;}
+  .day.pride .lmcap b{color:var(--sp-blue);}
+
+  /* ---------- Blocks ---------- */
+  .block{display:grid;grid-template-columns:78px 1fr;gap:16px;margin-bottom:22px;}
+  .time{
+    font-family:'Space Mono',monospace;font-size:12.5px;font-weight:700;
+    color:var(--amber);padding-top:2px;letter-spacing:.02em;
+  }
+  .day.pride .time{color:var(--sp-blue);}
+  .block h4{font-size:15.5px;font-weight:600;margin:0 0 3px;}
+  .block p{font-size:14px;color:#3c3c4a;margin:0 0 4px;}
+  .block .note{font-size:13px;color:var(--muted);}
+
+  /* ---------- Food option cards ---------- */
+  .opts{display:grid;gap:9px;margin-top:11px;}
+  .opt{
+    background:var(--card);border:1px solid var(--line);border-radius:11px;
+    padding:11px 14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+  }
+  .opt-main b{font-size:14px;font-weight:600;}
+  .opt-main .desc{font-size:12.5px;color:var(--muted);display:block;margin-top:1px;}
+  .opt-tag{
+    font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);
+    white-space:nowrap;padding-top:2px;text-align:right;
+  }
+  .opt-tag .star{color:var(--amber);}
+  .booked{border-color:var(--amber);background:#fdf4ea;}
+  .pairlbl{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin:16px 0 7px;}
+  .badge{
+    display:inline-block;font-family:'Space Mono',monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--amber);
+    border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:middle;
+  }
+
+  /* ---------- Callout ---------- */
+  .callout{
+    background:#fbf3ea;border:1px solid #f0dfca;border-radius:12px;
+    padding:14px 16px;margin-top:6px;
+  }
+  .callout.cool{background:#eef3f7;border-color:#d8e3ec;}
+  .callout .ttl{
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--amber);margin:0 0 7px;
+  }
+  .callout.cool .ttl{color:var(--sp-blue);}
+  .callout.warn{background:#fcecea;border-color:#e3a89f;}
+  .callout.warn .ttl{color:#c0392b;font-size:12px;}
+  .badge.warn{background:#c0392b;}
+  .callout ul{margin:0;padding-left:18px;}
+  .callout li{font-size:13.5px;margin-bottom:4px;color:#3c3c4a;}
+  .callout li:last-child{margin-bottom:0;}
+
+  /* ---------- Footer card ---------- */
+  .quickref{
+    margin-top:46px;background:var(--ink);color:#f3f1ea;border-radius:16px;padding:26px 28px;
+  }
+  .quickref h3{
+    font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 16px;color:#fff;
+  }
+  .qr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 26px;}
+  .qr-grid .k{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#b9b6c4;margin:0 0 2px;}
+  .qr-grid .v{font-size:14px;color:#f3f1ea;margin:0;}
+  .qr-grid .v b{color:#fff;}
+  .footnote{font-size:12px;color:var(--muted);text-align:center;margin-top:26px;}
+
+  @media (max-width:520px){
+    .block{grid-template-columns:64px 1fr;gap:12px;}
+    .qr-grid{grid-template-columns:1fr;}
+    .opt{flex-direction:column;}
+    .opt-tag{text-align:left;}
+  }
+  @media print{
+    body{background:#fff;}
+    .wrap{padding:0;max-width:100%;}
+    .day,.opt,.callout,.quickref{break-inside:avoid;}
+    .quickref{background:#1c1c2b !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .spectrum-rule,.day.pride::before,.day::before{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Itinerary · Friday → Monday</p>
+    <h1>Aakanksha's Bay&nbsp;Area weekend<br><span class="spectrum">+ SF Pride</span></h1>
+    <div class="meta">
+      <span><b>Jun 26 – 29, 2026</b></span>
+      <span>Mario &amp; Aakanksha</span>
+      <span>South Bay · San Francisco</span>
+    </div>
+    <div class="spectrum-rule"></div>
+  </header>
+
+  <!-- FRIDAY -->
+  <section class="day">
+    <p class="day-date">Friday · June 26</p>
+    <h2 class="day-title">Landing &amp; a soft night</h2>
+    <p class="day-sub">She's been flying all day — keep it gentle. Stroll, eat, sleep well.</p>
+
+    <figure class="lmwrap">
+      <svg class="lm" viewBox="0 0 600 62" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Friday: SFO and Mountain View on the Peninsula line">
+        <text x="30" y="12" class="lm-dir">&#8592; NORTH &#183; SF</text>
+        <text x="575" y="12" class="lm-dir" text-anchor="end">SAN JOSE &#183; SOUTH &#8594;</text>
+        <line x1="30" y1="34" x2="575" y2="34" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="45" cy="34" r="4" fill="#cdc8bd"/><text x="45" y="52" class="lm-city dim">SF</text>
+        <circle cx="350" cy="34" r="4" fill="#cdc8bd"/><text x="350" y="52" class="lm-city dim">Palo Alto</text>
+        <circle cx="558" cy="34" r="4" fill="#cdc8bd"/><text x="558" y="52" class="lm-city dim" text-anchor="end">San Jose</text>
+        <circle cx="150" cy="34" r="5.5" fill="var(--amber)"/><text x="150" y="52" class="lm-city">SFO</text>
+        <g transform="translate(435,34)"><path d="M-9,-11 L0,-19 L9,-11 Z" fill="var(--amber)"/><rect x="-7" y="-11" width="14" height="11" fill="var(--amber)"/><rect x="-2" y="-6" width="4" height="6" fill="#fff"/></g>
+        <text x="435" y="52" class="lm-city home">HOME &#183; Mtn View</text>
+      </svg>
+      <figcaption class="lmcap">North to SFO to pick her up, then south back home to Mountain View — the evening stays local.</figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="time">~8:00 PM</div>
+      <div>
+        <h4>Aakanksha lands at SFO</h4>
+        <p>Mario picks up. Realistically out of the terminal by ~9, back in the South Bay around 10.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">~10:00 PM</div>
+      <div>
+        <h4>A stroll around downtown Mountain View + a relaxed late bite</h4>
+        <p>Wander up Castro Street to shake off the flight — at the top end, swing by Mountain View City Hall and its 12 mighty trees for a quiet, pretty pause before doubling back for a low-key dinner. Home after to rest up — the real days start tomorrow.</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Eureka!</b><span class="desc">American + burgers, open latest. Build-your-own — veggie patty for her, Wagyu for you</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.3 · $$<br>open to 1 AM</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Olympus Caffe</b><span class="desc">Greek/Turkish — mezze &amp; salads for her, gyros &amp; schnitzel for you</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.3 · $$<br>open to 11 PM</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Doppio Zero</b><span class="desc">Wood-fired Italian — veg pizza &amp; pasta + meaty plates. Get there by ~10</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.3 · $$<br>open to 10:30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SATURDAY -->
+  <section class="day">
+    <p class="day-date">Saturday · June 27</p>
+    <h2 class="day-title">South Bay, your turf</h2>
+    <p class="day-sub">Mountain View → Palo Alto → Stanford. Tesla all day — no SF closures touch the South Bay.</p>
+
+    <figure class="lmwrap">
+      <svg class="lm" viewBox="0 0 600 62" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Saturday: Mountain View, Palo Alto and Santana Row on the Peninsula line">
+        <text x="30" y="12" class="lm-dir">&#8592; NORTH &#183; SF</text>
+        <text x="575" y="12" class="lm-dir" text-anchor="end">SAN JOSE &#183; SOUTH &#8594;</text>
+        <line x1="30" y1="34" x2="575" y2="34" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="45" cy="34" r="4" fill="#cdc8bd"/><text x="45" y="52" class="lm-city dim">SF</text>
+        <circle cx="150" cy="34" r="4" fill="#cdc8bd"/><text x="150" y="52" class="lm-city dim">SFO</text>
+        <circle cx="350" cy="34" r="5.5" fill="var(--amber)"/><text x="350" y="52" class="lm-city">Palo Alto</text>
+        <circle cx="558" cy="34" r="5.5" fill="var(--amber)"/><text x="558" y="52" class="lm-city" text-anchor="end">Santana Row</text>
+        <g transform="translate(435,34)"><path d="M-9,-11 L0,-19 L9,-11 Z" fill="var(--amber)"/><rect x="-7" y="-11" width="14" height="11" fill="var(--amber)"/><rect x="-2" y="-6" width="4" height="6" fill="#fff"/></g>
+        <text x="435" y="52" class="lm-city home">HOME &#183; Mtn View</text>
+      </svg>
+      <figcaption class="lmcap">A South Bay morning (coffee + a museum), a hop north to Palo Alto &amp; Stanford, then south to Santana Row for dinner.</figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="time">Morning</div>
+      <div>
+        <h4>Pick a pairing — coffee + a museum</h4>
+        <p>Two easy ways to open the day: keep it local in Mountain View, or make a little Santa Clara morning of it. Either flows into the 1:30 brunch in Palo Alto — Option A is the smoother drive, B doubles back a bit.</p>
+
+        <p class="pairlbl">Option A · Mountain View</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Robu Coffee</b><span class="desc">Vietnamese specialty coffee near home — nitro cold brew, egg coffee, the cult banana pudding, egg-salad (veg) &amp; chicken-salad sandwiches. Opens 8:30</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.5 · $<br>Mountain View</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Computer History Museum</b><span class="desc">The "here's all the AI &amp; tech goodness" show-and-tell — a few minutes from home</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.6<br>Museum · MV</div>
+          </div>
+        </div>
+
+        <p class="pairlbl">Option B · Santa Clara</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>WhatCoffee &amp; Bakery <span style="color:var(--muted);font-weight:400;">or</span> Milyar Coffee</b><span class="desc">Next-door neighbors on Monroe St — WhatCoffee for pastries &amp; lattes, Milyar for Yemeni chai &amp; saffron lattes</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.2<br>Santa Clara</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Triton Museum</b><span class="desc">Free art museum &amp; sculpture garden — lovely, but <b>closes 4:30</b></span></div>
+            <div class="opt-tag"><span class="star">★</span>4.4<br>Museum · SC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">1:30 PM</div>
+      <div>
+        <h4>Brunch — Local Union 271 <span class="badge">Booked ✓</span></h4>
+        <p>Outdoor seating, party of 2. Airy and green with a broad menu — bowls and salads for her, the duck-fat burger and more for you. The drive up to Palo Alto sets you up for the afternoon.</p>
+        <div class="opts">
+          <div class="opt booked">
+            <div class="opt-main"><b>Local Union 271</b><span class="desc">Downtown Palo Alto · outdoor seating · party of 2 · Sat 1:30 PM</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.2 · $$<br>Palo Alto</div>
+          </div>
+        </div>
+        <p class="note" style="margin-top:8px;">Backups if anything shifts: Crepevine or Olympus Caffe in Mountain View.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">Afternoon</div>
+      <div>
+        <h4>Stanford + downtown Palo Alto</h4>
+        <p>Wander the Stanford campus — Main Quad, Memorial Church, Hoover Tower, the Oval — then the Town &amp; Country village and University Ave for shops and people-watching.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">~4:00 PM</div>
+      <div>
+        <h4>Tea time at Oklava</h4>
+        <p>A cozy little slice of Istanbul on University Ave — Turkish coffee, tea, baklava and börek. The perfect mid-afternoon reset before dinner.</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Oklava Cafe</b><span class="desc">205 University Ave — Turkish coffee &amp; sweets, cozy and relaxed</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.6 · $$<br>Palo Alto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">8:00 PM</div>
+      <div>
+        <h4>Dinner — Suspiro <span class="badge">Booked ✓</span></h4>
+        <p>Spanish-Peruvian at Santana Row. Croquetas, ceviche, paella (there's a veg fideuá too), the famous flan — and ask about the hidden speakeasy in back.</p>
+        <div class="opts">
+          <div class="opt booked">
+            <div class="opt-main"><b>Suspiro</b><span class="desc">3060 Olsen Dr, Suite 20, San Jose · (408) 703-3886</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.5 · $$$<br>Santana Row</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">Before bed</div>
+      <div>
+        <h4>Prep for tomorrow's train</h4>
+        <div class="callout cool">
+          <p class="ttl">Sunday is an early Caltrain start</p>
+          <ul>
+            <li>Pack breakfast, snacks &amp; coffee to have on the train (~1-hr ride).</li>
+            <li>Lay out layers / a jacket and the small clear bag for Pride entry.</li>
+            <li>Set an alarm — you're aiming for the 8:24 / 8:54 AM train from Mountain View.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUNDAY - PRIDE -->
+  <section class="day pride">
+    <p class="day-date">Sunday · June 28</p>
+    <h2 class="day-title">SF Pride</h2>
+    <p class="day-sub">The main event — parade day. Catch a couple hours, leave when you've had your fill.</p>
+
+    <figure class="lmwrap">
+      <svg class="lm" viewBox="0 0 600 62" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sunday: San Francisco and Mountain View on the Peninsula line">
+        <text x="30" y="12" class="lm-dir">&#8592; NORTH &#183; SF</text>
+        <text x="575" y="12" class="lm-dir" text-anchor="end">SAN JOSE &#183; SOUTH &#8594;</text>
+        <line x1="30" y1="34" x2="575" y2="34" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="150" cy="34" r="4" fill="#cdc8bd"/><text x="150" y="52" class="lm-city dim">SFO</text>
+        <circle cx="350" cy="34" r="4" fill="#cdc8bd"/><text x="350" y="52" class="lm-city dim">Palo Alto</text>
+        <circle cx="558" cy="34" r="4" fill="#cdc8bd"/><text x="558" y="52" class="lm-city dim" text-anchor="end">San Jose</text>
+        <circle cx="45" cy="34" r="5.5" fill="var(--sp-blue)"/><text x="45" y="52" class="lm-city">SF Pride</text>
+        <g transform="translate(435,34)"><path d="M-9,-11 L0,-19 L9,-11 Z" fill="var(--sp-blue)"/><rect x="-7" y="-11" width="14" height="11" fill="var(--sp-blue)"/><rect x="-2" y="-6" width="4" height="6" fill="#fff"/></g>
+        <text x="435" y="52" class="lm-city home">HOME &#183; Mtn View</text>
+      </svg>
+      <figcaption class="lmcap">A straight shot north to San Francisco by Caltrain for Pride, then back south home.</figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="time">8:24 AM</div>
+      <div>
+        <h4>Park at Mountain View, ride Caltrain in</h4>
+        <p>Leave the car at Mountain View Caltrain station and take the train straight to SF (4th &amp; King) — no driving into the closures. Catch the <b>8:24 AM</b> (arrives ~9:25) or the <b>8:54 AM</b> (arrives ~9:55); they run about every 30 min. Have your breakfast &amp; coffee on board — the ride's about an hour.</p>
+        <div class="callout cool">
+          <p class="ttl">Train notes</p>
+          <ul>
+            <li>From 4th &amp; King, the Muni T-line (Central Subway) or a quick rideshare gets you to Union Square / Market St for the parade.</li>
+            <li>Mountain View station parking is generally free on weekends — but double-check the signage.</li>
+            <li>June 2026 has World Cup matches in the Bay Area; confirm the exact Sunday times in the Caltrain app a day or two before.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">10:30 AM</div>
+      <div>
+        <h4>Pride Parade — Market Street → Civic Center</h4>
+        <p>Steps off at 10:30 and rolls up Market, ending at the Civic Center Plaza celebration. Catch a couple of hours, then peel off when you've had your fill — you'll be ready for a proper sit-down by lunch.</p>
+        <div class="callout cool">
+          <p class="ttl">Pack light — there are entry checkpoints</p>
+          <ul>
+            <li>ID, phone, sunscreen, an empty reusable water bottle</li>
+            <li>Layers / a jacket — SF mornings run cold (55–60°F) even with sun later</li>
+            <li>No bag, or a small clear / clutch-sized one only — speeds up entry</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">1:30 PM</div>
+      <div>
+        <h4>Lunch — Teakwood <span class="badge">Booked ✓</span> <span class="badge warn">Prepaid · card</span></h4>
+        <div class="callout warn">
+          <p class="ttl">Important — prepaid reservation</p>
+          <p style="margin:0;font-size:13.5px;color:#3c3c4a;">Teakwood was <b>paid by credit card</b>. If plans change, <b>cancel early</b> to avoid being charged for the table.</p>
+        </div>
+        <p>Right by Civic Center Plaza on Grove St — peaceful and polished Burmese-Asian (tea-leaf salad, garlic noodles, veg curries + chicken &amp; steak). A short stroll from where the parade ends. Standard seating, party of 2, 1:30 PM.</p>
+        <div class="opts">
+          <div class="opt booked">
+            <div class="opt-main"><b>Teakwood</b><span class="desc">399 Grove St — by Civic Center / the opera house · strong veg &amp; meat</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.4 · $$<br>Civic Center</div>
+          </div>
+        </div>
+        <p class="pairlbl">Backups around Civic Center</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Souvla</b><span class="desc">Hayes St Greek — rotisserie salads &amp; pita; veg &amp; meat, open all afternoon</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.5 · $$<br>Hayes Valley</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Rad Radish</b><span class="desc">Hayes St — bright all-plant-based comfort food (great for Aakanksha)</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.5 · $$<br>Hayes Valley</div>
+          </div>
+        </div>
+        <p class="note" style="margin-top:8px;">Heads-up: Taniku Izakaya doesn't open till 4:30 PM (dinner only, no reservations), so it can't do lunch — it's listed under dinner instead.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">~3:00 PM</div>
+      <div>
+        <h4>Tea or boba in Chinatown</h4>
+        <p>Wander a couple of blocks north into Chinatown to recharge — you're staying east, no trek out west.</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Vital Tea Leaf</b><span class="desc">Grant Ave — free, friendly tea tastings; easy to lose an hour here</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.7<br>Chinatown · tea</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Red Blossom Tea Co.</b><span class="desc">Refined tea showroom that supplies Benu &amp; the French Laundry</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.6<br>Chinatown · tea</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Gong Cha</b><span class="desc">Classic boba by Union Square if you'd rather a quick drink to-go</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.0 · $<br>Union Sq · boba</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">Decision</div>
+      <div>
+        <h4>Call it a day, or push on?</h4>
+        <p>Gut-check around now. If you're spent, grab an afternoon train home — Pride's done and that's a full, good day. If you've still got it in you, here's the evening.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">6:45 PM</div>
+      <div>
+        <h4>Cocktails — Bourbon &amp; Branch <span class="badge">Booked ✓</span></h4>
+        <p>Speakeasy cocktails to open the night — party of 2, 6:45 PM. 501 Jones St, in the Tenderloin just off Union Square; knock and give the password.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">8:00 PM</div>
+      <div>
+        <h4>Dinner — Marrakech <span class="badge">Booked ✓</span></h4>
+        <p>A full Moroccan feast a few minutes from cocktails — tagines &amp; couscous (veg) plus lamb, chicken &amp; shrimp, cushioned seating and a festive room. Party of 2, 8:00 PM. 419 O'Farrell St. From here it's ~1 mile to Martuni's (quick rideshare).</p>
+        <div class="opts">
+          <div class="opt booked">
+            <div class="opt-main"><b>Marrakech</b><span class="desc">419 O'Farrell St — Moroccan feast &amp; show-vibe room · veg &amp; meat</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.0 · $$<br>Tenderloin</div>
+          </div>
+        </div>
+        <p class="pairlbl">Other good dinners by Bourbon &amp; Branch</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Taniku Izakaya</b><span class="desc">1035 Geary — superb Japanese small plates &amp; yakitori. No reservations, opens 4:30, expect a wait</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.8 · $$<br>izakaya</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Ox &amp; Tiger</b><span class="desc">552 Jones (next to B&amp;B) — Filipino-Japanese tasting, 8 seats; book ahead, takes the whole evening</span></div>
+            <div class="opt-tag"><span class="star">★</span>5.0<br>tasting</div>
+          </div>
+          <div class="opt">
+            <div class="opt-main"><b>Hinodeya Ramen</b><span class="desc">219 O'Farrell — veg &amp; meat ramen, open very late, easy &amp; casual</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.6 · $$<br>ramen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">Later</div>
+      <div>
+        <h4>Martuni's piano bar</h4>
+        <p>The SF sing-along piano bar — open till 2 AM, so it's the right nightcap once dinner's done (dinner kitchens close earlier). 4 Valencia St, right by Market.</p>
+        <div class="opts">
+          <div class="opt booked">
+            <div class="opt-main"><b>Martuni's</b><span class="desc">Stiff martinis, a piano, everyone singing — an only-in-SF Pride-night classic</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.6 · $$<br>Piano bar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">Late</div>
+      <div>
+        <h4>Civic Center light beams + home</h4>
+        <p>If the Pride light beams are lit over Civic Center Plaza, loop back for a few photos before heading home.</p>
+        <div class="callout">
+          <p class="ttl">Getting home — read this before the evening</p>
+          <ul>
+            <li>The <b>last southbound Caltrain leaves SF around 9:45–10:00 PM</b> (reaching Mountain View ~10:50). The full cocktails → dinner → piano bar → light-beams night runs well past that.</li>
+            <li>So plan to <b>rideshare back to the car / Mountain View</b> (~$90–120, ~50 min) for the late night — or, if you'd rather the train, do an early dinner, skip the late Martuni's, and catch that ~9:45 train.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONDAY -->
+  <section class="day">
+    <p class="day-date">Monday · June 29</p>
+    <h2 class="day-title">Family handoff</h2>
+    <p class="day-sub">Easy morning, then deliver Aakanksha (and luggage) to her mom.</p>
+
+    <figure class="lmwrap">
+      <svg class="lm" viewBox="0 0 600 62" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Monday: SFO and Palo Alto on the Peninsula line">
+        <text x="30" y="12" class="lm-dir">&#8592; NORTH &#183; SF</text>
+        <text x="575" y="12" class="lm-dir" text-anchor="end">SAN JOSE &#183; SOUTH &#8594;</text>
+        <line x1="30" y1="34" x2="575" y2="34" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="45" cy="34" r="4" fill="#cdc8bd"/><text x="45" y="52" class="lm-city dim">SF</text>
+        <circle cx="558" cy="34" r="4" fill="#cdc8bd"/><text x="558" y="52" class="lm-city dim" text-anchor="end">San Jose</text>
+        <circle cx="150" cy="34" r="5.5" fill="var(--amber)"/><text x="150" y="52" class="lm-city">SFO</text>
+        <circle cx="350" cy="34" r="5.5" fill="var(--amber)"/><text x="350" y="52" class="lm-city">Palo Alto</text>
+        <g transform="translate(435,34)"><path d="M-9,-11 L0,-19 L9,-11 Z" fill="var(--amber)"/><rect x="-7" y="-11" width="14" height="11" fill="var(--amber)"/><rect x="-2" y="-6" width="4" height="6" fill="#fff"/></g>
+        <text x="435" y="52" class="lm-city home">HOME &#183; Mtn View</text>
+      </svg>
+      <figcaption class="lmcap">North to SFO to meet Mom, then south to Palo Alto to settle in.</figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="time">~11:00 AM</div>
+      <div>
+        <h4>Sleep in, then brunch at Oren's Hummus</h4>
+        <p>An easy, veg-friendly late brunch in downtown Mountain View — hummus, sabich, shakshuka and fluffy pita (plus chicken pita for you). Cool and casual.</p>
+        <div class="opts">
+          <div class="opt">
+            <div class="opt-main"><b>Oren's Hummus</b><span class="desc">126 Castro St, downtown Mountain View — lots for veg, opens 11</span></div>
+            <div class="opt-tag"><span class="star">★</span>4.4 · $$<br>Mountain View</div>
+          </div>
+        </div>
+        <p class="note" style="margin-top:8px;">Opens at 11 and SFO is ~35 min away — eat early-ish, or confirm Mom's exact landing time so the noon pickup isn't a scramble.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="time">~12:00 PM</div>
+      <div>
+        <h4>SFO — meet Mom, then on to Palo Alto</h4>
+        <p>Load up and drive to the airport for the noon arrival, then everyone heads to Palo Alto.</p>
+        <div class="callout">
+          <p class="ttl">Luggage math — sort this in advance</p>
+          <ul>
+            <li>The Tesla comfortably fits about one person's full luggage.</li>
+            <li>Aakanksha's bags + Mom's arriving bags (likely big + medium + small) will be tight.</li>
+            <li>Plan B: leave Aakanksha's bags at Mario's and grab them after, or take a rideshare for one leg. <b>Confirm how many bags Mom is bringing first.</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK REFERENCE -->
+  <div class="quickref">
+    <h3>Quick reference</h3>
+    <div class="qr-grid">
+      <div><p class="k">Pride day</p><p class="v"><b>Sun Jun 28</b> · parade 10:30 AM, Market St</p></div>
+      <div><p class="k">Reservations</p><p class="v"><b>Sat:</b> Local Union 1:30, Suspiro 8:00 · <b>Sun:</b> Teakwood 1:30 <b style="color:#c0392b;">(prepaid — cancel early)</b>, Bourbon &amp; Branch 6:45, Marrakech 8:00</p></div>
+      <div><p class="k">Getting around</p><p class="v">Tesla in the South Bay · <b>Caltrain</b> to SF</p></div>
+      <div><p class="k">Sunday plan</p><p class="v">Park at Mountain View · <b>8:24 AM</b> train in</p></div>
+      <div><p class="k">Last train back</p><p class="v"><b>~9:45–10 PM</b> from SF — or rideshare (~$90–120)</p></div>
+      <div><p class="k">Don't forget</p><p class="v">Layers for SF — it's chilly, all day</p></div>
+    </div>
+  </div>
+
+  <p class="footnote">Flexible by design — shift anything as the mood changes. Made for Aakanksha's visit · Jun 2026</p>
+
+</div>
+</body>
+</html>
+
