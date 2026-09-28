@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Big Art Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Kalam:wght@400&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+<style>
+:root{
+  --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
+  --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
+  --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
+  --shadow:0 18px 40px rgba(20,40,60,.22), 0 3px 8px rgba(20,40,60,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--land);color:var(--ink);overflow-x:hidden;
+  font-family:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased}
+
+#stage{position:fixed;inset:0;overflow:hidden}
+#map{position:absolute;inset:0}
+.maplibregl-ctrl-attrib{font-size:10px}
+
+.pin{position:absolute;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;z-index:3;
+  border-radius:50%;background:var(--pin);border:3px solid var(--paper);
+  box-shadow:0 2px 6px rgba(0,0,0,.25);will-change:transform;pointer-events:none;transition:background .3s}
+.pin.upcoming{background:var(--paper);border-color:var(--pin)}
+
+header{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 14px;
+  display:flex;justify-content:space-between;align-items:baseline;
+  background:linear-gradient(var(--land) 20%, rgba(243,244,239,0))}
+h1{margin:0;font-weight:800;font-size:clamp(1.25rem,2.6vw,1.6rem);letter-spacing:-.02em;line-height:1}
+.count{font-weight:600;font-size:.95rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.hint{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 34px);z-index:5;
+  text-align:center;font-size:1rem;color:var(--muted);pointer-events:none}
+.hint span{background:rgba(243,244,239,.85);padding:4px 10px;border-radius:999px}
+.hint svg{display:block;margin:8px auto 0;animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(5px)}}
+
+.polaroid{position:absolute;left:50%;top:0;margin:0;z-index:4;
+  width:min(340px,76vw,calc(76svh - 200px));
+  background:var(--paper);padding:12px 12px 16px;border-radius:3px;box-shadow:var(--shadow);
+  transform-origin:50% 100%;opacity:0;visibility:hidden;will-change:transform,opacity}
+.polaroid .photo{aspect-ratio:1/1;width:100%;overflow:hidden;background:#dde3e6;display:block}
+.polaroid .photo img,.polaroid .photo svg{width:100%;height:100%;object-fit:cover;display:block}
+.polaroid h2{margin:14px 2px 0;font-size:18px;font-weight:600;line-height:1.2;letter-spacing:-.01em}
+.polaroid h2 a{color:var(--ink);text-decoration:none;display:inline-flex;align-items:baseline;gap:6px;
+  white-space:nowrap;max-width:100%;overflow:hidden}
+.polaroid h2 a > span:first-child{overflow:hidden;text-overflow:ellipsis}
+.polaroid h2 a:hover > span:first-child{text-decoration:underline;text-underline-offset:3px}
+.polaroid h2 a:focus-visible{outline:2px solid var(--pin);outline-offset:3px;border-radius:2px}
+.polaroid h2 svg{flex:none;width:14px;height:14px;position:relative;top:1px;color:var(--pin)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.polaroid p{margin:4px 2px 0;font-family:"Kalam","Comic Sans MS",cursive;font-size:1.05rem;color:#4a5560;line-height:1.3}
+
+#track{position:relative}
+#notice{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:9;display:none;
+  max-width:520px;margin:0 auto;background:#fff;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);font-size:.95rem;line-height:1.4}
+#notice code{font-size:.85em;word-break:break-word;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){.hint svg{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="map" aria-label="Map of San Francisco showing the art I've visited"></div>
+  <div id="pins"></div>
+  <div id="cards"></div>
+</div>
+
+<header>
+  <h1>My Big Art Loop</h1>
+  <span class="count" id="count" aria-live="polite"></span>
+</header>
+
+<div class="hint" id="hint"><span>Scroll to follow the loop</span>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+
+<div id="track"></div>
+<div id="notice" role="alert"></div>
+
+<script>
+// Show a readable message instead of a silent blank page if something fails
+function showNotice(msg, detail){
+  const n=document.getElementById("notice");
+  n.innerHTML=msg+(detail?`<br><code>${String(detail).slice(0,240)}</code>`:"");
+  n.style.display="block";
+}
+window.addEventListener("error", e => showNotice("The map couldn't start here. Open this file directly in Chrome, Safari or Firefox, or from your hosted link.", e.message));
+</script>
+<script>
+if (!window.maplibregl) showNotice("The map library didn't load. Check your internet connection, or turn off any content blocker for this page.");
+/* =====================================================================
+   YOUR COLLECTION — add stops here, in the order of your loop.
+   lngLat: [longitude, latitude]  (right-click a spot in Google Maps to copy it;
+           Google shows "lat, lng", so flip the order here)
+   photo:  null for the placeholder, or a path like "photos/kind.jpg"
+   ===================================================================== */
+const STOPS = [
+  { title: "WordPlay: KiND",
+    url: "https://www.bigartloop.org/reuben-rude-wordplay-kind",
+    lngLat: [-122.4663, 37.7713],
+    photo: "photos/kind.jpg", credit: "a kind stranger",
+    tilt: -2.2, tint: ["#F6C9A8","#E97F5C"] },
+  { title: "WordPlay: SMiLE",
+    url: "https://www.bigartloop.org/reuben-rude-wordplay-smile",
+    lngLat: [-122.4647, 37.7712],
+    photo: null, credit: "a kind stranger",
+    tilt: 1.6, tint: ["#FBE39A","#EDB23A"] },
+  { title: "Dr. Fisherian's Runaway Machine",
+    url: "https://www.bigartloop.org/dr-fisherians-runaway-machine",
+    lngLat: [-122.3878, 37.7632],
+    photo: null, credit: "a kind stranger",
+    tilt: -1.2, tint: ["#F4A9A0","#D2412F"] }
+];
+
+/* ---------- Settings ---------- */
+const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
+const SF_BOUNDS = [[-122.515, 37.708], [-122.357, 37.812]];
+const SF_LABEL_AT = [-122.4435, 37.7585];
+const Z_STOP = 15.4;        // how close we get at each art piece
+const FOCUS_Y = 0.76;       // where the pin sits vertically when zoomed in
+const FLY = 1.2, HOLD = 1.0, OUT = 1.0;   // scroll lengths, in screen heights
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const clamp = (v,a=0,b=1) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,p) => a+(b-a)*p;
+const inOut = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+const outCubic = t => 1 - Math.pow(1-t,3);
+const outBack = t => { const c1=1.35, c3=c1+1; return 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2); };
+const merc = ll => { const m = maplibregl.MercatorCoordinate.fromLngLat(ll); return [m.x, m.y]; };
+const unmerc = ([x,y]) => new maplibregl.MercatorCoordinate(x,y).toLngLat();
+const ws = z => 512 * Math.pow(2, z);   // world size in px at zoom z
+
+let W = innerWidth, H = innerHeight;
+
+// zoom that fits a mercator box on screen
+function fitZoom(a, b, pad=0.9){
+  const dx=Math.abs(b[0]-a[0])||1e-9, dy=Math.abs(b[1]-a[1])||1e-9;
+  return Math.log2(Math.min(W*pad/(dx*512), H*pad/(dy*512)));
+}
+const SF_A = merc(SF_BOUNDS[0]), SF_B = merc(SF_BOUNDS[1]);
+const SF_C = [(SF_A[0]+SF_B[0])/2, (SF_A[1]+SF_B[1])/2];
+const P = STOPS.map(s => merc(s.lngLat));
+const Z0 = () => fitZoom(SF_A, SF_B, 0.95);
+
+/* ---------- Keyframes ---------- */
+// Each state: the point (x,y) sits at (W/2, fy*H) on screen at zoom z.
+const K = [{u:0, pt:SF_C, z:"overview", kind:"rest"}];
+const holds = [];
+let u = 0;
+STOPS.forEach((s,i) => {
+  if (i > 0) {
+    const a=P[i-1], b=P[i];
+    K.push({u:u+FLY*0.45, pt:[(a[0]+b[0])/2,(a[1]+b[1])/2], z:{between:[a,b]}, kind:"mid"});
+  }
+  u += FLY; K.push({u, pt:P[i], z:Z_STOP, kind:"arrive"});
+  holds.push([u, u+HOLD]);
+  u += HOLD; K.push({u, pt:P[i], z:Z_STOP, kind:"hold"});
+});
+u += OUT; K.push({u, pt:SF_C, z:"overview", kind:"end"});
+const TOTAL = u;
+
+function zOf(k){
+  if (k.z === "overview") return Z0();
+  if (k.z.between) return Math.min(Z_STOP-1.1, fitZoom(k.z.between[0], k.z.between[1], 0.55));
+  return k.z;
+}
+const fyOf = z => 0.5 + (FOCUS_Y-0.5)*clamp((z-Z0())/(Z_STOP-Z0()));
+
+// screen position of a mercator point for a given camera {c, z}
+const toScreen = (pt, cam) => [W/2 + (pt[0]-cam.c[0])*ws(cam.z), H/2 + (pt[1]-cam.c[1])*ws(cam.z)];
+// camera that puts pt at screen position sp at zoom z
+const camAt = (pt, sp, z) => ({ z, c:[pt[0] - (sp[0]-W/2)/ws(z), pt[1] - (sp[1]-H/2)/ws(z)] });
+const camOf = (pt, z) => camAt(pt, [W/2, H*fyOf(z)], z);
+
+function camera(t){
+  for (let i=1;i<K.length;i++){
+    const a=K[i-1], b=K[i];
+    if (t > b.u) continue;
+    const p = clamp((t-a.u)/(b.u-a.u || 1));
+    const za=zOf(a), zb=zOf(b);
+    // First dive: zoom toward the art from the very first scroll
+    if (a.kind==="rest" && b.kind==="arrive") return anchored(b.pt, camOf(a.pt,za), camOf(b.pt,zb), p, outBack, outCubic);
+    // Final pull-back from the last piece
+    if (a.kind==="hold" && b.kind==="end")   return anchored(a.pt, camOf(a.pt,za), camOf(b.pt,zb), p, inOut, inOut);
+    const pe = inOut(p), zp = b.kind==="arrive" ? outBack(p) : pe;
+    const pt=[lerp(a.pt[0],b.pt[0],pe), lerp(a.pt[1],b.pt[1],pe)];
+    return camOf(pt, lerp(za, zb, zp));
+  }
+  const l=K[K.length-1]; return camOf(l.pt, zOf(l));
+}
+// keep anchor point gliding from where it is on screen to its target spot while zooming
+function anchored(pt, A, B, p, zE, pE){
+  const sa=toScreen(pt,A), sb=toScreen(pt,B), q=pE(p);
+  return camAt(pt, [lerp(sa[0],sb[0],q), lerp(sa[1],sb[1],q)], lerp(A.z, B.z, zE(p)));
+}
+
+/* ---------- Trail geometry (gentle arcs between stops) ---------- */
+const arcs = [];
+for (let i=1;i<STOPS.length;i++){
+  const [x1,y1]=STOPS[i-1].lngLat, [x2,y2]=STOPS[i].lngLat;
+  const k=Math.cos(37.76*Math.PI/180);
+  const dx=(x2-x1)*k, dy=y2-y1, len=Math.hypot(dx,dy)||1e-9;
+  const bow=Math.min(0.006, len*0.28);
+  const cx=(x1+x2)/2 + (dy/len*bow)/k, cy=(y1+y2)/2 - dx/len*bow;   // bow to the left of travel
+  const pts=[]; for(let j=0;j<=80;j++){const s=j/80,m=1-s; pts.push([m*m*x1+2*m*s*cx+s*s*x2, m*m*y1+2*m*s*cy+s*s*y2]);}
+  arcs.push({pts, from:holds[i-1][1], to:holds[i][0]});
+}
+
+/* ---------- Polaroids & pins ---------- */
+const extIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+function placeholder(s,i){
+  const [a,b]=s.tint;
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder photo">
+    <defs><linearGradient id="g${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>
+    <rect width="100" height="100" fill="url(#g${i})"/><rect y="74" width="100" height="26" fill="rgba(0,0,0,.12)"/>
+    <circle cx="50" cy="44" r="6.5" fill="rgba(255,255,255,.85)"/><path d="M40 76c0-11 4-18 10-18s10 7 10 18z" fill="rgba(255,255,255,.85)"/>
+    <text x="50" y="92" text-anchor="middle" font-family="Kalam,cursive" font-size="6.5" fill="rgba(255,255,255,.95)">photo coming soon</text></svg>`;
+}
+const pins = STOPS.map(()=>{const d=document.createElement("div");d.className="pin upcoming";$("#pins").appendChild(d);return d;});
+const cards = STOPS.map((s,i)=>{
+  const c=document.createElement("figure"); c.className="polaroid";
+  c.innerHTML=`<div class="photo">${s.photo?`<img src="${s.photo}" alt="Me with ${s.title}">`:placeholder(s,i)}</div>
+    <h2><a href="${s.url}" target="_blank" rel="noopener"><span>${s.title}</span>${extIcon}<span class="sr">(opens in a new tab)</span></a></h2>
+    <p>Photo taken by ${s.credit}</p>`;
+  $("#cards").appendChild(c); return c;
+});
+function fitTitles(){
+  cards.forEach(c=>{
+    const a=c.querySelector("h2 a"), h=c.querySelector("h2"), vis=c.style.visibility;
+    c.style.visibility="hidden"; let fs=18; h.style.fontSize=fs+"px"; a.style.maxWidth="none";
+    while(a.getBoundingClientRect().width>h.clientWidth && fs>13){fs-=0.5;h.style.fontSize=fs+"px";}
+    a.style.maxWidth=""; c.style.visibility=vis;
+  });
+}
+
+/* ---------- Map ---------- */
+if (!document.createElement("canvas").getContext("webgl2") && !document.createElement("canvas").getContext("webgl")) showNotice("This browser can't draw the map (WebGL is off or unavailable).");
+const map = new maplibregl.Map({
+  container:"map", style:MAP_STYLE, interactive:false,
+  attributionControl:{compact:true}, fadeDuration:150,
+  center:unmerc(SF_C), zoom:Z0()
+});
+
+function quietStyle(){
+  const set=(id,prop,val,kind="paint")=>{ if(map.getLayer(id)) (kind==="paint"?map.setPaintProperty:map.setLayoutProperty).call(map,id,prop,val); };
+  set("background","background-color","#F3F4EF");
+  set("water","fill-color","#C5D6DB");
+  set("park","fill-color","#D9E5CF");
+  // hide clutter: road names, shields, airports, countries, states
+  map.getStyle().layers.forEach(l=>{
+    if (/highway-name|shield|airport|label_country|label_state|waterway_line_label/.test(l.id)) set(l.id,"visibility","none","layout");
+  });
+  // neighborhoods: light, sentence case
+  ["label_other","label_village","label_town"].forEach(id=>{
+    set(id,"text-transform","none","layout");
+    set(id,"text-font",["Noto Sans Regular"],"layout");
+    set(id,"text-letter-spacing",0.02,"layout");
+    set(id,"text-size",["interpolate",["linear"],["zoom"],11,11,15,13],"layout");
+    set(id,"text-color","#8E979F"); set(id,"text-halo-color","#F3F4EF"); set(id,"text-halo-width",1.2);
+  });
+  // other cities stay light; San Francisco gets its own darker label below
+  if (map.getLayer("label_city")){
+    map.setFilter("label_city",["all",["==",["get","class"],"city"],["!=",["get","capital"],2],["!=",["get","name"],"San Francisco"]]);
+    set("label_city","text-color","#8E979F"); set("label_city","icon-image","","layout");
+  }
+  set("water_name_point_label","text-color","#8FA7AF");
+  set("water_name_line_label","text-color","#8FA7AF");
+
+  map.addSource("trail",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+  map.addLayer({id:"trail",type:"line",source:"trail",
+    layout:{"line-cap":"round","line-join":"round"},
+    paint:{"line-color":"#9EA5AC","line-width":3.5,"line-dasharray":[1.4,2.4]}});
+
+  map.addSource("sf-label",{type:"geojson",data:{type:"Feature",geometry:{type:"Point",coordinates:SF_LABEL_AT},properties:{}}});
+  map.addLayer({id:"sf-label",type:"symbol",source:"sf-label",
+    layout:{"text-field":"San Francisco","text-font":["Noto Sans Bold"],
+      "text-size":["interpolate",["linear"],["zoom"],10,20,13,26,16,30],"text-letter-spacing":-0.01},
+    paint:{"text-color":"#1B1F24","text-opacity":0.85,"text-halo-color":"#F3F4EF","text-halo-width":1.5}});
+}
+
+/* ---------- Render loop ---------- */
+let unit=H, lastW=W;
+function layout(){
+  W=innerWidth; H=innerHeight;
+  if (W!==lastW || !$("#track").style.height){ unit=H; lastW=W; $("#track").style.height=((TOTAL+1)*unit)+"px"; }
+}
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let cur = scrollY/unit, lastTrail = "";
+
+function render(t){
+  const cam = camera(t);
+  map.jumpTo({center:unmerc(cam.c), zoom:cam.z});
+
+  // trail: draw each leg progressively while travelling
+  const feats = arcs.map(a=>{
+    const n = Math.round(inOut(clamp((t-a.from)/(a.to-a.from)))*(a.pts.length-1));
+    return n<1 ? null : {type:"Feature",properties:{},geometry:{type:"LineString",coordinates:a.pts.slice(0,n+1)}};
+  }).filter(Boolean);
+  const key = feats.map(f=>f.geometry.coordinates.length).join(",");
+  if (key!==lastTrail && map.getSource("trail")){ map.getSource("trail").setData({type:"FeatureCollection",features:feats}); lastTrail=key; }
+
+  let active=-1;
+  STOPS.forEach((s,i)=>{
+    const [sx,sy] = toScreen(P[i], cam);
+    pins[i].style.transform=`translate(${sx}px,${sy}px)`;
+    const [h0,h1]=holds[i];
+    pins[i].classList.toggle("upcoming", t < h0-0.05);
+    const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
+    const c=cards[i];
+    if (v>0.001){
+      if (v>0.5) active=i;
+      const e = reduce ? 1 : outBack(v);
+      c.style.visibility="visible"; c.style.opacity=clamp(v*1.4);
+      c.style.transform=`translate(-50%, calc(${sy-22}px - 100%)) rotate(${s.tilt*v}deg) scale(${0.6+0.4*e})`;
+    } else { c.style.visibility="hidden"; c.style.opacity=0; }
+  });
+  $("#count").textContent = active>=0 ? `${active+1} / ${STOPS.length}` : (t>TOTAL-0.5 ? `${STOPS.length} visited` : "");
+  $("#hint").style.opacity = clamp(1 - t*3);
+}
+function tick(){
+  const target = scrollY/unit;
+  cur += (target-cur)*(reduce?1:0.14);
+  if (Math.abs(target-cur)<0.0005) cur=target;
+  render(cur);
+  requestAnimationFrame(tick);
+}
+
+layout(); fitTitles();
+map.on("error", e => { const m=e && e.error && e.error.message || ""; if (/style|Failed to fetch|NetworkError/i.test(m) && !map.isStyleLoaded()) showNotice("The map tiles didn't load.", m); });
+map.on("load", ()=>{ quietStyle(); render(cur); requestAnimationFrame(tick); });
+addEventListener("resize", ()=>{ layout(); fitTitles(); map.resize(); });
+document.fonts && document.fonts.ready.then(fitTitles);
+</script>
+</body>
+</html>
