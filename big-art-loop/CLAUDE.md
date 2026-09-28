@@ -26,9 +26,14 @@ big-art-loop/
 - Map: MapLibre GL JS 4.7.1 (jsDelivr CDN) + OpenFreeMap "positron" style
   (free, no API key). Restyled in quietStyle(): road names, shields, airports,
   country/state labels hidden; parks #D9E5CF, water #C5D6DB, land #F3F4EF.
-- Labels: custom dark bold "San Francisco" label (Noto Sans Bold, sf-label layer);
-  base-map SF city label filtered out; neighborhood/town labels light gray
-  (#8E979F), sentence case.
+- One typeface everywhere: Bricolage Grotesque (Mario's request), including map labels.
+  MapLibre can't draw web fonts, so the base map's place/water labels are kept for
+  placement but drawn invisibly (text-opacity 0); updateLabels() asks the map which
+  names it placed (queryRenderedFeatures, ~every 150ms) and draws them as DOM text in
+  #labels. "San Francisco" is a DOM label too (bold, dark, at SF_LABEL_AT); the base
+  map's own SF label is filtered out. Neighborhood labels light gray (#8E979F), sentence case.
+- quietStyle() runs on "style.load", not "load" ("load" waits for every tile, which
+  left the unstyled map showing for seconds).
 - Map is non-interactive (interactive:false); page scroll drives the camera via
   map.jumpTo() every frame, with light smoothing.
 - Camera timeline (in screen-heights of scroll): FLY 1.2, HOLD 1.0, OUT 1.0.
@@ -50,8 +55,8 @@ big-art-loop/
   - One-line title, auto-shrinks 18px→13px before truncating. The title is an
     always-underlined black link with a small "new window" icon, opens the official bigartloop.org
     page in a new tab.
-  - Below: "Photo taken by {credit}" in Kalam (handwritten font)
-  - UI font: Bricolage Grotesque
+  - Below: "Photo taken by {credit}" (Bricolage Grotesque, like everything else)
+  - A missing photo falls back to the "photo coming soon" placeholder
 - Text is black (#1B1F24). Mario tried bright red and switched back.
 - #track (the tall empty div that makes the page scroll) has pointer-events:none so
   clicks reach the Polaroid links underneath.
@@ -89,3 +94,6 @@ The default branch is master, not main. Pages updates ~1–2 min after a commit.
 ## Open items
 - Pin coordinates are estimates. Verify or replace with exact spots from Mario.
 - Real photographer credits, if Mario wants to change them
+- smile.jpg / robot.jpg on GitHub are the full-size originals (1.6 MB / 5.3 MB), uploaded by
+  Mario by hand; the resized ones (~0.6 MB) are in the local photos/ folder. Swap them in
+  when convenient (Claude in Chrome's upload fails on files over ~300 KB).
