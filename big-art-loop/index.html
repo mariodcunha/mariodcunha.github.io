@@ -413,9 +413,12 @@ const legProgress = (i, t) => { const a = holds[i][1], b = holds[i+1][0]; return
 /* ---------- Polaroids & pins ---------- */
 const blank = '<div class="blank" role="img" aria-label="No photo yet"></div>';
 const pins = STOPS.map(()=>{const d=document.createElement("div");d.className="pin upcoming";$("#pins").appendChild(d);return d;});
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cards = STOPS.map((s,i)=>{
   const c=document.createElement("figure"); c.className="polaroid";
-  c.innerHTML=`<div class="photo">${s.photo?`<img src="${s.photo}" alt="Me with ${s.title}">`:blank}</div>
+  // my own photo if I have one, otherwise the official one from bigartloop.org (loaded as the stop approaches)
+  const src = s.photo || (ART[s.url] && ART[s.url].photo), alt = s.photo ? `Me with ${s.title}` : `${s.title} (photo from bigartloop.org)`;
+  c.innerHTML=`<div class="photo">${src?`<img data-src="${esc(src)}" alt="${esc(alt)}">`:blank}</div>
     <h2><a href="${s.url}" aria-haspopup="dialog"><span>${s.title}</span></a></h2>`;
   c.querySelector("h2 a").addEventListener("click", e => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;   // cmd/ctrl-click still opens the official page in a new tab
@@ -426,7 +429,7 @@ const cards = STOPS.map((s,i)=>{
   $("#cards").appendChild(c); return c;
 });
 /* ---------- Art drawer ---------- */
-const drawer = $("#drawer"), esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const drawer = $("#drawer");
 let drawerFrom = null;
 function openDrawer(i){
   const s = STOPS[i], a = ART[s.url] || {};
@@ -582,6 +585,7 @@ function render(t){
     pins[i].classList.toggle("upcoming", t < h0-0.05 || t > RESET+0.25);
     const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
     const c=cards[i];
+    if (t > h0-3 && t < h1+1){ const img=c.querySelector("img[data-src]"); if (img){ img.src=img.dataset.src; img.removeAttribute("data-src"); } }
     if (v>0.001){
       if (v>0.5) active=i;
       const e = reduce ? 1 : outBack(v);

@@ -59,7 +59,9 @@ big-art-loop/
     always-underlined black link (no icon). Clicking it opens the art drawer (below);
     cmd/ctrl-click still opens the official bigartloop.org page in a new tab.
   - No photo credit line (Mario removed it): just the photo and the linked title
-  - photo: null (or a missing file) shows a blank light-gray square
+  - Polaroid photo: Mario's own photo (STOPS.photo) if he has one; otherwise the official
+    photo from ART (same image as the drawer). Images load only when the scroll gets
+    within ~3 screens of that stop. A photo that fails to load shows a blank gray square.
 - Art drawer (Mario's request), one structure for every piece:
   status chip, title, "by <artist>", official photo (hotlinked from bigartloop.org's
   Squarespace CDN, ?format=1000w) with credit, optional note, "About the piece",
@@ -101,7 +103,9 @@ Oceanside → back into the park, ending at Naga):
   { title, url, lngLat: [lng, lat], photo: "photos/x.jpg" | null, tilt }
 - The walk between consecutive stops is worked out automatically: each stop is
   snapped to WALK_ROUTE and the route is followed the shorter way round.
-- Photos so far: kind.jpg, smile.jpg, robot.jpg (Dr. Fisherian's). Everything else is null.
+- Mario's photos so far: kind.jpg, smile.jpg, robot.jpg (Dr. Fisherian's). Everything else is
+  null, so those Polaroids show the official bigartloop.org photo. Adding a photo path to a
+  stop replaces the official one with Mario's.
 - Resize new photos to ~1400px long side, JPEG ~q82, EXIF orientation applied
 - Google Maps shows "lat, lng"; lngLat needs [lng, lat]
 
