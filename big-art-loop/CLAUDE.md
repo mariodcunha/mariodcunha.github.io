@@ -40,46 +40,57 @@ big-art-loop/
   - Page always opens on the SF overview (scroll restoration is off): hollow dots only, no trail.
   - First scroll zooms straight toward stop 1 (anchored zoom). It must never
     drift to the center first. Mario asked for this explicitly.
-  - Between stops (Mario: "less eye bounce"): if the next stop is already on screen
-    at stop zoom (inView), glide over at the same zoom in one smooth ease. Only when
-    it's off screen: zoom out just enough to see both, then zoom in (outBack overshoot).
+  - Between stops the camera follows the official Walk Route (WALK_ROUTE) from one
+    piece to the next, and the dashed trail is drawn along that same route in step.
+    If the next piece is already on screen, or the walk is short, the zoom never
+    changes (Mario: "less eye bounce"). Longer walks zoom out to fit the whole walk,
+    hold through the middle, then zoom in on arrival with a slight overshoot.
+  - Each walk gets more scroll the longer it is (flyFor), so long legs don't race.
   - At the end: zoom back out to show the whole loop, pause (RESET), then the trail
     fades out and pins go hollow again (LOOP). Scrolling on wraps to the top, so the
     loop restarts endlessly from the no-trail start.
   - Z_STOP = 15.4, FOCUS_Y = 0.76 (the pin sits low; the Polaroid appears above it).
 - Pins: DOM overlays, blue #2B4FE0. Hollow until visited, filled after, hollow again on loop reset.
 - Trail: light gray (#9EA5AC) dashed line, rounded caps and joins (no sharp
-  dashes), gentle arc between stops, drawn progressively while travelling.
+  dashes), following the walking route, drawn progressively while travelling.
 - Polaroid (appears at each stop):
   - Square photo (center-cropped via object-fit), slight tilt per stop
   - One-line title, auto-shrinks 18px→13px before truncating. The title is an
     always-underlined black link with a small "new window" icon, opens the official bigartloop.org
     page in a new tab.
-  - Below: "Photo taken by {credit}" (Bricolage Grotesque, like everything else)
-  - A missing photo falls back to the "photo coming soon" placeholder
+  - No photo credit line (Mario removed it): just the photo and the linked title
+  - photo: null (or a missing file) shows a blank light-gray square
 - Text is black (#1B1F24). Mario tried bright red and switched back.
 - #track (the tall empty div that makes the page scroll) has pointer-events:none so
   clicks reach the Polaroid links underneath.
-- Header "My Big Art Loop" + a counter ("1 / 3", then "3 visited" at the end).
+- Header "My Big Art Loop" + a counter ("1 / 27", then "27 pieces" at the end).
 - An on-page error card appears if MapLibre, WebGL, or the tiles fail.
+
+## Data source
+Stops and the walking route come from the official Big Art Loop Google My Map
+(https://www.google.com/maps/d/viewer?mid=1kDqQMcpTsD7Sbgz4hJCAWOx-B5lytZE, embedded
+on bigartloop.org/map). Export it as KML with
+https://www.google.com/maps/d/kml?mid=1kDqQMcpTsD7Sbgz4hJCAWOx-B5lytZE&forcekml=1
+Its layers / pin colors:
+- light blue "Big Art Loop" (14) and dark blue "Big Art Loop - Portside" (13):
+  installed, on display now. These 27 are the site's STOPS.
+- green "Big Art Loop: Coming Soon" (14), gray "Future Candidate Sites" (4),
+  yellow "Other SF Art" (24, not part of the Loop): not on the site.
+- lines: black "Walk Route" (a 55 km loop, = WALK_ROUTE) and blue bike-route detours.
+Known gaps on the official map: Heartfullness and The Giraffes have pages on
+bigartloop.org/art but no pin.
 
 ## Adding or editing a stop
 Everything lives in the STOPS array at the top of the <script> in index.html,
-in loop order:
-  { title, url, lngLat: [lng, lat], photo: "photos/x.jpg" | null,
-    credit: "a kind stranger", tilt, tint: [top, bottom] }  // tint = placeholder gradient
-- photo: null shows a placeholder ("photo coming soon")
+in walking order along the route (currently starting at KiND, heading east
+through Golden Gate Park → Panhandle → North City → Portside → South City →
+Oceanside → back into the park, ending at Naga):
+  { title, url, lngLat: [lng, lat], photo: "photos/x.jpg" | null, tilt }
+- The walk between consecutive stops is worked out automatically: each stop is
+  snapped to WALK_ROUTE and the route is followed the shorter way round.
+- Photos so far: kind.jpg, smile.jpg, robot.jpg (Dr. Fisherian's). Everything else is null.
 - Resize new photos to ~1400px long side, JPEG ~q82, EXIF orientation applied
 - Google Maps shows "lat, lng"; lngLat needs [lng, lat]
-
-## Current stops (order set by Mario)
-1. WordPlay: KiND: https://www.bigartloop.org/reuben-rude-wordplay-kind
-   Golden Gate Park, JFK Promenade & 8th Ave. photo: photos/kind.jpg ✅
-2. WordPlay: SMiLE: https://www.bigartloop.org/reuben-rude-wordplay-smile
-   Same spot as KiND. photo: photos/smile.jpg ✅
-3. Dr. Fisherian's Runaway Machine: https://www.bigartloop.org/dr-fisherians-runaway-machine
-   Crane Cove Park (Port of SF). photo: photos/robot.jpg ✅
-Credit for all three is "a kind stranger" for now.
 
 ## Local preview
 macOS blocks local servers from reading ~/Downloads, so a local preview has to
@@ -92,7 +103,6 @@ published by uploading files through github.com's "Upload files" page (Chrome is
 The default branch is master, not main. Pages updates ~1–2 min after a commit.
 
 ## Open items
-- Pin coordinates are estimates. Verify or replace with exact spots from Mario.
 - Real photographer credits, if Mario wants to change them
 - smile.jpg / robot.jpg on GitHub are the full-size originals (1.6 MB / 5.3 MB), uploaded by
   Mario by hand; the resized ones (~0.6 MB) are in the local photos/ folder. Swap them in
