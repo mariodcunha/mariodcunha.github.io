@@ -346,6 +346,16 @@ function along(leg, q){
 
 const P = STOPS.map(s => merc(s.lngLat));
 const LEGS = P.slice(1).map((b,i) => legPath(P[i], b));
+// the walk home, from the last piece back to the first: what makes this a loop and not a line
+const CLOSING = legPath(P[P.length-1], P[0]);
+// every leg joined into one continuous ring, drawn whenever we're pulled back on the overview
+const LOOP_LINE = LEGS.concat([CLOSING]).reduce((out, leg) => {
+  leg.lngLat.forEach(c => {
+    const prev = out[out.length-1];
+    if (!prev || Math.abs(prev[0]-c[0]) > 1e-9 || Math.abs(prev[1]-c[1]) > 1e-9) out.push(c);
+  });
+  return out;
+}, []);
 const LEG_M = 40075016 * Math.cos(37.77*Math.PI/180);    // mercator units -> metres here
 
 // overview: the whole loop and every piece
@@ -407,6 +417,15 @@ function anchored(pt, A, B, p, zE, pE){
   const sa=toScreen(pt,A), sb=toScreen(pt,B), q=pE(p);
   return camAt(pt, [lerp(sa[0],sb[0],q), lerp(sa[1],sb[1],q)], lerp(A.z, B.z, zE(p)));
 }
+// The ring is the view of the whole walk: up on the overview, gone while we're down among the pieces.
+// It clears away as the first dive sets off, and comes back as the camera pulls out at the end.
+function loopFade(t){
+  const dive = holds[0][0];
+  if (t < dive)  return 1 - inOut(clamp(t/(dive*0.5)));
+  if (t <= LAST) return 0;
+  return inOut(clamp(((t-LAST)/OUT - 0.3)/0.6));
+}
+
 // how far along each leg the trail has been walked at time t (0..1)
 const legProgress = (i, t) => { const a = holds[i][1], b = holds[i+1][0]; return inOut(clamp((t-a)/(b-a))); };
 
@@ -506,10 +525,16 @@ function quietStyle(){
     map.setFilter("label_city",["all",["==",["get","class"],"city"],["!=",["get","capital"],2],["!=",["get","name"],"San Francisco"]]);
   set("water_name_line_label","visibility","none","layout");
 
+  const dashes = {"line-color":"#9EA5AC","line-width":3.5,"line-dasharray":[1.4,2.4]};
+  map.addSource("loop",{type:"geojson",data:{type:"Feature",properties:{},geometry:{type:"LineString",coordinates:LOOP_LINE}}});
+  map.addLayer({id:"loop",type:"line",source:"loop",
+    layout:{"line-cap":"round","line-join":"round"},
+    paint:{...dashes,"line-opacity":1}});
+
   map.addSource("trail",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
   map.addLayer({id:"trail",type:"line",source:"trail",
     layout:{"line-cap":"round","line-join":"round"},
-    paint:{"line-color":"#9EA5AC","line-width":3.5,"line-dasharray":[1.4,2.4]}});
+    paint:{...dashes,"line-opacity":0}});
 }
 
 /* ---------- Map labels as page text ---------- */
@@ -558,7 +583,7 @@ function layout(){
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";   // always open on the overview
 scrollTo(0, 0);
-let cur = 0, lastTrail = "", lastFade = 1;
+let cur = 0, lastTrail = "", lastFade = -1, lastLoop = -1;
 
 function render(t){
   const cam = camera(t);
@@ -574,7 +599,10 @@ function render(t){
     return {type:"Feature",properties:{},geometry:{type:"LineString",coordinates:leg.lngLat.slice(0,k).concat([unmerc(pt).toArray()])}};
   }).filter(Boolean);
   if (key!==lastTrail && map.getSource("trail")){ map.getSource("trail").setData({type:"FeatureCollection",features:feats}); lastTrail=key; }
-  const fade = Math.round((1 - clamp((t-RESET)/0.45))*50)/50;
+  const ring = Math.round(loopFade(t)*50)/50;
+  if (ring!==lastLoop && map.getLayer("loop")){ map.setPaintProperty("loop","line-opacity",ring); lastLoop=ring; }
+  // the walked trail crossfades into the ring, so pulling out always lands on the whole dashed loop
+  const fade = Math.round((1-ring)*50)/50;
   if (fade!==lastFade && map.getLayer("trail")){ map.setPaintProperty("trail","line-opacity",fade); lastFade=fade; }
 
   let active=-1;
