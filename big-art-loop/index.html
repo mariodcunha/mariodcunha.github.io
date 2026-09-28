@@ -13,7 +13,7 @@
 :root{
   --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
   --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
-  --ink:#E8141B; --muted:#5B6570; --paper:#FDFDFA;
+  --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
   --shadow:0 18px 40px rgba(20,40,60,.22), 0 3px 8px rgba(20,40,60,.14);
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -53,14 +53,15 @@ h1{margin:0;font-weight:800;font-size:clamp(1.25rem,2.6vw,1.6rem);letter-spacing
 .polaroid h2{margin:14px 2px 0;font-size:18px;font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .polaroid h2 a{color:var(--ink);text-decoration:none;display:inline-flex;align-items:baseline;gap:6px;
   white-space:nowrap;max-width:100%;overflow:hidden}
-.polaroid h2 a > span:first-child{overflow:hidden;text-overflow:ellipsis}
-.polaroid h2 a:hover > span:first-child{text-decoration:underline;text-underline-offset:3px}
+.polaroid h2 a > span:first-child{overflow:hidden;text-overflow:ellipsis;
+  text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:rgba(27,31,36,.4)}
+.polaroid h2 a:hover > span:first-child{text-decoration-color:var(--pin)}
 .polaroid h2 a:focus-visible{outline:2px solid var(--pin);outline-offset:3px;border-radius:2px}
 .polaroid h2 svg{flex:none;width:14px;height:14px;position:relative;top:1px;color:var(--pin)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .polaroid p{margin:4px 2px 0;font-family:"Kalam","Comic Sans MS",cursive;font-size:1.05rem;color:#4a5560;line-height:1.3}
 
-#track{position:relative}
+#track{position:relative;pointer-events:none}   /* only there to make the page scrollable; clicks pass through to the Polaroids */
 #notice{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:9;display:none;
   max-width:520px;margin:0 auto;background:#fff;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);font-size:.95rem;line-height:1.4}
 #notice code{font-size:.85em;word-break:break-word;color:var(--muted)}
@@ -112,12 +113,12 @@ const STOPS = [
   { title: "WordPlay: SMiLE",
     url: "https://www.bigartloop.org/reuben-rude-wordplay-smile",
     lngLat: [-122.4647, 37.7712],
-    photo: null, credit: "a kind stranger",
+    photo: "photos/smile.jpg", credit: "a kind stranger",
     tilt: 1.6, tint: ["#FBE39A","#EDB23A"] },
   { title: "Dr. Fisherian's Runaway Machine",
     url: "https://www.bigartloop.org/dr-fisherians-runaway-machine",
     lngLat: [-122.3878, 37.7632],
-    photo: null, credit: "a kind stranger",
+    photo: "photos/robot.jpg", credit: "a kind stranger",
     tilt: -1.2, tint: ["#F4A9A0","#D2412F"] }
 ];
 
@@ -167,12 +168,22 @@ STOPS.forEach((s,i) => {
   u += HOLD; K.push({u, pt:P[i], z:Z_STOP, kind:"hold"});
 });
 u += OUT; K.push({u, pt:SF_C, z:"overview", kind:"end"});
-const TOTAL = u;
+const TOTAL = u;              // whole loop drawn, back on the overview
+const RESET = TOTAL + 0.5;    // pause on the finished loop, then fade the trail and pins back
+const LOOP  = RESET + 0.5;    // looks exactly like the start, so scrolling on wraps to the top
 
 function zOf(k){
   if (k.z === "overview") return Z0();
-  if (k.z.between) return Math.min(Z_STOP-1.1, fitZoom(k.z.between[0], k.z.between[1], 0.55));
+  if (k.z.between) {
+    // next stop already on screen: glide over at the same zoom. Otherwise zoom out just enough to see both.
+    const [a,b] = k.z.between;
+    return inView(b, camOf(a, Z_STOP)) ? Z_STOP : Math.min(Z_STOP-0.3, fitZoom(a, b, 0.6));
+  }
   return k.z;
+}
+function inView(pt, cam){
+  const [x,y] = toScreen(pt, cam), m = 40;
+  return x > m && x < W-m && y > 90 && y < H-m;
 }
 const fyOf = z => 0.5 + (FOCUS_Y-0.5)*clamp((z-Z0())/(Z_STOP-Z0()));
 
@@ -192,6 +203,12 @@ function camera(t){
     if (a.kind==="rest" && b.kind==="arrive") return anchored(b.pt, camOf(a.pt,za), camOf(b.pt,zb), p, outBack, outCubic);
     // Final pull-back from the last piece
     if (a.kind==="hold" && b.kind==="end")   return anchored(a.pt, camOf(a.pt,za), camOf(b.pt,zb), p, inOut, inOut);
+    // Neighbouring stops: one smooth glide at stop zoom, no pause at the midpoint
+    if ((b.kind==="mid" || a.kind==="mid") && zOf(b.kind==="mid" ? b : a) >= Z_STOP){
+      const s0 = b.kind==="mid" ? a : K[i-2], s1 = b.kind==="mid" ? K[i+1] : b;
+      const q = inOut(clamp((t-s0.u)/(s1.u-s0.u)));
+      return camOf([lerp(s0.pt[0],s1.pt[0],q), lerp(s0.pt[1],s1.pt[1],q)], Z_STOP);
+    }
     const pe = inOut(p), zp = b.kind==="arrive" ? outBack(p) : pe;
     const pt=[lerp(a.pt[0],b.pt[0],pe), lerp(a.pt[1],b.pt[1],pe)];
     return camOf(pt, lerp(za, zb, zp));
@@ -232,6 +249,8 @@ const cards = STOPS.map((s,i)=>{
   c.innerHTML=`<div class="photo">${s.photo?`<img src="${s.photo}" alt="Me with ${s.title}">`:placeholder(s,i)}</div>
     <h2><a href="${s.url}" target="_blank" rel="noopener"><span>${s.title}</span>${extIcon}<span class="sr">(opens in a new tab)</span></a></h2>
     <p>Photo taken by ${s.credit}</p>`;
+  const img=c.querySelector("img");   // photo missing or not uploaded yet: show the placeholder instead of a broken image
+  if (img) img.onerror=()=>{ img.parentNode.innerHTML=placeholder(s,i); };
   $("#cards").appendChild(c); return c;
 });
 function fitTitles(){
@@ -285,17 +304,19 @@ function quietStyle(){
   map.addLayer({id:"sf-label",type:"symbol",source:"sf-label",
     layout:{"text-field":"San Francisco","text-font":["Noto Sans Bold"],
       "text-size":["interpolate",["linear"],["zoom"],10,20,13,26,16,30],"text-letter-spacing":-0.01},
-    paint:{"text-color":"#E8141B","text-opacity":1,"text-halo-color":"#F3F4EF","text-halo-width":1.5}});
+    paint:{"text-color":"#1B1F24","text-opacity":0.85,"text-halo-color":"#F3F4EF","text-halo-width":1.5}});
 }
 
 /* ---------- Render loop ---------- */
 let unit=H, lastW=W;
 function layout(){
   W=innerWidth; H=innerHeight;
-  if (W!==lastW || !$("#track").style.height){ unit=H; lastW=W; $("#track").style.height=((TOTAL+1)*unit)+"px"; }
+  if (W!==lastW || !$("#track").style.height){ unit=H; lastW=W; $("#track").style.height=((LOOP+2)*unit)+"px"; }
 }
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let cur = scrollY/unit, lastTrail = "";
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";   // always open on the overview
+scrollTo(0, 0);
+let cur = 0, lastTrail = "", lastFade = 1;
 
 function render(t){
   const cam = camera(t);
@@ -308,13 +329,15 @@ function render(t){
   }).filter(Boolean);
   const key = feats.map(f=>f.geometry.coordinates.length).join(",");
   if (key!==lastTrail && map.getSource("trail")){ map.getSource("trail").setData({type:"FeatureCollection",features:feats}); lastTrail=key; }
+  const fade = Math.round((1 - clamp((t-RESET)/0.45))*50)/50;
+  if (fade!==lastFade && map.getLayer("trail")){ map.setPaintProperty("trail","line-opacity",fade); lastFade=fade; }
 
   let active=-1;
   STOPS.forEach((s,i)=>{
     const [sx,sy] = toScreen(P[i], cam);
     pins[i].style.transform=`translate(${sx}px,${sy}px)`;
     const [h0,h1]=holds[i];
-    pins[i].classList.toggle("upcoming", t < h0-0.05);
+    pins[i].classList.toggle("upcoming", t < h0-0.05 || t > RESET+0.25);
     const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
     const c=cards[i];
     if (v>0.001){
@@ -324,10 +347,12 @@ function render(t){
       c.style.transform=`translate(-50%, calc(${sy-22}px - 100%)) rotate(${s.tilt*v}deg) scale(${0.6+0.4*e})`;
     } else { c.style.visibility="hidden"; c.style.opacity=0; }
   });
-  $("#count").textContent = active>=0 ? `${active+1} / ${STOPS.length}` : (t>TOTAL-0.5 ? `${STOPS.length} visited` : "");
+  $("#count").textContent = active>=0 ? `${active+1} / ${STOPS.length}` : (t>TOTAL-0.5 && t<RESET+0.25 ? `${STOPS.length} visited` : "");
   $("#hint").style.opacity = clamp(1 - t*3);
 }
 function tick(){
+  // past the end of the loop: jump back to the top (same view), so the loop starts over
+  if (scrollY >= LOOP*unit){ scrollTo(0, scrollY - LOOP*unit); cur -= LOOP; }
   const target = scrollY/unit;
   cur += (target-cur)*(reduce?1:0.14);
   if (Math.abs(target-cur)<0.0005) cur=target;
