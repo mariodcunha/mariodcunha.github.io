@@ -90,7 +90,7 @@ html.drawer-open #drawer{transform:none;visibility:visible;transition:transform 
 .dr-x:hover{background:#E2E5E1}
 .dr-x svg{width:18px;height:18px}
 .dr-body{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
-  padding:4px 28px calc(env(safe-area-inset-bottom,0px) + 28px)}
+  padding:4px 28px 36px}
 .dr-status{display:inline-block;margin:0 0 12px;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;
   letter-spacing:.02em;color:var(--pin);background:#E8EDFD}
 #dr-title{margin:0;font-size:clamp(1.6rem,4.2vw,2rem);font-weight:800;line-height:1.08;letter-spacing:-.025em}
@@ -109,7 +109,10 @@ html.drawer-open #drawer{transform:none;visibility:visible;transition:transform 
 .dr-body a:hover{text-decoration-color:var(--pin)}
 .dr-links a{margin-right:14px;white-space:nowrap}
 .dr-more{display:inline-block;margin-top:14px;font-weight:600}
-.dr-back{display:block;width:100%;margin:28px 0 0;padding:14px;border-radius:12px;border:1.5px solid #D5D9D4;background:transparent;
+.dr-foot{flex:none;position:relative;padding:10px 28px calc(env(safe-area-inset-bottom,0px) + 20px);background:var(--paper)}
+.dr-foot::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:56px;pointer-events:none;
+  background:linear-gradient(rgba(253,253,250,0),rgba(253,253,250,.85) 60%,var(--paper))}   /* text fades out as it rolls under the button */
+.dr-back{display:block;width:100%;margin:0;padding:14px;border-radius:12px;border:1.5px solid #D5D9D4;background:var(--paper);
   font:inherit;font-weight:600;font-size:1rem;color:var(--ink);cursor:pointer}
 .dr-back:hover{background:#F1F2EE}
 .dr-x:focus-visible,.dr-back:focus-visible,.dr-body a:focus-visible{outline:2px solid var(--pin);outline-offset:2px}
@@ -119,7 +122,8 @@ html.drawer-open #drawer{transform:none;visibility:visible;transition:transform 
   .dr-bar{justify-content:center;padding:8px 12px 0}
   .dr-grab{display:block;width:40px;height:5px;border-radius:3px;background:#D5D9D4;margin:4px 0 6px}
   .dr-x{position:absolute;right:12px;top:10px}
-  .dr-body{padding:14px 20px calc(env(safe-area-inset-bottom,0px) + 20px)}
+  .dr-body{padding:14px 20px 32px}
+  .dr-foot{padding:8px 20px calc(env(safe-area-inset-bottom,0px) + 14px)}
 }
 @media (prefers-reduced-motion: reduce){#drawer,#scrim{transition:none !important}}
 </style>
@@ -161,8 +165,8 @@ html.drawer-open #drawer{transform:none;visibility:visible;transition:transform 
     <h3>Details</h3>
     <dl class="dr-facts"></dl>
     <a class="dr-more" target="_blank" rel="noopener">Read more on bigartloop.org</a>
-    <button class="dr-back" type="button">Go back</button>
   </div>
+  <div class="dr-foot"><button class="dr-back" type="button">Go back</button></div>
 </aside>
 
 <script>
@@ -600,6 +604,12 @@ function tick(){
 }
 
 layout(); fitTitles();
+// keep the map credits folded behind the (i) button; they open only when someone clicks it
+const foldAttrib = () => {
+  const el = $(".maplibregl-ctrl-attrib.maplibregl-compact-show");
+  if (el && !el.dataset.folded){ el.classList.remove("maplibregl-compact-show"); el.removeAttribute("open"); el.dataset.folded = "1"; }
+};
+map.on("sourcedata", foldAttrib); map.on("styledata", foldAttrib);
 map.on("error", e => { const m=e && e.error && e.error.message || ""; if (/style|Failed to fetch|NetworkError/i.test(m) && !map.isStyleLoaded()) showNotice("The map tiles didn't load.", m); });
 // restyle as soon as the style is ready (not "load", which waits for every tile)
 map.once("style.load", ()=>{ quietStyle(); render(cur); requestAnimationFrame(tick); });
