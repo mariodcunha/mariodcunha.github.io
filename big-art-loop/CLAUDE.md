@@ -56,10 +56,23 @@ big-art-loop/
 - Polaroid (appears at each stop):
   - Square photo (center-cropped via object-fit), slight tilt per stop
   - One-line title, auto-shrinks 18px→13px before truncating. The title is an
-    always-underlined black link with a small "new window" icon, opens the official bigartloop.org
-    page in a new tab.
+    always-underlined black link (no icon). Clicking it opens the art drawer (below);
+    cmd/ctrl-click still opens the official bigartloop.org page in a new tab.
   - No photo credit line (Mario removed it): just the photo and the linked title
   - photo: null (or a missing file) shows a blank light-gray square
+- Art drawer (Mario's request), one structure for every piece:
+  status chip, title, "by <artist>", official photo (hotlinked from bigartloop.org's
+  Squarespace CDN, ?format=1000w) with credit, optional note, "About the piece",
+  "Details" (Location / Installed / Partners / Artist links), "Read more on
+  bigartloop.org", and a "Go back" button.
+  - ≥768px wide: right-side drawer (460px). <768px: bottom sheet that rises to 28px
+    from the top, with a grab handle and an X button; its content scrolls.
+  - Closes with X, Go back, Esc, or a click on the dimmed map. Page scroll is frozen
+    while it's open (html.drawer-open), since scrolling drives the map.
+  - Data lives in the ART object in index.html, keyed by each stop's url. Facts, links
+    and photo come from each piece's official page (scraped 2026-09-28). "about" is a
+    short summary written in our own words, deliberately not the site's text copied.
+    "note" is for news (R-Evolution farewell Oct 2, 2026; Traces being refurbished).
 - Text is black (#1B1F24). Mario tried bright red and switched back.
 - #track (the tall empty div that makes the page scroll) has pointer-events:none so
   clicks reach the Polaroid links underneath.
@@ -103,6 +116,9 @@ published by uploading files through github.com's "Upload files" page (Chrome is
 The default branch is master, not main. Pages updates ~1–2 min after a commit.
 
 ## Open items
+- ART data is a snapshot: re-check bigartloop.org now and then (R-Evolution is leaving;
+  Traces is being refurbished). Card titles come from the Google map, drawer titles
+  from bigartloop.org, so a few differ slightly (e.g. Traces, Where's the Ball).
 - Real photographer credits, if Mario wants to change them
 - smile.jpg / robot.jpg on GitHub are the full-size originals (1.6 MB / 5.3 MB), uploaded by
   Mario by hand; the resized ones (~0.6 MB) are in the local photos/ folder. Swap them in
