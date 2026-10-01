@@ -50,7 +50,17 @@ big-art-loop/
     fades out and pins go hollow again (LOOP). Scrolling on wraps to the top, so the
     loop restarts endlessly from the no-trail start.
   - Z_STOP = 15.4, FOCUS_Y = 0.76 (the pin sits low; the Polaroid appears above it).
-- Pins: DOM overlays, blue #2B4FE0. Hollow until visited, filled after, hollow again on loop reset.
+- Pins: DOM overlays, faint pink --dot #F0C8D2. Hollow until visited, filled after,
+  hollow again on loop reset. --dot-size is clamp(10px, 1.1vw + 6.2px, 15px), so they
+  shrink on phones and settle at 15px from ~800px wide up; --dot-ring scales with them.
+  The three pieces Mario has a photo of are hearts instead of circles (an inline <svg>,
+  since a CSS border can't outline a clipped shape); they flip the same way.
+  Hovering any pin flips it, exactly as scrolling to it does — render() recomputes
+  `upcoming` every frame, so the hovered index has to be folded into that test rather
+  than toggled on its own. Clicking a pin opens the art drawer. Pins are aria-hidden:
+  they duplicate the Polaroid title link, which is the keyboard path.
+  Note --pin (#2B4FE0) is still the accent for focus rings, the drawer chip and link
+  hovers; only the map dots went pink.
 - Trail: light gray (#9EA5AC) dashed line, rounded caps and joins (no sharp
   dashes), following the walking route, drawn progressively while travelling.
 - Polaroid (appears at each stop):
@@ -88,9 +98,11 @@ on bigartloop.org/map). Export it as KML with
 https://www.google.com/maps/d/kml?mid=1kDqQMcpTsD7Sbgz4hJCAWOx-B5lytZE&forcekml=1
 Its layers / pin colors:
 - light blue "Big Art Loop" (14) and dark blue "Big Art Loop - Portside" (13):
-  installed, on display now. These 27 are the site's STOPS.
-- green "Big Art Loop: Coming Soon" (14), gray "Future Candidate Sites" (4),
-  yellow "Other SF Art" (24, not part of the Loop): not on the site.
+  installed, on display now.
+- yellow "Other SF Art" (24): not part of the official Loop, but on the site anyway
+  (Mario's call) and treated exactly like the rest — no visual distinction.
+  Together these 51 are the site's STOPS.
+- green "Big Art Loop: Coming Soon" (14), gray "Future Candidate Sites" (4): not on the site.
 - lines: black "Walk Route" (a 55 km loop, = WALK_ROUTE) and blue bike-route detours.
 Known gaps on the official map: Heartfullness and The Giraffes have pages on
 bigartloop.org/art but no pin.
@@ -105,7 +117,11 @@ Oceanside → back into the park, ending at Naga):
   snapped to WALK_ROUTE and the route is followed the shorter way round.
 - Mario's photos so far: kind.jpg, smile.jpg, robot.jpg (Dr. Fisherian's). Everything else is
   null, so those Polaroids show the official bigartloop.org photo. Adding a photo path to a
-  stop replaces the official one with Mario's.
+  stop replaces the official one with Mario's. A stop with a photo also gets a heart pin.
+- The 24 Other SF Art pieces have `url: null` and an `artist` field instead of an ART entry:
+  they have no page on bigartloop.org and no photo, so their Polaroids are blank gray
+  squares and their drawer shows only title + artist, with "Read more" hidden.
+  The Google map's own photos for them are googleusercontent links that 404 — don't bother.
 - Resize new photos to ~1400px long side, JPEG ~q82, EXIF orientation applied
 - Google Maps shows "lat, lng"; lngLat needs [lng, lat]
 
@@ -115,11 +131,20 @@ serve a copy from elsewhere. Map tiles, fonts and sprites were verified loading
 from OpenFreeMap on localhost on 2026-09-27: all 3 stops, trail, pins, counter OK.
 
 ## Publishing
-No git login on Mario's Mac (no gh, no SSH key, no keychain entry). Changes have been
-published by uploading files through github.com's "Upload files" page (Chrome is signed in).
-The default branch is master, not main. Pages updates ~1–2 min after a commit.
+`gh` is installed and authenticated as mariodcunha (repo scope), so changes are
+committed and pushed straight from the checkout. The default branch is master,
+not main. Pages updates ~1–2 min after a commit; check with
+`gh api repos/mariodcunha/mariodcunha.github.io/pages/builds/latest --jq .status`.
+Working checkout: ~/Downloads/Claude Code/mariodcunha.github.io, a sparse clone
+(`git sparse-checkout set big-art-loop`) so the other projects' ~500 MB of media
+stays on the server.
+There is a second, older checkout at ~/Projects/big-art-loop whose origin points at
+github.com/mariodcunha/big-art-loop, a repo that does not exist. Nothing published
+has ever come from it. Don't edit it.
 
 ## Open items
+- The 24 Other SF Art pieces have no photo at all. Until Mario shoots them or a source
+  turns up, a fifth of the loop is blank gray squares.
 - ART data is a snapshot: re-check bigartloop.org now and then (R-Evolution is leaving;
   Traces is being refurbished). Card titles come from the Google map, drawer titles
   from bigartloop.org, so a few differ slightly (e.g. Traces, Where's the Ball).

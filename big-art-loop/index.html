@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mario's Big Art Loop</title>
+<title>Mario's Big heArt Loop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
@@ -13,6 +13,9 @@
 :root{
   --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
   --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
+  --dot:#F0C8D2;                                   /* the pins: a faint pink */
+  --dot-size:clamp(10px,1.1vw + 6.2px,15px);       /* smaller on narrow screens, full size on wide */
+  --dot-ring:clamp(2px,.3vw + 1.2px,3px);
   --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
   --shadow:0 18px 40px rgba(20,40,60,.22), 0 3px 8px rgba(20,40,60,.14);
 }
@@ -35,10 +38,20 @@ body{background:var(--land);color:var(--ink);overflow-x:hidden;
 .lbl.sf{color:var(--ink);opacity:.85;font-weight:800;letter-spacing:-.01em;z-index:1;animation:none}
 @keyframes lblIn{from{opacity:0}}
 
-.pin{position:absolute;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;z-index:3;
-  border-radius:50%;background:var(--pin);border:3px solid var(--paper);
-  box-shadow:0 2px 6px rgba(0,0,0,.25);will-change:transform;pointer-events:none;transition:background .3s}
-.pin.upcoming{background:var(--paper);border-color:var(--pin)}
+.pin{position:absolute;left:0;top:0;width:var(--dot-size);height:var(--dot-size);z-index:3;
+  margin:calc(var(--dot-size)/-2) 0 0 calc(var(--dot-size)/-2);
+  border-radius:50%;background:var(--dot);border:var(--dot-ring) solid var(--paper);
+  box-shadow:0 2px 6px rgba(0,0,0,.25);will-change:transform;cursor:pointer;
+  transition:background .3s,border-color .3s}
+.pin.upcoming{background:var(--paper);border-color:var(--dot)}
+/* the three I've been to are hearts, not dots; an <svg> so the outline survives the flip */
+.pin.heart{width:calc(var(--dot-size)*1.45);height:calc(var(--dot-size)*1.45);
+  margin:calc(var(--dot-size)*-.725) 0 0 calc(var(--dot-size)*-.725);
+  background:none;border:0;border-radius:0;box-shadow:none}
+.pin.heart svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.pin.heart path{fill:var(--dot);stroke:var(--paper);stroke-width:2.4;
+  transition:fill .3s,stroke .3s}
+.pin.heart.upcoming path{fill:var(--paper);stroke:var(--dot)}
 
 header{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
   padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 14px;
@@ -141,7 +154,7 @@ html.drawer-open #drawer{transform:none;visibility:visible;transition:transform 
 
 <header>
   <div class="title">
-    <h1>Mario's Big Art Loop</h1>
+    <h1>Mario's Big heArt Loop</h1>
     <span class="wip">Work in progress</span>
   </div>
   <span class="count" id="count" aria-live="polite"></span>
@@ -198,31 +211,51 @@ const STOPS = [
   { title: "WordPlay: KiND", url: "https://www.bigartloop.org/reuben-rude-wordplay-kind",
     lngLat: [-122.466445, 37.772617], photo: "photos/kind.jpg", tilt: -2.2 },
   { title: "WordPlay: SMiLE", url: "https://www.bigartloop.org/reuben-rude-wordplay-smile",
-    lngLat: [-122.465308, 37.772560], photo: "photos/smile.jpg", tilt: 1.6 },
+    lngLat: [-122.465308, 37.77256], photo: "photos/smile.jpg", tilt: 1.6 },
+  { title: "Eat, Travel, Play, Care", url: null, artist: "Gillie and Marc",
+    lngLat: [-122.459904, 37.771434], photo: null, tilt: -1.2 },
+  { title: "Remember When (Love Blocks)", url: null, artist: "Mark Deem and the Misfit Toys collective",
+    lngLat: [-122.459053, 37.771588], photo: null, tilt: 2.0 },
   { title: "Where's the Ball? The Jax", url: "https://www.bigartloop.org/mark-deem-wheres-the-ball-the-jax",
     lngLat: [-122.458797, 37.771509], photo: null, tilt: -1.2 },
   { title: "Le Retour des Soleils + From Tires To Totems", url: "https://www.bigartloop.org/traces-in-order-to-remember-le-retour-des-soleis",
     lngLat: [-122.456893, 37.771006], photo: null, tilt: 2.0 },
+  { title: "Solar Arch", url: null, artist: "fnnch",
+    lngLat: [-122.45665, 37.77095], photo: null, tilt: -2.4 },
   { title: "Seed of Self", url: "https://www.bigartloop.org/kate-raudenbush-seed-of-self",
-    lngLat: [-122.453070, 37.771582], photo: null, tilt: -1.7 },
+    lngLat: [-122.45307, 37.771582], photo: null, tilt: -1.7 },
   { title: "An Attempted Murder", url: "https://www.bigartloop.org/jack-champion-an-attempted-murder",
-    lngLat: [-122.447411, 37.772290], photo: null, tilt: 1.1 },
+    lngLat: [-122.447411, 37.77229], photo: null, tilt: 1.1 },
+  { title: "Wood Line", url: null, artist: "Andy Goldsworthy",
+    lngLat: [-122.448594, 37.793186], photo: null, tilt: 2.3 },
   { title: "Launch Intention", url: "https://www.bigartloop.org/griffin-loop-launch-intention",
     lngLat: [-122.434421, 37.805707], photo: null, tilt: -2.4 },
   { title: "Desert Shark", url: "https://www.bigartloop.org/desert-shark",
     lngLat: [-122.415664, 37.808518], photo: null, tilt: 1.8 },
+  { title: "Sea Lion & Crab", url: null, artist: "Jeff Brees",
+    lngLat: [-122.4102, 37.808545], photo: null, tilt: -2.2 },
+  { title: "Skygate", url: null, artist: "Roger Barr",
+    lngLat: [-122.408119, 37.808039], photo: null, tilt: 1.6 },
   { title: "Pulse Portal", url: "https://www.bigartloop.org/pulse-portal",
     lngLat: [-122.401187, 37.803658], photo: null, tilt: -0.9 },
+  { title: "Buckyball", url: null, artist: "Leo Villareal",
+    lngLat: [-122.39878, 37.801257], photo: null, tilt: 2.0 },
+  { title: "Barnacles", url: null, artist: "Surfacedesign, Inc",
+    lngLat: [-122.398298, 37.800439], photo: null, tilt: -1.7 },
   { title: "Got Framed", url: "https://www.bigartloop.org/got-framed",
-    lngLat: [-122.396740, 37.798790], photo: null, tilt: 2.3 },
+    lngLat: [-122.39674, 37.79879], photo: null, tilt: 2.3 },
   { title: "Coralee", url: "https://www.bigartloop.org/coralee",
     lngLat: [-122.394673, 37.796432], photo: null, tilt: -1.5 },
   { title: "R-Evolution", url: "https://www.bigartloop.org/r-evolution",
     lngLat: [-122.394611, 37.794653], photo: null, tilt: 0.9 },
   { title: "Echoes \u2013 A Voice from Uncharted Waters", url: "https://www.bigartloop.org/echoes-a-voice-from-uncharted-waters",
-    lngLat: [-122.392440, 37.794570], photo: null, tilt: -2.2 },
+    lngLat: [-122.39244, 37.79457], photo: null, tilt: -2.2 },
   { title: "Corpus", url: "https://www.bigartloop.org/corpus",
     lngLat: [-122.391899, 37.793635], photo: null, tilt: 1.6 },
+  { title: "Aurora", url: null, artist: "Ruth Asawa",
+    lngLat: [-122.391516, 37.792521], photo: null, tilt: -1.5 },
+  { title: "Cupid's Span", url: null, artist: "Claes Oldenburg and Coosje van Bruggen",
+    lngLat: [-122.39, 37.791583], photo: null, tilt: 0.9 },
   { title: "Hope/Peace", url: "https://www.bigartloop.org/giuseppe-palumbo-hope-peace",
     lngLat: [-122.387466, 37.787391], photo: null, tilt: -1.2 },
   { title: "Atabey's Treasure", url: "https://www.bigartloop.org/atabeys-treasure",
@@ -231,24 +264,52 @@ const STOPS = [
     lngLat: [-122.387722, 37.779722], photo: null, tilt: -1.7 },
   { title: "Steelhead", url: "https://www.bigartloop.org/steelhead",
     lngLat: [-122.386554, 37.771834], photo: null, tilt: 1.1 },
+  { title: "Hulls", url: null, artist: "Richard Deutsch",
+    lngLat: [-122.386713, 37.770117], photo: null, tilt: -1.7 },
   { title: "Louis", url: "https://www.bigartloop.org/louis",
-    lngLat: [-122.385660, 37.769190], photo: null, tilt: -2.4 },
+    lngLat: [-122.38566, 37.76919], photo: null, tilt: -2.4 },
+  { title: "Seeing Spheres", url: null, artist: "Olafur Eliasson",
+    lngLat: [-122.386496, 37.767331], photo: null, tilt: -2.4 },
   { title: "Dr. Fisherian's Runaway Machine", url: "https://www.bigartloop.org/dr-fisherians-runaway-machine",
     lngLat: [-122.387477, 37.761947], photo: "photos/robot.jpg", tilt: 1.8 },
+  { title: "Ship Shape Shifting Time", url: null, artist: "Nagasawa Nobuho and George Quasha",
+    lngLat: [-122.38928, 37.747892], photo: null, tilt: -0.9 },
+  { title: "Ohlone Canoe", url: null, artist: "Linda Yamane",
+    lngLat: [-122.387901, 37.747052], photo: null, tilt: 2.3 },
+  { title: "Islais", url: null, artist: "Cliff Garten Studio",
+    lngLat: [-122.387487, 37.7464], photo: null, tilt: -1.5 },
+  { title: "Promissory Notes", url: null, artist: "Mildred Howard",
+    lngLat: [-122.386899, 37.743136], photo: null, tilt: 0.9 },
   { title: "Bloom", url: "https://www.bigartloop.org/bloom",
-    lngLat: [-122.376530, 37.740120], photo: null, tilt: -0.9 },
+    lngLat: [-122.37653, 37.74012], photo: null, tilt: -0.9 },
   { title: "Whispers of Waste", url: "https://www.bigartloop.org/zulu-heru-whispers-of-waste",
-    lngLat: [-122.375560, 37.732530], photo: null, tilt: 2.3 },
+    lngLat: [-122.37556, 37.73253], photo: null, tilt: 2.3 },
+  { title: "Hilltop Park Sundial", url: null,
+    lngLat: [-122.383839, 37.732994], photo: null, tilt: -1.2 },
+  { title: "Invocation", url: null, artist: "Pepe Ozan",
+    lngLat: [-122.409791, 37.729496], photo: null, tilt: 2.0 },
+  { title: "Saint Francis of the Guns", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.45199, 37.725699], photo: null, tilt: -1.7 },
+  { title: "Ingleside Sundial", url: null,
+    lngLat: [-122.468776, 37.7247], photo: null, tilt: 1.1 },
+  { title: "Peace", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.475937, 37.714684], photo: null, tilt: -2.4 },
+  { title: "Penguin's Prayer", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.486083, 37.713252], photo: null, tilt: 1.8 },
   { title: "Octavius", url: "https://www.bigartloop.org/octavius",
     lngLat: [-122.506349, 37.736122], photo: null, tilt: -1.5 },
+  { title: "Wave Heart", url: null, artist: "Wes Skinner",
+    lngLat: [-122.508497, 37.752806], photo: null, tilt: 2.3 },
   { title: "Rock Spinner", url: "https://www.bigartloop.org/rock-spinner",
-    lngLat: [-122.509190, 37.756540], photo: null, tilt: 0.9 },
+    lngLat: [-122.50919, 37.75654], photo: null, tilt: 0.9 },
   { title: "Unsafe to Swim", url: "https://www.bigartloop.org/oleg-lobykin-unsafe-to-swim",
-    lngLat: [-122.510110, 37.764320], photo: null, tilt: -2.2 },
+    lngLat: [-122.51011, 37.76432], photo: null, tilt: -2.2 },
   { title: "Marine Layer", url: "https://www.bigartloop.org/miki-iwasaki-marine-layer",
     lngLat: [-122.489395, 37.767863], photo: null, tilt: 1.6 },
   { title: "Naga", url: "https://www.bigartloop.org/naga",
-    lngLat: [-122.478098, 37.771578], photo: null, tilt: -1.2 }
+    lngLat: [-122.478098, 37.771578], photo: null, tilt: -1.2 },
+  { title: "Street Whale", url: null, artist: "Reuben Rude",
+    lngLat: [-122.472672, 37.770822], photo: null, tilt: -1.2 },
 ];
 
 // Details for the drawer, from each piece's official page on bigartloop.org
@@ -437,16 +498,29 @@ const legProgress = (i, t) => { const a = holds[i][1], b = holds[i+1][0]; return
 
 /* ---------- Polaroids & pins ---------- */
 const blank = '<div class="blank" role="img" aria-label="No photo yet"></div>';
-const pins = STOPS.map(()=>{const d=document.createElement("div");d.className="pin upcoming";$("#pins").appendChild(d);return d;});
+const HEART = "M12 20.4C12 20.4 2 13.6 2 7.4 2 4.2 4.5 2 7.2 2c2 0 3.8 1.2 4.8 3 1-1.8 2.8-3 4.8-3C19.5 2 22 4.2 22 7.4c0 6.2-10 13-10 13z";
+let hovered = -1;   // hovering a pin flips it, the same flip scrolling to it gives
+const pins = STOPS.map((s,i)=>{
+  const d=document.createElement("div"); d.className="pin upcoming"; d.setAttribute("aria-hidden","true");
+  // the pieces I've actually stood next to get a heart instead of a dot
+  if (s.photo) { d.classList.add("heart");
+    d.innerHTML=`<svg viewBox="0 0 24 22" fill="none"><path d="${HEART}" stroke-linejoin="round"/></svg>`; }
+  d.addEventListener("pointerenter", ()=>{ hovered=i; });
+  d.addEventListener("pointerleave", ()=>{ if (hovered===i) hovered=-1; });
+  d.addEventListener("click", ()=>{ hovered=-1; openDrawer(i); });
+  $("#pins").appendChild(d); return d;
+});
 const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cards = STOPS.map((s,i)=>{
   const c=document.createElement("figure"); c.className="polaroid";
   // my own photo if I have one, otherwise the official one from bigartloop.org (loaded as the stop approaches)
-  const src = s.photo || (ART[s.url] && ART[s.url].photo), alt = s.photo ? `Me with ${s.title}` : `${s.title} (photo from bigartloop.org)`;
+  const art = (s.url && ART[s.url]) || {};
+  const src = s.photo || art.photo, alt = s.photo ? `Me with ${s.title}` : `${s.title} (photo from bigartloop.org)`;
   c.innerHTML=`<div class="photo">${src?`<img data-src="${esc(src)}" alt="${esc(alt)}">`:blank}</div>
-    <h2><a href="${s.url}" aria-haspopup="dialog"><span>${s.title}</span></a></h2>`;
+    <h2><a href="${s.url || "#"}" aria-haspopup="dialog"><span>${s.title}</span></a></h2>`;
   c.querySelector("h2 a").addEventListener("click", e => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;   // cmd/ctrl-click still opens the official page in a new tab
+    // cmd/ctrl-click still opens the official page in a new tab, for the pieces that have one
+    if (s.url && (e.metaKey || e.ctrlKey || e.shiftKey || e.button)) return;
     e.preventDefault(); openDrawer(i);
   });
   const img=c.querySelector("img");   // photo missing or not uploaded yet: show the blank square instead of a broken image
@@ -457,9 +531,10 @@ const cards = STOPS.map((s,i)=>{
 const drawer = $("#drawer");
 let drawerFrom = null;
 function openDrawer(i){
-  const s = STOPS[i], a = ART[s.url] || {};
+  const s = STOPS[i], a = (s.url && ART[s.url]) || {};
   $("#dr-title").textContent = a.title || s.title;
-  $(".dr-artist").textContent = a.artist ? "by " + a.artist : "";
+  const artist = a.artist || s.artist;
+  $(".dr-artist").textContent = artist ? "by " + artist : "";
   const img = $(".dr-photo img"), fig = $(".dr-photo");
   fig.hidden = !a.photo;
   img.onerror = () => { img.removeAttribute("src"); };   // keep the gray frame if the photo can't load
@@ -471,7 +546,8 @@ function openDrawer(i){
   const links = (a.links || []).map(([label, href]) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}</a>`).join("");
   if (links) facts.push(["Artist links", null, `<span class="dr-links">${links}</span>`]);
   $(".dr-facts").innerHTML = facts.map(([k, v, html]) => `<dt>${k}</dt><dd>${html || esc(v)}</dd>`).join("");
-  $(".dr-more").href = s.url;
+  $(".dr-more").href = s.url || "#";
+  $(".dr-more").hidden = !s.url;   // the Other SF Art pieces have no page on bigartloop.org
   $(".dr-body").scrollTop = 0;
   drawerFrom = document.activeElement;
   document.documentElement.classList.add("drawer-open");
@@ -616,7 +692,7 @@ function render(t){
     const [sx,sy] = toScreen(P[i], cam);
     pins[i].style.transform=`translate(${sx}px,${sy}px)`;
     const [h0,h1]=holds[i];
-    pins[i].classList.toggle("upcoming", t < h0-0.05 || t > RESET+0.25);
+    pins[i].classList.toggle("upcoming", (t < h0-0.05 || t > RESET+0.25) && i !== hovered);
     const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
     const c=cards[i];
     if (t > h0-3 && t < h1+1){ const img=c.querySelector("img[data-src]"); if (img){ img.src=img.dataset.src; img.removeAttribute("data-src"); } }
