@@ -13,7 +13,7 @@
 :root{
   --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
   --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
-  --dot:#F0C8D2;                                   /* the pins: a faint pink */
+  --dot:#E2648E;                                   /* the pins: pink, saturated enough to hold its own on the map */
   --dot-size:clamp(10px,1.1vw + 6.2px,15px);       /* smaller on narrow screens, full size on wide */
   --dot-ring:clamp(2px,.3vw + 1.2px,3px);
   --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
@@ -397,6 +397,10 @@ function legPath(a, b){
   if (fwd <= RLEN - fwd) while (j !== B.i){ j = (j+1)%RN; pts.push(RV[j]); }
   else                   while (j !== B.i){ pts.push(RV[j]); j = (j-1+RN)%RN; }
   pts.push(B.q, b);
+  return mkLeg(pts);
+}
+// a walk, as a list of mercator points: cumulative lengths and a bounding box for the camera
+function mkLeg(pts){
   const path = pts.filter((p,k) => k===0 || dist(p, pts[k-1]) > 1e-12);
   const cum = [0]; for (let k=1;k<path.length;k++) cum.push(cum[k-1] + dist(path[k], path[k-1]));
   const bb = bbox(path);
@@ -411,8 +415,23 @@ function along(leg, q){
   return {k, pt: [lerp(a[0],b[0],f), lerp(a[1],b[1],f)]};
 }
 
+// Most pieces stand on (or within a few metres of) the Walk Route, so the leg between
+// them follows the route. Peace and Penguin’s Prayer sit 700–900 m south of it, down on
+// Brotherhood Way and Lake Merced, and snapping them to the route drew a blunt straight
+// line across the southwest corner. These three legs carry a real pedestrian path instead
+// (OpenStreetMap foot routing, simplified to ~3 m). Keyed "<from title>|<to title>".
+const DETOURS = {
+  "Ingleside Sundial|Peace": [[-122.4688,37.72474],[-122.46868,37.72477],[-122.46857,37.7247],[-122.46841,37.7247],[-122.46843,37.72453],[-122.46775,37.72404],[-122.46762,37.724],[-122.46765,37.7239],[-122.46755,37.72383],[-122.46836,37.72255],[-122.46855,37.72212],[-122.46866,37.72166],[-122.47217,37.72165],[-122.47218,37.72156],[-122.47256,37.72147],[-122.47275,37.71805],[-122.47284,37.71794],[-122.47293,37.71793],[-122.47294,37.71783],[-122.47276,37.71766],[-122.47289,37.71758],[-122.47279,37.71747],[-122.47302,37.71733],[-122.47281,37.71708],[-122.47266,37.71652],[-122.47195,37.71461],[-122.47204,37.71458],[-122.47269,37.71499],[-122.47294,37.71483],[-122.47301,37.71485],[-122.4732,37.71465],[-122.47322,37.71451],[-122.47316,37.71446],[-122.4731,37.71409],[-122.47312,37.71405],[-122.47328,37.71402],[-122.47319,37.71349],[-122.47308,37.71332],[-122.47279,37.71308],[-122.47395,37.71351],[-122.47441,37.71378],[-122.47577,37.71444],[-122.47644,37.71462],[-122.47635,37.71469],[-122.47614,37.71473],[-122.47589,37.7147],[-122.4759,37.71467]],
+  "Peace|Penguin's Prayer": [[-122.4759,37.71467],[-122.47589,37.7147],[-122.47614,37.71473],[-122.47635,37.71469],[-122.47644,37.71462],[-122.47694,37.71468],[-122.47897,37.71464],[-122.48493,37.71483],[-122.48544,37.71481],[-122.48548,37.7138],[-122.48559,37.71363],[-122.48588,37.71341],[-122.48598,37.71324]],
+  "Penguin's Prayer|Octavius": [[-122.48598,37.71324],[-122.48588,37.71341],[-122.48555,37.71367],[-122.48547,37.71385],[-122.48539,37.71536],[-122.48551,37.71551],[-122.48536,37.71572],[-122.48529,37.71622],[-122.48522,37.71753],[-122.48523,37.71873],[-122.48551,37.71871],[-122.48545,37.71907],[-122.48536,37.71916],[-122.48541,37.71943],[-122.48537,37.71976],[-122.48541,37.72028],[-122.48606,37.72064],[-122.48619,37.72086],[-122.48621,37.72139],[-122.48635,37.72174],[-122.48641,37.72206],[-122.48637,37.7225],[-122.48645,37.72268],[-122.48642,37.72292],[-122.48647,37.72308],[-122.48695,37.72334],[-122.48745,37.72334],[-122.48772,37.72347],[-122.48803,37.72347],[-122.48811,37.72343],[-122.48819,37.72348],[-122.48832,37.72342],[-122.48897,37.72351],[-122.48913,37.72345],[-122.48982,37.72347],[-122.49011,37.72341],[-122.49037,37.72326],[-122.4908,37.72366],[-122.49092,37.72389],[-122.49099,37.72419],[-122.49137,37.72479],[-122.4918,37.72523],[-122.49214,37.72542],[-122.49246,37.72576],[-122.49248,37.72584],[-122.49287,37.72601],[-122.49301,37.72621],[-122.49295,37.72633],[-122.49296,37.72645],[-122.49321,37.72659],[-122.49328,37.72669],[-122.4934,37.72696],[-122.49349,37.72788],[-122.4939,37.728],[-122.49395,37.72805],[-122.49392,37.72822],[-122.49381,37.7283],[-122.49385,37.72843],[-122.49368,37.72887],[-122.49373,37.72898],[-122.49391,37.72911],[-122.4942,37.72917],[-122.49435,37.72958],[-122.4942,37.72969],[-122.49418,37.72983],[-122.49421,37.73026],[-122.49429,37.73027],[-122.49439,37.7318],[-122.49444,37.73183],[-122.49504,37.7318],[-122.49505,37.73192],[-122.49511,37.73196],[-122.49514,37.73255],[-122.49535,37.73286],[-122.49546,37.73294],[-122.49569,37.73298],[-122.49585,37.73296],[-122.49625,37.73282],[-122.49668,37.73341],[-122.49673,37.73353],[-122.49668,37.73363],[-122.49723,37.73362],[-122.49732,37.73365],[-122.4974,37.73356],[-122.4975,37.73355],[-122.49856,37.73377],[-122.49978,37.73425],[-122.49981,37.73442],[-122.50066,37.73483],[-122.5013,37.73506],[-122.50212,37.73522],[-122.50293,37.73531],[-122.50384,37.73531],[-122.50391,37.73527],[-122.50509,37.73527],[-122.50517,37.73531],[-122.50536,37.73531],[-122.50538,37.73565],[-122.50626,37.73565],[-122.5063,37.73616],[-122.50634,37.73612]],
+};
+
 const P = STOPS.map(s => merc(s.lngLat));
-const LEGS = P.slice(1).map((b,i) => legPath(P[i], b));
+// a detour is the walk itself, so the pins at each end are stitched onto it
+const LEGS = P.slice(1).map((b,i) => {
+  const d = DETOURS[STOPS[i].title + "|" + STOPS[i+1].title];
+  return d ? mkLeg([STOPS[i].lngLat].concat(d, [STOPS[i+1].lngLat]).map(merc)) : legPath(P[i], b);
+});
 // the walk home, from the last piece back to the first: what makes this a loop and not a line
 const CLOSING = legPath(P[P.length-1], P[0]);
 // every leg joined into one continuous ring, drawn whenever we're pulled back on the overview
@@ -564,7 +583,12 @@ drawer.setAttribute("inert", "");
 $(".dr-x").addEventListener("click", closeDrawer);
 $(".dr-back").addEventListener("click", closeDrawer);
 $("#scrim").addEventListener("click", closeDrawer);
-addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+const drawerOpen = () => document.documentElement.classList.contains("drawer-open");
+// Esc closes the drawer if one is open; otherwise it puts the loop back at the start
+addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (drawerOpen()) closeDrawer(); else restart();
+});
 // keep scroll gestures on the backdrop from moving the map underneath (iOS ignores overflow:hidden)
 $("#scrim").addEventListener("touchmove", e => e.preventDefault(), {passive:false});
 $("#scrim").addEventListener("wheel", e => e.preventDefault(), {passive:false});
@@ -666,6 +690,8 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";   // always open on the overview
 scrollTo(0, 0);
 let cur = 0, lastTrail = "", lastFade = -1, lastLoop = -1;
+let active = -1;      // the piece the scroll is standing at (-1 between pieces)
+let dismissed = -1;   // a card clicked away: hidden until the scroll moves on to another piece
 
 function render(t){
   const cam = camera(t);
@@ -687,7 +713,7 @@ function render(t){
   const fade = Math.round((1-ring)*50)/50;
   if (fade!==lastFade && map.getLayer("trail")){ map.setPaintProperty("trail","line-opacity",fade); lastFade=fade; }
 
-  let active=-1;
+  active = -1;
   STOPS.forEach((s,i)=>{
     const [sx,sy] = toScreen(P[i], cam);
     pins[i].style.transform=`translate(${sx}px,${sy}px)`;
@@ -696,13 +722,15 @@ function render(t){
     const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
     const c=cards[i];
     if (t > h0-3 && t < h1+1){ const img=c.querySelector("img[data-src]"); if (img){ img.src=img.dataset.src; img.removeAttribute("data-src"); } }
-    if (v>0.001){
-      if (v>0.5) active=i;
+    if (v>0.5) active=i;
+    if (v>0.001 && i!==dismissed){
       const e = reduce ? 1 : outBack(v);
       c.style.visibility="visible"; c.style.opacity=clamp(v*1.4);
       c.style.transform=`translate(-50%, calc(${sy-22}px - 100%)) rotate(${s.tilt*v}deg) scale(${0.6+0.4*e})`;
     } else { c.style.visibility="hidden"; c.style.opacity=0; }
   });
+  // a dismissed card comes back the moment the scroll reaches a different piece
+  if (dismissed>=0 && active!==dismissed) dismissed = -1;
   $("#count").textContent = active>=0 ? `${active+1} / ${STOPS.length}` : (t>TOTAL-0.5 && t<RESET+0.25 ? `${STOPS.length} pieces` : "");
   $("#hint").style.opacity = clamp(1 - t*3);
   updateLabels();
@@ -716,6 +744,33 @@ function tick(){
   render(cur);
   requestAnimationFrame(tick);
 }
+
+/* ---------- Getting around: restart, put a card away, jump to a piece ---------- */
+// the scroll position where piece i is standing in front of you
+const scrollFor = i => (holds[i][0] + HOLD*0.45) * unit;
+function goTo(y){ dismissed = -1; scrollTo(0, Math.max(0, y)); cur = scrollY/unit; render(cur); }
+function restart(){ goTo(0); }
+// clicks on the page furniture aren't clicks on the map
+const onChrome = e => e.target.closest && e.target.closest(".polaroid, .pin, #drawer, #scrim, header, .maplibregl-ctrl, #notice");
+
+let clickTimer = 0;
+// A click out on the map puts the card away. The scroll doesn't move, so scrolling on
+// brings it back, or carries you to the next piece as usual.
+addEventListener("click", e => {
+  clearTimeout(clickTimer);
+  if (drawerOpen() || onChrome(e)) return;
+  clickTimer = setTimeout(()=>{ if (active>=0) dismissed = active; }, 220);   // wait, in case it's a double-click
+});
+// A double-click runs the loop to the nearest piece: same scroll position, same drawn
+// trail, as if you had scrolled the whole way round to get there.
+addEventListener("dblclick", e => {
+  clearTimeout(clickTimer);
+  if (drawerOpen() || onChrome(e)) return;
+  const p = merc(map.unproject([e.clientX, e.clientY]).toArray());
+  let best = 0;
+  P.forEach((q,i)=>{ if (dist(q,p) < dist(P[best],p)) best = i; });
+  goTo(scrollFor(best));
+});
 
 layout(); fitTitles();
 // keep the map credits folded behind the (i) button; they open only when someone clicks it

@@ -50,7 +50,8 @@ big-art-loop/
     fades out and pins go hollow again (LOOP). Scrolling on wraps to the top, so the
     loop restarts endlessly from the no-trail start.
   - Z_STOP = 15.4, FOCUS_Y = 0.76 (the pin sits low; the Polaroid appears above it).
-- Pins: DOM overlays, faint pink --dot #F0C8D2. Hollow until visited, filled after,
+- Pins: DOM overlays, pink --dot #E2648E (it was #F0C8D2, which washed out against the
+  pale map; Mario asked for it darker and less faded). Hollow until visited, filled after,
   hollow again on loop reset. --dot-size is clamp(10px, 1.1vw + 6.2px, 15px), so they
   shrink on phones and settle at 15px from ~800px wide up; --dot-ring scales with them.
   The three pieces Mario has a photo of are hearts instead of circles (an inline <svg>,
@@ -63,6 +64,17 @@ big-art-loop/
   hovers; only the map dots went pink.
 - Trail: light gray (#9EA5AC) dashed line, rounded caps and joins (no sharp
   dashes), following the walking route, drawn progressively while travelling.
+- Detours (DETOURS in index.html, keyed "<from title>|<to title>"): nearly every piece
+  stands within ~60 m of the Walk Route, so snapping it to the route and following the
+  route looks right. Peace and Penguin's Prayer are 686 m and 940 m south of it, down on
+  Brotherhood Way and Lake Merced, and the snap drew blunt straight lines across the
+  southwest corner. The three legs around them (Ingleside Sundial → Peace → Penguin's
+  Prayer → Octavius) carry a real pedestrian path instead, from OpenStreetMap foot
+  routing (routing.openstreetmap.de/routed-foot), Douglas-Peucker simplified to ~3 m:
+  2.4 km, 1.0 km and 4.1 km. A detour is the whole walk, so it ignores WALK_ROUTE for
+  that stretch; mkLeg() builds the same structure legPath() does. If another piece ever
+  lands far off the route, add a DETOUR for the legs either side of it rather than
+  nudging its coordinates.
 - Polaroid (appears at each stop):
   - Square photo (center-cropped via object-fit), slight tilt per stop
   - One-line title, auto-shrinks 18px→13px before truncating. The title is an
@@ -89,6 +101,21 @@ big-art-loop/
 - #track (the tall empty div that makes the page scroll) has pointer-events:none so
   clicks reach the Polaroid links underneath.
 - Header "My Big Art Loop" + a counter ("1 / 27", then "27 pieces" at the end).
+- Beyond scrolling (viewers still need none of this, but it's there):
+  - Space scrolls a screen at a time. That's the browser's own behaviour, nothing in the
+    page touches it — Mario likes it, so don't add a keydown handler that swallows it.
+  - Esc closes the drawer if one is open; otherwise it puts the loop back at the start
+    (restart() → goTo(0): scroll to 0 and snap `cur`, so there's no fly-back).
+  - A click out on the map puts the current Polaroid away (`dismissed` = that index).
+    The scroll does not move, so scrolling on brings it back or carries you to the next
+    piece as usual; render() clears `dismissed` as soon as `active` is a different piece.
+    `active` had to move out of render() into module scope for this. Clicks on the
+    Polaroid, a pin, the drawer, its scrim, the header, the notice or the map credits are
+    not "outside". The dismiss waits 220 ms in case a second click is coming.
+  - A double-click anywhere runs the loop to the nearest piece: it unprojects the click,
+    takes the nearest stop, and jumps to that stop's scroll position. Because the trail
+    and the pins are pure functions of the scroll, that lands exactly as if you had
+    scrolled the whole way round.
 - An on-page error card appears if MapLibre, WebGL, or the tiles fail.
 
 ## Data source
