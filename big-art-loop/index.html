@@ -11,10 +11,10 @@
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
 <style>
 :root{
-  --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
-  --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
+  --land:#F8F2E4; --water:#9FD0EA; --park:#BFE3AB;
+  --pin:#2B4FE0; --trail:#808B96; --label:#7A8590;
   --dot:#FF558E;                                   /* the pins: pink, saturated enough to hold its own on the map */
-  --dot-size:clamp(10px,1.1vw + 6.2px,15px);       /* smaller on narrow screens, full size on wide */
+  --dot-size:clamp(11px,1.1vw + 6.6px,17px);       /* smaller on narrow screens, full size on wide */
   --dot-ring:clamp(2px,.3vw + 1.2px,3px);
   --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
   --shadow:0 18px 40px rgba(20,40,60,.22), 0 3px 8px rgba(20,40,60,.14);
@@ -34,21 +34,23 @@ body{background:var(--land);color:var(--ink);overflow-x:hidden;
 #labels{position:absolute;inset:0;pointer-events:none;z-index:2}
 .lbl{position:absolute;left:0;top:0;white-space:nowrap;color:#8E979F;letter-spacing:.01em;
   text-shadow:0 0 2px var(--land),0 0 2px var(--land),0 0 3px var(--land);will-change:transform;animation:lblIn .25s ease-out}
-.lbl.water{color:#8FA7AF;text-shadow:0 0 2px var(--water),0 0 3px var(--water)}
+.lbl.water{color:#6A93AB;text-shadow:0 0 2px var(--water),0 0 3px var(--water)}
+.lbl.hood{font-family:system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;font-weight:600;color:#626B74;letter-spacing:.015em;
+  text-shadow:0 0 2px #fff,0 0 3px #fff,0 0 4px var(--land)}
 .lbl.sf{color:var(--ink);opacity:.85;font-weight:800;letter-spacing:-.01em;z-index:1;animation:none}
 @keyframes lblIn{from{opacity:0}}
 
 .pin{position:absolute;left:0;top:0;width:var(--dot-size);height:var(--dot-size);z-index:3;
   margin:calc(var(--dot-size)/-2) 0 0 calc(var(--dot-size)/-2);
   border-radius:50%;background:var(--dot);border:var(--dot-ring) solid var(--paper);
-  box-shadow:0 2px 6px rgba(0,0,0,.25);will-change:transform;cursor:pointer;
+  box-shadow:0 0 0 1px rgba(150,20,70,.25),0 2px 7px rgba(150,20,70,.4);will-change:transform;cursor:pointer;
   transition:background .3s,border-color .3s}
 .pin.upcoming{background:var(--paper);border-color:var(--dot)}
 /* the three I've been to are hearts, not dots; an <svg> so the outline survives the flip */
 .pin.heart{width:calc(var(--dot-size)*1.45);height:calc(var(--dot-size)*1.45);
   margin:calc(var(--dot-size)*-.725) 0 0 calc(var(--dot-size)*-.725);
   background:none;border:0;border-radius:0;box-shadow:none}
-.pin.heart svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.pin.heart svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 5px rgba(150,20,70,.45))}
 .pin.heart path{fill:var(--dot);stroke:var(--paper);stroke-width:2.4;
   transition:fill .3s,stroke .3s}
 .pin.heart.upcoming path{fill:var(--paper);stroke:var(--dot)}
@@ -56,7 +58,7 @@ body{background:var(--land);color:var(--ink);overflow-x:hidden;
 header{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
   padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 14px;
   display:flex;justify-content:space-between;align-items:baseline;
-  background:linear-gradient(var(--land) 20%, rgba(243,244,239,0))}
+  background:linear-gradient(var(--land) 20%, rgba(248,242,228,0))}
 h1{margin:0;font-weight:800;font-size:clamp(1.25rem,2.6vw,1.6rem);letter-spacing:-.02em;line-height:1}
 .title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .wip{flex:none;padding:4px 8px;border-radius:999px;background:#FFF4D6;border:1px solid #E5CE92;
@@ -615,9 +617,25 @@ const map = new maplibregl.Map({
 
 function quietStyle(){
   const set=(id,prop,val,kind="paint")=>{ if(map.getLayer(id)) (kind==="paint"?map.setPaintProperty:map.setLayoutProperty).call(map,id,prop,val); };
-  set("background","background-color","#F3F4EF");
-  set("water","fill-color","#C5D6DB");
-  set("park","fill-color","#D9E5CF");
+  // gently fresh colors: warm white land, soft blue water, soft green parks, pale cream main roads.
+  // Kept clear of pink so the pins are the loudest thing on the map.
+  set("background","background-color","#F8F2E4");
+  set("water","fill-color","#9FD0EA");
+  set("waterway","line-color","#9FD0EA");
+  set("park","fill-color","#BFE3AB");
+  set("landcover_wood","fill-color","#C8E6B6");
+  // Golden Gate Park and most city parks are "grass" land cover, which the base style leaves unpainted
+  if (!map.getLayer("grass") && map.getLayer("landcover_wood"))
+    map.addLayer({id:"grass",type:"fill",source:"openmaptiles","source-layer":"landcover",
+      filter:["==",["get","class"],"grass"],paint:{"fill-color":"#BFE3AB"}},"landcover_wood");
+  set("landuse_residential","fill-color","#F5EDDA");
+  set("building","fill-color","#F0E6D0"); set("building","fill-outline-color","#E3D8C0");
+  set("road_area_pier","fill-color","#F8F2E4"); set("road_pier","line-color","#F8F2E4");
+  set("highway_minor","line-color","#E6E6E3");
+  set("highway_path","line-color","#E9E5DA");
+  ["highway_major_casing","highway_motorway_casing","highway_motorway_bridge_casing","tunnel_motorway_casing"].forEach(id=>set(id,"line-color","#D4D4D1"));
+  ["highway_major_inner","highway_motorway_inner","highway_motorway_bridge_inner","tunnel_motorway_inner"].forEach(id=>set(id,"line-color","#E6E6E3"));
+  set("highway_major_subtle","line-color","#E6E6E3"); set("highway_motorway_subtle","line-color","#E6E6E3");
   // hide clutter: road names, shields, airports, countries, states
   map.getStyle().layers.forEach(l=>{
     if (/highway-name|shield|airport|label_country|label_state|waterway_line_label/.test(l.id)) set(l.id,"visibility","none","layout");
@@ -634,7 +652,7 @@ function quietStyle(){
     map.setFilter("label_city",["all",["==",["get","class"],"city"],["!=",["get","capital"],2],["!=",["get","name"],"San Francisco"]]);
   set("water_name_line_label","visibility","none","layout");
 
-  const dashes = {"line-color":"#9EA5AC","line-width":3.5,"line-dasharray":[1.4,2.4]};
+  const dashes = {"line-color":"#808B96","line-width":3.5,"line-dasharray":[1.4,2.4]};
   map.addSource("loop",{type:"geojson",data:{type:"Feature",properties:{},geometry:{type:"LineString",coordinates:LOOP_LINE}}});
   map.addLayer({id:"loop",type:"line",source:"loop",
     layout:{"line-cap":"round","line-join":"round"},
@@ -647,6 +665,24 @@ function quietStyle(){
 }
 
 /* ---------- Map labels as page text ---------- */
+/* Neighborhoods, drawn by us so we choose which appear and when: [name, lng, lat, zoom it appears at].
+   Lower zoom = more important. Listed roughly in priority order; a label is skipped if it would overlap one already placed. */
+const HOODS = [
+  ["Richmond",-122.4780,37.7790,0],["Sunset",-122.4830,37.7530,0],["Marina",-122.4370,37.8030,0],["Downtown",-122.4020,37.7900,0],
+  ["Mission",-122.4190,37.7600,0],["SoMa",-122.4040,37.7790,0],["Haight-Ashbury",-122.4470,37.7700,0],["Castro",-122.4350,37.7610,0],
+  ["Pacific Heights",-122.4350,37.7925,0],["Nob Hill",-122.4150,37.7930,0],["North Beach",-122.4100,37.8010,0],["Presidio",-122.4660,37.7980,0],
+  ["Bayview",-122.3900,37.7330,0],["Excelsior",-122.4250,37.7260,0],["Western Addition",-122.4300,37.7790,0],["Potrero Hill",-122.4000,37.7600,0],
+  ["Noe Valley",-122.4330,37.7500,12.8],["Bernal Heights",-122.4150,37.7410,12.8],["Twin Peaks",-122.4470,37.7520,12.8],["Hayes Valley",-122.4250,37.7760,12.8],
+  ["Russian Hill",-122.4200,37.8010,12.8],["Tenderloin",-122.4140,37.7840,12.8],["Chinatown",-122.4070,37.7940,12.8],["Dogpatch",-122.3890,37.7580,12.8],
+  ["Mission Bay",-122.3920,37.7710,12.8],["Cow Hollow",-122.4360,37.7975,12.8],["Visitacion Valley",-122.4090,37.7140,12.8],["Glen Park",-122.4340,37.7340,12.8],
+  ["West Portal",-122.4650,37.7400,12.8],["Ingleside",-122.4600,37.7240,12.8],["Hunters Point",-122.3750,37.7270,12.8],["Lakeshore",-122.4950,37.7270,12.8],
+  ["Inner Richmond",-122.4660,37.7800,13.6],["Outer Richmond",-122.4930,37.7770,13.6],["Inner Sunset",-122.4660,37.7630,13.6],["Outer Sunset",-122.4950,37.7540,13.6],
+  ["Parkside",-122.4900,37.7410,13.6],["Fillmore",-122.4330,37.7840,13.6],["Japantown",-122.4290,37.7850,13.6],["Lower Haight",-122.4310,37.7720,13.6],
+  ["Telegraph Hill",-122.4050,37.8020,13.6],["Union Square",-122.4070,37.7880,13.6],["Financial District",-122.4000,37.7960,13.6],["Civic Center",-122.4150,37.7790,13.6],
+  ["Fisherman\u2019s Wharf",-122.4150,37.8080,13.6],["Portola",-122.4070,37.7270,13.6],["Oceanview",-122.4570,37.7140,13.6],["Diamond Heights",-122.4390,37.7410,13.6],
+  ["Alamo Square",-122.4340,37.7760,14.4],["NoPa",-122.4380,37.7760,14.4],["Laurel Heights",-122.4510,37.7870,14.4],["Sea Cliff",-122.4900,37.7870,14.4],
+  ["Embarcadero",-122.3940,37.7960,14.4]
+];
 const LABEL_LAYERS = ["label_other","label_village","label_town","label_city","water_name_point_label"];
 const zInterp = (z, stops) => {   // like MapLibre's ["interpolate",["linear"],["zoom"],...]
   if (z <= stops[0][0]) return stops[0][1];
@@ -664,8 +700,9 @@ function updateLabels(){
     lastQuery = now; const seen = new Set();
     placed = map.queryRenderedFeatures({layers:LABEL_LAYERS.filter(id=>map.getLayer(id))})
       .filter(f => f.geometry.type==="Point")
-      .map(f => ({name:f.properties["name:latin"]||f.properties.name, ll:f.geometry.coordinates, water:f.layer.id.startsWith("water")}))
+      .map(f => ({name:f.properties["name:latin"]||f.properties.name, ll:f.geometry.coordinates, water:f.layer.id.startsWith("water"), hood:f.layer.id==="label_other"}))
       .filter(l => l.name && l.name!=="San Francisco" && !seen.has(l.name) && seen.add(l.name));
+    placed = placed.filter(l => l.water || !l.hood);   // neighborhoods come from HOODS instead
   }
   const sp = map.project(SF_LABEL_AT), sx = sp.x, sy = sp.y, sfSize = zInterp(z,[[10,20],[13,26],[16,30]]);
   sfEl.style.fontSize = sfSize+"px";
@@ -679,6 +716,21 @@ function updateLabels(){
     el.style.fontSize = size+"px";
     el.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
     keep.add(l.name);
+  });
+  // our own neighborhood labels: more of them as you zoom in, skipping any that would overlap
+  const hSize = zInterp(z,[[11,12],[14,14],[16,16]]), boxes = [[sx-sfHalfW-6, sy-sfSize*.7, sx+sfHalfW+6, sy+sfSize*.7]];
+  HOODS.forEach(([name,lng,lat,minZ]) => {
+    if (z < (minZ || 11.4)) return;
+    const {x,y} = map.project([lng,lat]);
+    if (x<-60 || y<-20 || x>W+60 || y>H+20) return;
+    const w = name.length*hSize*.6, b = [x-w/2-4, y-hSize*.7, x+w/2+4, y+hSize*.7];
+    if (boxes.some(o => b[0]<o[2] && b[2]>o[0] && b[1]<o[3] && b[3]>o[1])) return;
+    boxes.push(b);
+    const k = "\u00a7"+name; let el = labelEls.get(k);
+    if (!el){ el = document.createElement("div"); el.className = "lbl hood"; el.textContent = name; $("#labels").appendChild(el); labelEls.set(k, el); }
+    el.style.fontSize = hSize+"px";
+    el.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+    keep.add(k);
   });
   labelEls.forEach((el,name)=>{ if (!keep.has(name)){ el.remove(); labelEls.delete(name); } });
 }
@@ -722,12 +774,14 @@ function render(t){
     pins[i].style.transform=`translate(${sx}px,${sy}px)`;
     const [h0,h1]=holds[i];
     pins[i].classList.toggle("upcoming", (t < h0-0.05 || t > RESET+0.25) && i !== hovered);
-    const v = Math.min(clamp((t-(h0-0.18))/0.3), clamp((h1+0.12-t)/0.3));
+    // fades in as you arrive, but when you scroll on it vanishes at once (no fade-out)
+    const v = t <= h1 ? clamp((t-(h0-0.18))/0.3) : 0;
     const c=cards[i];
     if (t > h0-3 && t < h1+1){ const img=c.querySelector("img[data-src]"); if (img){ img.src=img.dataset.src; img.removeAttribute("data-src"); } }
     if (v>0.5) active=i;
     if (v>0.001 && i!==dismissed){
       const e = reduce ? 1 : outBack(v);
+      if (c.style.visibility!=="visible") boop();
       c.style.visibility="visible"; c.style.opacity=clamp(v*1.4);
       c.style.transform=`translate(-50%, calc(${sy-22}px - 100%)) rotate(${s.tilt*v}deg) scale(${0.6+0.4*e})`;
     } else { c.style.visibility="hidden"; c.style.opacity=0; }
@@ -737,6 +791,34 @@ function render(t){
   $("#count").textContent = active>=0 ? `${active+1} / ${STOPS.length}` : (t>TOTAL-0.5 && t<RESET+0.25 ? `${STOPS.length} pieces` : "");
   $("#hint").style.opacity = clamp(1 - t*3);
   updateLabels();
+}
+/* ---------- A little "boop" when a card opens ---------- */
+// synthesized (no audio file): a quick rising sine blip with a soft second harmonic. Browsers only allow sound after
+// a click, tap or key press, so scrolling alone stays silent until the viewer has done one of those.
+let audio = null, lastBoop = 0;
+function wake(){
+  try {
+    if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === "suspended") audio.resume();
+  } catch(e){}
+}
+["pointerdown","keydown","touchend"].forEach(ev => addEventListener(ev, wake, {passive:true}));
+function boop(){
+  const now = performance.now(); if (now - lastBoop < 250 || reduce) return; lastBoop = now;
+  if (!audio || audio.state !== "running") return;
+  const t0 = audio.currentTime, out = audio.createGain();
+  out.gain.setValueAtTime(0.0001, t0);
+  out.gain.exponentialRampToValueAtTime(0.14, t0 + 0.012);
+  out.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.26);
+  out.connect(audio.destination);
+  [[1, 1], [2, .25]].forEach(([mult, vol]) => {
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = "sine"; g.gain.value = vol;
+    o.frequency.setValueAtTime(420*mult, t0);
+    o.frequency.exponentialRampToValueAtTime(760*mult, t0 + 0.07);
+    o.frequency.exponentialRampToValueAtTime(620*mult, t0 + 0.24);
+    o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + 0.28);
+  });
 }
 function tick(){
   // past the end of the loop: jump back to the top (same view), so the loop starts over
