@@ -13,7 +13,7 @@
 :root{
   --land:#F3F4EF; --water:#C5D6DB; --park:#D9E5CF;
   --pin:#2B4FE0; --trail:#9EA5AC; --label:#8E979F;
-  --dot:#E2648E;                                   /* the pins: pink, saturated enough to hold its own on the map */
+  --dot:#FF558E;                                   /* the pins: pink, saturated enough to hold its own on the map */
   --dot-size:clamp(10px,1.1vw + 6.2px,15px);       /* smaller on narrow screens, full size on wide */
   --dot-ring:clamp(2px,.3vw + 1.2px,3px);
   --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
@@ -208,113 +208,114 @@ if (!window.maplibregl) showNotice("The map library didn't load. Check your inte
    STOPS in walking order.
    ===================================================================== */
 const STOPS = [
-  { title: "WordPlay: KiND", url: "https://www.bigartloop.org/reuben-rude-wordplay-kind",
-    lngLat: [-122.466445, 37.772617], photo: "photos/kind.jpg", tilt: -2.2 },
-  { title: "WordPlay: SMiLE", url: "https://www.bigartloop.org/reuben-rude-wordplay-smile",
-    lngLat: [-122.465308, 37.77256], photo: "photos/smile.jpg", tilt: 1.6 },
-  { title: "Eat, Travel, Play, Care", url: null, artist: "Gillie and Marc",
-    lngLat: [-122.459904, 37.771434], photo: null, tilt: -1.2 },
-  { title: "Remember When (Love Blocks)", url: null, artist: "Mark Deem and the Misfit Toys collective",
-    lngLat: [-122.459053, 37.771588], photo: null, tilt: 2.0 },
-  { title: "Where's the Ball? The Jax", url: "https://www.bigartloop.org/mark-deem-wheres-the-ball-the-jax",
-    lngLat: [-122.458797, 37.771509], photo: null, tilt: -1.2 },
-  { title: "Le Retour des Soleils + From Tires To Totems", url: "https://www.bigartloop.org/traces-in-order-to-remember-le-retour-des-soleis",
-    lngLat: [-122.456893, 37.771006], photo: null, tilt: 2.0 },
-  { title: "Solar Arch", url: null, artist: "fnnch",
-    lngLat: [-122.45665, 37.77095], photo: null, tilt: -2.4 },
-  { title: "Seed of Self", url: "https://www.bigartloop.org/kate-raudenbush-seed-of-self",
-    lngLat: [-122.45307, 37.771582], photo: null, tilt: -1.7 },
-  { title: "An Attempted Murder", url: "https://www.bigartloop.org/jack-champion-an-attempted-murder",
-    lngLat: [-122.447411, 37.77229], photo: null, tilt: 1.1 },
-  { title: "Wood Line", url: null, artist: "Andy Goldsworthy",
-    lngLat: [-122.448594, 37.793186], photo: null, tilt: 2.3 },
-  { title: "Launch Intention", url: "https://www.bigartloop.org/griffin-loop-launch-intention",
-    lngLat: [-122.434421, 37.805707], photo: null, tilt: -2.4 },
-  { title: "Desert Shark", url: "https://www.bigartloop.org/desert-shark",
-    lngLat: [-122.415664, 37.808518], photo: null, tilt: 1.8 },
-  { title: "Sea Lion & Crab", url: null, artist: "Jeff Brees",
-    lngLat: [-122.4102, 37.808545], photo: null, tilt: -2.2 },
-  { title: "Skygate", url: null, artist: "Roger Barr",
-    lngLat: [-122.408119, 37.808039], photo: null, tilt: 1.6 },
-  { title: "Pulse Portal", url: "https://www.bigartloop.org/pulse-portal",
-    lngLat: [-122.401187, 37.803658], photo: null, tilt: -0.9 },
-  { title: "Buckyball", url: null, artist: "Leo Villareal",
-    lngLat: [-122.39878, 37.801257], photo: null, tilt: 2.0 },
-  { title: "Barnacles", url: null, artist: "Surfacedesign, Inc",
-    lngLat: [-122.398298, 37.800439], photo: null, tilt: -1.7 },
-  { title: "Got Framed", url: "https://www.bigartloop.org/got-framed",
-    lngLat: [-122.39674, 37.79879], photo: null, tilt: 2.3 },
-  { title: "Coralee", url: "https://www.bigartloop.org/coralee",
-    lngLat: [-122.394673, 37.796432], photo: null, tilt: -1.5 },
-  { title: "R-Evolution", url: "https://www.bigartloop.org/r-evolution",
-    lngLat: [-122.394611, 37.794653], photo: null, tilt: 0.9 },
-  { title: "Echoes \u2013 A Voice from Uncharted Waters", url: "https://www.bigartloop.org/echoes-a-voice-from-uncharted-waters",
-    lngLat: [-122.39244, 37.79457], photo: null, tilt: -2.2 },
-  { title: "Corpus", url: "https://www.bigartloop.org/corpus",
-    lngLat: [-122.391899, 37.793635], photo: null, tilt: 1.6 },
-  { title: "Aurora", url: null, artist: "Ruth Asawa",
-    lngLat: [-122.391516, 37.792521], photo: null, tilt: -1.5 },
-  { title: "Cupid's Span", url: null, artist: "Claes Oldenburg and Coosje van Bruggen",
-    lngLat: [-122.39, 37.791583], photo: null, tilt: 0.9 },
-  { title: "Hope/Peace", url: "https://www.bigartloop.org/giuseppe-palumbo-hope-peace",
-    lngLat: [-122.387466, 37.787391], photo: null, tilt: -1.2 },
-  { title: "Atabey's Treasure", url: "https://www.bigartloop.org/atabeys-treasure",
-    lngLat: [-122.387787, 37.783411], photo: null, tilt: 2.0 },
-  { title: "Lips", url: "https://www.bigartloop.org/fnnch-lips",
-    lngLat: [-122.387722, 37.779722], photo: null, tilt: -1.7 },
-  { title: "Steelhead", url: "https://www.bigartloop.org/steelhead",
-    lngLat: [-122.386554, 37.771834], photo: null, tilt: 1.1 },
-  { title: "Hulls", url: null, artist: "Richard Deutsch",
-    lngLat: [-122.386713, 37.770117], photo: null, tilt: -1.7 },
-  { title: "Louis", url: "https://www.bigartloop.org/louis",
-    lngLat: [-122.38566, 37.76919], photo: null, tilt: -2.4 },
+  { title: "Dr. Fisherian's Runaway Machine", url: "https://www.bigartloop.org/dr-fisherians-runaway-machine",
+    lngLat: [-122.387477, 37.761947], photo: "photos/robot.png", tilt: 1.8 },
   { title: "Seeing Spheres", url: null, artist: "Olafur Eliasson",
     lngLat: [-122.386496, 37.767331], photo: null, tilt: -2.4 },
-  { title: "Dr. Fisherian's Runaway Machine", url: "https://www.bigartloop.org/dr-fisherians-runaway-machine",
-    lngLat: [-122.387477, 37.761947], photo: "photos/robot.jpg", tilt: 1.8 },
-  { title: "Ship Shape Shifting Time", url: null, artist: "Nagasawa Nobuho and George Quasha",
-    lngLat: [-122.38928, 37.747892], photo: null, tilt: -0.9 },
-  { title: "Ohlone Canoe", url: null, artist: "Linda Yamane",
-    lngLat: [-122.387901, 37.747052], photo: null, tilt: 2.3 },
-  { title: "Islais", url: null, artist: "Cliff Garten Studio",
-    lngLat: [-122.387487, 37.7464], photo: null, tilt: -1.5 },
-  { title: "Promissory Notes", url: null, artist: "Mildred Howard",
-    lngLat: [-122.386899, 37.743136], photo: null, tilt: 0.9 },
-  { title: "Bloom", url: "https://www.bigartloop.org/bloom",
-    lngLat: [-122.37653, 37.74012], photo: null, tilt: -0.9 },
-  { title: "Whispers of Waste", url: "https://www.bigartloop.org/zulu-heru-whispers-of-waste",
-    lngLat: [-122.37556, 37.73253], photo: null, tilt: 2.3 },
-  { title: "Hilltop Park Sundial", url: null,
-    lngLat: [-122.383839, 37.732994], photo: null, tilt: -1.2 },
-  { title: "Invocation", url: null, artist: "Pepe Ozan",
-    lngLat: [-122.409791, 37.729496], photo: null, tilt: 2.0 },
-  { title: "Saint Francis of the Guns", url: null, artist: "Beniamino Bufano",
-    lngLat: [-122.45199, 37.725699], photo: null, tilt: -1.7 },
-  { title: "Ingleside Sundial", url: null,
-    lngLat: [-122.468776, 37.7247], photo: null, tilt: 1.1 },
-  { title: "Peace", url: null, artist: "Beniamino Bufano",
-    lngLat: [-122.475937, 37.714684], photo: null, tilt: -2.4 },
-  { title: "Penguin's Prayer", url: null, artist: "Beniamino Bufano",
-    lngLat: [-122.486083, 37.713252], photo: null, tilt: 1.8 },
-  { title: "Octavius", url: "https://www.bigartloop.org/octavius",
-    lngLat: [-122.506349, 37.736122], photo: null, tilt: -1.5 },
-  { title: "Wave Heart", url: null, artist: "Wes Skinner",
-    lngLat: [-122.508497, 37.752806], photo: null, tilt: 2.3 },
-  { title: "Rock Spinner", url: "https://www.bigartloop.org/rock-spinner",
-    lngLat: [-122.50919, 37.75654], photo: null, tilt: 0.9 },
-  { title: "Unsafe to Swim", url: "https://www.bigartloop.org/oleg-lobykin-unsafe-to-swim",
-    lngLat: [-122.51011, 37.76432], photo: null, tilt: -2.2 },
-  { title: "Marine Layer", url: "https://www.bigartloop.org/miki-iwasaki-marine-layer",
-    lngLat: [-122.489395, 37.767863], photo: null, tilt: 1.6 },
-  { title: "Naga", url: "https://www.bigartloop.org/naga",
-    lngLat: [-122.478098, 37.771578], photo: null, tilt: -1.2 },
+  { title: "Louis", url: "https://www.bigartloop.org/louis",
+    lngLat: [-122.38566, 37.76919], photo: null, tilt: -2.4 },
+  { title: "Hulls", url: null, artist: "Richard Deutsch",
+    lngLat: [-122.386713, 37.770117], photo: null, tilt: -1.7 },
+  { title: "Steelhead", url: "https://www.bigartloop.org/steelhead",
+    lngLat: [-122.386554, 37.771834], photo: null, tilt: 1.1 },
+  { title: "Lips", url: "https://www.bigartloop.org/fnnch-lips",
+    lngLat: [-122.387722, 37.779722], photo: null, tilt: -1.7 },
+  { title: "Atabey's Treasure", url: "https://www.bigartloop.org/atabeys-treasure",
+    lngLat: [-122.387787, 37.783411], photo: null, tilt: 2.0 },
+  { title: "Hope/Peace", url: "https://www.bigartloop.org/giuseppe-palumbo-hope-peace",
+    lngLat: [-122.387466, 37.787391], photo: null, tilt: -1.2 },
+  { title: "Cupid's Span", url: null, artist: "Claes Oldenburg and Coosje van Bruggen",
+    lngLat: [-122.39, 37.791583], photo: null, tilt: 0.9 },
+  { title: "Aurora", url: "https://ruthasawa.com/aurora-the-embarcadero-1984-1986/", artist: "Ruth Asawa",
+    lngLat: [-122.391516, 37.792521], photo: "photos/aurora.png", tilt: -1.5 },
+  { title: "Corpus", url: "https://www.bigartloop.org/corpus",
+    lngLat: [-122.391899, 37.793635], photo: "photos/aliensquid.png", tilt: 1.6 },
+  { title: "Echoes \u2013 A Voice from Uncharted Waters", url: "https://www.bigartloop.org/echoes-a-voice-from-uncharted-waters",
+    lngLat: [-122.39244, 37.79457], photo: "photos/whale.png", tilt: -2.2 },
+  { title: "R-Evolution", url: "https://www.bigartloop.org/r-evolution",
+    lngLat: [-122.394611, 37.794653], photo: "photos/nakedlady.png", tilt: 0.9 },
+  { title: "Coralee", url: "https://www.bigartloop.org/coralee",
+    lngLat: [-122.394673, 37.796432], photo: "photos/mermaid.png", tilt: -1.5 },
+  { title: "Got Framed", url: "https://www.bigartloop.org/got-framed",
+    lngLat: [-122.39674, 37.79879], photo: null, tilt: 2.3 },
+  { title: "Barnacles", url: null, artist: "Surfacedesign, Inc",
+    lngLat: [-122.398298, 37.800439], photo: null, tilt: -1.7 },
+  { title: "Buckyball", url: null, artist: "Leo Villareal",
+    lngLat: [-122.39878, 37.801257], photo: null, tilt: 2.0 },
+  { title: "Pulse Portal", url: "https://www.bigartloop.org/pulse-portal",
+    lngLat: [-122.401187, 37.803658], photo: null, tilt: -0.9 },
+  { title: "Skygate", url: null, artist: "Roger Barr",
+    lngLat: [-122.408119, 37.808039], photo: null, tilt: 1.6 },
+  { title: "Sea Lion & Crab", url: null, artist: "Jeff Brees",
+    lngLat: [-122.4102, 37.808545], photo: null, tilt: -2.2 },
+  { title: "Desert Shark", url: "https://www.bigartloop.org/desert-shark",
+    lngLat: [-122.415664, 37.808518], photo: null, tilt: 1.8 },
+  { title: "Launch Intention", url: "https://www.bigartloop.org/griffin-loop-launch-intention",
+    lngLat: [-122.434421, 37.805707], photo: null, tilt: -2.4 },
+  { title: "Wood Line", url: null, artist: "Andy Goldsworthy",
+    lngLat: [-122.448594, 37.793186], photo: null, tilt: 2.3 },
+  { title: "An Attempted Murder", url: "https://www.bigartloop.org/jack-champion-an-attempted-murder",
+    lngLat: [-122.447411, 37.77229], photo: null, tilt: 1.1 },
+  { title: "Seed of Self", url: "https://www.bigartloop.org/kate-raudenbush-seed-of-self",
+    lngLat: [-122.45307, 37.771582], photo: null, tilt: -1.7 },
+  { title: "Solar Arch", url: null, artist: "fnnch",
+    lngLat: [-122.45665, 37.77095], photo: null, tilt: -2.4 },
+  { title: "Le Retour des Soleils + From Tires To Totems", url: "https://www.bigartloop.org/traces-in-order-to-remember-le-retour-des-soleis",
+    lngLat: [-122.456893, 37.771006], photo: null, tilt: 2.0 },
+  { title: "Where's the Ball? The Jax", url: "https://www.bigartloop.org/mark-deem-wheres-the-ball-the-jax",
+    lngLat: [-122.458797, 37.771509], photo: null, tilt: -1.2 },
+  { title: "Remember When (Love Blocks)", url: null, artist: "Mark Deem and the Misfit Toys collective",
+    lngLat: [-122.459053, 37.771588], photo: null, tilt: 2.0 },
+  { title: "Eat, Travel, Play, Care", url: null, artist: "Gillie and Marc",
+    lngLat: [-122.459904, 37.771434], photo: null, tilt: -1.2 },
+  { title: "WordPlay: SMiLE", url: "https://www.bigartloop.org/reuben-rude-wordplay-smile",
+    lngLat: [-122.465308, 37.77256], photo: "photos/smile.jpg", tilt: 1.6 },
+  { title: "WordPlay: KiND", url: "https://www.bigartloop.org/reuben-rude-wordplay-kind",
+    lngLat: [-122.466445, 37.772617], photo: "photos/kind.jpg", tilt: -2.2 },
   { title: "Street Whale", url: null, artist: "Reuben Rude",
     lngLat: [-122.472672, 37.770822], photo: null, tilt: -1.2 },
+  { title: "Naga", url: "https://www.bigartloop.org/naga",
+    lngLat: [-122.478098, 37.771578], photo: null, tilt: -1.2 },
+  { title: "Marine Layer", url: "https://www.bigartloop.org/miki-iwasaki-marine-layer",
+    lngLat: [-122.489395, 37.767863], photo: null, tilt: 1.6 },
+  { title: "Unsafe to Swim", url: "https://www.bigartloop.org/oleg-lobykin-unsafe-to-swim",
+    lngLat: [-122.51011, 37.76432], photo: null, tilt: -2.2 },
+  { title: "Rock Spinner", url: "https://www.bigartloop.org/rock-spinner",
+    lngLat: [-122.50919, 37.75654], photo: null, tilt: 0.9 },
+  { title: "Wave Heart", url: null, artist: "Wes Skinner",
+    lngLat: [-122.508497, 37.752806], photo: null, tilt: 2.3 },
+  { title: "Octavius", url: "https://www.bigartloop.org/octavius",
+    lngLat: [-122.506349, 37.736122], photo: null, tilt: -1.5 },
+  { title: "Penguin's Prayer", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.486083, 37.713252], photo: null, tilt: 1.8 },
+  { title: "Peace", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.475937, 37.714684], photo: null, tilt: -2.4 },
+  { title: "Ingleside Sundial", url: null,
+    lngLat: [-122.468776, 37.7247], photo: null, tilt: 1.1 },
+  { title: "Saint Francis of the Guns", url: null, artist: "Beniamino Bufano",
+    lngLat: [-122.45199, 37.725699], photo: null, tilt: -1.7 },
+  { title: "Invocation", url: null, artist: "Pepe Ozan",
+    lngLat: [-122.409791, 37.729496], photo: null, tilt: 2.0 },
+  { title: "Hilltop Park Sundial", url: null,
+    lngLat: [-122.383839, 37.732994], photo: null, tilt: -1.2 },
+  { title: "Whispers of Waste", url: "https://www.bigartloop.org/zulu-heru-whispers-of-waste",
+    lngLat: [-122.37556, 37.73253], photo: null, tilt: 2.3 },
+  { title: "Bloom", url: "https://www.bigartloop.org/bloom",
+    lngLat: [-122.37653, 37.74012], photo: null, tilt: -0.9 },
+  { title: "Promissory Notes", url: null, artist: "Mildred Howard",
+    lngLat: [-122.386899, 37.743136], photo: null, tilt: 0.9 },
+  { title: "Islais", url: null, artist: "Cliff Garten Studio",
+    lngLat: [-122.387487, 37.7464], photo: null, tilt: -1.5 },
+  { title: "Ohlone Canoe", url: null, artist: "Linda Yamane",
+    lngLat: [-122.387901, 37.747052], photo: null, tilt: 2.3 },
+  { title: "Ship Shape Shifting Time", url: null, artist: "Nagasawa Nobuho and George Quasha",
+    lngLat: [-122.38928, 37.747892], photo: null, tilt: -0.9 },
 ];
 
 // Details for the drawer, from each piece's official page on bigartloop.org
 // (facts and photo; "about" is a short summary written for this site). Keyed by the stop's url.
 const ART = {
+  "https://ruthasawa.com/aurora-the-embarcadero-1984-1986/": {"title": "Aurora", "artist": "Ruth Asawa", "location": "Bayside Plaza, 188 Embarcadero at Howard Street, San Francisco, CA", "installed": "1986", "source": "ruthasawa.com", "photo": "https://ruthasawa.com/wp-content/uploads/2021/10/aurora-01-wide.jpg", "credit": "Randy Dodson", "links": [["Wikipedia", "https://en.wikipedia.org/wiki/Aurora_(Asawa)"]], "about": "A fountain of polished stainless steel, finished in 1986 on the Embarcadero. About 120 triangles are fitted together into a wheel roughly 13 feet across, with water running over the top and down its edge into a blue-tiled pool. The shape comes from Ruth Asawa\u2019s folded-paper forms, which she first explored through origami as a child. Asawa assembled it in 1985 at Latter Manufacturing. It isn\u2019t part of the official Big Art Loop, but it sits right on the route."},
   "https://www.bigartloop.org/reuben-rude-wordplay-kind": {"title": "WordPlay: KiND", "artist": "Reuben Rude, with fabricators Gregory Blum and Oliver Wilson", "location": "Golden Gate Park, JFK Promenade & 8th Ave", "partners": "Sijbrandij Foundation, Building 180, Illuminate the Arts, San Francisco Recreation & Parks Department", "photo": "https://images.squarespace-cdn.com/content/v1/6890f8681136e63fbedfce79/bb96f038-ef72-44d5-906e-b40b03358f54/WordPlay_+KiND+by+%40reubenrude+2_Photo+Credit+%40iromo_.jpeg?format=1000w", "credit": "Masaki Omori; Reuben Rude", "links": [["Website", "https://reubenrude.bigcartel.com"], ["Instagram", "https://www.instagram.com/reubenrude/?hl=en"]], "about": "One of two WordPlay sculptures Reuben Rude made with Illuminate for the Golden Mile. The letters spell KiND with the “i” left out, so the word is only finished when someone stands in the gap. It’s built from reclaimed wood, microcement and concrete, painted in many layers to look weathered but cheerful."},
   "https://www.bigartloop.org/reuben-rude-wordplay-smile": {"title": "WordPlay: SMiLE", "artist": "Reuben Rude, with fabricators Gregory Blum and Oliver Wilson", "location": "Golden Gate Park, JFK Promenade & 8th Ave", "partners": "Sijbrandij Foundation, Building 180, Illuminate the Arts, San Francisco Recreation & Parks Department", "photo": "https://images.squarespace-cdn.com/content/v1/6890f8681136e63fbedfce79/9d8e8acb-6365-4473-b37a-2c1f732d9da5/WordPlay_+SMiLE+by+%40reubenrude+1_Photo+Credit+%40iromo_.jpeg?format=1000w", "credit": "Masaki Omori; Reuben Rude", "links": [["Website", "https://reubenrude.bigcartel.com"], ["Instagram", "https://www.instagram.com/reubenrude/?hl=en"]], "about": "The twin of KiND, a few steps along JFK Promenade. SMiLE is also missing its “i”: step into the gap and you complete the word. Like KiND, it’s reclaimed wood, microcement and concrete, layered with paint and stain for a sun-faded look."},
   "https://www.bigartloop.org/mark-deem-wheres-the-ball-the-jax": {"title": "Where’s the Ball? (The Jax)", "artist": "Mark Deem (lead artist) and Kevin Byall (co-designer and fabricator), Misfit Toys", "location": "In front of the Conservatory of Flowers - Golden Gate Park, San Francisco, CA", "partners": "Building 180, San Francisco Recreation and Parks Department, Illuminate the Arts", "photo": "https://images.squarespace-cdn.com/content/v1/6890f8681136e63fbedfce79/11eb902b-e773-47db-9821-a2a05fd0f4ad/Wheres-the-ball-jax-photoby-misfit-toys.jpeg?format=1000w", "credit": "Masaki Omori; Misfit Toys", "links": [["Website", "https://misfittoys.art/"], ["Instagram", "https://www.instagram.com/misfittoyscrew/"]], "about": "A classic toy jack, blown up about 85 times in steel and scattered across the lawn in front of the Conservatory of Flowers. The pieces are low enough to sit on and wide enough to crawl under. Mark Deem got the idea after finding an antique jack inside the wall of a 1930s cottage. The title is the old joke that the ball is always the first thing you lose."},
@@ -429,8 +430,9 @@ const DETOURS = {
 const P = STOPS.map(s => merc(s.lngLat));
 // a detour is the walk itself, so the pins at each end are stitched onto it
 const LEGS = P.slice(1).map((b,i) => {
-  const d = DETOURS[STOPS[i].title + "|" + STOPS[i+1].title];
-  return d ? mkLeg([STOPS[i].lngLat].concat(d, [STOPS[i+1].lngLat]).map(merc)) : legPath(P[i], b);
+  const d = DETOURS[STOPS[i].title + "|" + STOPS[i+1].title]
+         || (DETOURS[STOPS[i+1].title + "|" + STOPS[i].title] || []).slice().reverse();   // same path, walked the other way
+  return d.length ? mkLeg([STOPS[i].lngLat].concat(d, [STOPS[i+1].lngLat]).map(merc)) : legPath(P[i], b);
 });
 // the walk home, from the last piece back to the first: what makes this a loop and not a line
 const CLOSING = legPath(P[P.length-1], P[0]);
@@ -534,9 +536,9 @@ const cards = STOPS.map((s,i)=>{
   const c=document.createElement("figure"); c.className="polaroid";
   // my own photo if I have one, otherwise the official one from bigartloop.org (loaded as the stop approaches)
   const art = (s.url && ART[s.url]) || {};
-  const src = s.photo || art.photo, alt = s.photo ? `Me with ${s.title}` : `${s.title} (photo from bigartloop.org)`;
+  const src = s.photo || art.photo, alt = s.photo ? `Me with ${s.title}` : `${s.title} (photo from ${art.source || "bigartloop.org"})`;
   c.innerHTML=`<div class="photo">${src?`<img data-src="${esc(src)}" alt="${esc(alt)}">`:blank}</div>
-    <h2><a href="${s.url || "#"}" aria-haspopup="dialog"><span>${s.title}</span></a></h2>`;
+    <h2><a href="${s.url || "#"}"${s.url ? ' target="_blank" rel="noopener"' : ""} aria-haspopup="dialog"><span>${s.title}</span></a></h2>`;
   c.querySelector("h2 a").addEventListener("click", e => {
     // cmd/ctrl-click still opens the official page in a new tab, for the pieces that have one
     if (s.url && (e.metaKey || e.ctrlKey || e.shiftKey || e.button)) return;
@@ -558,7 +560,7 @@ function openDrawer(i){
   fig.hidden = !a.photo;
   img.onerror = () => { img.removeAttribute("src"); };   // keep the gray frame if the photo can't load
   if (a.photo){ img.src = a.photo; img.alt = a.title || s.title; }
-  $(".dr-photo figcaption").textContent = "Photo from bigartloop.org" + (a.credit ? " · " + a.credit : "");
+  $(".dr-photo figcaption").textContent = "Photo from " + (a.source || "bigartloop.org") + (a.credit ? " · " + a.credit : "");
   $(".dr-note").textContent = a.note || ""; $(".dr-note").hidden = !a.note;
   $(".dr-about").textContent = a.about || "";
   const facts = [["Location", a.location], ["Installed", a.installed], ["Partners", a.partners]].filter(f => f[1]);
@@ -566,7 +568,8 @@ function openDrawer(i){
   if (links) facts.push(["Artist links", null, `<span class="dr-links">${links}</span>`]);
   $(".dr-facts").innerHTML = facts.map(([k, v, html]) => `<dt>${k}</dt><dd>${html || esc(v)}</dd>`).join("");
   $(".dr-more").href = s.url || "#";
-  $(".dr-more").hidden = !s.url;   // the Other SF Art pieces have no page on bigartloop.org
+  $(".dr-more").textContent = "Read more on " + (a.source || "bigartloop.org");
+  $(".dr-more").hidden = !s.url;   // most Other SF Art pieces have no page to link to
   $(".dr-body").scrollTop = 0;
   drawerFrom = document.activeElement;
   document.documentElement.classList.add("drawer-open");
