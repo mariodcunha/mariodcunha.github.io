@@ -87,6 +87,20 @@ Seat counts (total 543): UP 80, MH 48, WB 42, BR 40, TN 39, MP 29, KA 28, GJ 26,
     RJ 25, AP 25, OD 21, KL 20, TS 17, AS 14, JH 14, PB 13, CG 11, HR 10, DL 7,
     JK 5, UK 5, HP 4, GA 2, AR 2, MN 2, ML 2, TR 2, DD 2, and 1 each for LA, CH,
     SK, NL, MZ, PY, AN, LD.
+Seat counts by election (verified 2026-10-09: squares per state == the counts
+    above, 36 states/UTs, 543 total, no duplicate squares). Per-state counts are
+    frozen (since 1977; 2008 delimitation redrew constituencies, not totals), so
+    2004, 2009, 2014, 2019 and 2024 all have 543 seats with these numbers, EXCEPT
+    where states/UTs were split or merged:
+      Andhra Pradesh: 42 in 2004 / 2009 / 2014 (Telangana formed June 2014,
+          after the vote); 25 AP + 17 Telangana from 2019.
+      Jammu & Kashmir: 6 (incl. Ladakh) through 2019; 5 J&K + 1 Ladakh in 2024.
+      Dadra & Nagar Haveli 1 + Daman & Diu 1 separate through 2019; merged as
+          DNH-DD 2 in 2024.
+    Jharkhand 14, Chhattisgarh 11, Uttarakhand 5 (and Bihar 40, MP 29, UP 80)
+    already existed from 2000, so they are unchanged across all five.
+    For pre-2024 maps: draw AP+TS as one state for 2004-14, J&K+Ladakh as one
+    for 2004-19, DNH and DD separately for 2004-19.
 Label names: full names for most; shortened: J.&K., Himachal, W. Bengal, C.G.
     (Chhattisgarh), Andhra, Arunachal, A.&N. Islands, DNH-DD (Dadra & Nagar
     Haveli and Daman & Diu; owner asked for "DNH-DD").
@@ -360,6 +374,7 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      names small with collision-free placement, hover enlarges/darkens a name,
      DNH-DD rename, label-size matching removed. Pushed live (28b33a4).
   8. Hover effect removed on request; names stay small and static. Pushed live.
+  9. Seat counts verified against the map; 2004-2024 seat history noted.
 
 
 STATUS / NEXT
