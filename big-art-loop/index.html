@@ -11,11 +11,12 @@
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
 <style>
 :root{
-  --land:#F8F2E4; --water:#9FD0EA; --park:#BFE3AB;
+  --land:#F8F2E4; --water:#9FD0EA; --park:#D0E0C3;
   --pin:#2B4FE0; --trail:#808B96; --label:#7A8590;
-  --dot:#FF558E;                                   /* the pins: pink, saturated enough to hold its own on the map */
-  --dot-size:clamp(11px,1.1vw + 6.6px,17px);       /* smaller on narrow screens, full size on wide */
-  --dot-ring:clamp(2px,.3vw + 1.2px,3px);
+  --dot:#FF9CBF;                                   /* the round pins: a lighter pink */
+  --heart:#FF558E;                                 /* the heart pins keep the deeper pink */
+  --dot-size:clamp(8.8px,.88vw + 5.28px,13.6px);     /* smaller on narrow screens, full size on wide */
+  --dot-ring:clamp(1.6px,.24vw + .96px,2.4px);
   --ink:#1B1F24; --muted:#5B6570; --paper:#FDFDFA;
   --shadow:0 18px 40px rgba(20,40,60,.22), 0 3px 8px rgba(20,40,60,.14);
 }
@@ -51,9 +52,9 @@ body{background:var(--land);color:var(--ink);overflow-x:hidden;
   margin:calc(var(--dot-size)*-.725) 0 0 calc(var(--dot-size)*-.725);
   background:none;border:0;border-radius:0;box-shadow:none}
 .pin.heart svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 5px rgba(150,20,70,.45))}
-.pin.heart path{fill:var(--dot);stroke:var(--paper);stroke-width:2.4;
+.pin.heart path{fill:var(--heart);stroke:var(--paper);stroke-width:2.4;
   transition:fill .3s,stroke .3s}
-.pin.heart.upcoming path{fill:var(--paper);stroke:var(--dot)}
+.pin.heart.upcoming path{fill:var(--paper);stroke:var(--heart)}
 
 header{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
   padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 14px;
@@ -622,12 +623,12 @@ function quietStyle(){
   set("background","background-color","#F8F2E4");
   set("water","fill-color","#9FD0EA");
   set("waterway","line-color","#9FD0EA");
-  set("park","fill-color","#BFE3AB");
-  set("landcover_wood","fill-color","#C8E6B6");
+  set("park","fill-color","#D0E0C3");
+  set("landcover_wood","fill-color","#D6E4CB");
   // Golden Gate Park and most city parks are "grass" land cover, which the base style leaves unpainted
   if (!map.getLayer("grass") && map.getLayer("landcover_wood"))
     map.addLayer({id:"grass",type:"fill",source:"openmaptiles","source-layer":"landcover",
-      filter:["==",["get","class"],"grass"],paint:{"fill-color":"#BFE3AB"}},"landcover_wood");
+      filter:["==",["get","class"],"grass"],paint:{"fill-color":"#D0E0C3"}},"landcover_wood");
   set("landuse_residential","fill-color","#F5EDDA");
   set("building","fill-color","#F0E6D0"); set("building","fill-outline-color","#E3D8C0");
   set("road_area_pier","fill-color","#F8F2E4"); set("road_pier","line-color","#F8F2E4");
