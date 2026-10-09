@@ -99,12 +99,8 @@ Labels: SMALL on purpose (shared svg.map text style, 11 SVG units = ~7.7px on
     0.59 tall) keeps 0.08 clear of every square and 0.2 clear of every placed
     label wins. Biggest states are placed first. Verified in the browser: no
     overlaps, nothing clipped.
-Hover: each state's squares are a <g class="st">. Pointer over the squares or
-    the name adds .hot to the name: colour --fg, 15px, weight 600, white halo
-    (paint-order stroke, 4px) and it is moved to the end of the names group so
-    it draws over neighbouring names. Squares stay grey (owner wants the grey
-    unchanged). #map-india text has pointer-events:auto (shared map text has
-    none).
+No hover effect: the owner tried one (name darker/bigger on hover) and asked
+    for it to be removed - names just stay small and static.
 Drawing: squares are <rect class="seat-sq"> (fill --seat-empty #d3d3d3, 1px
     white stroke); no outlines. viewBox fitted to squares plus approximate
     label extents (name.length * 0.32 units wide).
@@ -265,7 +261,7 @@ DESIGN RULES THE OWNER HAS ASKED FOR
 - India: follow the owner's Figma tile map EXACTLY (shapes and positions);
   squares only (no outlines); squares stay the neutral grey --seat-empty.
 - India names: House-map font style, small is fine, but they must never cross
-  each other or a square; on hover a name gets darker and bigger.
+  each other or a square. No hover effect (tried, removed on request).
   "DNH-DD" for Dadra & Nagar Haveli and Daman & Diu.
 - (Rejected: re-packing India for real proportions / uniform gaps.)
 - Earlier India requests (applied in the shelved hand-made tile grid, Appendix B;
@@ -362,7 +358,8 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      all names now sit above their blocks. Committed and pushed live (6941717).
   7. Owner rejected step 6. India re-imported from the (updated) Figma frame,
      names small with collision-free placement, hover enlarges/darkens a name,
-     DNH-DD rename, label-size matching removed. Pushed live.
+     DNH-DD rename, label-size matching removed. Pushed live (28b33a4).
+  8. Hover effect removed on request; names stay small and static. Pushed live.
 
 
 STATUS / NEXT
