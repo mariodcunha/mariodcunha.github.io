@@ -44,17 +44,19 @@ body{background:var(--land);color:var(--ink);overflow-x:hidden;
 .pin{position:absolute;left:0;top:0;width:var(--dot-size);height:var(--dot-size);z-index:3;
   margin:calc(var(--dot-size)/-2) 0 0 calc(var(--dot-size)/-2);
   border-radius:50%;background:var(--dot);border:var(--dot-ring) solid var(--paper);
-  box-shadow:0 0 0 1px rgba(150,20,70,.25),0 2px 7px rgba(150,20,70,.4);will-change:transform;cursor:pointer;
-  transition:background .3s,border-color .3s}
-.pin.upcoming{background:var(--paper);border-color:var(--dot)}
-/* the three I've been to are hearts, not dots; an <svg> so the outline survives the flip */
+  box-shadow:0 0 0 1px rgba(150,20,70,.25),0 2px 7px rgba(150,20,70,.4);will-change:translate,scale;cursor:pointer;
+  scale:1;transition:scale .3s cubic-bezier(.34,1.56,.64,1)}
+.pin:hover{scale:1.3}
+/* once a piece's card has popped open on the walk, its pin stays 50% bigger until you pull back out to the whole map */
+.pin.big{scale:1.5}
+.pin.big:hover{scale:1.7}
+/* the pieces I've been to are hearts, not dots */
 .pin.heart{width:calc(var(--dot-size)*1.45);height:calc(var(--dot-size)*1.45);
   margin:calc(var(--dot-size)*-.725) 0 0 calc(var(--dot-size)*-.725);
   background:none;border:0;border-radius:0;box-shadow:none}
 .pin.heart svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 5px rgba(150,20,70,.45))}
 .pin.heart path{fill:var(--heart);stroke:var(--paper);stroke-width:2.4;
-  transition:fill .3s,stroke .3s}
-.pin.heart.upcoming path{fill:var(--paper);stroke:var(--heart)}
+}
 
 header{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
   padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 14px;
@@ -523,15 +525,12 @@ const legProgress = (i, t) => { const a = holds[i][1], b = holds[i+1][0]; return
 /* ---------- Polaroids & pins ---------- */
 const blank = '<div class="blank" role="img" aria-label="No photo yet"></div>';
 const HEART = "M12 20.4C12 20.4 2 13.6 2 7.4 2 4.2 4.5 2 7.2 2c2 0 3.8 1.2 4.8 3 1-1.8 2.8-3 4.8-3C19.5 2 22 4.2 22 7.4c0 6.2-10 13-10 13z";
-let hovered = -1;   // hovering a pin flips it, the same flip scrolling to it gives
 const pins = STOPS.map((s,i)=>{
-  const d=document.createElement("div"); d.className="pin upcoming"; d.setAttribute("aria-hidden","true");
+  const d=document.createElement("div"); d.className="pin"; d.setAttribute("aria-hidden","true");
   // the pieces I've actually stood next to get a heart instead of a dot
   if (s.photo) { d.classList.add("heart");
     d.innerHTML=`<svg viewBox="0 0 24 22" fill="none"><path d="${HEART}" stroke-linejoin="round"/></svg>`; }
-  d.addEventListener("pointerenter", ()=>{ hovered=i; });
-  d.addEventListener("pointerleave", ()=>{ if (hovered===i) hovered=-1; });
-  d.addEventListener("click", ()=>{ hovered=-1; openDrawer(i); });
+  d.addEventListener("click", ()=>openDrawer(i));
   $("#pins").appendChild(d); return d;
 });
 const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -772,11 +771,11 @@ function render(t){
   active = -1;
   STOPS.forEach((s,i)=>{
     const [sx,sy] = toScreen(P[i], cam);
-    pins[i].style.transform=`translate(${sx}px,${sy}px)`;
+    pins[i].style.translate=`${sx}px ${sy}px`;   // translate (not transform) so the hover/zoom scale grows the pin in place
     const [h0,h1]=holds[i];
-    pins[i].classList.toggle("upcoming", (t < h0-0.05 || t > RESET+0.25) && i !== hovered);
+    pins[i].classList.toggle("big", t >= h0-0.12 && t < LAST + OUT*0.3);   // shrink back as the camera pulls out to the map
     // fades in as you arrive, but when you scroll on it vanishes at once (no fade-out)
-    const v = t <= h1 ? clamp((t-(h0-0.18))/0.3) : 0;
+    const v = t <= h1 ? clamp((t-(h0-0.12))/0.12) : 0;   // pops open quickly, landing just as the camera settles
     const c=cards[i];
     if (t > h0-3 && t < h1+1){ const img=c.querySelector("img[data-src]"); if (img){ img.src=img.dataset.src; img.removeAttribute("data-src"); } }
     if (v>0.5) active=i;
