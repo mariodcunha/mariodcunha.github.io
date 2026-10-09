@@ -51,10 +51,10 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 svg.india .seat-sq{fill:var(--seat-empty);stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
 svg.india{max-width:940px;margin:0 auto}
 svg.india text{font-size:12.5px}
-#map-rs .seat-sq{fill:var(--house)}
+#map-rs .seat-sq{display:none}
 .rs-seat{opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),opacity .45s var(--ease),fill .45s var(--ease)}
 .rs-seat.on{opacity:1;transform:scale(1)}
-.rs-seat.vac{fill:var(--bg);stroke:#a8a8a8;stroke-width:1.5}
+.rs-seat.vac{fill:var(--house)}
 .bar .h-none{background:var(--seat-empty)}
 /* Lok Sabha tally: NDA left, others centre, INDIA right */
 .cand.nda b,.cand.nda span{color:var(--bjp)} .cand.india b,.cand.india span{color:var(--inc)} .cand.india{text-align:right}
@@ -101,6 +101,7 @@ svg.india text{font-size:12.5px}
 .barwrap{display:grid;gap:4px}
 .bar{position:relative;height:15px;display:flex}
 .bar i{display:block;height:100%;transition:width .8s var(--ease)}
+.bar i.gap{margin-left:3px} /* white gap where one side (alliance / party) ends and the next begins */
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s}
@@ -173,7 +174,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="cand r"><b>312</b><span><i class="check">✓</i>Trump</span></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i style="width:42.01%;background:var(--dem)"></i><i style="flex:1"></i><i style="width:57.99%;background:var(--rep)"></i><span class="mark" style="left:50.19%"></span></div>
+      <div class="bar" aria-hidden="true"><i style="width:42.01%;background:var(--dem)"></i><i style="flex:1"></i><i class="gap" style="width:57.99%;background:var(--rep)"></i><span class="mark" style="left:50.19%"></span></div>
       <div class="under"><span class="need" style="left:50.19%">270<small>TO WIN</small></span></div>
     </div>
     <div class="mapwrap"><svg class="map" id="map-president" role="img" aria-label="Presidential electoral votes, one square per vote"></svg></div>
@@ -190,7 +191,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="cand r"><b id="num-r">220</b><span><i class="check">✓</i>Republicans</span></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i id="bar-d" style="background:var(--dem)"></i><i style="flex:1"></i><i id="bar-r" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
+      <div class="bar" aria-hidden="true"><i id="bar-d" style="background:var(--dem)"></i><i style="flex:1"></i><i id="bar-r" class="gap" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
       <div class="under"><span class="gain" id="gain"></span><span class="need" id="need"></span></div>
     </div>
     <div class="mapwrap"><svg class="map" id="map-chamber" role="img"></svg></div>
@@ -218,7 +219,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="cand india"><b id="rs-n-india">0</b><span id="rs-bloc">INDIA</span><small id="rs-sub-india"></small></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i id="rs-b-bjp" style="background:var(--bjp)"></i><i id="rs-b-nda" style="background:var(--nda)"></i><i id="rs-b-oth" style="background:var(--oth)"></i><i id="rs-b-vac" style="background:var(--house)"></i><i id="rs-b-india" style="background:var(--india)"></i><i id="rs-b-inc" style="background:var(--inc)"></i></div>
+      <div class="bar" aria-hidden="true"><i id="rs-b-bjp" style="background:var(--bjp)"></i><i id="rs-b-nda" style="background:var(--nda)"></i><i id="rs-b-oth" class="gap" style="background:var(--oth)"></i><i id="rs-b-vac" style="background:var(--house)"></i><i id="rs-b-india" class="gap" style="background:var(--india)"></i><i id="rs-b-inc" style="background:var(--inc)"></i></div>
       <div class="under"><span class="gain d" id="rs-total" style="color:var(--muted)"></span></div>
     </div>
     <div class="mapwrap"><svg class="map india" id="map-rs" role="img"></svg></div>
@@ -228,9 +229,8 @@ svg.map text.in{fill:#fff;font-weight:600}
       <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--inc)"/></svg>Congress</span>
       <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--india)"/></svg><em id="rs-leg-bloc">Congress allies (INDIA)</em></span>
       <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--oth)"/></svg>Not aligned</span>
-      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.8" fill="#fff" stroke="#a8a8a8" stroke-width="1.5"/></svg>Vacant</span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Lok Sabha seats</span>
-      <span>One circle per elected Rajya Sabha seat, placed on its state's Lok Sabha squares; the 12 nominated members are not shown</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--house)"/></svg>Vacant</span>
+      <span>One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown</span>
     </div>
   </section>
   <section class="panel" id="panel-states" role="tabpanel" aria-labelledby="tab-states" hidden>
@@ -240,7 +240,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="cand india"><b id="st-n-india">0</b><span id="st-bloc">INDIA</span><small id="st-sub-india"></small></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i id="st-b-bjp" style="background:var(--bjp)"></i><i id="st-b-nda" style="background:var(--nda)"></i><i id="st-b-oth" style="background:var(--oth)"></i><i id="st-b-india" style="background:var(--india)"></i><i id="st-b-inc" style="background:var(--inc)"></i></div>
+      <div class="bar" aria-hidden="true"><i id="st-b-bjp" style="background:var(--bjp)"></i><i id="st-b-nda" style="background:var(--nda)"></i><i id="st-b-oth" class="gap" style="background:var(--oth)"></i><i id="st-b-india" class="gap" style="background:var(--india)"></i><i id="st-b-inc" style="background:var(--inc)"></i></div>
       <div class="under"><span class="gain d" id="st-total" style="color:var(--muted)"></span></div>
     </div>
     <div class="mapwrap"><svg class="map india" id="map-states" role="img" aria-label="State assemblies in 2024 by alliance, drawn on the Lok Sabha seat squares"></svg></div>
@@ -261,7 +261,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="cand india"><b id="ls-n-india">234</b><span><i class="check" id="ls-check-india">✓</i><em id="ls-bloc">INDIA</em></span><small id="ls-sub-india"></small></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i id="ls-b-bjp" style="background:var(--bjp)"></i><i id="ls-b-nda" style="background:var(--nda)"></i><i id="ls-b-oth" style="background:var(--oth)"></i><i id="ls-b-india" style="background:var(--india)"></i><i id="ls-b-inc" style="background:var(--inc)"></i><span class="mark" id="ls-mark" style="left:50.09%"></span></div>
+      <div class="bar" aria-hidden="true"><i id="ls-b-bjp" style="background:var(--bjp)"></i><i id="ls-b-nda" style="background:var(--nda)"></i><i id="ls-b-oth" class="gap" style="background:var(--oth)"></i><i id="ls-b-india" class="gap" style="background:var(--india)"></i><i id="ls-b-inc" style="background:var(--inc)"></i><span class="mark" id="ls-mark" style="left:50.09%"></span></div>
       <div class="under"><span class="need" id="ls-need" style="left:50.09%">272<small>FOR MAJORITY</small></span></div>
     </div>
     <div class="mapwrap"><svg class="map india" id="map-india" role="img" aria-label="Lok Sabha 2024 seats by state and alliance, one square per seat"></svg></div>
@@ -629,21 +629,60 @@ const RS={2004:{AP:[0,9,1,0,8,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,1,2,8,2
   2014:{AP:[1,3,1,0,6,0],AR:[0,0,0,0,1,0],AS:[0,0,1,0,6,0],BR:[4,0,12,0,0,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[2,0,1,0,2,0],HP:[2,0,0,0,1,0],JK:[0,0,0,2,2,0],JH:[1,0,1,2,2,0],KA:[5,0,3,0,4,0],KL:[0,0,5,1,3,0],MP:[8,0,0,0,3,0],MH:[2,4,1,6,6,0],MN:[0,0,0,0,1,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[0,0,9,0,1,0],PY:[0,0,0,0,1,0],PB:[1,3,0,0,3,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,17,0,1,0],TS:[1,2,0,0,4,0],TR:[0,0,1,0,0,0],UP:[3,0,25,0,3,0],UK:[1,0,0,0,2,0],WB:[0,0,15,0,1,0]},
   2019:{AP:[4,0,5,0,2,0],AR:[0,0,0,0,1,0],AS:[1,2,0,0,3,1],BR:[4,7,0,3,1,1],CG:[3,0,0,0,2,0],DL:[0,0,3,0,0,0],GA:[1,0,0,0,0,0],GJ:[7,0,0,0,4,0],HR:[2,0,1,0,1,1],HP:[1,0,0,0,2,0],JK:[1,0,2,0,1,0],JH:[3,0,1,1,1,0],KA:[4,0,0,1,7,0],KL:[0,1,4,2,2,0],MP:[8,0,0,0,3,0],MH:[7,1,1,7,3,0],MN:[1,0,0,0,0,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[1,0,8,0,1,0],PY:[0,1,0,0,0,0],PB:[1,3,0,0,3,0],RJ:[9,0,0,0,1,0],SK:[0,0,1,0,0,0],TN:[0,11,1,6,0,0],TS:[1,0,5,0,1,0],TR:[0,0,1,0,0,0],UP:[15,0,14,0,2,0],UK:[1,0,0,0,2,0],WB:[0,0,14,0,2,0]},
   2024:{AP:[1,2,8,0,0,0],AR:[1,0,0,0,0,0],AS:[4,2,1,0,0,0],BR:[5,5,0,5,1,0],CG:[1,0,0,0,4,0],DL:[0,0,0,3,0,0],GA:[1,0,0,0,0,0],GJ:[10,0,0,0,1,0],HR:[4,0,1,0,0,0],HP:[3,0,0,0,0,0],JK:[0,0,0,0,0,4],JH:[3,0,0,3,0,0],KA:[6,1,0,0,5,0],KL:[0,0,0,8,1,0],MP:[8,0,0,0,3,0],MH:[7,5,0,4,3,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,1,0,0,0,0],NL:[1,0,0,0,0,0],OD:[3,0,7,0,0,0],PY:[1,0,0,0,0,0],PB:[0,0,0,7,0,0],RJ:[6,0,0,0,4,0],SK:[0,1,0,0,0,0],TN:[0,2,4,11,1,0],TS:[0,0,4,0,3,0],TR:[1,0,0,0,0,0],UP:[24,1,2,4,0,0],UK:[3,0,0,0,0,0],WB:[2,0,0,14,0,0]}};
-const RS_RECTS=drawIndia(document.getElementById("map-rs")), RS_SEAT=new Map();
-(function(){
-  const svg=document.getElementById("map-rs"), g=el("g",{},svg);
-  svg.insertBefore(g,svg.lastChild); // circles above the squares, below the names
-  Object.values(RS_RECTS).flat().forEach(r=>RS_SEAT.set(r,el("circle",{class:"rs-seat",cx:r.x.baseVal.value+S/2,cy:r.y.baseVal.value+S/2,r:S*.43},g)));
-})();
+const RS_RECTS=drawIndia(document.getElementById("map-rs")); // squares hidden by CSS; they give each state's shape and names
+const RS_RMAX=.6;   // largest circle radius, in squares (about Karnataka's), so states with few seats don't get huge circles
+// n equal circles spread evenly over a state's squares: k-means on a fine grid of points inside the squares,
+// radius from the closest pair. Returns [cx, cy, r] in square units, ordered row by row (snake) for colour grouping.
+function shapeSeats(cells,n){
+  const pts=[]; const st=.125;
+  cells.forEach(([x,y])=>{for(let i=st/2;i<1;i+=st)for(let j=st/2;j<1;j+=st)pts.push([x+i,y+j])});
+  pts.sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+  let c=Array.from({length:n},(_,k)=>pts[Math.floor((k+.5)*pts.length/n)].slice());
+  for(let it=0;it<80;it++){
+    const sum=c.map(()=>[0,0,0]);
+    pts.forEach(p=>{let b=0,bd=1e9;c.forEach((q,k)=>{const d=(p[0]-q[0])**2+(p[1]-q[1])**2;if(d<bd){bd=d;b=k}});sum[b][0]+=p[0];sum[b][1]+=p[1];sum[b][2]++});
+    c=sum.map((s,k)=>s[2]?[s[0]/s[2],s[1]/s[2]]:c[k]);
+  }
+  let md=1e9; c.forEach((a,i)=>c.slice(i+1).forEach(b=>md=Math.min(md,Math.hypot(a[0]-b[0],a[1]-b[1]))));
+  const r=Math.min(md/2*.94,RS_RMAX);
+  // rows: centres whose y is within about a radius belong to one row; snake through the rows
+  c.sort((a,b)=>a[1]-b[1]); const rows=[];
+  c.forEach(p=>{const last=rows[rows.length-1]; if(last&&p[1]-last[0][1]<r) last.push(p); else rows.push([p])});
+  return rows.flatMap((row,i)=>row.sort((a,b)=>i%2?b[0]-a[0]:a[0]-b[0])).map(([x,y])=>[x,y,r]);
+}
+// State names as boxes in square units (same size estimate as drawIndia: 12.5-unit text, ~0.7 squares tall)
+const RS_NAMEBOX=INDIA.map(([,name,,[lx,ly,anchor]])=>{const w=name.length*.32*12.5/11*.92, x0=anchor==="start"?lx:anchor==="end"?lx-w:lx-w/2;
+  return [x0,ly-.33,x0+w,ly+.33]});
+// One set of circles per region and seat count (Andhra Pradesh changes in 2014), built on first use
+const RS_LAYOUT=new Map(), rsLayer=(()=>{const svg=document.getElementById("map-rs"), g=el("g",{},svg);
+  svg.insertBefore(g,svg.lastChild); return g})(); // circles below the names
+function rsCircles(code,data,n){
+  const parts=code==="JK"&&!("LA" in data)?["JK","LA"]:code==="AP"&&!("TS" in data)?["AP","TS"]:[code], key=parts.join("+")+":"+n;
+  if(!RS_LAYOUT.has(key)){
+    const cells=parts.flatMap(c=>INDIA.find(s=>s[0]===c)[2]); let seats=shapeSeats(cells,n);
+    // pull the circles toward the state's centre until neighbours are about 12% of a circle apart (at most to 75%)
+    if(n>1){
+      const r0=seats[0][2], cx=seats.reduce((a,p)=>a+p[0],0)/n, cy=seats.reduce((a,p)=>a+p[1],0)/n;
+      let md=1e9; seats.forEach((a,i)=>seats.slice(i+1).forEach(b=>md=Math.min(md,Math.hypot(a[0]-b[0],a[1]-b[1]))));
+      const f=Math.max(.75,Math.min(1,2*r0*1.12/md));
+      seats=seats.map(([x,y,r])=>[cx+(x-cx)*f,cy+(y-cy)*f,r]);
+    }
+    // shrink the state's circles (all together) if any would touch a state name
+    const r=Math.min(seats[0][2],...seats.flatMap(([x,y])=>RS_NAMEBOX.map(([x0,y0,x1,y1])=>
+      Math.hypot(Math.max(x0-x,0,x-x1),Math.max(y0-y,0,y-y1))-.08)));
+    RS_LAYOUT.set(key,seats.map(([x,y])=>el("circle",{class:"rs-seat",cx:x*S,cy:y*S,r:r*S},rsLayer)));
+  }
+  return RS_LAYOUT.get(key);
+}
 let rsYear=null;
 function setRS(year,animate){
   const N=[0,0,0,0,0,0], data=RS[year], on=new Set();
   for(const code in data){
-    const rects=regionRects(RS_RECTS,code,data); let k=0;
-    data[code].forEach((n,i)=>{N[i]+=n;for(let j=0;j<n;j++){const c=RS_SEAT.get(rects[k++]);on.add(c);
+    const circles=rsCircles(code,data,data[code].reduce((a,b)=>a+b,0)); let k=0;
+    data[code].forEach((n,i)=>{N[i]+=n;for(let j=0;j<n;j++){const c=circles[k++];on.add(c);
       c.classList.toggle("vac",i===5); c.style.fill=i===5?"":LS_FILL[LS_GROUPS[i]]}});
   }
-  RS_SEAT.forEach(c=>c.classList.toggle("on",on.has(c)));
+  RS_LAYOUT.forEach(cs=>cs.forEach(c=>c.classList.toggle("on",on.has(c))));
   const tot=N.reduce((a,b)=>a+b,0), anim=animate&&rsYear!==null;
   [...LS_GROUPS,"vac"].forEach((g,i)=>document.getElementById("rs-b-"+g).style.width=N[i===5?5:i]/tot*100+"%");
   countTo(document.getElementById("rs-n-nda"),N[0]+N[1],anim);
@@ -655,7 +694,7 @@ function setRS(year,animate){
   const bloc=LS_META[year].bloc;
   document.getElementById("rs-bloc").textContent=bloc;
   document.getElementById("rs-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("map-rs").setAttribute("aria-label",`Rajya Sabha at the end of ${year}: one circle per elected seat on the grey Lok Sabha map`);
+  document.getElementById("map-rs").setAttribute("aria-label",`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
   rsYear=year;
 }
 setRS(2024,false);
