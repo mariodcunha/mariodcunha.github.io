@@ -1,10 +1,13 @@
 ELECTORAL CARTOGRAMS — PROJECT HISTORY AND CONTEXT
 ==================================================
 Owner: Mario D'Cunha (github.com/mariodcunha)
-Live page: https://mariodcunha.github.io/usa-electoral/
-This file: https://mariodcunha.github.io/usa-electoral/CONTEXT.txt
+Live page: https://mariodcunha.github.io/electoral-maps/
+    (folder renamed from usa-electoral on 2026-10-09; usa-electoral/index.html
+    is now a redirect that keeps the #hash; the checkout is sparse, so new
+    folders need `git sparse-checkout add <folder>`)
+This file: https://mariodcunha.github.io/electoral-maps/CONTEXT.txt
 Repo: https://github.com/mariodcunha/mariodcunha.github.io (branch: master; GitHub Pages)
-Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/usa-electoral/index.html
+Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/index.html
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
@@ -783,20 +786,21 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      maps fill row by row (snake) instead of column by column.
  20. Rajya Sabha circles: no outline (solid, like the Senate); vacant seats
      keep a hollow grey ring.
-     Steps 13-20 committed together on 2026-10-09 (not pushed unless noted).
+     Steps 13-20 committed together on 2026-10-09 (03ffeca).
+ 21. Folder renamed usa-electoral -> electoral-maps (redirect left at the old
+     path), title "Electoral Maps"; steps 13-21 pushed live on 2026-10-09.
 
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = up to step 12 (commit ad78165). Steps 13-20 are committed locally
-  on master; push only when the owner says so.
+- Live = everything up to step 21 (pushed 2026-10-09). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
-- Page <title> still says "USA Electoral 2024" even though India is included.
+- Page <title> is "Electoral Maps" (was "USA Electoral 2024").
 
 
