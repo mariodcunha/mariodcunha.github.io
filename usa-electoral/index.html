@@ -10,7 +10,7 @@
 :root{
   --bg:#ffffff; --fg:#121212; --muted:#6b6b6b; --chip:#f2f2f2;
   --rep:#c53f3d; --flip:#8e1f1d; --flip-line:#5c100f; --dem:#3471b4; --dflip:#1e467a; --dflip-line:#112c52;
-  --ind:#7aa6d8; --house:#e4e4e4;
+  --ind:#7aa6d8; --house:#e4e4e4; --land:#f3f2ee; --land-line:#cfccc3; --seat-empty:#d3d3d3;
   --sans:"Libre Franklin",Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.65,0,.35,1);
   color-scheme:light;
@@ -28,6 +28,27 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 .toggle button:hover{color:var(--fg)}
 .toggle button[aria-selected="true"]{color:var(--fg)}
 .toggle button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+
+/* Top bar: race toggle on the left, country picker on the right */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.country{position:relative}
+.country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--fg);background:var(--chip);border:0;border-radius:999px;padding:3px;cursor:pointer}
+.country>button .face{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border-radius:999px;height:31px;padding:0 12px 0 10px;box-shadow:0 1px 3px rgba(0,0,0,.16)}
+.country>button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+.country .chev{width:10px;height:10px;transition:transform .25s var(--ease)}
+.country>button[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.flag{display:block;width:21px;height:14px;flex:none;box-shadow:0 0 0 .5px rgba(0,0,0,.25)}
+.menu{position:absolute;right:0;top:calc(100% + 6px);z-index:5;min-width:100%;list-style:none;margin:0;padding:4px;background:var(--bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.14),0 1px 3px rgba(0,0,0,.1);
+  opacity:0;transform:translateY(-4px);visibility:hidden;transition:opacity .18s,transform .18s var(--ease),visibility 0s .18s}
+.menu.open{opacity:1;transform:none;visibility:visible;transition:opacity .18s,transform .18s var(--ease)}
+.menu li{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 10px;border-radius:8px;font:600 13px/1 var(--sans);color:var(--muted);cursor:pointer;white-space:nowrap}
+.menu li:hover,.menu li.active{background:var(--chip);color:var(--fg)}
+.menu li[aria-selected="true"]{color:var(--fg)}
+.menu li[aria-selected="true"]::after{content:"✓";margin-left:auto;padding-left:12px;color:var(--fg)}
+.cand.n b,.cand.n span{color:var(--fg)}
+#map-india .seat-sq{fill:var(--seat-empty);stroke:var(--bg);stroke-width:1}
+#map-india{max-width:940px;margin:0 auto}
+#map-india text{font-size:var(--label-size,11px)}
 
 /* Panels fade between races */
 .panel{display:grid;gap:18px;transition:opacity .2s ease,transform .2s ease}
@@ -76,13 +97,26 @@ svg.map text.in{fill:#fff;font-weight:600}
 </head>
 <body>
 <main>
+  <div class="topbar">
   <nav class="toggle" role="tablist" aria-label="Race">
     <span class="thumb" aria-hidden="true"></span>
-    <button role="tab" id="tab-president" data-race="president">President</button>
-    <button role="tab" id="tab-senate" data-race="senate">Senate</button>
-    <button role="tab" id="tab-house" data-race="house">House</button>
-    <button role="tab" id="tab-governors" data-race="governors">Governors</button>
+    <button role="tab" id="tab-president" data-race="president" data-country="usa">President</button>
+    <button role="tab" id="tab-senate" data-race="senate" data-country="usa">Senate</button>
+    <button role="tab" id="tab-house" data-race="house" data-country="usa">House</button>
+    <button role="tab" id="tab-governors" data-race="governors" data-country="usa">Governors</button>
+    <button role="tab" id="tab-loksabha" data-race="loksabha" data-country="india" hidden>Lok Sabha</button>
   </nav>
+  <div class="country">
+    <button type="button" id="country-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="country-menu" aria-label="Country">
+      <span class="face"><span id="country-flag"><svg class="flag" viewBox="0 0 21 14" aria-hidden="true"><rect width="21" height="14" fill="#b22234"/><path d="M0 1.62h21M0 3.77h21M0 5.92h21M0 8.08h21M0 10.23h21M0 12.38h21" stroke="#fff" stroke-width="1.08"/><rect width="8.4" height="7.54" fill="#3c3b6e"/><g fill="#fff"><circle cx="1.4" cy="1.3" r=".45"/><circle cx="3.5" cy="1.3" r=".45"/><circle cx="5.6" cy="1.3" r=".45"/><circle cx="7.3" cy="1.3" r=".45"/><circle cx="2.45" cy="2.9" r=".45"/><circle cx="4.55" cy="2.9" r=".45"/><circle cx="6.6" cy="2.9" r=".45"/><circle cx="1.4" cy="4.5" r=".45"/><circle cx="3.5" cy="4.5" r=".45"/><circle cx="5.6" cy="4.5" r=".45"/><circle cx="7.3" cy="4.5" r=".45"/><circle cx="2.45" cy="6.1" r=".45"/><circle cx="4.55" cy="6.1" r=".45"/><circle cx="6.6" cy="6.1" r=".45"/></g></svg></span><span id="country-name">USA</span>
+      <svg class="chev" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </button>
+    <ul class="menu" id="country-menu" role="listbox" aria-label="Country" tabindex="-1">
+      <li role="option" id="opt-usa" data-country="usa" aria-selected="true"><svg class="flag" viewBox="0 0 21 14" aria-hidden="true"><rect width="21" height="14" fill="#b22234"/><path d="M0 1.62h21M0 3.77h21M0 5.92h21M0 8.08h21M0 10.23h21M0 12.38h21" stroke="#fff" stroke-width="1.08"/><rect width="8.4" height="7.54" fill="#3c3b6e"/><g fill="#fff"><circle cx="1.4" cy="1.3" r=".45"/><circle cx="3.5" cy="1.3" r=".45"/><circle cx="5.6" cy="1.3" r=".45"/><circle cx="7.3" cy="1.3" r=".45"/><circle cx="2.45" cy="2.9" r=".45"/><circle cx="4.55" cy="2.9" r=".45"/><circle cx="6.6" cy="2.9" r=".45"/><circle cx="1.4" cy="4.5" r=".45"/><circle cx="3.5" cy="4.5" r=".45"/><circle cx="5.6" cy="4.5" r=".45"/><circle cx="7.3" cy="4.5" r=".45"/><circle cx="2.45" cy="6.1" r=".45"/><circle cx="4.55" cy="6.1" r=".45"/><circle cx="6.6" cy="6.1" r=".45"/></g></svg>USA</li>
+      <li role="option" id="opt-india" data-country="india" aria-selected="false"><svg class="flag" viewBox="0 0 21 14" aria-hidden="true"><rect width="21" height="4.67" fill="#ff9933"/><rect y="4.67" width="21" height="4.67" fill="#fff"/><rect y="9.33" width="21" height="4.67" fill="#138808"/><circle cx="10.5" cy="7" r="1.85" fill="none" stroke="#000080" stroke-width=".4"/><circle cx="10.5" cy="7" r=".4" fill="#000080"/><path d="M10.5 5.15v3.7M8.65 7h3.7M9.19 5.69l2.62 2.62M9.19 8.31l2.62-2.62" stroke="#000080" stroke-width=".18"/></svg>India</li>
+    </ul>
+  </div>
+  </div>
 
   <section class="panel" id="panel-president" role="tabpanel" aria-labelledby="tab-president">
     <div class="tally">
@@ -128,6 +162,17 @@ svg.map text.in{fill:#fff;font-weight:600}
   </section>
 
   <section class="panel" id="panel-governors" role="tabpanel" aria-labelledby="tab-governors" hidden></section>
+  <section class="panel" id="panel-loksabha" role="tabpanel" aria-labelledby="tab-loksabha" hidden>
+    <div class="tally">
+      <div class="cand n"><b>543</b><span>Lok Sabha seats</span></div>
+    </div>
+    <div class="barwrap">
+      <div class="bar" aria-hidden="true"><i style="flex:1;background:var(--house)"></i><span class="mark" style="left:50.09%"></span></div>
+      <div class="under"><span class="need" style="left:50.09%">272<small>FOR MAJORITY</small></span></div>
+    </div>
+    <div class="mapwrap"><svg class="map" id="map-india" role="img" aria-label="Lok Sabha seats by state, one square per seat"></svg></div>
+    <div class="legend"><span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--seat-empty)"/></svg>Each square is one Lok Sabha seat</span></div>
+  </section>
 </main>
 <script>
 // ---------- President: each state as rows of squares [row, firstCol, lastCol] ----------
@@ -312,24 +357,53 @@ function setChamber(mode,animate){
   if(!animate){void panel.offsetWidth;requestAnimationFrame(()=>panel.classList.remove("instant"))}
 }
 
+// ---------- India: Lok Sabha, one square per seat ----------
+// Each state: [code, name, seat squares, label [x, y, anchor]], all in square units.
+// Figma block shapes, packed for real proportions with one-square gaps; each name sits
+// in the free row above its block (room left for text up to ~15.7 SVG units, see CONTEXT.txt).
+const INDIA=[["UP","Uttar Pradesh",[[13,13],[13,15],[14,10],[14,11],[14,12],[14,13],[14,14],[15,10],[15,11],[15,12],[15,13],[15,14],[16,10],[16,11],[16,12],[16,13],[16,14],[17,11],[17,12],[17,13],[17,14],[17,15],[17,16],[17,17],[17,18],[18,11],[18,12],[18,13],[18,14],[18,15],[18,16],[18,17],[19,11],[19,12],[19,13],[19,14],[19,15],[19,16],[19,17],[19,18],[20,12],[20,13],[20,14],[20,15],[20,16],[20,17],[20,18],[21,13],[21,14],[21,15],[21,16],[21,17],[21,18],[22,13],[22,14],[22,15],[22,16],[22,17],[22,18],[23,13],[23,14],[23,15],[23,16],[23,17],[23,18],[23,19],[24,14],[24,15],[24,16],[24,17],[24,18],[24,19],[25,14],[25,15],[25,16],[25,17],[25,18],[26,14],[26,15],[26,16]],[15.5,9.5,"middle"]],["MH","Maharashtra",[[7,27],[7,28],[7,29],[7,30],[7,31],[7,32],[8,26],[8,27],[8,28],[8,29],[8,30],[8,31],[8,32],[9,25],[9,26],[9,27],[9,28],[9,29],[9,30],[9,31],[10,25],[10,26],[10,27],[10,28],[10,29],[10,30],[10,31],[11,26],[11,27],[11,28],[11,29],[11,30],[12,26],[12,27],[12,28],[12,29],[12,30],[13,26],[13,27],[13,28],[13,29],[14,26],[14,27],[15,26],[15,27],[16,26],[16,27],[16,28]],[10.0,24.5,"middle"]],["WB","W. Bengal",[[32,22],[33,22],[34,22],[34,23],[34,24],[35,21],[35,22],[35,23],[35,24],[35,25],[36,21],[36,22],[36,23],[36,24],[36,25],[36,26],[37,18],[37,19],[37,20],[37,21],[37,22],[37,23],[37,24],[37,25],[37,26],[38,15],[38,16],[38,17],[38,18],[38,20],[38,21],[38,22],[38,23],[38,24],[38,25],[38,26],[39,15],[39,22],[39,23],[39,24],[39,25],[40,15]],[39.5,14.5,"middle"]],["BR","Bihar",[[27,18],[28,13],[28,15],[28,17],[28,18],[28,19],[29,14],[29,15],[29,16],[29,17],[29,18],[29,19],[30,14],[30,15],[30,16],[30,17],[30,18],[30,19],[31,14],[31,15],[31,16],[31,17],[31,18],[32,15],[32,16],[32,17],[32,18],[33,15],[33,16],[33,17],[33,18],[34,15],[34,16],[34,17],[34,18],[35,15],[35,16],[35,17],[36,15],[36,16]],[28.5,12.5,"middle"]],["TN","Tamil Nadu",[[12,45],[12,46],[12,47],[13,45],[13,46],[13,47],[13,48],[13,49],[13,50],[13,51],[14,43],[14,44],[14,45],[14,46],[14,47],[14,48],[14,49],[14,50],[15,43],[15,44],[15,45],[15,46],[15,47],[15,48],[15,49],[15,50],[16,42],[16,43],[16,44],[16,45],[16,46],[16,47],[16,48],[17,42],[17,43],[17,44],[17,45],[17,46],[17,47]],[17.0,41.5,"middle"]],["MP","Madhya Pradesh",[[7,21],[8,21],[8,22],[9,21],[9,22],[10,19],[10,20],[10,21],[10,22],[10,23],[11,18],[11,19],[11,20],[11,21],[11,22],[11,23],[12,21],[12,22],[12,23],[13,20],[13,21],[13,22],[13,23],[14,20],[14,21],[14,22],[14,23],[15,21],[15,22]],[11.5,17.5,"middle"]],["KA","Karnataka",[[8,37],[8,38],[9,36],[9,37],[9,38],[9,39],[9,40],[10,35],[10,36],[10,37],[10,38],[10,39],[10,40],[10,41],[11,35],[11,36],[11,37],[11,38],[11,39],[11,40],[11,41],[11,42],[12,34],[12,35],[12,36],[12,40],[12,41],[13,41]],[12.5,33.5,"middle"]],["GJ","Gujarat",[[0,20],[0,23],[0,24],[1,20],[1,21],[1,22],[1,23],[1,24],[1,25],[2,20],[2,21],[2,22],[2,23],[2,24],[2,25],[3,20],[3,21],[3,22],[3,23],[3,24],[4,20],[4,21],[4,22],[5,21],[5,22],[5,23]],[2.5,19.5,"middle"]],["RJ","Rajasthan",[[3,13],[3,14],[3,15],[3,16],[4,12],[4,13],[4,14],[4,15],[4,16],[4,17],[5,12],[5,13],[5,14],[5,15],[5,16],[5,17],[6,12],[6,13],[6,14],[6,15],[6,16],[7,13],[7,14],[7,15],[7,16]],[5.5,11.5,"middle"]],["AP","Andhra",[[15,37],[16,36],[16,37],[16,38],[16,39],[17,36],[17,37],[17,38],[17,39],[17,40],[18,35],[18,36],[18,37],[18,38],[18,39],[18,40],[19,35],[19,36],[19,37],[19,39],[19,40],[20,35],[21,34],[21,35],[22,34]],[22.0,33.5,"middle"]],["OD","Odisha",[[23,31],[23,32],[24,28],[24,30],[24,31],[25,27],[25,28],[25,29],[25,30],[26,26],[26,27],[26,28],[26,29],[26,30],[27,26],[27,27],[27,28],[27,29],[27,30],[28,27],[28,28]],[27.0,25.5,"middle"]],["KL","Kerala",[[6,42],[7,43],[8,44],[8,45],[9,44],[9,45],[9,46],[9,47],[9,48],[10,46],[10,47],[10,48],[10,49],[10,50],[10,51],[11,49],[11,50],[11,51],[11,52],[11,53]],[6.5,41.5,"middle"]],["TS","Telangana",[[14,31],[14,32],[15,30],[15,31],[15,32],[15,33],[16,30],[16,31],[16,32],[16,33],[16,34],[17,30],[17,31],[17,32],[17,33],[18,31],[18,32]],[16.5,29.5,"middle"]],["AS","Assam",[[42,16],[43,16],[44,15],[44,16],[44,17],[45,15],[45,16],[45,17],[45,18],[45,19],[46,15],[46,16],[47,14],[47,15]],[47.5,13.5,"middle"]],["JH","Jharkhand",[[26,21],[26,22],[26,23],[27,21],[27,22],[27,23],[27,24],[28,21],[28,22],[28,23],[28,24],[29,21],[29,22],[29,24]],[28.0,20.5,"middle"]],["PB","Punjab",[[6,4],[6,5],[6,6],[7,3],[7,4],[7,5],[7,6],[8,3],[8,4],[8,5],[8,6],[9,4],[9,5]],[8.0,2.5,"middle"]],["CG","C.G.",[[18,24],[18,25],[18,26],[19,23],[19,24],[19,25],[19,26],[20,23],[20,24],[21,23],[21,24]],[20.5,22.5,"middle"]],["HR","Haryana",[[9,8],[9,9],[10,8],[10,9],[10,10],[11,7],[11,8],[11,9],[11,10],[12,6]],[12.5,5.5,"middle"]],["DL","Delhi",[[9,13],[9,14],[10,12],[10,13],[10,14],[11,13],[11,14]],[10.5,11.5,"middle"]],["JK","J.&K.",[[7,0],[8,0],[8,1],[9,0],[9,1]],[8.5,-0.5,"middle"]],["UK","Uttarakhand",[[15,7],[16,7],[17,7],[15,8],[16,8]],[16.5,6.5,"middle"]],["HP","Himachal",[[11,3],[11,4],[12,3],[12,4]],[12.0,2.5,"middle"]],["GA","Goa",[[6,36],[6,37]],[6.5,35.5,"middle"]],["AR","Arunachal",[[49,13],[50,13]],[50.0,12.5,"middle"]],["MN","Manipur",[[48,19],[48,20]],[48.5,18.5,"middle"]],["ML","Meghalaya",[[41,19],[42,19]],[42.0,18.5,"middle"]],["TR","Tripura",[[43,21],[43,22]],[43.5,20.5,"middle"]],["DD","D.N.H.&D.D.",[[4,27],[5,27]],[5.0,26.5,"middle"]],["LA","Ladakh",[[12,0]],[12.5,-0.5,"middle"]],["CH","Chandigarh",[[7,8]],[7.5,7.5,"middle"]],["SK","Sikkim",[[36,13]],[36.5,12.5,"middle"]],["NL","Nagaland",[[49,17]],[49.5,16.5,"middle"]],["MZ","Mizoram",[[46,22]],[46.5,21.5,"middle"]],["PY","Puducherry",[[20,44]],[20.5,43.5,"middle"]],["AN","A.&N. Islands",[[39,44]],[39.5,43.5,"middle"]],["LD","Lakshadweep",[[4,46]],[4.5,45.5,"middle"]]];
+(function drawIndia(){
+  const svg=document.getElementById("map-india");
+  const seats=el("g",{},svg), names=el("g",{},svg);
+  const b=[1e9,1e9,-1e9,-1e9];
+  const grow=(x,y)=>{b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x);b[3]=Math.max(b[3],y)};
+  INDIA.forEach(([code,name,cells,[lx,ly,anchor]])=>{
+    cells.forEach(([x,y])=>{el("rect",{x:x*S,y:y*S,width:S,height:S,class:"seat-sq"},seats);grow(x,y);grow(x+1,y+1)});
+    label(names,[name,lx,ly,anchor]);
+    const w=name.length*.42;grow(anchor==="start"?lx+w:anchor==="end"?lx-w:lx+w/2,ly+.45);grow(anchor==="middle"?lx-w/2:lx,ly-.45);
+  });
+  const vbW=(b[2]-b[0])*S+20;
+  svg.setAttribute("viewBox",`${b[0]*S-10} ${b[1]*S-10} ${vbW} ${(b[3]-b[1])*S+20}`);
+  // This map is scaled down more than the House map (it is taller and capped at 940px),
+  // so grow its labels to render at the same on-screen size as the House labels.
+  const wrap=svg.parentNode;
+  new ResizeObserver(()=>{
+    const cw=Math.max(wrap.clientWidth,560); if(!wrap.clientWidth) return;
+    svg.style.setProperty("--label-size",(11*(cw/VIEW.house[2])/(Math.min(cw,940)/vbW)).toFixed(2)+"px");
+  }).observe(wrap);
+})();
 // ---------- Race toggle ----------
 const tabs=[...document.querySelectorAll('.toggle button')];
 const thumb=document.querySelector('.toggle .thumb');
+const visibleTabs=()=>tabs.filter(t=>!t.hidden);
 const panelOf=r=>document.getElementById("panel-"+(r==="house"||r==="senate"?"chamber":r));
-let current=null;
+const countryOf=r=>tabs.find(t=>t.dataset.race===r)?.dataset.country;
+let current=null, lastRace={usa:"president",india:"loksabha"};
 function moveThumb(tab,animate){
   if(!animate) thumb.style.transition="none";
   thumb.style.left=tab.offsetLeft+"px"; thumb.style.width=tab.offsetWidth+"px";
   if(!animate){void thumb.offsetWidth;thumb.style.transition=""}
 }
 function show(race,animate){
-  if(!tabs.some(t=>t.dataset.race===race)) race="president";
+  if(!countryOf(race)) race="president";
   if(race===current) return;
+  setCountryUI(countryOf(race));
   const tab=tabs.find(t=>t.dataset.race===race);
   tabs.forEach(t=>{const on=t===tab;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1});
-  moveThumb(tab,animate);
+  moveThumb(tab,animate&&countryOf(current)===countryOf(race));
   const from=current&&panelOf(current), to=panelOf(race);
   const chamber=race==="house"||race==="senate";
+  lastRace[countryOf(race)]=race;
   if(from===to){ if(chamber) setChamber(race,animate); current=race; return }
   if(chamber) setChamber(race,false);
   const reveal=()=>{
@@ -339,12 +413,39 @@ function show(race,animate){
   };
   if(from&&animate&&!reduce){from.classList.add("out");setTimeout(reveal,200)} else reveal();
   current=race;
+  history.replaceState(null,"","#"+race);
 }
-tabs.forEach((t,i)=>{
-  t.addEventListener("click",()=>{show(t.dataset.race,true);history.replaceState(null,"","#"+t.dataset.race)});
+tabs.forEach(t=>{
+  t.addEventListener("click",()=>show(t.dataset.race,true));
   t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
-    if(d){const n=tabs[(i+d+tabs.length)%tabs.length];n.focus();n.click()}});
+    if(d){const v=visibleTabs(),n=v[(v.indexOf(t)+d+v.length)%v.length];n.focus();n.click()}});
 });
+
+// ---------- Country picker ----------
+const cBtn=document.getElementById("country-btn"), cMenu=document.getElementById("country-menu");
+const opts=[...cMenu.querySelectorAll("li")];
+function setCountryUI(country){
+  tabs.forEach(t=>t.hidden=t.dataset.country!==country);
+  opts.forEach(o=>o.setAttribute("aria-selected",o.dataset.country===country));
+  const o=opts.find(o=>o.dataset.country===country);
+  document.getElementById("country-flag").innerHTML=o.querySelector("svg").outerHTML;
+  document.getElementById("country-name").textContent=o.textContent.trim();
+}
+function openMenu(open){
+  cMenu.classList.toggle("open",open); cBtn.setAttribute("aria-expanded",open);
+  if(open){const sel=opts.find(o=>o.getAttribute("aria-selected")==="true");opts.forEach(o=>o.classList.toggle("active",o===sel));cMenu.focus()}
+}
+function choose(country){openMenu(false);cBtn.focus();show(lastRace[country],true)}
+cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
+opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
+cMenu.addEventListener("keydown",e=>{
+  const i=opts.findIndex(o=>o.classList.contains("active"));
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();const n=(i+(e.key==="ArrowDown"?1:-1)+opts.length)%opts.length;opts.forEach((o,k)=>o.classList.toggle("active",k===n))}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();if(i>=0)choose(opts[i].dataset.country)}
+  else if(e.key==="Escape"){openMenu(false);cBtn.focus()}
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".country"))openMenu(false)});
+
 addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
 show(location.hash.slice(1),false);
