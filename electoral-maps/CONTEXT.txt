@@ -24,9 +24,25 @@ A single self-contained HTML page (index.html: inline CSS + JS, no build step, n
 dependencies except the Libre Franklin Google Font). It draws election results as
 square cartograms, NYT-style: one square per electoral vote / seat.
 
-  USA   - President (2024 electoral college, Harris 226 vs Trump 312)
-        - Senate and House (one shared "chamber" map that animates between the two)
-        - Governors
+  USA   - President 2008-2024 (electoral college; year stepper)
+        - House and Senate 2008-2024, every two years. See US HISTORY 2008-2024.
+        - Governors 2008-2024 (same years and shared year stepper / chYear as
+          House and Senate): the House squares of each state, coloured by the
+          governor in office after that November's election (January after;
+          odd-year VA/NJ/KY/LA/MS winners count from the next even year).
+          GOV_HIST {year:{d, i}}, everyone else R; independents in --ind with
+          a named legend entry (Chafee RI 2010-12, Walker AK 2014-16). Totals
+          D/R(/I): 08 29/21, 10 20/29/1, 12 19/30/1, 14 18/31/1, 16 16/33/1,
+          18 23/27, 20 23/27, 22 24/26, 24 23/27 (typed from memory; totals
+          match the published post-election counts);
+          square borders take the fill colour so a state reads as one shape.
+          Shape size = House seats = population; the bar shows the share of
+          House seats in D / R governed states (242 / 193 -> 56% / 44%).
+        - ALL FOUR US races share ONE svg (#map-us, drawUS) in one panel
+          (#panel-us), so switching tab or year morphs the map: colours change
+          and squares grow/shrink in place (scale), all at the same moment,
+          .45s, nothing fades (owner, 2026-10-09). President = House squares +
+          2 elector squares per state (ESQ, CHAMBER e); Senate circles scale in.
   India - Lok Sabha (543 seats) coloured by alliance, with a year stepper
           (2004, 2009, 2014, 2019, 2024) and Seat share / Vote share (all four
           years). See LOK SABHA 2024 RESULTS and EARLIER ELECTIONS.
@@ -36,13 +52,12 @@ square cartograms, NYT-style: one square per electoral vote / seat.
           (like the Senate view), 2004-2024. See RAJYA SABHA VIEW.
 
 UI: ONE top bar row: race toggle (pill tabs with a sliding thumb), then
-#controls = year stepper #year (Lok Sabha and every USA race; USA has only
-2024 so both arrows are disabled there; hidden on Rajya Sabha / States) and
+#controls = year stepper #year (every race; Governors 2024 only) and
 the Seat share / Vote share toggle #ls-share (Lok Sabha only; the owner asked
 for no seat/vote share on the USA maps), then the country picker (flag + name
 dropdown, USA / India) pushed right. Below: tally numbers + bar with majority
 marker, map, legend. Switching country swaps the visible tabs (USA: President,
-Senate, House, Governors; India: Lok Sabha, Rajya Sabha, States) and remembers
+House, Senate, Governors (this order since 2026-10-09); India: Lok Sabha, Rajya Sabha, States) and remembers
 the last race per country. URL hash selects the race (#president, #senate,
 #house, #governors, #loksabha, #rajyasabha, #states). Always light/white theme.
 The row fits at ~730px content width (800px window); narrower, it wraps.
@@ -52,8 +67,9 @@ CODE MAP (index.html, top to bottom)
 ------------------------------------
 CSS :root tokens
     --bg #fff, --fg #121212, --muted #6b6b6b, --chip #f2f2f2
-    --dem #3471b4, --rep #c53f3d, --flip/--flip-line (hatched R flips),
-    --dflip/--dflip-line (hatched D flips), --ind #7aa6d8 (independents)
+    --dem #1f93e6 (same bright blue as --inc), --rep #e5534b (brighter,
+    calmer red), --ind #74bcf0 (independents; same as --india). No flip
+    hatching anywhere (owner, 2026-10-09: flips not marked on any map).
     --house #e4e4e4 (grey squares behind Senate seats)
     --seat-empty #d3d3d3 (India squares before colouring)
     India groups: --bjp #f26a1b (bold orange), --nda #f7a372 (same orange,
@@ -67,18 +83,31 @@ Shared map text style:  svg.map text {11px Libre Franklin, weight 500, --muted,
     (see "India label size" below).
 
 JS
-STATES / DEM / FLIP / PRES_LABELS - President map: each state as rows
-    [row, firstCol, lastCol]; DEM = states won by Harris; FLIP = flipped to Trump
-    (drawn hatched). ME-2 and NE-2 split votes are special-cased in drawPresident.
+STATES / DEM / PRES_LABELS - President map: each state as rows
+    [row, firstCol, lastCol]; DEM = states won by Harris. ME-2 (r0 c52) and
+    NE-2 (r14 c17) split votes are special-cased in drawPresident.
 CHAMBER - House + Senate, one object per state:
-    s state, c House squares [x,y,isDem,flipped], o two Senate seat squares,
-    p Senate seat parties (d/r/i), f index of a Republican Senate pickup,
-    h label [text, x, y, anchor] (AP-style abbreviations: "N.H.", "Calif.").
-S=20 (SVG units per square), el(), hatches(), square(),
+    s state, c House squares [x,y,isDem], o two Senate seat squares,
+    p Senate seat parties (d/r/i), h label [text, x, y] (centred).
+US names (both maps, owner's rule 2026-10-09): ALL outside the blocks.
+    Multi-word -> capitals, no dots: NH NJ NY NM RI DC. Directions -> N-Dako.
+    S-Dako. W-Virg. N-Caro. S-Caro. 4-6 letters as is (Texas, Maine, Ohio,
+    Kansas, Oregon, Nevada, Alaska, Hawaii, Idaho, Iowa, Utah). Longer ->
+    first 4 letters + "." (Penn. Mass. Mont. Verm. Conn. Loui. Cali. ...),
+    except Missouri "Misso." / Mississippi "Missi." (both would be "Miss.").
+US layout spread 15% (2026-10-09): each state block shifted by
+    round(centre * 0.15) squares (shapes unchanged) to make room for the
+    names; names placed by a greedy search (above, below, beside the block;
+    0.08 clear of own squares, 0.3 of other states' squares and Senate
+    circles, 0.2 between names), checked in the browser: no overlaps.
+fitBox(b, labels) sizes both US viewBoxes from squares + names.
+S=20 (SVG units per square), el(), square(),
     label(parent, [text, x, y, insideOrAnchor, anchor]) - shared helpers.
     Labels: a===1 means inside (white, centred); a string is the text-anchor.
-drawPresident / drawChamber (fills VIEW.house / VIEW.senate viewBoxes;
-    House viewBox is 940 units wide) / setViewBox / countTo / setChamber.
+drawUS (builds HSQ House squares incl. older-census extras, ESQ elector
+    squares, SEAT Senate circles; HOUSE_COL colours per year) / countTo /
+    setUS(race, animate, year) paints the shared map for any US race.
+    (Old drawPresident / drawChamber / drawGovernors are gone.)
 INDIA + drawIndia - Lok Sabha map, see next section.
 Race toggle (show, moveThumb, panelOf, countryOf, lastRace) and Country picker
     (setCountryUI, openMenu, choose; keyboard accessible listbox).
@@ -199,6 +228,54 @@ orientation only - the real data has per-state fractional offsets)
 54 ...........k
 55 ...........k
 56
+
+
+
+US HISTORY 2008-2024 (added 2026-10-09)
+---------------------------------------
+Years: President 2008/2012/2016/2020/2024 (presYear, PRES_YEARS);
+  House + Senate every two years 2008-2024 (chYear, CH_YEARS, shared by both
+  tabs so House <-> Senate keeps the year).
+Seat counts per census: House seats (and electoral votes = House + 2) per
+  state change with the census. CENSUS_DIFF = changes from today's (2020
+  census) counts: 2000 census for 2008/2010, 2010 census for 2012-2020.
+  Squares per state are kept in a fill order: today's squares row by row
+  (serp snake), then EXTRA squares (PRES_EXTRA / CHAMBER[].x) for states that
+  had more seats before (NY +3, OH +3, IL/MI/PA +2, CA IA LA MA MO NJ WV +1).
+  A year shows the first n squares and fades the rest out (class "gone"), so
+  states that had fewer seats (TX, FL, AZ...) lose squares from the bottom
+  row. Extras were placed next to each block, >= 1 empty square from other
+  states; names re-placed over all squares so none collide in any year.
+President: PRES {year: {d, r (names), dem (states won by the Democrat),
+  me2, ne2 (Maine / Nebraska 2nd districts)}}. Totals (by state won):
+  2008 Obama 365 / McCain 173; 2012 Obama 332 / Romney 206; 2016 Clinton 232
+  / Trump 306 (legend notes the faithless electors: official 227 / 304);
+  2020 Biden 306 / Trump 232; 2024 Harris 226 / Trump 312. Checked: 538 each.
+House: HOUSE_HIST {year: {state: [D, R]}} 2008-2022 (2024 = CHAMBER c).
+  Colours chain back from 2024: each earlier year starts from the next
+  year's colours and changes as few squares as possible (HOUSE_COL), so the
+  squares are per state, not per district. Vacant = --house grey (only NC-9
+  2018, legend shows "Vacant").
+  Totals D/R: 2008 257/178, 2010 193/242, 2012 201/234, 2014 188/247,
+  2016 194/241, 2018 235/199 (+1 vacant), 2020 222/213, 2022 213/222,
+  2024 215/220 - all match the official results.
+Senate: SEN_HIST {year: {state: "dr"}}, one letter per seat in class order
+  (circle 0 = lower class), d / r / i. Snapshot = 20 days after the new
+  Congress began (so 2020 includes the Georgia runoff winners; 2008 adds
+  Franken (MN) and Gillibrand (NY), seated later). Totals D+I / R: 2008 59/41,
+  2010 53/47, 2012 55/45, 2014 46/54, 2016 48/52, 2018 47/53, 2020 50/50
+  (note: VP tie-break, check on Democrats), 2022 51/49 (Sinema = i),
+  2024 47/53.
+Net gains (CH_GAIN, Wikipedia infobox "seat change"): House D+21, R+63, D+8,
+  R+13, D+6, D+41, R+13, R+9, D+2; Senate D+8, R+6, D+2, R+9, D+2, R+2, D+3,
+  D+1, R+4 (2008 -> 2024). CONTROL = party with the check mark.
+Source: github.com/unitedstates/congress-legislators (legislators-current
+  + legislators-historical JSON): every House term starting within days of
+  each Congress's first day, every Senate term covering the snapshot date.
+  Seats vacant on day one were credited to the November winner: IL-5 2008
+  (Emanuel), IL-2 + SC-1 2012, NY-11 2014, LA-5 + NY-22 2020, VA-4 2022,
+  FL-1 2024. Script: build.py in the session scratchpad (stdlib only).
+  President winners typed from the official results (sums checked).
 
 
 LOK SABHA 2024 RESULTS (seat share / vote share)
@@ -681,6 +758,7 @@ Python used: a scratch venv with pillow, numpy and scipy.
 DESIGN RULES THE OWNER HAS ASKED FOR
 ------------------------------------
 - Clean NYT-like look: white background, Libre Franklin, muted grey labels.
+- US maps: names outside the blocks (like the House map), no flip marking.
 - One square = one seat / vote. Squares have a 1px white stroke.
 - India: follow the owner's Figma tile map EXACTLY (shapes and positions);
   squares only (no outlines); squares stay the neutral grey --seat-empty.
@@ -830,12 +908,33 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      regular grid per state, one size (RS_R .6) everywhere; a few names
      moved on the RS map. Committed and pushed 2026-10-09.
 
+ 25. US maps: both spread 15%, every name outside its block with the owner's
+     short-name rule, Democrats --dem #1f93e6 / Republicans --rep #e5534b,
+     independents #74bcf0, flip hatching and pickup legends removed.
+     Pushed 2026-10-09.
+ 26. US years: President 2008-2024, House and Senate 2008-2024 (see US
+     HISTORY 2008-2024); tabs reordered President, House, Senate, Governors.
+     Fixed the President map viewBox (West Coast was clipped). Pushed 2026-10-09.
+ 27. Governors tab: 2024 map of merged House shapes coloured by governor
+     party. Pushed 2026-10-09.
+ 28. Rajya Sabha and States legends: extra sentence saying the year is a
+     snapshot in the Lok Sabha election year, not an RS / assembly election
+     year (#rs-note set in setRS; appended to #st-note). Pushed 2026-10-09.
+ 29. Lok Sabha, Rajya Sabha and States legends: .geo-note disclaimer that
+     squares/circles show seat counts per state, not where in the state
+     (Gujarat example). Pushed 2026-10-09.
+ 30. USA: President, House, Senate and Governors merged into one morphing
+     map (see WHAT IT IS). Senate circles now only scale (opacity fade
+     removed) so nothing fades on any US switch. Pushed 2026-10-09.
+ 31. Governors for every House/Senate year 2008-2024 (GOV_HIST), sharing
+     the chamber year. Pushed 2026-10-09.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 24 (pushed 2026-10-09). Keep the commit rule.
+- Live = everything up to step 31 (pushed 2026-10-09).
+  Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
