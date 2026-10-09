@@ -61,12 +61,12 @@ svg.map text.in{fill:#fff;font-weight:600}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
 
-/* House <-> Senate: the states never move. Going to the Senate the squares fade to gray,
-   then each state's two seats pop in; going back, the seats shrink away and the colors return. */
-#map-chamber .gray{opacity:0;transition:opacity .45s ease .3s}
-#map-chamber.senate .gray{opacity:1;transition-delay:0s}
-#map-chamber .seat{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .22s ease-in calc(var(--i) * 3ms)}
-#map-chamber.senate .seat{transform:scale(1);transition:transform .42s cubic-bezier(.34,1.56,.64,1) calc(.4s + var(--i) * 9ms)}
+/* House <-> Senate: the states never move. The squares change color and every seat
+   pops in (or shrinks away) together, all in the same moment. */
+#map-chamber .gray{opacity:0;transition:opacity .45s var(--ease)}
+#map-chamber.senate .gray{opacity:1}
+#map-chamber .seat{opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),opacity .45s var(--ease)}
+#map-chamber.senate .seat{opacity:1;transform:scale(1);transition:transform .45s cubic-bezier(.34,1.4,.64,1),opacity .2s ease}
 .instant,.instant *{transition:none!important;animation:none!important}
 
 @media (prefers-reduced-motion: reduce){
@@ -247,7 +247,6 @@ const VIEW={};
   const grow=(b,x,y)=>{b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x+1);b[3]=Math.max(b[3],y+1)};
   CHAMBER.forEach((st,i)=>{
     const g=el("g",{class:"state"},svg);
-    g.style.setProperty("--i",i);
     st.c.forEach(([x,y,d,f])=>{square(g,svg,x,y,d,f);grow(hb,x,y)});
     const gray=el("g",{class:"gray"},g);
     st.c.forEach(([x,y])=>el("rect",{x:x*S,y:y*S,width:S,height:S,fill:"var(--house)",stroke:"var(--bg)","stroke-width":1},gray));
