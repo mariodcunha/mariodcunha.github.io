@@ -67,51 +67,52 @@ Race toggle (show, moveThumb, panelOf, countryOf, lastRace) and Country picker
     (setCountryUI, openMenu, choose; keyboard accessible listbox).
 
 
-INDIA MAP (current = "geographic packing" layout, 2026-10-09)
-------------------------------------------------------------------
+INDIA MAP (current = owner's Figma tile map, re-imported 2026-10-09)
+--------------------------------------------------------------------
+The owner REJECTED the geographic re-packing (Appendix C) and asked to follow the
+Figma frame exactly. Source of truth = Figma node 3465:25773 (see header). The
+frame was edited by the owner after the first import (tighter layout,
+Uttarakhand 3 over 2), so ALWAYS re-fetch it rather than reusing old data.
+
 Data: const INDIA = [[code, name, cells, [labelX, labelY, anchor]], ...]
     code   two-letter state/UT code (UP, MH, WB, ... DD = DNH & Daman-Diu)
     name   label text
-    cells  [[x, y], ...] top-left corner of each seat square, in whole square
-           units on ONE shared grid (multiply by S=20 for SVG units).
-    label  [x, y, "middle"]: every name sits centred in the empty row directly
-           ABOVE its block's top row (x = middle of the top row, y = top - 0.5),
-           the same idea as the House map's names over each state.
-Shapes: each state's block shape comes from the owner's Figma tile map
-    (Appendix A), except Uttarakhand, changed on request to a row of 3 over a
-    row of 2, left-aligned:  uuu
-                             uu
-Positions: NOT the Figma positions any more. Blocks were re-packed so that
-    (1) the overall map keeps India's real geographic proportions (tall north
-        and south, wider towards the east, a bit shorter in the west),
-    (2) neighbouring states are separated by a uniform gap of one empty square
-        wherever geography allows (like the US House map: 1 square, sometimes 2),
-    (3) every block has a free row above it for its label.
-    Owner's priority: proportions first, uniform spacing second.
+    cells  [[x, y], ...] top-left corner of each seat square, in square units
+           (multiply by S=20 for SVG units). Values are fractional: every state
+           block keeps its exact Figma position, and blocks are not on one shared
+           grid (each has its own sub-square offset). Inside a state the squares
+           are on a whole-unit grid.
+    label  [x, y, anchor]; anchor "middle" | "start" | "end".
 Seat counts (total 543): UP 80, MH 48, WB 42, BR 40, TN 39, MP 29, KA 28, GJ 26,
     RJ 25, AP 25, OD 21, KL 20, TS 17, AS 14, JH 14, PB 13, CG 11, HR 10, DL 7,
     JK 5, UK 5, HP 4, GA 2, AR 2, MN 2, ML 2, TR 2, DD 2, and 1 each for LA, CH,
     SK, NL, MZ, PY, AN, LD.
 Label names: full names for most; shortened: J.&K., Himachal, W. Bengal, C.G.
-    (Chhattisgarh), Andhra, Arunachal, A.&N. Islands, D.N.H.&D.D.
+    (Chhattisgarh), Andhra, Arunachal, A.&N. Islands, DNH-DD (Dadra & Nagar
+    Haveli and Daman & Diu; owner asked for "DNH-DD").
+Labels: SMALL on purpose (shared svg.map text style, 11 SVG units = ~7.7px on
+    screen at 940px wide). The owner said small is fine as long as names never
+    cross each other or a square. Placement (done offline, in square units):
+    try centred above the block's top row (0.42 / 0.7 / 1.0 up), then below the
+    bottom row, shifting sideways by up to 2 squares, then beside the block
+    (start/end anchored); first spot whose text box (measured width at 11px,
+    0.59 tall) keeps 0.08 clear of every square and 0.2 clear of every placed
+    label wins. Biggest states are placed first. Verified in the browser: no
+    overlaps, nothing clipped.
+Hover: each state's squares are a <g class="st">. Pointer over the squares or
+    the name adds .hot to the name: colour --fg, 15px, weight 600, white halo
+    (paint-order stroke, 4px) and it is moved to the end of the names group so
+    it draws over neighbouring names. Squares stay grey (owner wants the grey
+    unchanged). #map-india text has pointer-events:auto (shared map text has
+    none).
 Drawing: squares are <rect class="seat-sq"> (fill --seat-empty #d3d3d3, 1px
-    white stroke); no outlines / land shapes. viewBox is fitted to squares plus
-    approximate label extents (name.length * 0.42 units wide).
-India label size: the owner wants the India state names to look the SAME size on
-    screen as the US House labels. The India map is taller (capped at 940px) so
-    it is scaled down more than the House map (940 units wide, full width). A
-    ResizeObserver on the India .mapwrap sets
-        --label-size = 11 * (cw / VIEW.house[2]) / (min(cw, 940) / vbW)  px
-    with cw = max(wrap width, 560) (both maps have min-width 560px). Verified
-    equal on-screen size (12.5px at a 1364px window, 7.8px at 700px).
-    The size must go on the text (via the CSS variable), not on the <g>: the
-    shared "svg.map text {font-size:11px}" rule would override inheritance.
+    white stroke); no outlines. viewBox fitted to squares plus approximate
+    label extents (name.length * 0.32 units wide).
+The earlier "same on-screen size as the House labels" sizing (--label-size +
+    ResizeObserver) was removed with this change.
 
-CURRENT INDIA LAYOUT GRID (x = column, y = row; this IS the INDIA cells data)
-Edit this grid to move a state, then regenerate the cell lists and labels
-(label = centre of the block's top row, one row up). After editing check: seat
-counts, no two different states 8-adjacent (one empty square between them, also
-diagonally), and no label touching any square or another label.
+APPROXIMATE GRID OF THE CURRENT LAYOUT (cells rounded to whole squares; for
+orientation only - the real data has per-state fractional offsets)
  U Uttar Pr. 80   X Maharashtra 48  W West Bengal 42  B Bihar 40
  N Tamil Nadu 39  M Madhya Pr. 29   K Karnataka 28    G Gujarat 26
  R Rajasthan 25   Y Andhra Pr. 25   O Odisha 21       k Kerala 20
@@ -122,69 +123,69 @@ diagonally), and no label touching any square or another label.
  L Ladakh 1       c Chandigarh 1    s Sikkim 1        n Nagaland 1
  z Mizoram 1      p Puducherry 1    e Andaman&Nic. 1  l Lakshadweep 1
 
-   0         1         2         3         4         5
- 0 .......JJJ..L......................................
- 1 ........JJ.........................................
- 2 ...................................................
- 3 .......PP..HH......................................
- 4 ......PPPP.HH......................................
- 5 ......PPPP.........................................
- 6 ......PPP...h......................................
- 7 ...........h...uuu.................................
- 8 .......c.hhh...uu..................................
- 9 .........hhh.......................................
-10 ..........hh..UUU..................................
-11 ..............UUUUUU...............................
-12 ....RRR...d...UUUUUUU..............................
-13 ...RRRRR.ddd.UUUUUUUUUUU....B.......s............aa
-14 ...RRRRR.ddd..UUUUUUUUUUUUU..BBB...............A...
-15 ...RRRRR.....U...UUUUUUUUUU.BBBBBBBBB.WWW...AAAA...
-16 ...RRRRR.........UUUUUUUUUU..BBBBBBBB.W...AAAAA....
-17 ....RR...........UUUUUUUUU..BBBBBBBB..W.....AA...n.
-18 ...........M.....U.UUUUUUU.BBBBBBBB..WW......A.....
-19 ..........MM...........UU...BBB......W...mm..A..i..
-20 GGGGG.....MM.MM......................WW.........i..
-21 .GGGGG.MMMMMMMMM..........jjjj.....WWWW....t.......
-22 .GGGGG..MMMMMMMM..........jjjj..WWWWWWWW...t..z....
-23 GGGG.G....MMMMM....CCC....jjj.....WWWWWW...........
-24 GGGG..............CCCC.....jjj....WWWWWW...........
-25 .GG......XX.......CC...............WWWWW...........
-26 ........XXXXXXXXX.CC......OO........WWW............
-27 ....DD.XXXXXXXXXX........OOOO......................
-28 .......XXXXXXX..X.......OOOOO......................
-29 .......XXXXXXX...........OOO.......................
-30 .......XXXXXX..TTT......OOOO.......................
-31 .......XXXX...TTTTT....OO..........................
-32 .......XX.....TTTTT....O...........................
-33 ...............TTT.................................
-34 ............K...T....YY............................
-35 ..........KKK.....YYYY.............................
-36 ......g..KKKK...YYYY...............................
-37 ......g.KKKK...YYYYY...............................
-38 ........KKKK....YYY................................
-39 .........KKK....YYYY...............................
-40 .........KKKK....YYY...............................
-41 ..........KKKK.....................................
-42 ......k....K....NN.................................
-43 .......k......NNNN.................................
-44 ........kk....NNNN..p..................e...........
-45 ........kk..NNNNNN.................................
-46 ....l....kk.NNNNNN.................................
-47 .........kk.NNNNNN.................................
-48 .........kk..NNNN..................................
-49 ..........kk.NNN...................................
-50 ..........kk.NNN...................................
-51 ..........kk.N.....................................
-52 ...........k.......................................
-53 ...........k.......................................
-
-Known quirks: Bihar, Kerala, Haryana and UP keep the Figma blocks' diagonal
-    single squares (e.g. Bihar's lone top square, so its label sits above that
-    square). Andaman & Nicobar sits far to the east, close to its real place.
+ 0 .........JJJ
+ 1 ..........JJ
+ 2 
+ 3 ........L...HH
+ 4 ............HH
+ 5 .........PP
+ 6 ........PPPP.d
+ 7 ........PPPPddd
+ 8 ........PPP.ddd
+ 9 ................uuu
+10 .........c...h..uu
+11 ............h
+12 ..........hhh..UUU.............................aa
+13 ..........hhh..UUUUUU..........................A
+14 ...........hh..UUUUUUU......................AAAA
+15 ......RRR.....UUUUUUUUUUU.................AAAAA
+16 .....RRRRR.....UUUUUUUUUUUUU...........s....AA...n
+17 .....RRRRR....U...UUUUUUUUUU.................A
+18 .....RRRRR........UUUUUUUUUU.B..........WWW..A.i
+19 .....RRRRR........UUUUUUUUU...BBB.......W......i
+20 ......RR....M.....U.UUUUUUU..BBBBBBBBB..W.mm.z
+21 ...........MM...........UU....BBBBBBBB.WW......t
+22 GGGGG......MM.MM.............BBBBBBBB..W.......t
+23 .GGGGG..MMMMMMMMM...........BBBBBBBB...WW
+24 .GGGGG...MMMMMMMM............BBB.....WWWW
+25 GGGG.G.....MMMMM....CCC..jjjj.....WWWWWWWW
+26 GGGG....XX.........CCCC..jjjj.......WWWWWW
+27 .GG....XXXXXXXXX...CC....jjj........WWWWWW
+28 ......XXXXXXXXXX...CC.....jjj........WWWWW
+29 ......XXXXXXX..X......................WWW
+30 .DD...XXXXXXX
+31 ......XXXXXX....TTT.......OO
+32 ......XXXX.....TTTTT.....OOOO
+33 ......XX.......TTTTT....OOOOO
+34 ................TTT......OOO
+35 .................T......OOOO
+36 ...........K.......YY..OO
+37 .........KKK....YYYY...O
+38 ....g...KKKK..YYYY
+39 ....g..KKKK..YYYYY
+40 .......KKKK...YYY
+41 ........KKK...YYYY
+42 ........KKKK...YYY..p
+43 .........KKKK
+44 ..........K......NN
+45 .......kk......NNNN
+46 ........kk.....NNNN
+47 ........kk...NNNNNN
+48 ....l....kk..NNNNNN....e
+49 .........kk..NNNNNN
+50 .........kk...NNNN
+51 ..........kk..NNN
+52 ..........kk..NNN
+53 ..........kk..N
+54 ...........k
+55 ...........k
+56
 
 
-APPENDIX C: HOW THE GEOGRAPHIC PACKING WAS MADE (repeatable)
-------------------------------------------------------------
+APPENDIX C: GEOGRAPHIC PACKING - TRIED AND REJECTED (kept for reference)
+------------------------------------------------------------------------
+Live briefly on 2026-10-09 (commit 6941717), then replaced: the owner prefers
+the hand-made Figma layout. Method, in case real-geography packing is wanted:
 Inputs: block shapes (Appendix A) + real state centroids (lat, lon):
     JK 33.6,74.9  LA 34.4,77.6  HP 31.9,77.2  PB 30.9,75.4  CH 30.73,76.78
     HR 29.1,76.1  DL 28.65,77.2 UK 30.1,79.2  UP 26.9,80.9  RJ 26.6,73.8
@@ -235,8 +236,14 @@ map for another country the same way.
    with connected-component labelling (scipy.ndimage.label); keep components
    taller than 20px. Expect exactly 543.
 3. Assign each square to the state frame whose bbox contains its centre.
-   Ambiguous / missing ones (overlapping frames, unnamed "Group" frames) were
-   resolved by connected block: J&K = the 5 at the very top, Goa = 2 squares
+   Better: group squares into connected blocks (edge or diagonal neighbours,
+   pitch < 1.2) and give each block the majority state of its clean (single-
+   frame) squares. Blocks with no clean squares were named by position.
+   Second import: J&K = 5 at the top, Uttarakhand = 5 squares east of Delhi
+   (frame unnamed), Manipur = 2 inside the Assam frame, Goa = 2 left of
+   Karnataka, Puducherry = 1 inside the Andhra frame, Andaman = lone square
+   east of Tamil Nadu, Lakshadweep = lone square far left ("Frame 1660").
+   First import: J&K = the 5 at the very top, Goa = 2 squares
    left of Karnataka, Lakshadweep = lone square far left, Manipur = 2 squares
    overlapping the Assam frame, Meghalaya = 2 squares overlapping the WB frame,
    Bihar/W.Bengal squares in each other's frames go to their own block.
@@ -244,8 +251,7 @@ map for another country the same way.
    Per state, take the circular mean of the fractional x and y offsets, snap the
    squares to whole units around that offset, round to 0.01, then shift
    everything so the minimum x/y is 0.
-   (This gave the Figma layout used until the geographic packing; the packing
-   keeps these shapes but moves the blocks, see Appendix C.)
+   (This is exactly how the CURRENT India data was produced.)
 5. Check: per-state counts (list above), total 543, then in the browser compare
    every <text> getBoundingClientRect against every rect and every other text
    (no overlaps), and that no label pokes outside the SVG.
@@ -256,14 +262,12 @@ DESIGN RULES THE OWNER HAS ASKED FOR
 ------------------------------------
 - Clean NYT-like look: white background, Libre Franklin, muted grey labels.
 - One square = one seat / vote. Squares have a 1px white stroke.
-- India: state block shapes from the Figma tile map (Uttarakhand = 3 over 2,
-  left-aligned); squares only (no outlines); squares stay the neutral grey
-  --seat-empty; state names in the same font style AND the same on-screen size
-  as the US House map labels, placed ON TOP of each block.
-- India spacing: uniform one-square gaps between states like the US House map,
-  BUT India's real height/width proportions come first (the curve: wider to the
-  east, slightly shorter to the west, tall north and south). Avoid big empty
-  voids in the centre and clutter in the east.
+- India: follow the owner's Figma tile map EXACTLY (shapes and positions);
+  squares only (no outlines); squares stay the neutral grey --seat-empty.
+- India names: House-map font style, small is fine, but they must never cross
+  each other or a square; on hover a name gets darker and bigger.
+  "DNH-DD" for Dadra & Nagar Haveli and Daman & Diu.
+- (Rejected: re-packing India for real proportions / uniform gaps.)
 - Earlier India requests (applied in the shelved hand-made tile grid, Appendix B;
   the Figma layout now decides shapes): each state one solid block, one empty
   square between neighbours, J&K 3-over-2 with Ladakh diagonally off its
@@ -355,7 +359,10 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      north-east labels hand-tuned. This file rewritten as a full reference.
   6. Uttarakhand reshaped to 3 over 2 with its name on top. Whole India map
      re-packed for real proportions + uniform one-square gaps (Appendix C);
-     all names now sit above their blocks. Committed and pushed live.
+     all names now sit above their blocks. Committed and pushed live (6941717).
+  7. Owner rejected step 6. India re-imported from the (updated) Figma frame,
+     names small with collision-free placement, hover enlarges/darkens a name,
+     DNH-DD rename, label-size matching removed. Pushed live.
 
 
 STATUS / NEXT
