@@ -928,12 +928,56 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      removed) so nothing fades on any US switch. Pushed 2026-10-09.
  31. Governors for every House/Senate year 2008-2024 (GOV_HIST), sharing
      the chamber year. Pushed 2026-10-09.
+ 32. Country picker button is now all grey (--chip): the white inner face
+     and its shadow were removed, since nothing slides in it. Pushed 2026-10-09.
+ 33. States: Seats / Chief Minister toggle (#st-view, shown only on States,
+     next to the stepper). The state circles are now rounded rects
+     (.st-dot, rx = half width); Chief Minister view (svg class "cm") morphs
+     them into full squares (scale 1.1628, rx 0) with a border of their own
+     colour, so each state is one solid block coloured by the CM's group
+     at 31 Dec (CM = {2024: {code: group}}; 2024 only, CM_YEARS, the
+     stepper shows just 2024 in that view). Mode switch = all at once
+     (class "sync" zeroes the row-wipe delays). Tally = number of CMs
+     (2024: NDA 20 = BJP 14 + allies 6 [AP TDP, BR JDU, ML NPP, NL NDPP,
+     SK SKM, PY AINRC], Others 1 [MZ ZPM], INDIA 10 = INC 3 [HP KA TS] +
+     allies 7 [JH KL PB TN WB DL JK]); bar = share of the 543 Lok Sabha
+     seats in states each side leads (like US Governors); legend swatches
+     switch circles <-> squares. Pushed 2026-10-09.
+ 34. Chief Minister view for all five years (CM 2004-2019 added, built with
+     cmGroups({group: "codes"})); grouping follows ST for that year (Left,
+     SP, BSP, BJD, AITC, TRS, YSRCP, AAP 2019 = oth before 2024; NPF 2009 oth;
+     JMM 2009 india although Shibu Soren governed with BJP support; J&K 2014
+     = Omar Abdullah caretaker). Regions use regionRects (undivided AP, J&K
+     + Ladakh). Delhi 2014 = President's rule (grey). CM counts NDA/Oth/UPA:
+     04 10/5/15, 09 8/7/15, 14 12/8/10, 19 17/6/7, 24 20/1/10.
+     "Not aligned" renamed "Others" in every legend (bar/tally already said
+     Others). Pushed 2026-10-09.
+ 35. India sides mirrored like the US (D left / R right): Congress/INDIA
+     (UPA) on the LEFT, NDA on the RIGHT in every India tally, bar
+     (inc, india | [vac] oth | nda, bjp) and legend (Congress, Congress
+     allies, Others, BJP allies, BJP) - Lok Sabha, Rajya Sabha, States.
+     Map square fill order inside states unchanged. 272 mark unchanged.
+     Chief Minister note under the bar split in two (#st-under.split):
+     left "INDIA-led states have 35% of the population" (--inc), centre
+     "Others N%" when >= 1%, right "NDA-led states have 64% of the
+     population" (--bjp); population = share of the 543 Lok Sabha seats.
+     Pushed 2026-10-09.
+ 36. States toggle label "Seats" -> "Seat %". US map: NJ block moved up one
+     square (room above Delaware); Delaware name under its squares
+     (44.5, below), Louisiana name below its block (20, 29.95), N-Caro.
+     moved right (40.5) away from Virg. US names now follow their state:
+     LBL[k] stores each name's side (above/below/left/right of the union
+     of all the state's squares); setUS moves it (CSS transform, .45s) to
+     the same side of the squares on show (House/President/older census,
+     plus Senate circles in Senate), keeping x over the squares. Checked in
+     the browser: no name overlaps a square, circle or name in any race or
+     year.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 31 (pushed 2026-10-09).
+- Live = everything up to step 36 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
