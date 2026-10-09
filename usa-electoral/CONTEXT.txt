@@ -1,0 +1,155 @@
+ELECTORAL CARTOGRAMS — PROJECT HISTORY AND CONTEXT
+==================================================
+Owner: Mario D'Cunha (github.com/mariodcunha)
+Live page: https://mariodcunha.github.io/usa-electoral/
+This file: https://mariodcunha.github.io/usa-electoral/CONTEXT.txt
+Repo: https://github.com/mariodcunha/mariodcunha.github.io (branch: master; GitHub Pages)
+Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/usa-electoral/index.html
+Last updated: 2026-10-09
+
+Purpose of this file: a starting brief for a new Claude Code chat. Read it first,
+then read index.html. Update the HISTORY and STATUS sections whenever work lands.
+
+
+WHAT IT IS
+----------
+A single self-contained HTML page (index.html: inline CSS + JS, no build step, no
+dependencies except the Libre Franklin Google Font). It draws election results as
+square cartograms, NYT-style: one square per electoral vote / seat.
+
+  USA  - President (2024 electoral college, Harris 226 vs Trump 312)
+       - Senate and House (one shared "chamber" map that animates between the two)
+       - Governors
+  India - Lok Sabha (543 seats, currently all neutral grey; no party results yet)
+
+UI: race toggle (pill tabs with a sliding thumb) top-left, country picker
+(flag + name dropdown) top-right, tally numbers + bar with majority marker, map,
+legend. URL hash selects the race (#president, #senate, #house, #governors,
+#loksabha). Always light/white theme (color-scheme: light).
+
+
+CODE MAP (index.html, top to bottom)
+------------------------------------
+CSS :root tokens: --dem --rep --flip --dflip --ind --house --seat-empty --muted ...
+STATES / DEM / FLIP / PRES_LABELS - President map: each state as rows
+    [row, firstCol, lastCol]; DEM = states won by Harris; FLIP = flipped to Trump
+    (drawn hatched). ME-2 and NE-2 split votes are special-cased in drawPresident.
+CHAMBER - House + Senate, one object per state:
+    s state, c House squares [x,y,isDem,flipped], o two Senate seat squares,
+    p Senate seat parties (d/r/i), f index of a Republican Senate pickup, h label.
+S=20 (pixels per square), el(), hatches(), square(), label() - shared helpers.
+drawPresident / drawChamber / setViewBox / countTo / setChamber - USA maps + tally.
+INDIA - Lok Sabha tile map:
+    [code, name, [[x,y],...seat squares], [labelX, labelY, inside?, anchor]]
+    coordinates in square units; label y is the text's vertical centre
+    (svg text uses dominant-baseline:central). drawIndia computes the viewBox
+    from squares + an estimated label width.
+Race toggle (show, moveThumb, panelOf, countryOf, lastRace) and Country picker
+    (setCountryUI, openMenu, choose; keyboard accessible listbox).
+
+
+DESIGN RULES THE OWNER HAS ASKED FOR
+------------------------------------
+- Clean NYT-like look: white background, Libre Franklin, muted grey labels.
+- One square = one seat / vote. Squares have a 1px white stroke.
+- India tile map (agreed 2026-10-09):
+  * No geographic outline / land shape behind the squares - squares only.
+  * Every state is ONE solid, edge-connected block: no holes, no stray squares.
+  * Neighbouring states are separated by exactly one empty square (no touching,
+    not even at corners), and pulled as close together as that allows, so the
+    whole thing reads as the outline of India. The US map felt slightly too loose.
+  * Specific shapes requested:
+      J&K: row of 3 over row of 2; Ladakh sits diagonally off J&K's top-left.
+      Himachal Pradesh: 2x2 square (4 seats).
+      Maharashtra: heavy bottom-left, tapering upward, top-right step overhang.
+      Karnataka: pointed (single-square) top.
+      Odisha: tapers downward, with a 2x2 lobe pulled to the bottom-left.
+  * Big states labelled inside; small states/UTs labelled beside the block.
+    Chhattisgarh is labelled "C.G." (full name does not fit 3 squares wide).
+
+
+INDIA LAYOUT - SOURCE GRID
+--------------------------
+The INDIA coordinates were generated from this grid (x = column, y = row,
+both from 0). Easiest way to edit the layout: change this grid, then regenerate
+the cell lists. Rules to check after editing: per-state seat counts, each state
+4-connected, and no two different states 8-adjacent (Ladakh/J&K excepted).
+
+Legend:
+ L Ladakh 1        J J&K 5           H Himachal 4      P Punjab 13
+ c Chandigarh 1    u Uttarakhand 5   h Haryana 10      d Delhi 7
+ U Uttar Pr. 80    B Bihar 40        s Sikkim 1        W West Bengal 42
+ j Jharkhand 14    O Odisha 21       C Chhattisgarh 11 R Rajasthan 25
+ M Madhya Pr. 29   G Gujarat 26      X Maharashtra 48  D DNH & DD 2
+ T Telangana 17    Y Andhra Pr. 25   g Goa 2           K Karnataka 28
+ k Kerala 20       N Tamil Nadu 39   p Puducherry 1    l Lakshadweep 1
+ e Andaman&Nic. 1  A Assam 14        a Arunachal 2     n Nagaland 1
+ m Meghalaya 2     i Manipur 2       t Tripura 2       z Mizoram 1
+
+          1111111111222222222233333333334444444444555
+01234567890123456789012345678901234567890123456789012
+..............L......................................  0
+.....................................................  1
+................JJJ..................................  2
+................JJ...................................  3
+............PPP....HH.uu.............................  4
+...........PPPP....HH.uuu............................  5
+...........PPPP...........................s..........  6
+............PP...UUUUUU...........................aa.  7
+...............c.UUUUUUUUU................W..........  8
+.........hhh.....UUUUUUUUUUUU....BBBBBBB..WW..AAAAAAA  9
+........hhhh.ddd.UUUUUUUUUUUUU..BBBBBBBB..WW.AAAAAAA. 10
+.........hhh.ddd.UUUUUUUUUUUUUU.BBBBBBBBB.WW......... 11
+..............d..UUUUUUUUUUUUUU.BBBBBBBBB.WW.mm.....n 12
+.......RRRRR......UUUUUUUUUUUU...BBBBBBB..WW......... 13
+......RRRRRRRR...........................WWWW.....i.. 14
+......RRRRRRR....MMMMMMMMM......jjjj....WWWWW.t...i.. 15
+.......RRRRR..MMMMMMMMMMMM..CC.jjjjj...WWWWWW.t...... 16
+.............MMMMMMMM......CCC.jjjjj...WWWWWW...z.... 17
+.GGGGGGG...................CCC..........WWWWW........ 18
+GGGGGGGG....XXXXXXX..TTT...CC....OOOOOO.WWWW......... 19
+GGGGGGG..XXXXXXXXX..TTTTT...C....OOOOOO..W........... 20
+..GGGG..XXXXXXXXXXX.TTTTT.......OOOOO................ 21
+.......XXXXXXXXXXX...TTT..YYYY.OO.................... 22
+...DD..XXXXXXXXXX.....T..YYYYY.OO.................... 23
+..................K.....YYYYYY....................... 24
+.........gg...KKKKKK.YYYYYYYY........................ 25
+............KKKKKKKK.YY.............................. 26
+...........KKKKKKKKK................................. 27
+............KKKK.....NNNN............................ 28
+..................NNNNNNN............................ 29
+...........kkk...NNNNNNN..p........e................. 30
+............kkk..NNNNNN.............................. 31
+............kkk..NNNNN............................... 32
+........l....kkk.NNNN................................ 33
+..............kk..NNN................................ 34
+..............kkk..NN................................ 35
+...............kkk..N................................ 36
+
+
+HISTORY
+-------
+Committed and live (git log, newest first):
+  6476ae5  move N.H. label clear of Vermont's seats
+  fb51e42  Senate seats fill rows side by side before stacking
+  efc40e2  seats and gray squares share one easing
+  03f1c57  color change and Senate seats animate together
+  c6c87b7  keep New England labels and seats inside the map
+  9b6cdd6  President, House and Senate cartograms with animated race toggle
+
+Later sessions (2026-10-08 / 09), in index.html:
+  - Added a country picker (USA / India) and a Lok Sabha tab with a 543-seat
+    India map. First version placed seat squares over real state outlines.
+  - 2026-10-09: reworked India into a pure tile map per the rules above
+    (outlines and the --land / --land-line colour tokens removed, label format
+    changed to [x, y, inside?, anchor]).
+  - 2026-10-09: added this CONTEXT.txt.
+
+
+STATUS / NEXT
+-------------
+- As of the commit that added this file, the country picker + India map changes
+  in index.html were still local and NOT yet pushed. Check `git status` /
+  `git log` to see whether they have landed since.
+- India seats are uncoloured; party results (NDA / INDIA bloc etc.) not added.
+- Page <title> still says "USA Electoral 2024" even though India is included.
