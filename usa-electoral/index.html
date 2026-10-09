@@ -259,7 +259,8 @@ const VIEW={};
     label(g,st.h);
   });
   hb[1]-=0.6; // room for the labels above the top row
-  VIEW.house=VIEW.senate=[hb[0]*S-6,hb[1]*S-8,(hb[2]-hb[0])*S+12,(hb[3]-hb[1])*S+16];
+  // extra room on the right for the labels beside New England
+  VIEW.house=VIEW.senate=[hb[0]*S-6,hb[1]*S-8,(hb[2]-hb[0]+2.4)*S+12,(hb[3]-hb[1])*S+16];
 })();
 
 const TALLY={
