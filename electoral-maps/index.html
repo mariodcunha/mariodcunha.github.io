@@ -50,8 +50,9 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 .cand.n b,.cand.n span{color:var(--fg)}
 svg.india .seat-sq{fill:var(--seat-empty);stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
 svg.india{max-width:940px;margin:0 auto}
-svg.india text{font-size:12.5px}
+svg.india text{font-size:14px}
 #map-rs .seat-sq{display:none}
+#map-states rect.seat-sq{display:none}
 .rs-seat{opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),opacity .45s var(--ease),fill .45s var(--ease)}
 .rs-seat.on{opacity:1;transform:scale(1)}
 .rs-seat.vac{fill:var(--house)}
@@ -245,12 +246,12 @@ svg.map text.in{fill:#fff;font-weight:600}
     </div>
     <div class="mapwrap"><svg class="map india" id="map-states" role="img" aria-label="State assemblies in 2024 by alliance, drawn on the Lok Sabha seat squares"></svg></div>
     <div class="legend">
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--inc)"/></svg>Congress</span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--india)"/></svg><em id="st-leg-bloc">Congress allies (INDIA)</em></span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--oth)"/></svg>Not aligned</span>
-      <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--seat-empty)"/></svg>No state assembly</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--bjp)"/></svg>BJP</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--inc)"/></svg>Congress</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--india)"/></svg><em id="st-leg-bloc">Congress allies (INDIA)</em></span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--oth)"/></svg>Not aligned</span>
+      <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--seat-empty)"/></svg>No state assembly</span>
       <span id="st-note"></span>
     </div>
   </section>
@@ -500,7 +501,7 @@ function drawIndia(svg){
       return el("rect",{x:x*S,y:y*S,width:S,height:S,class:"seat-sq",style:`transition-delay:${(y*14).toFixed(0)}ms`},seats)}));
     out[code]=rects;
     label(names,[name,lx,ly,anchor]);
-    const w=name.length*.32*12.5/11;
+    const w=name.length*.32*14/11;
     grow(anchor==="start"?lx+w:anchor==="end"?lx-w:lx+w/2,ly+.4);grow(anchor==="middle"?lx-w/2:lx,ly-.4);
   });
   svg.setAttribute("viewBox",`${b[0]*S-10} ${b[1]*S-10} ${(b[2]-b[0])*S+20} ${(b[3]-b[1])*S+20}`);
@@ -582,6 +583,14 @@ const ST={2004:{AP:[2,47,30,30,185],AR:[9,0,15,2,34],AS:[8,2,42,3,71],JH:[32,8,9
   RJ:[115,1,10,4,70],SK:[0,31,1,0,0],TN:[4,5,66,141,18],TS:[8,0,46,1,64],TR:[32,14,0,11,3],UP:[255,32,3,111,2],UK:[47,0,4,0,19],
   WB:[77,0,1,216,0],DL:[8,0,0,62,0],PY:[6,10,6,6,2],JK:[29,0,8,47,6],LA:null,CH:null,DD:null,LD:null,AN:null}};
 const ST_RECTS=drawIndia(document.getElementById("map-states"));
+// States are drawn as circles (one per Lok Sabha square, same spot) instead of squares; the squares stay in the
+// DOM, hidden, to give the order (snake rows) and shapes.
+const ST_DOT=new Map();
+(function(){
+  const svg=document.getElementById("map-states"), names=svg.lastChild, g=el("g",{},svg); svg.insertBefore(g,names);
+  Object.values(ST_RECTS).flat().forEach(r=>ST_DOT.set(r,el("circle",{class:"seat-sq",cx:r.x.baseVal.value+S/2,cy:r.y.baseVal.value+S/2,r:S*.43,
+    style:`stroke:none;transition-delay:${r.style.transitionDelay}`},g)));
+})();
 // Split n squares by shares (largest remainder)
 function stSquares(shares,n){
   const t=shares.reduce((a,b)=>a+b,0), raw=shares.map(v=>v/t*n), q=raw.map(Math.floor);
@@ -597,12 +606,12 @@ function regionRects(all,code,data){
 let stYear=null;
 function setStates(year,animate){
   const N=[0,0,0,0,0], data=ST[year];
-  Object.values(ST_RECTS).flat().forEach(r=>r.style.fill="");
+  ST_DOT.forEach(c=>c.style.fill="");
   for(const code in data){
     const g=data[code]; if(!g) continue;
     const rects=regionRects(ST_RECTS,code,data);
     g.forEach((v,i)=>N[i]+=v);
-    let k=0; stSquares(g,rects.length).forEach((n,i)=>{for(let j=0;j<n;j++) rects[k++].style.fill=LS_FILL[LS_GROUPS[i]]});
+    let k=0; stSquares(g,rects.length).forEach((n,i)=>{for(let j=0;j<n;j++) ST_DOT.get(rects[k++]).style.fill=LS_FILL[LS_GROUPS[i]]});
   }
   const tot=N.reduce((a,b)=>a+b,0), anim=animate&&stYear!==null;
   LS_GROUPS.forEach((g,i)=>document.getElementById("st-b-"+g).style.width=N[i]/tot*100+"%");
@@ -615,7 +624,7 @@ function setStates(year,animate){
   const bloc=LS_META[year].bloc;
   document.getElementById("st-bloc").textContent=bloc;
   document.getElementById("st-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("st-note").textContent=`Each state's squares are split by its assembly seats, from its latest election up to the end of ${year}`;
+  document.getElementById("st-note").textContent=`Each state's circles are split by its assembly seats, from its latest election up to the end of ${year}`;
   document.getElementById("map-states").setAttribute("aria-label",`State assemblies at the end of ${year} by alliance, drawn on the Lok Sabha seat squares`);
   stYear=year;
 }
@@ -630,50 +639,84 @@ const RS={2004:{AP:[0,9,1,0,8,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,1,2,8,2
   2019:{AP:[4,0,5,0,2,0],AR:[0,0,0,0,1,0],AS:[1,2,0,0,3,1],BR:[4,7,0,3,1,1],CG:[3,0,0,0,2,0],DL:[0,0,3,0,0,0],GA:[1,0,0,0,0,0],GJ:[7,0,0,0,4,0],HR:[2,0,1,0,1,1],HP:[1,0,0,0,2,0],JK:[1,0,2,0,1,0],JH:[3,0,1,1,1,0],KA:[4,0,0,1,7,0],KL:[0,1,4,2,2,0],MP:[8,0,0,0,3,0],MH:[7,1,1,7,3,0],MN:[1,0,0,0,0,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[1,0,8,0,1,0],PY:[0,1,0,0,0,0],PB:[1,3,0,0,3,0],RJ:[9,0,0,0,1,0],SK:[0,0,1,0,0,0],TN:[0,11,1,6,0,0],TS:[1,0,5,0,1,0],TR:[0,0,1,0,0,0],UP:[15,0,14,0,2,0],UK:[1,0,0,0,2,0],WB:[0,0,14,0,2,0]},
   2024:{AP:[1,2,8,0,0,0],AR:[1,0,0,0,0,0],AS:[4,2,1,0,0,0],BR:[5,5,0,5,1,0],CG:[1,0,0,0,4,0],DL:[0,0,0,3,0,0],GA:[1,0,0,0,0,0],GJ:[10,0,0,0,1,0],HR:[4,0,1,0,0,0],HP:[3,0,0,0,0,0],JK:[0,0,0,0,0,4],JH:[3,0,0,3,0,0],KA:[6,1,0,0,5,0],KL:[0,0,0,8,1,0],MP:[8,0,0,0,3,0],MH:[7,5,0,4,3,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,1,0,0,0,0],NL:[1,0,0,0,0,0],OD:[3,0,7,0,0,0],PY:[1,0,0,0,0,0],PB:[0,0,0,7,0,0],RJ:[6,0,0,0,4,0],SK:[0,1,0,0,0,0],TN:[0,2,4,11,1,0],TS:[0,0,4,0,3,0],TR:[1,0,0,0,0,0],UP:[24,1,2,4,0,0],UK:[3,0,0,0,0,0],WB:[2,0,0,14,0,0]}};
 const RS_RECTS=drawIndia(document.getElementById("map-rs")); // squares hidden by CSS; they give each state's shape and names
-const RS_RMAX=.6;   // largest circle radius, in squares (about Karnataka's), so states with few seats don't get huge circles
-// n equal circles spread evenly over a state's squares: k-means on a fine grid of points inside the squares,
-// radius from the closest pair. Returns [cx, cy, r] in square units, ordered row by row (snake) for colour grouping.
-function shapeSeats(cells,n){
-  const pts=[]; const st=.125;
-  cells.forEach(([x,y])=>{for(let i=st/2;i<1;i+=st)for(let j=st/2;j<1;j+=st)pts.push([x+i,y+j])});
-  pts.sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
-  let c=Array.from({length:n},(_,k)=>pts[Math.floor((k+.5)*pts.length/n)].slice());
-  for(let it=0;it<80;it++){
-    const sum=c.map(()=>[0,0,0]);
-    pts.forEach(p=>{let b=0,bd=1e9;c.forEach((q,k)=>{const d=(p[0]-q[0])**2+(p[1]-q[1])**2;if(d<bd){bd=d;b=k}});sum[b][0]+=p[0];sum[b][1]+=p[1];sum[b][2]++});
-    c=sum.map((s,k)=>s[2]?[s[0]/s[2],s[1]/s[2]]:c[k]);
-  }
-  let md=1e9; c.forEach((a,i)=>c.slice(i+1).forEach(b=>md=Math.min(md,Math.hypot(a[0]-b[0],a[1]-b[1]))));
-  const r=Math.min(md/2*.94,RS_RMAX);
-  // rows: centres whose y is within about a radius belong to one row; snake through the rows
-  c.sort((a,b)=>a[1]-b[1]); const rows=[];
-  c.forEach(p=>{const last=rows[rows.length-1]; if(last&&p[1]-last[0][1]<r) last.push(p); else rows.push([p])});
-  return rows.flatMap((row,i)=>row.sort((a,b)=>i%2?b[0]-a[0]:a[0]-b[0])).map(([x,y])=>[x,y,r]);
-}
+const RS_R=.6;   // every Rajya Sabha circle's radius, in squares (Maharashtra's size)
 // State names as boxes in square units (same size estimate as drawIndia: 12.5-unit text, ~0.7 squares tall)
-const RS_NAMEBOX=INDIA.map(([,name,,[lx,ly,anchor]])=>{const w=name.length*.32*12.5/11*.92, x0=anchor==="start"?lx:anchor==="end"?lx-w:lx-w/2;
-  return [x0,ly-.33,x0+w,ly+.33]});
-// One set of circles per region and seat count (Andhra Pradesh changes in 2014), built on first use
-const RS_LAYOUT=new Map(), rsLayer=(()=>{const svg=document.getElementById("map-rs"), g=el("g",{},svg);
-  svg.insertBefore(g,svg.lastChild); return g})(); // circles below the names
-function rsCircles(code,data,n){
-  const parts=code==="JK"&&!("LA" in data)?["JK","LA"]:code==="AP"&&!("TS" in data)?["AP","TS"]:[code], key=parts.join("+")+":"+n;
-  if(!RS_LAYOUT.has(key)){
-    const cells=parts.flatMap(c=>INDIA.find(s=>s[0]===c)[2]); let seats=shapeSeats(cells,n);
-    // pull the circles toward the state's centre until neighbours are about 12% of a circle apart (at most to 75%)
-    if(n>1){
-      const r0=seats[0][2], cx=seats.reduce((a,p)=>a+p[0],0)/n, cy=seats.reduce((a,p)=>a+p[1],0)/n;
-      let md=1e9; seats.forEach((a,i)=>seats.slice(i+1).forEach(b=>md=Math.min(md,Math.hypot(a[0]-b[0],a[1]-b[1]))));
-      const f=Math.max(.75,Math.min(1,2*r0*1.12/md));
-      seats=seats.map(([x,y,r])=>[cx+(x-cx)*f,cy+(y-cy)*f,r]);
+const RS_NAMEBOX=INDIA.map(([,name,,[lx,ly,anchor]])=>{const w=name.length*.32*14/11*1.02, x0=anchor==="start"?lx:anchor==="end"?lx-w:lx-w/2;
+  return [x0,ly-.45,x0+w,ly+.45]});
+// Every Rajya Sabha seat is a circle of the same size (RS_R, Maharashtra's) on a regular grid inside its state:
+// the widest spacing d (2 squares down to just over a circle's width) and grid position that fit n centres inside
+// the state's outline (preferably .3 or .15 of a square in) with each circle clear of the state names; the n
+// points nearest the state's centre are kept, ordered row by row (snake) so colours stay grouped.
+function gridSeats(cells,n,r,avoidNames,others=[]){
+  const c=cells.length, cx=cells.reduce((a,p)=>a+p[0]+.5,0)/c, cy=cells.reduce((a,p)=>a+p[1]+.5,0)/c;
+  const [ox,oy]=cells[0], keys=new Set(cells.map(([x,y])=>Math.round(x-ox)+","+Math.round(y-oy)));
+  const inside=(x,y)=>keys.has(Math.floor(x-ox+1e-9)+","+Math.floor(y-oy+1e-9));
+  const deep=(x,y,m)=>inside(x,y)&&inside(x-m,y)&&inside(x+m,y)&&inside(x,y-m)&&inside(x,y+m)&&
+    inside(x-m*.7,y-m*.7)&&inside(x+m*.7,y-m*.7)&&inside(x-m*.7,y+m*.7)&&inside(x+m*.7,y+m*.7);
+  const clear=(x,y)=>(!avoidNames||RS_NAMEBOX.every(([a,b,c,e])=>Math.hypot(Math.max(a-x,0,x-c),Math.max(b-y,0,y-e))>=r+.12))&&
+    others.every(([u,v])=>Math.hypot(u-x,v-y)>=2*r*1.08);   // ...and clear of neighbouring states' circles
+  const x0=Math.min(...cells.map(p=>p[0])), y0=Math.min(...cells.map(p=>p[1]));
+  const x1=Math.max(...cells.map(p=>p[0]))+1, y1=Math.max(...cells.map(p=>p[1]))+1;
+  for(const m of [.3,.15,0]) for(let d=2;d>=2*r*1.1;d-=.02){
+    let best=null, bestScore=1e9;
+    for(let fx=0;fx<8;fx++) for(let fy=0;fy<8;fy++){
+      const pts=[];
+      for(let y=y0+fy*d/8;y<y1;y+=d) for(let x=x0+fx*d/8;x<x1;x+=d) if(deep(x,y,m)&&clear(x,y)) pts.push([x,y]);
+      if(pts.length<n) continue;
+      const sel=pts.sort((a,b)=>Math.hypot(a[0]-cx,a[1]-cy)-Math.hypot(b[0]-cx,b[1]-cy)).slice(0,n);
+      const mx=sel.reduce((a,p)=>a+p[0],0)/n, my=sel.reduce((a,p)=>a+p[1],0)/n;
+      const score=Math.hypot(mx-cx,my-cy)+sel.reduce((a,p)=>a+Math.hypot(p[0]-cx,p[1]-cy),0)/n*.1;
+      if(score<bestScore){bestScore=score;best=sel}
     }
-    // shrink the state's circles (all together) if any would touch a state name
-    const r=Math.min(seats[0][2],...seats.flatMap(([x,y])=>RS_NAMEBOX.map(([x0,y0,x1,y1])=>
-      Math.hypot(Math.max(x0-x,0,x-x1),Math.max(y0-y,0,y-y1))-.08)));
-    RS_LAYOUT.set(key,seats.map(([x,y])=>el("circle",{class:"rs-seat",cx:x*S,cy:y*S,r:r*S},rsLayer)));
+    if(best){
+      const rows=new Map();
+      best.forEach(p=>{const k=p[1].toFixed(3); if(!rows.has(k)) rows.set(k,[]); rows.get(k).push(p)});
+      return [...rows.entries()].sort((a,b)=>a[0]-b[0]).flatMap(([,row],i)=>row.sort((a,b)=>i%2?b[0]-a[0]:a[0]-b[0]));
+    }
+  }
+  return null;
+}
+// One set of circles per region and seat count (Andhra Pradesh changes in 2014), built on first use
+const RS_LAYOUT=new Map(), rsLayer=(()=>{const svg=document.getElementById("map-rs"), names=svg.lastChild, g=el("g",{},svg);
+  svg.insertBefore(g,names); return g})(); // circles below the names
+function rsCircles(code,data,n){
+  // J&K's 4 seats sit on J&K's own squares (not Ladakh's lone square, which is boxed in by names)
+  const parts=code==="AP"&&!("TS" in data)?["AP","TS"]:[code], key=parts.join("+")+":"+n;
+  if(!RS_LAYOUT.has(key)){
+    const cells=parts.flatMap(c=>INDIA.find(s=>s[0]===c)[2]);
+    // keep clear of names if possible; otherwise place anyway and move the name (rsNames below)
+    // circles already placed for other states (not this region's other years, e.g. AP+TS vs AP)
+    const others=[...RS_LAYOUT.entries()].filter(([k])=>!k.split(":")[0].split("+").some(c=>parts.includes(c)))
+      .flatMap(([,cs])=>cs.map(c=>[c.cx.baseVal.value/S,c.cy.baseVal.value/S]));
+    const seats=gridSeats(cells,n,RS_R,true,others)||gridSeats(cells,n,RS_R,false,others);
+    RS_LAYOUT.set(key,seats.map(([x,y])=>el("circle",{class:"rs-seat",cx:x*S,cy:y*S,r:RS_R*S},rsLayer)));
   }
   return RS_LAYOUT.get(key);
 }
+// Names on the Rajya Sabha map: a name that any year's circles would touch moves by the smallest step that
+// clears every circle and every other name (this map only).
+(function rsNames(){
+  RS_YEARS.forEach(y=>{for(const code in RS[y]) rsCircles(code,RS[y],RS[y][code].reduce((a,b)=>a+b,0))});
+  const C=[...RS_LAYOUT.values()].flat().map(c=>[c.cx.baseVal.value/S,c.cy.baseVal.value/S]);
+  const texts=[...document.getElementById("map-rs").lastChild.querySelectorAll("text")];
+  const dist=([a,b,c,e],x,y)=>Math.hypot(Math.max(a-x,0,x-c),Math.max(b-y,0,y-e));
+  const ok=(B,i)=>C.every(([x,y])=>dist(B,x,y)>=RS_R+.14)&&RS_NAMEBOX.every((o,k)=>k===i||B[0]>o[2]+.12||o[0]>B[2]+.12||B[1]>o[3]+.12||o[1]>B[3]+.12);
+  RS_NAMEBOX.forEach((B,i)=>{
+    if(ok(B,i)) return;
+    for(let rad=.1;rad<=2;rad+=.1) for(let k=0;k<16;k++){
+      const dx=Math.cos(k*Math.PI/8)*rad, dy=Math.sin(k*Math.PI/8)*rad, nb=[B[0]+dx,B[1]+dy,B[2]+dx,B[3]+dy];
+      if(ok(nb,i)){RS_NAMEBOX[i]=nb; const t=texts[i];
+        t.setAttribute("x",+t.getAttribute("x")+dx*S); t.setAttribute("y",+t.getAttribute("y")+dy*S); return}
+    }
+  });
+  // grow the viewBox if a moved name or a circle reaches past the Lok Sabha map's frame
+  const svg=document.getElementById("map-rs"), vb=svg.getAttribute("viewBox").split(" ").map(Number);
+  const xs=[...RS_NAMEBOX.flatMap(b=>[b[0],b[2]]),...C.flatMap(([x])=>[x-RS_R,x+RS_R])].map(v=>v*S);
+  const ys=[...RS_NAMEBOX.flatMap(b=>[b[1],b[3]]),...C.flatMap(([,y])=>[y-RS_R,y+RS_R])].map(v=>v*S);
+  const x0=Math.min(vb[0],Math.min(...xs)-6), y0=Math.min(vb[1],Math.min(...ys)-6);
+  const x1=Math.max(vb[0]+vb[2],Math.max(...xs)+6), y1=Math.max(vb[1]+vb[3],Math.max(...ys)+6);
+  svg.setAttribute("viewBox",`${x0} ${y0} ${x1-x0} ${y1-y0}`);
+})();
 let rsYear=null;
 function setRS(year,animate){
   const N=[0,0,0,0,0,0], data=RS[year], on=new Set();
