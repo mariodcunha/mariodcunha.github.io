@@ -24,15 +24,25 @@ square cartograms, NYT-style: one square per electoral vote / seat.
   USA   - President (2024 electoral college, Harris 226 vs Trump 312)
         - Senate and House (one shared "chamber" map that animates between the two)
         - Governors
-  India - Lok Sabha 2024 (543 seats) coloured by alliance, with a small
-          Seat share / Vote share toggle (see LOK SABHA 2024 RESULTS)
+  India - Lok Sabha (543 seats) coloured by alliance, with a year stepper
+          (2004, 2009, 2014, 2019, 2024) and Seat share / Vote share (all four
+          years). See LOK SABHA 2024 RESULTS and EARLIER ELECTIONS.
+        - States: each state's ASSEMBLY seats drawn on its Lok Sabha squares,
+          2004-2024. See STATES VIEW.
+        - Rajya Sabha: grey Lok Sabha map + one circle per elected RS seat
+          (like the Senate view), 2004-2024. See RAJYA SABHA VIEW.
 
-UI: race toggle (pill tabs with a sliding thumb) top-left, country picker
-(flag + name dropdown, USA / India) top-right, tally numbers + bar with majority
+UI: ONE top bar row: race toggle (pill tabs with a sliding thumb), then
+#controls = year stepper #year (Lok Sabha and every USA race; USA has only
+2024 so both arrows are disabled there; hidden on Rajya Sabha / States) and
+the Seat share / Vote share toggle #ls-share (Lok Sabha only; the owner asked
+for no seat/vote share on the USA maps), then the country picker (flag + name
+dropdown, USA / India) pushed right. Below: tally numbers + bar with majority
 marker, map, legend. Switching country swaps the visible tabs (USA: President,
-Senate, House, Governors; India: Lok Sabha) and remembers the last race per
-country. URL hash selects the race (#president, #senate, #house, #governors,
-#loksabha). Always light/white theme (color-scheme: light).
+Senate, House, Governors; India: Lok Sabha, Rajya Sabha, States) and remembers
+the last race per country. URL hash selects the race (#president, #senate,
+#house, #governors, #loksabha, #rajyasabha, #states). Always light/white theme.
+The row fits at ~730px content width (800px window); narrower, it wraps.
 
 
 CODE MAP (index.html, top to bottom)
@@ -43,9 +53,10 @@ CSS :root tokens
     --dflip/--dflip-line (hatched D flips), --ind #7aa6d8 (independents)
     --house #e4e4e4 (grey squares behind Senate seats)
     --seat-empty #d3d3d3 (India squares before colouring)
-    India groups: --bjp #f26a1b (bold orange), --nda #fddcbd + --nda-line
-    #f4913f (hatched light orange), --inc #1f93e6 (sky blue), --india #d4ecfc +
-    --india-line #5cb3ef (hatched light blue), --oth #3a9d5d (green).
+    India groups: --bjp #f26a1b (bold orange), --nda #f7a372 (same orange,
+    lighter, solid), --inc #1f93e6 (sky blue), --india #74bcf0 (same blue,
+    lighter, solid), --oth #3a9d5d (green). No hatching for India (owner asked
+    2026-10-09: allies = solid lighter shade of the party colour).
     (--land / --land-line were deleted.)
 Shared map text style:  svg.map text {11px Libre Franklin, weight 500, --muted,
     dominant-baseline central}; text.in = white weight 600 (label inside a block).
@@ -94,11 +105,13 @@ Seat counts (total 543): UP 80, MH 48, WB 42, BR 40, TN 39, MP 29, KA 28, GJ 26,
 Seat counts are verified: squares per state == the counts above (36 states/UTs,
     543 total, no duplicate squares). History by election: see LOK SABHA SEATS
     BY ELECTION below.
-Label names: full names for most; shortened: J.&K., Himachal, W. Bengal, C.G.
-    (Chhattisgarh), Andhra, Arunachal, A.&N. Islands, DNH-DD (Dadra & Nagar
+Label names: full names for most; shortened: J.&K., Himachal, W. Bengal,
+    Andhra, Arunachal, A&N Islands, DNH-DD (Dadra & Nagar
     Haveli and Daman & Diu; owner asked for "DNH-DD").
-Labels: SMALL on purpose (shared svg.map text style, 11 SVG units = ~7.7px on
-    screen at 940px wide). The owner said small is fine as long as names never
+Labels: small (svg.india text = 12.5 SVG units since 2026-10-09; was 11, the
+    US maps stay 11). "Chhattisgarh" spelled out (was "C.G."); Himachal's name
+    moved beside its block ([14.5, 3.8, "start"]) to clear J&K. Checked in the
+    browser: no name touches a square or another name. The owner said small is fine as long as names never
     cross each other or a square. Placement (done offline, in square units):
     try centred above the block's top row (0.42 / 0.7 / 1.0 up), then below the
     bottom row, shifting sideways by up to 2 squares, then beside the block
@@ -189,9 +202,9 @@ LOK SABHA 2024 RESULTS (seat share / vote share)
 -----------------------------------------------
 Owner's spec: only five groups -
     BJP                      bold orange, solid            (--bjp)
-    BJP-aligned (NDA allies) light orange, diagonal hatch  (--nda, --nda-line)
+    BJP-aligned (NDA allies) lighter orange, solid         (--nda)
     Congress (INC)           sky blue, solid               (--inc)
-    Congress-aligned (INDIA) light blue, diagonal hatch    (--india, --india-line)
+    Congress-aligned (INDIA) lighter blue, solid           (--india)
     Not aligned / others     green                         (--oth)
 Group order everywhere (bar, data arrays, square filling) = LS_GROUPS =
     [bjp, nda, oth, india, inc]  -> NDA on the left, others in the middle,
@@ -201,19 +214,32 @@ UI (panel-loksabha):
   Tally: left NDA total (orange, check mark = won majority, hidden in vote
     view), centre Others (green, smaller), right INDIA total (blue). Under
     each: "BJP n · allies n" / "Congress n · allies n" (two lines under 520px).
-  Bar: five segments in group order; hatched segments use CSS
-    repeating-linear-gradient. Marker + "272 FOR MAJORITY" shown in seat view,
+  Bar: five solid segments in group order. Marker + "272 FOR MAJORITY" shown in seat view,
     faded out in vote view.
-  .subtoggle (below the bar, above the map): small, quiet pill with
-    "Seat share" / "Vote share" buttons (aria-pressed). Deliberately less
-    prominent than the main race toggle.
-  Map: each state's squares sorted left-to-right, column by column, then
-    filled in group order with counts from LS[code].s (seat view) or
-    LS[code].q (vote view). Fill = var(--bjp) / url(#hatch-nda) / var(--oth) /
-    url(#hatch-india) / var(--inc); hatch patterns live in #map-india <defs>.
-    Fill transitions .45s with a small delay by column (a left-to-right wipe).
+  Controls live in the top bar (#controls), not in the panel:
+    .stepper#year = year stepper, same pill look as the race toggle:
+      [<] [ 2024 ] [>]. Left arrow = earlier election, right = later; an
+      arrow is disabled at the end of the list (at 2024 the right arrow).
+      The year sits in a white window on a 3D drum (10-sided, 36 deg per
+      step, CSS rotateX + translateZ, top/bottom masked) that rolls like a
+      meter: going back, the earlier year drops in from above. Code:
+      LS_YEARS, US_YEARS, setStepper(years, year, animate, onPick).
+      (Replaced the short-lived drag lever on the owner's request.)
+    .subtoggle = "Seat share" / "Vote share" pill, same look and height as the
+      race toggle (aria-pressed).
+  Map: each state's squares ordered row by row from the top, snaking (left to
+    right, then right to left; serp()), then filled in group order - owner
+    asked for horizontal filling with each colour kept in one patch (was
+    column by column). Same order on the States map and for the Rajya Sabha
+    circles (which sit on the top rows of each state). Filled with counts from LS[code].s (seat view) or
+    LS[code].q (vote view, 2024; LS_VOTE_HIST for older years). Fill =
+    var(--bjp) / var(--nda) / var(--oth) / var(--india) / var(--inc).
+    Fill transitions .45s with a small delay by row (a top-to-bottom wipe).
   Legend: 5 swatches + a note that changes per view.
-  Code: LS, LS_GROUPS, LS_NATIONAL, LS_RECTS, drawIndia, setLokSabha(mode).
+  Code: LS, LS_GROUPS, LS_HIST, LS_VOTE_HIST, LS_VOTE_NAT, LS_META, LS_RECTS,
+    drawIndia, lsSeats(year), lsRegionRects(code, regions),
+    setLokSabha(mode, animate, year), LS_YEARS + setStepper (year stepper).
+    countTo / countToPct cancel a running count (node._raf) before starting.
 
 Numbers (2024):
   Seats   BJP 240 | NDA allies 53 | others 16 | INDIA allies 135 | INC 99
@@ -264,6 +290,119 @@ Data sources and how it was built (repeatable):
 Older elections: see LOK SABHA SEATS BY ELECTION for the state merges needed.
 
 
+EARLIER ELECTIONS: 2019, 2014, 2009 (seat share and vote share)
+---------------------------------------------------------------
+UI: the year stepper in the top bar (see above). Both views work for every year
+    (vote share for 2009-2019 added 2026-10-09; 2004 seats + vote share added
+    later the same day at the owner's request - 2004 is now the earliest).
+Owner's rule: keep the 2024 map and recolour it for older years:
+    - J&K + Ladakh = ONE 6-seat region in 2009-2019 (fills the 5 J&K squares
+      and the Ladakh square together).
+    - Andhra Pradesh + Telangana = ONE 42-seat region in 2009 and 2014
+      (Telangana was created 2 June 2014, after the 2014 count); separate
+      in 2019 and 2024.
+    - DNH-DD: always two separate seats. WESTERN square = Daman & Diu (DM),
+      EASTERN square = Dadra & Nagar Haveli (DN). 2024 is split the same way:
+      DM = independent (Umeshbhai Patel), DN = BJP (Kalaben Delkar).
+    Labels stay as on the 2024 map. Legend note says "drawn on today's state
+    map" for older years.
+Names per year: the Congress-led bloc is INDIA in 2024 and UPA in 2009-2019
+    (tally label and legend change). Check mark = alliance that formed the
+    government: NDA in 2024/2019/2014, UPA in 2009 (UPA 262 < 272, governed
+    with outside support).
+
+Totals (match the official results):
+          BJP  NDA allies  others  UPA/INDIA allies  INC   NDA  UPA/INDIA
+  2024    240      53         16         135          99   293     234
+  2019    303      50         98          40          52   353      92*
+  2014    282      54        147          16          44   336      60
+  2009    116      43        122          56         206   159     262
+  2004    138      49        134          77         145   187     222 **
+  ** Often quoted as NDA 181-186 / UPA 218: those leave out some partners.
+     Ours counts every pre-poll partner (lists below).
+  * The usual 2019 UPA figure is 91 (542 seats on counting day); 92 here
+    includes Vellore, won by the DMK in the delayed August 2019 vote.
+
+Alliance membership by year (winning parties; everyone else = not aligned):
+  2019 NDA allies: SS, JD(U), LJP, SAD, AD(S), AJSU, AIADMK, NDPP, NPP, NPF,
+       RLP (= 353 with BJP). MNF and SKM counted as not aligned (BJP ran
+       against them; this matches the official 353).
+  2019 UPA allies: DMK, NCP, IUML, JKNC, JMM, JD(S), KC(M), RSP, VCK.
+       Not aligned incl. AITC, YSRCP, BJD, BSP, SP, TRS, CPI(M), CPI, AIMIM,
+       AIUDF, AAP, MNF, SKM, independents.
+  2014 NDA allies: SS, TDP, LJP, SAD, RLSP, AD, PMK, SWP, AINRC, NPP, NPF.
+  2014 UPA allies: NCP, RJD, IUML, JMM, KC(M), RSP.
+       Not aligned incl. AIADMK 37, AITC 34, BJD 20, TRS 11, YSRCP 9,
+       CPI(M) 9, SP 5, AAP 4, JKPDP 3, AIUDF 3, INLD 2, JD(S) 2, JD(U) 2...
+  2009 NDA allies: JD(U), SS, RLD, SAD, TRS, AGP (= 159 with BJP; TRS joined
+       just before the count).
+  2009 UPA allies: AITC, DMK, NCP, JKNC, JMM, IUML, VCK, KC(M), AIMIM.
+       Not aligned incl. SP 23, BSP 21, CPI(M) 16, BJD 14, AIADMK 9, TDP 6,
+       RJD 4, CPI 4, JD(S) 3, RSP 2, AIFB 2, SUCI(C) 1, independents 8...
+
+  2004 NDA allies: SHS, JD(U), BJD, SAD, TDP, AITC, AIADMK (0 seats), MNF,
+       NPF, IFDP (P.C. Thomas, Kerala). INLD and JKNC fought on their own.
+  2004 UPA allies: RJD, DMK, NCP, PMK, TRS, JMM, LJP, MDMK, JKPDP, IUML,
+       RPI(A), AIMIM, KC(M). Left (CPI(M) 43, CPI 10, RSP 3, AIFB 3), SP 36,
+       BSP 19, JD(S), AGP, JKNC = not aligned (Left/SP/BSP backed UPA only
+       from outside). Government = UPA (check mark on UPA).
+  2004 source: datameet parliament.csv (YEAR == 2004, 543 seats, winners =
+       top vote per PC; party totals match ECI: INC 145, BJP 138, CPM 43,
+       SP 36, RJD 24, BSP 19). Same file gives the vote share (no NOTA then).
+       National vote %: BJP 22.16, NDA allies 13.96, others 28.01, UPA
+       allies 9.34, INC 26.53 (NDA 36.12, UPA 35.87).
+Data: const LS_HIST = {year: {region: [bjp, nda, oth, upa, inc]}} in
+  index.html; lsSeats(year) gives the regions (2024 from LS, DD split into
+  DM/DN); lsRegionRects(code, regions) maps a region to today's squares
+  (JK takes LA, AP takes TS only when the year has no LA / TS region).
+Sources:
+  2019, 2014: the 543-row constituency winners table on
+    "Results of the 2019/2014 Indian general election" (Wikipedia), grouped
+    by state and party.
+  2009: per-state "2009 Indian general election in <State>" pages (seats-won
+    column) plus single-seat UTs, checked state by state; national party
+    totals match (INC 206, BJP 116, SP 23, BSP 21, JD(U) 20, AITC 19, DMK 18,
+    CPI(M) 16, BJD 14, SS 11, NCP 9, AIADMK 9). Do NOT use "List of members of
+    the 15th Lok Sabha": it includes later by-elections and party switches.
+VOTE SHARE 2009-2019 (added 2026-10-09)
+  Built from candidate-wise ECI results (every candidate's votes), summed per
+  region (same regions as LS_HIST: JK incl. Ladakh, AP incl. Telangana in
+  2009/2014, DN and DM separate):
+    2009  github.com/datameet/india-election-data  parliament-elections/
+          parliament.csv (YEAR == 2009; party abbreviations; no NOTA then)
+    2014  same repo, parliament-elections/election2014/eci-candidate-wise.csv
+    2019  github.com/r21meghashyam/indian-election-2019-dataset csv/votes.csv
+          (scraped from results.eci.gov.in; HTML-escaped names - unescape).
+          Two fixes: (a) Vellore (TN, polled Aug 2019) is missing - added DMK
+          485,340 / AIADMK 477,199 / NTK 26,995 / NOTA 9,417 (others left out);
+          (b) J&K rows are garbled (tiny totals) - replaced with state totals
+          from Wikipedia's "2019 Indian general election in Jammu and Kashmir"
+          (BJP 1,648,041; INC 1,011,527; JKNC 280,356; all others 590,959;
+          NOTA 21,739).
+  Squares per region: same rule as 2024 (NOTA removed, renormalised,
+  largest remainder; 1-2 seat regions all to the leader). Checked: 543
+  squares every year. Stored as LS_VOTE_HIST {year: {region: [5 counts]}}.
+  National bar (LS_VOTE_NAT, % of all votes incl. NOTA, NOTA not drawn):
+          BJP   NDA allies  others  UPA allies  INC    NDA    UPA
+    2019  37.30    7.56      27.58     7.04     19.46  44.86  26.50
+    2014  31.00    7.53      37.28     3.81     19.31  38.53  23.12
+    2009  18.80    5.81      38.68     8.15     28.55  24.61  36.70
+    (BJP/INC match the official ECI national shares to within ~0.1.)
+  Vote-share alliance lists = the seat lists above PLUS allies that won no
+  seat (state-limited where noted); same "not aligned" calls as the seat view
+  (e.g. CPI, CPI(M), AITC 2014/2019 stay not aligned):
+    2009 NDA + INLD.
+    2014 NDA + DMDK, MDMK, HJC(BL), Rashtriya Samaj Paksha (MH only),
+         RPI(A) (MH only). UPA + RLD, JKNC, SJ(D), Mahan Dal; RSP = UPA in
+         Kerala only (Left Front elsewhere).
+    2019 NDA + PMK, DMDK, TMC(M), AGP, BDJS, Kerala Congress (Thomas; KL
+         only), AINRC. UPA + RJD, RLSP, HAM(S), VIP, JVM(P), Swabhimani Paksha,
+         BVA; JD(S) = UPA in Karnataka only; RSP = UPA in Kerala only.
+         MDMK/KMDK/IJK/PT fought on DMK/AIADMK symbols so already counted.
+  Script that did this (re-runnable, Python stdlib only) was kept in the
+  session scratchpad, not the repo; the method above is enough to redo it.
+
+
 LOK SABHA SEATS BY ELECTION (2004-2024)
 ---------------------------------------
 Every one of these elections had 543 elected seats. Per-state seat counts have
@@ -297,6 +436,133 @@ Notes
 How to draw an older election on this map:
   2019: merge J&K + Ladakh into one 6-seat block; DNH and DD as two 1-seat UTs.
   2004 / 2009 / 2014: as 2019, and also merge Andhra Pradesh + Telangana (42).
+
+
+STATES VIEW (state assemblies on the Lok Sabha map) - added 2026-10-09
+------------------------------------------------------------------------
+Owner's formula: keep the India map and its squares. For each state, take
+the assembly seats by party, group them into the same five groups (BJP, BJP
+allies, not aligned, Congress allies, INC), and colour that state's Lok Sabha
+squares in the same proportions (largest remainder; e.g. Goa 2 squares =
+1 BJP + 1 INC). UTs with no legislature (Ladakh, Chandigarh, DNH-DD,
+Lakshadweep, A&N) stay grey (--seat-empty), legend "No state assembly".
+Snapshot rule (my default, owner may change): seats WON at each state's
+latest assembly election held up to 31 Dec of the year (so 2024 includes
+the late-2024 Maharashtra, Haryana, Jharkhand and J&K results); later
+defections / by-elections ignored (exceptions: West Bengal includes the 2
+deferred 2021 seats, Meghalaya the 2023 Sohiong poll, Rajasthan Karanpur
+Jan 2024). Parties grouped by their alliance at that date (2024: INDIA bloc
+membership, e.g. AAP, AITC, SP, DMK, Left, JMM, PDP = Congress allies; AIADMK
+and SAD = not aligned; RLD, SBSP, PMK, TMP, NPP, MNF = NDA allies).
+Data: ST = {2024: {code: [bjp, nda, oth, india, inc] | null}}, ST_YEARS,
+  drawIndia(svg) now draws either map and returns its squares (LS_RECTS,
+  ST_RECTS), stSquares(shares, n), setStates(year, animate).
+UI (panel-states): tally = MLAs (NDA / Others / INDIA, with BJP/allies and
+  Congress/allies sub-lines), five-part bar, "4,123 MLAs in 31 assemblies",
+  map #map-states, legend. No majority marker. Year stepper shows 2024 only
+  for now (arrows disabled); no seat/vote share toggle.
+2024 groups per state (sum = assembly size; checked):
+  AP 8/156/11/0/0 (TDP 135, JSP 21; YSRCP 11)   AR 46/8/5/0/1
+  AS 60/15/21/1/29   BR 74/48/7/95/19   CG 54/0/1/0/35   GA 20/2/4/3/11
+  GJ 156/0/3/6/17    HR 48/0/5/0/37     HP 25/0/3/0/40   JH 21/3/1/40/16
+  KA 66/19/4/0/135   KL 0/0/0/118/22 (LDF + rest of UDF = allies)
+  MP 163/0/0/1/66    MH 132/103/3/34/16 MN 32/18/5/0/5   ML 2/26/22/5/5
+  MZ 2/10/27/0/1     NL 12/44/4/0/0     OD 78/0/54/1/14  PB 2/0/5/92/18
+  RJ 115/1/10/4/70   SK 0/31/1/0/0      TN 4/5/66/141/18 TS 8/0/46/1/64
+  TR 32/14/0/11/3    UP 255/32/3/111/2  UK 47/0/4/0/19   WB 77/0/1/216/0
+  DL 8/0/0/62/0      PY 6/10/6/6/2      JK 29/0/8/47/6
+  Totals: BJP 1582, NDA allies 545, others 330, INDIA allies 995, INC 671.
+Sources: results from memory, spot-checked against the Wikipedia election
+  pages for MH 2024, JH 2024, J&K 2024, AR 2024, KL 2021 (fixed INC 21 -> 22),
+  WB 2021, ML 2023, NL 2023, MN 2022, BR 2020. Others not yet checked.
+2004-2019 (added 2026-10-09): same rule, alliances as of 31 Dec that year.
+  Regions: undivided AP (294 seats) covers the AP + Telangana squares in 2004
+  and 2009; J&K covers Ladakh's square to 2014; grey (null) = no sitting
+  assembly: Delhi end-2014 (dissolved Nov 2014), J&K and Ladakh end-2019.
+  Elections used (latest up to 31 Dec):
+   2004: AP04 AR04 AS01 BR00 CG03 DL03 GA02 GJ02 HR00 HP03 JK02 JH(=BR00 split)
+         KA04 KL01 MP03 MH04 MN02 ML03 MZ03 NL03 OD04 PY01 PB02 RJ03 SK04
+         TN01 TR03 UP02 UK02 WB01
+   2009: AP09 AR09 AS06 BR05(Oct) CG08 DL08 GA07 GJ07 HR09 HP07 JK08 JH09 KA08
+         KL06 MP08 MH09 MN07 ML08 MZ08 NL08 OD09 PY06 PB07 RJ08 SK09 TN06
+         TR08 UP07 UK07 WB06
+   2014: AP14 TS14 AR14 AS11 BR10 CG13 GA12 GJ12 HR14 HP12 JK14 JH14 KA13 KL11
+         MP13 MH14 MN12 ML13 MZ13 NL13 OD14 PY11 PB12 RJ13 SK14 TN11 TR13
+         UP12 UK12 WB11 (DL none)
+   2019: AP19 AR19 AS16 BR15 CG18 DL15 GA17 GJ17 HR19 HP17 JH19 KA18 KL16
+         MP18 MH19 MN17 ML18 MZ18 NL18 OD19 PY16 PB17 RJ18 SK19 TN16 TS18
+         TR18 UP17 UK17 WB16 (JK none)
+  Sources: elections up to 2013 = DataMeet assembly-elections/assembly.csv
+  (github.com/datameet/india-election-data; winner = top votes per AC;
+  read as latin-1). Patches: +1 SAD Punjab 2007, +1 BJP Rajasthan 2013
+  (Churu), +1 IND Uttarakhand 2007 (one AC missing each). Bihar 2000 split:
+  Jharkhand = ACs 147-164 and 262-324 of the 324-seat Bihar file.
+  Elections from 2012 Gujarat and 2014-2019 = party seat totals typed from
+  memory of the official results, every state checked to sum to its
+  assembly size (not yet checked against a source one by one).
+  Special cases: 2004 TMC(M) -> INC (merged 2002), Samata Party -> JD(U)
+  (merged 2003). 2019 Shiv Sena = Congress-side ally (in the MVA government
+  on 31 Dec 2019); Kerala LDF parties = not aligned (Left, as in the Lok
+  Sabha view); BPF, IPFT, SKM, MNF, JJP, AINRC = BJP allies (NEDA/NDA).
+  Alliance tables per year: ALLY in the build script (parties.py), listed
+  in the code comments; same national lists as the Lok Sabha view plus
+  state partners.
+  Totals (MLAs, BJP/NDA allies/others/UPA allies/INC):
+   2004 909/522/1157/375/1157   2009 838/262/1549/309/1162
+   2014 1027/338/1630/152/903   2019 1256/425/1077/384/891
+
+
+RAJYA SABHA VIEW (added 2026-10-09)
+-----------------------------------
+Owner: "grey pattern for states in Rajya Sabha, just like the Senate". The
+Lok Sabha squares are drawn grey (--house) and each ELECTED Rajya Sabha seat
+is a circle on one of its state's squares (column by column from the left,
+in the bar's group order). Vacant seats = hollow grey circle. The 12
+nominated members are left out (legend says so). Snapshot = 31 Dec of the
+year. Seats per state: UP 31, MH 19, TN 18, WB 16, BR 16, KA 12, GJ 11,
+MP 11, AP 11 (18 undivided until 2014), RJ 10, OD 10, KL 9, AS 7, PB 7,
+TS 7 (from 2014), JH 6, CG 5, HR 5, J&K 4, DL 3, UK 3, HP 3, 1 each AR GA MN
+ML MZ NL SK TR PY = 233.
+Data: RS = {year: {region: [bjp, nda, oth, upa/india, inc, vacant]}};
+  RS_RECTS, RS_SEAT (circle per square), setRS(year, animate).
+Source: Wikipedia "List of Rajya Sabha members from <State>" (31 pages,
+  rendered HTML via the MediaWiki parse API, read with pandas.read_html),
+  each member's term start/end; an exit date found in the notes (resigned,
+  died, appointed governor, elected to Lok Sabha...) ends the term early.
+  Every state-year count was then reconciled to the seat count by hand:
+   - dropped: nominated members listed under a state (Cho Ramaswamy, M. S.
+     Swaminathan, C. Rangarajan, Rekha, K. Parasaran, Mani Shankar Aiyar,
+     Subramanian Swamy, Ilaiyaraaja); duplicate spellings (S. S./Surendrajeet
+     Ahluwalia, R. K./Ram Kumar Anand, Sanjay (Kumar) Jha, Manan (Kumar)
+     Mishra, N. D./Narain Dass Gupta 2024, Sumitra Balmik/Valmiki, Nitin
+     Patil/Jadhav-Patil, Anant(a) Maharaj); Farooq Abdullah's 2009 J&K row,
+     Aslam Chowdhary (J&K 2004), P. C. Alexander (MH 2004), K. V. Ramalingam,
+     Paul Manoj Pandian, K. P. Munusamy (TN), Misa Bharti 2022 and Upendra
+     Kushwaha 2020 rows (BR).
+   - early ends: K. Karunakaran May 2005; K. V. P. Ramachandra Rao and
+     Garikapati Mohan Rao moved to Telangana June 2014; Mopidevi, Beeda
+     Masthan Rao, R. Krishnaiah (YSRCP) resigned Aug/Sep 2024; A. Mohammedjan
+     died Mar 2021.
+   - added (missing from the lists; party is my best estimate): Gujarat INC
+     1999-2005, INC + BJP 2005-2011; Kerala CPI(M) 2000-06; UP SP 2004-06
+     (Jaya Bachchan); Uttarakhand BJP 2000-06; Bihar JD(U) 2006-12; Haryana
+     INC 2006-12; MP INC (2009-10); Jharkhand BJP 2010-16; MH INC (2014);
+     Assam INC (2019-20); Odisha BJD (2019-20).
+   - vacant: Assam (Bhubaneswar Kalita, Aug 2019 - Apr 2020), Bihar (Sharad
+     Yadav disqualified Dec 2017), Haryana (Ram Kumar Kashyap -> MLA Oct
+     2019), J&K all 4 in 2024 (no assembly Feb 2021 - Oct 2025).
+   - 2024 fixed by hand (the lists show members' CURRENT party): Punjab = 7
+     AAP, Sikkim = SKM, Rajasthan BJP 6 / INC 4 and Telangana BRS 4 / INC 3
+     after the 2024 by-elections. Members of split parties: Sharad Pawar,
+     Fouzia Khan = NCP(SP); Priyanka Chaturvedi = SS(UBT); Swati Maliwal = AAP.
+  Totals (BJP/NDA allies/others/UPA-INDIA allies/INC/vacant):
+   2004 47/36/57/21/72/0   2009 46/17/79/17/74/0   2014 48/13/93/11/68/0
+   2019 75/27/61/20/47/3   2024 96/21/27/59/26/4
+  Caveat: this is the least certain dataset on the page (the Wikipedia lists
+  are marked incomplete); spot-check a state before quoting it.
+Build scripts (Python; scratch venv with pandas, lxml) were in the session
+  scratchpad: rs.py (parse), build_rs.py (snapshot + fixes), parties.py
+  (party names -> groups per year), build_states.py (assemblies).
 
 
 APPENDIX C: GEOGRAPHIC PACKING - TRIED AND REJECTED (kept for reference)
@@ -495,15 +761,42 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
  12. Lok Sabha 2024 results: five-group colouring, NDA / Others / INDIA tally
      and bar, Seat share / Vote share toggle, vote-share squares per state.
      The owner asked to push once error-free; steps 10-12 pushed together.
+ 13. Year toggle with seat share for 2019, 2014, 2009 on the 2024 map (J&K +
+     Ladakh and AP + Telangana merged where they were one state; DNH west =
+     Daman & Diu, east = Dadra & Nagar Haveli).
+ 14. Vote share for 2019, 2014, 2009 (ECI candidate-wise data, see VOTE SHARE
+     2009-2019). All controls moved into one top-bar row: race toggle
+     (India: Lok Sabha, Rajya Sabha, States - the last two empty), year lever
+     (replaces the year pill), Seat/Vote share, country picker; map moves up.
+     NDA/INDIA allies now solid lighter orange/blue, no hatching. Tally count
+     animations cancel each other cleanly.
+ 15. Year lever replaced by a < year > stepper with a meter-style rolling
+     drum; the same stepper shows on the USA maps (2024 only, arrows
+     disabled); seat/vote share stays Lok Sabha only.
+ 16. Allies a little darker (--nda #f7a372, --india #74bcf0). 2004 added
+     (seats and vote share; same regions as 2009).
+ 17. States tab: 2024 state assemblies drawn on the Lok Sabha squares (see
+     STATES VIEW).
+ 18. States view for 2004-2019; Rajya Sabha view (grey map + seat circles)
+     for 2004-2024. Year stepper on both.
+ 19. India names 12.5 units, Chhattisgarh / A&N Islands renamed; all India
+     maps fill row by row (snake) instead of column by column.
+ 20. Rajya Sabha circles: no outline (solid, like the Senate); vacant seats
+     keep a hollow grey ring.
+     Steps 13-20 committed together on 2026-10-09 (not pushed unless noted).
 
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = up to step 12 (pushed on the owner's go-ahead for the results work).
+- Live = up to step 12 (commit ad78165). Steps 13-20 are committed locally
+  on master; push only when the owner says so.
+- Rajya Sabha and States: all five years. Data least certain for Rajya
+  Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
+  (typed from memory, sums checked).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
-  label hover earlier, so ask first); older elections (2019, 2014...).
+  label hover earlier, so ask first).
 - Page <title> still says "USA Electoral 2024" even though India is included.
 
 
