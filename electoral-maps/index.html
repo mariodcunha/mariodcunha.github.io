@@ -143,12 +143,42 @@ svg.map text.in{fill:#fff;font-weight:600}
 .bar .mark,.under .need,.under .gain{transition:left .8s var(--ease),opacity .25s}
 .instant,.instant *{transition:none!important;animation:none!important}
 
+/* Phones: race toggle pinned to the bottom edge to edge (within the 16px margins), with the year stepper (left) and
+   any sub-toggle (right) pinned just above it; a white fade keeps the map from showing through. The country picker
+   scrolls with the page until the tally bar reaches the top: then it and a compact tally (#mini: the two main
+   numbers, their names and the bar) stay pinned to the top. */
+#mini{display:none}
+@media (max-width:640px){
+  main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+  .topbar{min-height:37px}
+  .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-self:stretch}
+  .toggle button{flex:1 1 0;padding-inline:4px;white-space:nowrap}
+  .lsctl{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(62px + env(safe-area-inset-bottom));justify-content:space-between;flex-wrap:nowrap;gap:8px}
+  .lsctl .subtoggle{flex:1;display:flex;min-width:0}
+  .lsctl .subtoggle button{flex:1 1 0;padding-inline:4px;font-size:12.5px;white-space:nowrap}
+  body::after{content:"";position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(124px + env(safe-area-inset-bottom));
+    background:linear-gradient(rgba(255,255,255,0),#fff 22px);pointer-events:none}
+  #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,.08);
+    padding:calc(10px + env(safe-area-inset-top)) var(--mini-pr,130px) 10px 16px;transform:translateY(-110%);transition:transform .25s var(--ease)}
+  body.stuck #mini{transform:none}
+  #mini .tally{align-items:baseline}
+  #mini .cand{display:flex;align-items:baseline;gap:6px}
+  #mini .cand.r,#mini .cand.nda{flex-direction:row-reverse}
+  #mini .cand b,#mini .cand span{font-size:15px;line-height:18px}
+  #mini .cand small,#mini .cand.oth{display:none}
+  #mini .bar{height:8px;margin-top:6px}
+  #mini .bar .mark{top:-2px;bottom:-2px}
+  body.stuck .country{position:fixed;z-index:31;top:calc(7px + env(safe-area-inset-top));right:16px;animation:mini-in .25s var(--ease)}
+  @keyframes mini-in{from{transform:translateY(-150%)}}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation:none!important}
 }
 </style>
 </head>
 <body>
+<div id="mini" aria-hidden="true"></div>
 <main>
   <div class="topbar">
   <nav class="toggle" role="tablist" aria-label="Race">
@@ -1018,6 +1048,25 @@ cMenu.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{if(!e.target.closest(".country"))openMenu(false)});
 
 addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
+// Phones: once the tally bar scrolls to the top, pin a compact copy of the tally (main numbers, names, bar) and the
+// country picker. The copy is re-cloned whenever the visible panel's tally or bar changes (counters, bar widths).
+const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)");
+function syncMini(){
+  const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden); if(!p) return;
+  const t=p.querySelector(".tally").cloneNode(true), b=p.querySelector(".bar").cloneNode(true);
+  [t,b].forEach(n=>{n.removeAttribute("id");n.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))});
+  mini.replaceChildren(t,b);
+  mini.style.setProperty("--mini-pr",document.querySelector(".country").offsetWidth+26+"px");
+}
+function stickMini(){
+  const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden);
+  const stuck=phone.matches&&!!p&&p.querySelector(".bar").getBoundingClientRect().top<56;
+  if(stuck&&!document.body.classList.contains("stuck")) syncMini();
+  document.body.classList.toggle("stuck",stuck);
+}
+new MutationObserver(()=>{if(document.body.classList.contains("stuck")) syncMini()})
+  .observe(document.querySelector("main"),{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["style","hidden"]});
+addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",stickMini); stickMini();
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
 show(location.hash.slice(1),false);
 </script>
