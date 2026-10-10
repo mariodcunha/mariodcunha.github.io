@@ -972,12 +972,29 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      plus Senate circles in Senate), keeping x over the squares. Checked in
      the browser: no name overlaps a square, circle or name in any race or
      year.
+ 37. India merged like the US: ONE panel (#panel-in) and ONE svg
+     (#map-india) for Lok Sabha, Rajya Sabha and States, so switching
+     views morphs the map (no panel fade). Shared tally / bar / under-bar
+     ids in-* (bar: inc, india | vac | oth | nda, bjp; vac 0 except RS;
+     272 mark + checks only in Lok Sabha seat share), legends stacked
+     (#legend-loksabha / -rajyasabha / -states, class "off").
+     Every Lok Sabha square is one .st-dot rounded rect (the drawIndia
+     rects stay hidden, giving order and shape): svg class "sq" = full
+     squares (Lok Sabha: white border; Chief Minister: own-colour border),
+     no class = circles (States Seat %), "rs" = dots shrink to 0 and the
+     Rajya Sabha circles grow (scale only, no fades). View change = all at
+     once (class "sync"); year change keeps the top-to-bottom wipe. Names
+     slide to their Rajya Sabha spots (RS_NAME_OFF, CSS transform).
+     One shared year inYear / IN_YEARS for all three views; inRace;
+     renderIn(animate, sync) resets shared bits then renderLS / renderST /
+     renderRS. setLokSabha(mode) and the Seat % / Chief Minister buttons
+     just set lsMode / stMode and re-render. Pushed 2026-10-09.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 36 (pushed 2026-10-09).
+- Live = everything up to step 37 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
