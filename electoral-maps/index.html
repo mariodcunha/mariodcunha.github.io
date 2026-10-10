@@ -53,7 +53,7 @@ svg.india{max-width:940px;margin:0 auto}
 svg.india text{font-size:14px}
 #map-india rect.seat-sq{display:none}
 /* India: one rounded rect per Lok Sabha square for every view, so switching views morphs the map (like the US).
-   Lok Sabha: full squares, white border. States, Seat %: circles. Chief Minister: full squares with a border of
+   Lok Sabha: full squares, white border. States, Seats in states: circles. Chief Minister: full squares with a border of
    their own colour, so each state reads as one solid block. Rajya Sabha: they shrink away and its circles grow. */
 #map-india .st-dot{fill:var(--seat-empty);stroke:var(--bg);stroke-width:0;transform-box:fill-box;transform-origin:center;transition:fill .45s var(--ease),stroke .45s var(--ease),stroke-width .45s var(--ease),rx .45s var(--ease),ry .45s var(--ease),transform .45s var(--ease)}
 #map-india.sq .st-dot{rx:0;ry:0;transform:scale(1.1628);stroke-width:.86}
@@ -176,7 +176,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
     </div>
     <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
-      <button type="button" data-st="seats" aria-pressed="true">Seat %</button>
+      <button type="button" data-st="seats" aria-pressed="true">Seats in states</button>
       <button type="button" data-st="cm" aria-pressed="false">Chief Minister</button>
     </div>
   </div>
@@ -772,6 +772,8 @@ function gridSeats(cells,n,r,avoidNames,others=[]){
   }
   return null;
 }
+// Notches in a state's Lok Sabha shape that would leave a hole in its column of circles (West Bengal under Meghalaya)
+const RS_FILL={WB:[[40.02,22.18]]};
 // One set of circles per region and seat count (Andhra Pradesh changes in 2014), built on first use
 const RS_LAYOUT=new Map(), rsLayer=(()=>{const names=inSvg.lastChild, g=el("g",{},inSvg);
   inSvg.insertBefore(g,names); return g})(); // circles below the names
@@ -779,7 +781,7 @@ function rsCircles(code,data,n){
   // J&K's 4 seats sit on J&K's own squares (not Ladakh's lone square, which is boxed in by names)
   const parts=code==="AP"&&!("TS" in data)?["AP","TS"]:[code], key=parts.join("+")+":"+n;
   if(!RS_LAYOUT.has(key)){
-    const cells=parts.flatMap(c=>INDIA.find(s=>s[0]===c)[2]);
+    const cells=parts.flatMap(c=>INDIA.find(s=>s[0]===c)[2].concat(RS_FILL[c]||[]));
     // keep clear of names if possible; otherwise place anyway and move the name (rsNames below)
     // circles already placed for other states (not this region's other years, e.g. AP+TS vs AP)
     const others=[...RS_LAYOUT.entries()].filter(([k])=>!k.split(":")[0].split("+").some(c=>parts.includes(c)))
@@ -824,6 +826,20 @@ function rsNamePlaces(year){
     let best=ok(at(B,want),i)?want:null;
     for(let rad=.1;rad<=2&&!best;rad+=.1) for(let k=0;k<16;k++){
       const o=[want[0]+Math.cos(k*Math.PI/8)*rad,want[1]+Math.sin(k*Math.PI/8)*rad]; if(ok(at(B,o),i)){best=o;break}}
+    // Still left dangling (crowded corners like Meghalaya / Mizoram / Tripura): take any side, the clear spot
+    // nearest its own circles, as long as no other state's circle is nearer to the name than its own
+    const gapTo=(Bx,P)=>Math.min(...P.map(([x,y])=>dist(Bx,x,y)))-R;
+    if(!best||gapTo(at(B,best),C)>.45){
+      let bestScore=best?gapTo(at(B,best),C):1e9;
+      for(let dx=-5;dx<=5;dx+=.1) for(let dy=-4;dy<=4;dy+=.1){
+        const o=[want[0]+dx,want[1]+dy], Bo=at(B,o), g=gapTo(Bo,C);
+        if(g>=bestScore||g>gapTo(Bo,all)+1e-6||!ok(Bo,i)) continue;
+        const score=g+.03*Math.hypot(dx,dy); if(score<bestScore){bestScore=score;best=o}
+      }
+      // above or below its circles: centre it on them if that spot is clear too
+      if(best){const Bb=at(B,best), up=Bb[3]<=cb[1], c=[best[0]+(cb[0]+cb[2])/2-(Bb[0]+Bb[2])/2,up?cb[1]-gap-B[3]:cb[3]+gap-B[1]];
+        if((up||Bb[1]>=cb[3])&&ok(at(B,c),i)&&gapTo(at(B,c),C)<=gapTo(at(B,c),all)+1e-6) best=c}
+    }
     if(best){off[i]=best; boxes[i]=at(B,best)}
   });
   RS_NAME_HAS[year]=own.map(c=>c.length>0);

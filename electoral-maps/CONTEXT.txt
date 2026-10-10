@@ -1032,12 +1032,23 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      (st.c.length) for every year, no census adjustment. So one layout
      (powerLayout(), cached) and fixed circle sizes: stepping through the
      years only recolours. Ratio note fixed at 52x. Pushed 2026-10-09.
+ 42. States toggle label "Seat %" -> "Seats in states". Rajya Sabha: West
+     Bengal's circle column had a hole where its Lok Sabha shape has a notch
+     (no square at 40.02,22.18, under Meghalaya); RS_FILL adds that square to
+     WB's outline for circle placement only. Pushed 2026-10-09.
+ 43. Rajya Sabha names left dangling (Meghalaya, Mizoram, Tripura sat 1.5-2
+     squares from their circle): in rsNamePlaces, if a name still ends up
+     more than .45 from its own circles, it may take any side - the clear
+     spot nearest its own circles, provided no other state's circle is
+     nearer to it; if that spot is above/below its circles, it is then
+     centred on them when clear (Meghalaya now sits centred above its
+     circle). Pushed 2026-10-09.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 41 (pushed 2026-10-09).
+- Live = everything up to step 43 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
