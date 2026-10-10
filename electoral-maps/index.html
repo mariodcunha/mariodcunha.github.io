@@ -53,7 +53,7 @@ svg.india{max-width:940px;margin:0 auto}
 svg.india text{font-size:14px}
 #map-india rect.seat-sq{display:none}
 /* India: one rounded rect per Lok Sabha square for every view, so switching views morphs the map (like the US).
-   Lok Sabha: full squares, white border. States, Seats in states: circles. Chief Minister: full squares with a border of
+   Lok Sabha: full squares, white border. States, Seats: circles. Chief Minister: full squares with a border of
    their own colour, so each state reads as one solid block. Rajya Sabha: they shrink away and its circles grow. */
 #map-india .st-dot{fill:var(--seat-empty);stroke:var(--bg);stroke-width:0;transform-box:fill-box;transform-origin:center;transition:fill .45s var(--ease),stroke .45s var(--ease),stroke-width .45s var(--ease),rx .45s var(--ease),ry .45s var(--ease),transform .45s var(--ease)}
 #map-india.sq .st-dot{rx:0;ry:0;transform:scale(1.1628);stroke-width:.86}
@@ -209,7 +209,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
     </div>
     <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
-      <button type="button" data-st="seats" aria-pressed="true">Seats in states</button>
+      <button type="button" data-st="seats" aria-pressed="true">Seats</button>
       <button type="button" data-st="cm" aria-pressed="false">Chief Minister</button>
     </div>
   </div>
