@@ -1126,11 +1126,18 @@ Governors 24 D - 19 R, 7 toss-ups (FL -3, GA -1.8, NV 0, OR 0, TX -1.9,
   ID OK SC SD TN VT WY R.
 Refresh before each push near the election (re-run the RCP scrape).
 
+ 51. Landing (2026-10-09, pushed): no / unknown #hash opens
+     House at the newest year (2026); chYear starts at US_YEARS.at(-1) and
+     presYear at PRES_YEARS.at(-1), so every race opens on its latest
+     election; lastRace.usa = "house". A #president / #senate link still
+     opens that race. countTo rounds on the instant path too (House 2026
+     showed 50.4 on load, 50 after an animation).
+
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 50 (pushed 2026-10-09).
+- Live = everything up to step 51 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019

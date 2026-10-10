@@ -507,13 +507,14 @@ const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={};
 
 function countTo(node,to,animate){
   const from=parseFloat(node.textContent)||0; cancelAnimationFrame(node._raf);
-  if(!animate||reduce||from===to){node.textContent=to;return}
+  if(!animate||reduce||from===to){node.textContent=Math.round(to);return}
   const t0=performance.now(),dur=800;
   const step=now=>{const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3);
     node.textContent=Math.round(from+(to-from)*e); if(t<1) node._raf=requestAnimationFrame(step)};
   node._raf=requestAnimationFrame(step);
 }
-let usRace=null, presYear=2024, chYear=2024, senMode="seats";
+// Visitors land on the latest election: House / Senate / Governors start at the newest year (2026 midterms)
+let usRace=null, presYear=PRES_YEARS.at(-1), chYear=US_YEARS.at(-1), senMode="seats";
 // ---------- Senate voter power: a cartogram of circle pairs ----------
 // Circle AREA ~ senators per grey square (2 / squares), scaled so the smallest (California) is as big as Hawaii's
 // was on the seat-sized map (radius .354 squares): r = .354 * sqrt(52 / squares). Each state's two circles sit side
@@ -1103,7 +1104,7 @@ const thumb=document.querySelector('.toggle .thumb');
 const visibleTabs=()=>tabs.filter(t=>!t.hidden);
 const panelOf=r=>document.getElementById(countryOf(r)==="usa"?"panel-us":"panel-in");
 const countryOf=r=>tabs.find(t=>t.dataset.race===r)?.dataset.country;
-let current=null, lastRace={usa:"president",india:"loksabha"};
+let current=null, lastRace={usa:"house",india:"loksabha"};
 function moveThumb(tab,animate){
   if(!animate) thumb.style.transition="none";
   thumb.style.left=tab.offsetLeft+"px"; thumb.style.width=tab.offsetWidth+"px";
@@ -1119,7 +1120,7 @@ function projLegend(race,n){
 }
 
 function show(race,animate){
-  if(!countryOf(race)) race="president";
+  if(!countryOf(race)) race="house";   // no or unknown #hash: the latest election, House first
   if(race===current) return;
   setCountryUI(countryOf(race));
   const tab=tabs.find(t=>t.dataset.race===race);
