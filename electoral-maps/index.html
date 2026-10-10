@@ -149,6 +149,37 @@ svg.map text.in{fill:#fff;font-weight:600}
    scrolls with the page until the tally bar reaches the top: then it and a compact tally (#mini: the two main
    numbers, their names and the bar) stay pinned to the top. */
 #mini{display:none}
+/* Desktop: the top bar (race toggle, year, sub-toggles, country) stays pinned to the top; once the tally bar scrolls
+   under it, a compact tally (#mini) slides out just below it: main numbers + names and the bar, plus the smaller
+   details (allies, Others, net gain, majority line) only when the window is wide enough to keep them on one line. */
+@media (min-width:641px){
+  .topbar{position:sticky;top:0;z-index:30;background:var(--bg);margin:-10px -16px;padding:10px 16px}
+  .topbar::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg)}
+  body{overflow-x:clip}
+  #mini{display:block;position:fixed;z-index:29;top:var(--top-h,57px);left:0;right:0;background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,.08);
+    padding:4px max(16px,calc((100% - 1100px)/2 + 16px)) 10px;transform:translateY(-100%);opacity:0;visibility:hidden;
+    transition:transform .25s var(--ease),opacity .2s,visibility 0s .25s}
+  body.stuck #mini{transform:none;opacity:1;visibility:visible;transition:transform .25s var(--ease),opacity .2s}
+  #mini .tally{align-items:baseline}
+  #mini .cand{display:flex;align-items:baseline;gap:8px}
+  #mini .cand.r,#mini .cand.nda{flex-direction:row-reverse}
+  #mini .cand b{font-size:22px;line-height:24px}
+  #mini .cand span{font-size:15px;line-height:18px}
+  #mini .cand small,#mini .cand.oth,#mini .under{display:none}
+  #mini .bar{height:8px;margin-top:6px}
+  #mini .bar .mark{top:-2px;bottom:-2px}
+}
+@media (min-width:900px){
+  #mini .under{display:block;min-height:0;height:15px;margin-top:4px;font-size:12px;line-height:15px}
+  #mini .under.split{display:flex}
+  #mini .need{font-size:12px;line-height:15px;white-space:nowrap}
+  #mini .need small{display:inline;margin-left:4px}
+  #mini .cand small:not(:empty){display:inline}
+  #mini .cand.oth{display:flex}
+  #mini .cand small{white-space:nowrap}
+  #mini .cand small span{display:inline}
+  #mini .cand.oth b{font-size:18px}
+}
 @media (max-width:640px){
   main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
   .topbar{min-height:37px}
@@ -166,7 +197,7 @@ svg.map text.in{fill:#fff;font-weight:600}
   #mini .cand{display:flex;align-items:baseline;gap:6px}
   #mini .cand.r,#mini .cand.nda{flex-direction:row-reverse}
   #mini .cand b,#mini .cand span{font-size:15px;line-height:18px}
-  #mini .cand small,#mini .cand.oth{display:none}
+  #mini .cand small,#mini .cand.oth,#mini .under{display:none}
   #mini .bar{height:8px;margin-top:6px}
   #mini .bar .mark{top:-2px;bottom:-2px}
   body.stuck .country{position:fixed;z-index:31;top:calc(7px + env(safe-area-inset-top));right:16px;animation:mini-in .25s var(--ease)}
@@ -1053,19 +1084,22 @@ cMenu.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{if(!e.target.closest(".country"))openMenu(false)});
 
 addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
-// Phones: once the tally bar scrolls to the top, pin a compact copy of the tally (main numbers, names, bar) and the
-// country picker. The copy is re-cloned whenever the visible panel's tally or bar changes (counters, bar widths).
-const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)");
+// Once the tally bar scrolls to the top (phones) or under the pinned top bar (desktop), pin a compact copy of the
+// tally (main numbers, names, bar; on phones also the country picker). The copy is re-cloned whenever the visible
+// panel's tally or bar changes (counters, bar widths).
+const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)"), topbar=document.querySelector(".topbar");
 function syncMini(){
   const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden); if(!p) return;
-  const t=p.querySelector(".tally").cloneNode(true), b=p.querySelector(".bar").cloneNode(true);
-  [t,b].forEach(n=>{n.removeAttribute("id");n.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))});
-  mini.replaceChildren(t,b);
+  const t=p.querySelector(".tally").cloneNode(true), b=p.querySelector(".bar").cloneNode(true), u=p.querySelector(".under").cloneNode(true);
+  [t,b,u].forEach(n=>{n.removeAttribute("id");n.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))});
+  mini.replaceChildren(t,b,u);
   mini.style.setProperty("--mini-pr",document.querySelector(".country").offsetWidth+26+"px");
 }
 function stickMini(){
   const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden);
-  const stuck=phone.matches&&!!p&&p.querySelector(".bar").getBoundingClientRect().top<56;
+  const top=phone.matches?56:topbar.getBoundingClientRect().bottom;
+  if(!phone.matches) document.body.style.setProperty("--top-h",top+"px");
+  const stuck=!!p&&p.querySelector(".bar").getBoundingClientRect().top<top;
   if(stuck&&!document.body.classList.contains("stuck")) syncMini();
   document.body.classList.toggle("stuck",stuck);
 }
