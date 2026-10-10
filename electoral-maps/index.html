@@ -112,6 +112,13 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .bar{position:relative;height:15px;display:flex}
 .bar i{display:block;height:100%;transition:width .8s var(--ease)}
 .bar i.gap{margin-left:3px} /* white gap where one side (alliance / party) ends and the next begins */
+/* 2026 calls: hatched = the party the poll aggregate (or Cook's rating) has ahead; yellow hatch = toss-up; grey = can't call */
+.hatch-d{background:repeating-linear-gradient(135deg,var(--dem) 0 2.5px,#cfe5f8 2.5px 5px)}
+.hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,#f9d4d1 2.5px 5px)}
+.hatch-t{background:repeating-linear-gradient(135deg,#e8bd2e 0 2.5px,#fbefc4 2.5px 5px)}
+.hatch-n{background:repeating-linear-gradient(135deg,#a9a9a9 0 2px,#fff 2px 5px);box-shadow:inset 0 0 0 1px #d8d8d8}
+.legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
+.tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s}
@@ -129,6 +136,8 @@ svg.map text.in{fill:#fff;font-weight:600}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend svg{width:14px;height:14px}
 .legends{display:grid}
+.legend .proj{display:contents}
+.legend .proj:empty{display:none}
 .credit{font-size:12px;color:var(--muted);border-top:1px solid #e6e6e6;padding-top:12px}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
@@ -182,6 +191,7 @@ svg.map text.in{fill:#fff;font-weight:600}
 }
 @media (max-width:640px){
   main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+  #panel-us.pct #need{display:none}
   .topbar{min-height:37px}
   .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-self:stretch}
   .toggle button{flex:1 1 0;padding-inline:4px;white-space:nowrap}
@@ -259,12 +269,12 @@ svg.map text.in{fill:#fff;font-weight:600}
 
   <!-- President, House, Senate and Governors share this panel so the map morphs between them -->
   <section class="panel" id="panel-us" role="tabpanel">
-    <div class="tally">
+    <div class="tally" id="us-tally">
       <div class="cand d"><b id="num-d">0</b><span id="name-d"></span></div>
       <div class="cand r"><b id="num-r">0</b><span id="name-r"></span></div>
     </div>
     <div class="barwrap">
-      <div class="bar" aria-hidden="true"><i id="bar-d" style="background:var(--dem)"></i><i style="flex:1"></i><i id="bar-r" class="gap" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
+      <div class="bar" id="us-bar" aria-hidden="true"><i id="bar-d" data-g="d" style="background:var(--dem)"></i><i id="bar-dp" data-g="d" class="hatch-d"></i><i id="bar-m" data-g="m"></i><i id="bar-t" data-g="t" class="hatch-t"></i><i id="bar-n" data-g="n" class="hatch-n"></i><i id="bar-rp" data-g="r" class="hatch-r"></i><i id="bar-r" data-g="r" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
       <div class="under"><span class="gain d" id="under-d"></span><span class="gain r" id="under-r"></span><span class="need" id="need"></span></div>
     </div>
     <div class="mapwrap"><svg class="map" id="map-us" role="img"></svg></div>
@@ -275,6 +285,7 @@ svg.map text.in{fill:#fff;font-weight:600}
       </div>
       <div class="legend" id="legend-house">
         <span>Each square is one district</span>
+        <span class="proj" id="proj-house"></span>
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
       <div class="legend" id="legend-senate">
@@ -282,6 +293,7 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--ind)"/></svg>Independent, caucuses with Democrats</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts</em></span>
+        <span class="proj" id="proj-senate"></span>
         <span id="sen-power" hidden></span>
         <span id="sen-note"></span>
       </div>
@@ -289,6 +301,7 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
         <span id="leg-gov-ind" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--ind)"/></svg><em id="gov-ind-name"></em></span>
+        <span class="proj" id="proj-governors"></span>
         <span>Each state is drawn as its House seats, so its size shows its population</span>
       </div>
     </div>
@@ -375,6 +388,43 @@ const CONTROL={
   house:{2008:"d",2010:"r",2012:"r",2014:"r",2016:"r",2018:"d",2020:"d",2022:"r",2024:"r"},
   senate:{2008:"d",2010:"d",2012:"d",2014:"r",2016:"r",2018:"r",2020:"d",2022:"d",2024:"r"}};
 
+// ---------- 2026 midterms: the map as it stands after 2024 (+ Virginia's 2025 governor), with the races on the
+// ballot shaded by what the chosen polls say (see CONTEXT.txt, 2026 POLLS) ----------
+const US_YEARS=[...CH_YEARS,2026];
+// Senate seats up: class 2 (33 states) + the Ohio and Florida specials (Vance's and Rubio's seats). Seat index in
+// SEN_HIST order (lower class first): 1 where the state also has a class 1 seat or for the two specials, else 0.
+const CLASS1="AZ CA CT DE FL HI IN ME MD MA MI MN MS MO MT NE NV NJ NM NY ND OH PA RI TN TX UT VT VA WA WV WI WY".split(" ");
+const SEN_UP=Object.fromEntries([..."AL AK AR CO DE GA ID IL IA KS KY LA ME MA MI MN MS MT NE NH NJ NM NC OK OR RI SC SD TN TX VA WV WY"
+  .split(" ").map(k=>[k,CLASS1.includes(k)?1:0]),["OH",1],["FL",1]]);
+const GOV_UP="AL AK AZ AR CA CO CT FL GA HI ID IL IA KS ME MD MA MI MN NE NV NH NM NY OH OK OR PA RI SC SD TN TX VT WI WY".split(" ");
+SEN_HIST[2026]=SEN_HIST[2024];             // Husted (OH) and Moody (FL) were appointed: still R
+// Aggregate of the polls out there (RealClearPolling's race tables, 2026-10-08): per race, each pollster's latest
+// poll ending Aug 1 or later (generic ballot: Sep 1 or later), campaign-internal polls (RCP "**") left out.
+// [pollster, dates, Democrat minus Republican] (Nebraska Senate: Osborn, independent, minus Ricketts);
+// generic: [pollster, dates, D %, R %].
+const AGG_POLLS={senate:{"AK":[["NY Times/Siena","9/22–10/1",7],["Quantus Insights","9/28–9/30",-1],["co/efficient","9/14–9/17",-3],["Fabrizio/Anzalone","9/8–9/11",6]],"FL":[["St. Pete Polls","10/5–10/7",-2],["YouGov","9/24–10/3",-5],["NBC 6/Mason-Dixon","9/28–10/1",-10],["InsiderAdvantage","9/20–9/21",-7],["Quantus Insights","9/8–9/10",-7]],"GA":[["InsiderAdvantage","9/22–9/23",8],["Big Data Poll","9/21–9/23",10],["YouGov","9/15–9/18",10],["Quantus Insights","9/14–9/16",4],["Rasmussen Reports","9/14",9],["Trafalgar Group","9/10–9/12",6]],"IA":[["Emerson","10/5–10/6",-2],["CNN","9/29–10/5",-2],["Suffolk University","10/1–10/4",4],["NY Times/Siena","9/22–10/1",-1],["Rasmussen Reports","9/28–9/30",4],["Quantus Insights","9/28–9/29",-1],["FOX News","9/24–9/28",2],["InsiderAdvantage","9/22–9/23",1],["Marist","9/17–9/20",8],["Trafalgar Group","9/16–9/18",-2],["co/efficient","9/14–9/16",-5],["YouGov","9/3–9/8",2]],"KS":[["YouGov","9/24–10/4",3],["Trafalgar Group","9/29–10/1",0],["NY Times/Siena","9/22–10/1",-1],["Emerson","9/15–9/16",2],["co/efficient","9/8–9/10",-5]],"MI":[["Quantus Insights","10/5–10/6",1],["YouGov","9/28–10/5",1],["Mitchell Research","10/1",5],["Trafalgar Group","9/28–9/30",2],["FOX News","9/24–9/28",1],["Marist","9/24–9/27",7],["Big Data Poll","9/22–9/24",5],["co/efficient","9/21–9/23",0],["Rasmussen Reports","9/22",3],["NY Times/Siena","9/15–9/22",5],["Cygnal/Beacon Research","9/18–9/21",5],["Suffolk University","9/16–9/20",7],["InsiderAdvantage","9/16–9/17",2],["Emerson","9/12–9/14",2],["Washington Post","9/10–9/14",3],["CNN","8/31–9/6",3],["Detroit News/Glengariff","8/31–9/3",-2],["EPIC-MRA","8/22–8/28",4],["Michigan State/YouGov","8/10–8/20",5],["Susquehanna","8/11–8/17",7],["Fabrizio/Anzalone","8/9–8/11",1]],"OH":[["co/efficient","10/5–10/6",-1],["CNN","9/29–10/5",6],["NY Times/Siena","9/22–10/1",3],["YouGov","9/18–9/30",4],["InsiderAdvantage","9/28–9/29",1],["Big Data Poll","9/25–9/27",3],["Marist","9/24–9/27",8],["USA Today/Suffolk","9/23–9/27",3],["Rasmussen Reports","9/22–9/23",3],["Quantus Insights","9/21–9/23",1],["Trafalgar Group","9/14–9/16",3],["Bowling Green/YouGov","9/1–9/10",3],["FOX News","8/6–8/10",8]],"NH":[["YouGov","9/28–10/5",8],["Rasmussen Reports","10/2–10/4",5],["St. Anselm","9/28–9/29",7],["Trafalgar Group","9/26–9/27",6],["NY Times/Siena","9/15–9/22",5],["UNH","9/17–9/21",8],["InsiderAdvantage","9/16–9/17",8],["co/efficient","9/9–9/11",0]],"NC":[["East Carolina U.","9/30–10/3",7],["Big Data Poll","9/27–9/29",12],["Rasmussen Reports","9/22",7],["Quantus Insights","9/21–9/22",5],["Fabrizio/Anzalone","9/17–9/20",11],["YouGov","9/15–9/18",12],["InsiderAdvantage","9/16–9/17",5],["High Point University","9/6–9/16",8],["Carolina Journal/Harper","9/13–9/15",15],["Trafalgar Group","9/8–9/10",6],["Elon University","8/21–8/31",11],["Carolina Forward/Change Res.","8/3–8/6",7]],"TX":[["YouGov","9/28–10/5",6],["NY Times/Siena","9/21–9/30",6],["Rasmussen Reports","9/28–9/29",1],["FOX News","9/24–9/28",2],["UMass Lowell","9/18–9/28",0],["Big Data Poll","9/24–9/26",2],["Marist","9/17–9/20",6],["TSU/YouGov","9/15–9/19",1],["Trafalgar Group","9/15–9/17",1],["Emerson","9/12–9/14",1],["ReconMR/Siena","9/8–9/11",6],["Telemundo/Mason-Dixon","9/8–9/10",3],["InsiderAdvantage","9/8–9/9",1],["Univision","8/27–9/4",5],["Fabrizio/Anzalone","8/30–9/1",4],["University of Texas","8/5–8/13",3]],"SC":[["InsiderAdvantage","9/28–9/29",-1],["Trafalgar Group","9/23–9/25",-1],["Rasmussen Reports","9/14",-5]],"MN":[["Rasmussen Reports","10/5–10/7",3],["Daily Agenda/Morning Consult","10/2–10/7",4],["Big Data Poll","9/29–9/30",2],["InsiderAdvantage","9/28–9/29",1],["co/efficient","9/14–9/15",1],["KSTP/SurveyUSA","9/9–9/14",0],["Quantus Insights","9/8–9/10",4]],"ME":[["Washington Post","9/30–10/5",4],["Marist","10/1–10/4",4],["CBS News","9/23–10/1",0],["Trafalgar Group","9/29–10/1",0],["co/efficient","9/28–9/30",-2],["MPRC","9/25–9/29",2],["InsiderAdvantage","9/22–9/23",0],["Fabrizio/Anzalone","9/20–9/22",3],["NY Times/Siena","9/15–9/22",-3],["UNH","9/17–9/21",4],["Quantus Insights","9/14–9/15",-1],["Rasmussen Reports","9/8–9/10",1],["YouGov","9/2–9/8",4],["CNN","8/31–9/6",3],["FOX News","8/6–8/10",2]],"NE":[["YouGov","9/24–10/3",1],["co/efficient","9/28–9/30",-5]],"NM":[["KOB-TV/SurveyUSA","9/25–9/30",18],["Albuquerque Journal","8/21–8/28",15]]},
+  governors:{"AK":[["NY Times/Siena","9/22–10/1",4],["Fabrizio/Anzalone","9/8–9/11",10]],"AZ":[["Arizona State","8/18–9/4",13],["Highground Public Affairs","8/15–8/18",16],["Quantus Insights","8/14–8/17",6],["Noble Predictive Insights","8/10–8/13",13]],"CA":[["LA Times/Berkeley IGS","9/15–9/20",25],["KGTV-TV/SurveyUSA","9/15–9/20",22],["Politico/Citrin","9/12–9/17",18],["PPIC","9/4–9/10",22]],"FL":[["St. Pete Polls","10/5–10/7",0],["YouGov","9/24–10/3",-2],["NBC 6/Mason-Dixon","9/28–10/1",-7]],"GA":[["InsiderAdvantage","9/22–9/23",-2],["Big Data Poll","9/21–9/23",0],["YouGov","9/15–9/18",-2],["Rasmussen Reports","9/14",-3]],"IA":[["Emerson","10/5–10/6",4],["CNN","9/29–10/5",9],["Suffolk University","10/1–10/4",12],["NY Times/Siena","9/22–10/1",11],["FOX News","9/24–9/28",9],["Marist","9/17–9/20",12],["co/efficient","9/14–9/16",4],["YouGov","9/3–9/8",11]],"ME":[["Washington Post","9/30–10/5",13],["Marist","10/1–10/4",12],["CBS News","9/23–10/1",12],["co/efficient","9/28–9/30",9],["Fabrizio/Anzalone","9/20–9/22",13],["NY Times/Siena","9/15–9/22",13],["UNH","9/17–9/21",8],["YouGov","9/2–9/8",11],["CNN","8/31–9/6",13],["FOX News","8/6–8/10",11]],"MI":[["YouGov","9/28–10/5",3],["Mitchell Research","10/1",7],["FOX News","9/24–9/28",9],["Marist","9/24–9/27",12],["co/efficient","9/21–9/23",3],["NY Times/Siena","9/15–9/22",5],["Cygnal/Beacon Research","9/18–9/21",7],["Suffolk University","9/16–9/20",17],["Emerson","9/12–9/14",7],["Washington Post","9/10–9/14",12],["CNN","8/31–9/6",9],["Detroit News/Glengariff","8/31–9/3",4],["EPIC-MRA","8/22–8/28",4],["Michigan State/YouGov","8/10–8/20",9],["Fabrizio/Anzalone","8/9–8/11",5]],"NY":[["Emerson","10/3–10/5",12],["Marist","10/1–10/4",11],["Quinnipiac","9/17–9/20",19],["Siena","9/11–9/17",9]],"NH":[["YouGov","9/28–10/5",-9],["St. Anselm","9/28–9/29",-7],["NY Times/Siena","9/15–9/22",-11],["UNH","9/17–9/21",-4],["co/efficient","9/9–9/11",-21]],"NV":[["Noble Predictive Insights","9/22–9/26",-2],["Emerson","9/5–9/8",2]],"NM":[["KOB-TV/SurveyUSA","9/25–9/30",6],["Albuquerque Journal","8/21–8/28",6]],"OH":[["co/efficient","10/5–10/6",-2],["CNN","9/29–10/5",8],["NY Times/Siena","9/22–10/1",4],["YouGov","9/18–9/30",4],["Big Data Poll","9/25–9/27",-1],["Marist","9/24–9/27",6],["USA Today/Suffolk","9/23–9/27",9],["Bowling Green/YouGov","9/1–9/10",3],["FOX News","8/6–8/10",-2]],"PA":[["Quinnipiac","10/1–10/5",25],["Susquehanna","9/22–9/30",21],["PennLive","9/16–9/22",27],["NY Times/Siena","9/15–9/22",20],["Franklin & Marshall","8/17–8/23",25]],"TX":[["YouGov","9/28–10/5",1],["NY Times/Siena","9/21–9/30",3],["FOX News","9/24–9/28",-5],["UMass Lowell","9/18–9/28",-4],["Big Data Poll","9/24–9/26",-5],["Marist","9/17–9/20",3],["TSU/YouGov","9/15–9/19",-4],["Emerson","9/12–9/14",-3],["ReconMR/Siena","9/8–9/11",4],["Telemundo/Mason-Dixon","9/8–9/10",-7],["Univision","8/27–9/4",0],["Fabrizio/Anzalone","8/30–9/1",-3],["University of Texas","8/5–8/13",-5]],"WI":[["Marquette","9/16–9/23",3]],"MN":[["Daily Agenda/Morning Consult","10/2–10/7",9],["co/efficient","9/14–9/15",2],["KSTP/SurveyUSA","9/9–9/14",7]],"OR":[["The Oregonian/DHM","9/24–10/1",2],["OPB/DHM Research","9/17–9/27",-2]],"KS":[["YouGov","9/24–10/4",-3],["NY Times/Siena","9/22–10/1",-5],["Emerson","9/15–9/16",-7],["co/efficient","9/8–9/10",-8]],"NE":[["YouGov","9/24–10/3",-1],["co/efficient","9/28–9/30",-5]],"MD":[["UMBC","9/22–9/27",27]],"IL":[["CNW/PPP","9/30–10/1",20]]},
+  generic:[["Economist/YouGov","10/2–10/5",51,40],["Morning Consult","10/2–10/4",50,43],["Cygnal","10/1–10/2",52,43],["Reuters/Ipsos","9/30–10/5",44,37],["CBS News","9/30–10/2",54,45],["Pew Research","9/28–10/4",44,36],["Harvard-Harris","9/26–9/28",51,49],["Rasmussen Reports","9/24–9/27",47,44],["Quinnipiac","9/24–9/27",51,39],["Emerson","9/21–9/22",53,42],["Wall Street Journal","9/16–9/21",50,42],["Quantus Insights","9/15–9/18",50,42],["CNN","9/16–9/17",49,41],["NPR/PBS/Marist","9/14–9/15",53,41],["Big Data Poll","9/13–9/15",51,39],["NBC News","9/11–9/15",50,45],["FOX News","9/11–9/14",51,44],["NY Times/Siena","9/8–9/13",51,43],["Marquette","9/2–9/9",54,41],["Financial Times","8/28–9/2",52,45]]};
+// Cook Political Report ratings (Senate Oct 6, governors Oct 1, 2026): SD LD LnD T LnR LR SR
+const COOK={
+  senate:{SD:"CO DE IL MA NJ NM OR RI VA",LD:"GA MN NC",LnD:"NH",T:"AK IA KS ME MI OH TX",LR:"NE SC",SR:"AL AR FL ID KY LA MS MT OK SD TN WV WY"},
+  governors:{SD:"CA CO CT HI IL MA MD ME MN NM NY PA RI",LnD:"AZ IA MI OR",T:"AK GA NV OH WI",LnR:"FL KS TX",LR:"NH",SR:"AL AR ID NE OK SC SD TN VT WY"}};
+const cookOf=(race,k)=>{const r=Object.entries(COOK[race]).find(([,v])=>v.split(" ").includes(k))?.[0]; return r&&(r==="T"?"T":r.endsWith("D")?"D":"R")};
+const LEAN=3;  // the polls call a race when the average lead is more than 3 points
+const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.reduce((a,p)=>a+p[i],0)/n*10)/10; return {d:avg(2),r:avg(3),n}})();
+// The call for a race on the 2026 ballot: D / R = Democrats / Republicans ahead, T = toss-up, N = can't call.
+// 2+ pollsters: their average lead decides (> 3 points = that party, else toss-up). Fewer: Cook's rating (Solid, Likely,
+// Lean = that party; Toss Up = toss-up), unless a lone poll has the other party ahead by > 3 (then: can't call).
+// No polls and no rating: can't call.
+function projOf(race,k){
+  const ps=AGG_POLLS[race][k]||[], m=ps.length?ps.reduce((a,p)=>a+p[2],0)/ps.length:0, cook=cookOf(race,k);
+  if(ps.length>=2) return m>LEAN?"D":m<-LEAN?"R":"T";
+  if(!cook) return "N";
+  if(ps.length===1&&(cook==="D"&&m<-LEAN||cook==="R"&&m>LEAN)) return "N";
+  return cook;
+}
+const PROJ_FILL={D:"url(#hd)",R:"url(#hr)",T:"url(#ht)",N:"url(#hn)"};
+
 const S=20, NS="http://www.w3.org/2000/svg";
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
@@ -402,6 +452,7 @@ const GOV_HIST={
   2020:{d:"CA CO CT DE HI IL KS KY LA ME MI MN NV NJ NM NY NC OR PA RI VA WA WI"},
   2022:{d:"AZ CA CO CT DE HI IL KS KY LA ME MD MA MI MN NJ NM NY NC OR PA RI WA WI"},
   2024:{d:"AZ CA CO CT DE HI IL KS KY ME MD MA MI MN NJ NM NY NC OR PA RI WA WI"}};
+GOV_HIST[2026]={d:GOV_HIST[2024].d+" VA"};  // 2026 starts from today: Spanberger (D) won Virginia in November 2025
 const GOV_IND={RI:"Independent governor (Lincoln Chafee, Rhode Island)",AK:"Independent governor (Bill Walker, Alaska)"};
 const govOf=(year,k)=>GOV_HIST[year].d.split(" ").includes(k)?"d":(GOV_HIST[year].i||"").split(" ").includes(k)?"i":"r";
 const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"};
@@ -413,6 +464,12 @@ const usSvg=document.getElementById("map-us");
 const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={};
 (function drawUS(){
   const box=[1e9,1e9,-1e9,-1e9], labels=[];
+  // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
+  const defs=el("defs",{},usSvg);
+  [["hd","var(--dem)","#cfe5f8"],["hr","var(--rep)","#f9d4d1"],["ht","#e8bd2e","#fbefc4"],["hn","#a9a9a9","#ffffff"]].forEach(([id,a,b])=>{
+    const pt=el("pattern",{id,width:7,height:7,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
+    el("rect",{width:7,height:7,style:`fill:${b}`},pt); el("rect",{width:3.5,height:7,style:`fill:${a}`},pt);
+  });
   const grow=(x,y)=>{box[0]=Math.min(box[0],x);box[1]=Math.min(box[1],y);box[2]=Math.max(box[2],x+1);box[3]=Math.max(box[3],y+1)};
   const sq=(g,[x,y])=>{grow(x,y);return el("rect",{class:"sq",x:x*S,y:y*S,width:S,height:S,"stroke-width":1},g)};
   CHAMBER.forEach(st=>{
@@ -422,6 +479,7 @@ const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={};
       const cells=[...serp(st.c.map(([x,y])=>[x,y])),...(st.x||[])];
       CH_N[k]=st.c.length;
       HOUSE_COL[2024]??={}; HOUSE_COL[2024][k]=cells.slice(0,st.c.length).map(([x,y])=>dem.get(x+","+y)?"d":"r");
+      HOUSE_COL[2026]=HOUSE_COL[2024];   // 2026: the map stays at the 2024 winners
       HSQ[k]=cells.map(c=>sq(g,c));
     }
     ESQ[k]=st.e.map(c=>sq(g,c));
@@ -512,7 +570,8 @@ function setUS(race,animate,year=usYear(race)){
   const panel=document.getElementById("panel-us"), diff=CENSUS_DIFF[censusOf(year)];
   if(!animate) panel.classList.add("instant");
   const P=PRES[year], dem=race==="president"&&new Set(P.dem.split(" "));
-  const c={d:0,r:0,i:0,v:0}; let govD=0,govR=0,govI=0;
+  const c={d:0,r:0,i:0,v:0,D:0,R:0,T:0,N:0}; let govD=0,govR=0,govI=0;
+  const y26=year===2026&&race!=="president", sm=senMode, g26={D:0,R:0,T:0,N:0};
   const paint=(e,show,fill,stroke)=>{e.classList.toggle("gone",!show); if(show){e.style.fill=fill; e.style.stroke=stroke||"var(--bg)"}};
   for(const k in ESQ){
     const n=(CH_N[k]||0)+(diff[k]||0), hs=HSQ[k]||[];
@@ -524,21 +583,37 @@ function setUS(race,animate,year=usYear(race)){
       ESQ[k].forEach(e=>{const w=dem.has(k)?"d":"r"; paint(e,true,PARTY_FILL[w]); c[w]++});
     } else {
       ESQ[k].forEach(e=>paint(e,false));
-      if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,PARTY_FILL[p]); if(j<n) c[p]++});
-      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&senMode!=="power","var(--house)"));
-      if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
+      // 2026: the House polls are national (generic ballot), so no seat is called: every square grey
+      if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,y26?"var(--house)":PARTY_FILL[p]); if(j<n) c[p]++});
+      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm!=="power","var(--house)"));
+      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=PROJ_FILL[g];
+        hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
+      else if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
         // borders take the state's own colour, so its squares merge into one shape
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
-    SEAT[k].forEach((e,j)=>{const p=SEN_HIST[year]?.[k]?.[j]; if(p){e.style.fill=PARTY_FILL[p]; if(race==="senate") c[p]++}
+    SEAT[k].forEach((e,j)=>{let p=SEN_HIST[year]?.[k]?.[j]; if(y26&&SEN_UP[k]===j) p=projOf("senate",k);
+      if(p){e.style.fill=PARTY_FILL[p]||PROJ_FILL[p]; if(race==="senate") c[p]++}
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
-      const o=race==="senate"&&senMode==="power"&&powerLayout()[k];
+      const o=race==="senate"&&sm==="power"&&powerLayout()[k];
       e.style.transform=o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`:""});
   }
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
-  if(race==="president") T={d:c.d,r:c.r,nd:P.d,nr:P.r,tot:538,mark:270/538*100,need:"270<small>TO WIN</small>",ctl:c.d>c.r?"d":"r",
+  const pctOf=n=>Math.round(n/435*100);
+  if(y26&&race==="house") T={d:GENERIC.d,r:GENERIC.r,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"50%<small>FOR MAJORITY</small>",ctl:null,pct:true,
+    seg:{d:GENERIC.d,T:+(100-GENERIC.d-GENERIC.r).toFixed(1),r:GENERIC.r},ud:`Generic ballot · ${GENERIC.n} polls`,ur:`${+(100-GENERIC.d-GENERIC.r).toFixed(1)}% undecided`,
+    label:`2026 House: generic ballot, average of ${GENERIC.n} national polls: Democrats ${GENERIC.d}%, Republicans ${GENERIC.r}%`};
+  else if(y26&&race==="senate"){const d=c.d+c.i+c.D, r=c.r+c.R;
+    T={d,r,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"51<small>FOR MAJORITY</small>",ctl:d>=51?"d":r>=50?"r":null,
+      seg:{d:c.d+c.i,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},ud:c.D?`+${c.D} called`:"",ur:c.R?`+${c.R} called`:"",
+      label:`2026 Senate, poll aggregate: ${d} Democratic seats incl. ${c.D} called, ${r} Republican incl. ${c.R} called, ${c.T} toss-ups${c.N?`, ${c.N} can't call`:""}`};}
+  else if(y26&&race==="governors"){const d=govD+g26.D, r=govR+g26.R;
+    T={d,r,nd:"Democrats",nr:"Republicans",tot:435,mark:null,ctl:null,seg:{d:c.d,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},
+      ud:`Govern ${pctOf(c.d+c.D)}% of Americans`,ur:`Govern ${pctOf(c.r+c.R)}% of Americans`,
+      label:`2026 governors, poll aggregate: ${d} Democrats incl. ${g26.D} called, ${r} Republicans incl. ${g26.R} called, ${g26.T} toss-ups${g26.N?`, ${g26.N} can't call`:""}`};}
+  else if(race==="president") T={d:c.d,r:c.r,nd:P.d,nr:P.r,tot:538,mark:270/538*100,need:"270<small>TO WIN</small>",ctl:c.d>c.r?"d":"r",
     label:`${year} presidential electoral votes, one square per vote: ${P.d} ${c.d}, ${P.r} ${c.r}`};
   else if(race==="governors") T={d:govD,r:govR,nd:"Democrats",nr:"Republicans",bd:c.d,br:c.r,tot:435,mark:null,ctl:null,
     ud:`Govern ${Math.round(c.d/435*100)}% of Americans`,ur:`Govern ${Math.round(c.r/435*100)}% of Americans`,
@@ -551,7 +626,7 @@ function setUS(race,animate,year=usYear(race)){
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
   // names follow the squares on show, so they stay next to their state as it grows or shrinks
-  const pw=race==="senate"&&senMode==="power"&&powerLayout();
+  const pw=race==="senate"&&sm==="power"&&powerLayout();
   for(const k in LBL){
     if(pw&&pw[k]){const o=pw[k], L=LBL[k]; L.e.style.transform=`translate(${(o.x-L.x)*S}px,${(o.y+o.r+.5-L.y)*S}px)`; continue}
     const L=LBL[k], on=[...(HSQ[k]||[]),...ESQ[k]].filter(e=>!e.classList.contains("gone")).map(e=>[e.x.baseVal.value/S,e.y.baseVal.value/S])
@@ -571,25 +646,37 @@ function setUS(race,animate,year=usYear(race)){
   countTo(document.getElementById("num-r"),T.r,animate);
   document.getElementById("name-d").innerHTML=nameHTML(T.nd,T.ctl==="d");
   document.getElementById("name-r").innerHTML=nameHTML(T.nr,T.ctl==="r");
-  document.getElementById("bar-d").style.width=(T.bd??T.d)/T.tot*100+"%";
-  document.getElementById("bar-r").style.width=(T.br??T.r)/T.tot*100+"%";
+  // bar: held (solid) and leaning (hatched) per side, toss-ups and unpolled races in between; a white gap
+  // wherever one group ends and the next begins
+  const seg=T.seg||{d:T.bd??T.d,r:T.br??T.r}, sum=["d","D","T","N","R","r"].reduce((a,g)=>a+(seg[g]||0),0);
+  seg.m??=Math.max(0,T.tot-sum);
+  let prev=null;
+  for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
+    const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
+    e.classList.toggle("gap",w>0&&prev!==null&&prev!==e.dataset.g); if(w>0) prev=e.dataset.g;
+  }
+  document.getElementById("us-tally").classList.toggle("pct",!!T.pct);
+  panel.classList.toggle("pct",!!T.pct);   // phones: no room for the 50% label between the two notes
   const mark=document.getElementById("mark"), need=document.getElementById("need");
   mark.style.opacity=need.style.opacity=T.mark==null?0:1;
   if(T.mark!=null){mark.style.left=need.style.left=T.mark+"%"; need.innerHTML=T.need}
   const ud=document.getElementById("under-d"), ur=document.getElementById("under-r");
-  const applyUnder=()=>{ud.textContent=T.ud||"";ur.textContent=T.ur||"";ud.style.opacity=ur.style.opacity=1};
+  const applyUnder=()=>{ud.textContent=T.ud||"";ur.textContent=T.ur||"";ud.style.opacity=ur.style.opacity=1;ur.style.color=T.pct?"var(--muted)":""};
   if(animate&&!reduce&&(ud.textContent!==(T.ud||"")||ur.textContent!==(T.ur||""))){ud.style.opacity=ur.style.opacity=0;setTimeout(applyUnder,250)} else applyUnder();
   ["president","house","senate","governors"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   document.getElementById("p-note").textContent=race==="president"&&P.note||"";
   document.getElementById("leg-vacant").hidden=!c.v;
   document.getElementById("leg-gov-ind").hidden=!govI;
   if(govI) document.getElementById("gov-ind-name").textContent=GOV_IND[GOV_HIST[year].i];
-  const power=race==="senate"&&senMode==="power", ns=Object.values(CH_N);
+  const power=race==="senate"&&sm==="power", ns=Object.values(CH_N);
   document.getElementById("sen-power").hidden=!power;
   document.getElementById("sen-power").textContent=`Circle size = voter power: senators per grey square, taking each grey square on the House map as the same unit of population. A Wyoming voter has ${Math.max(...ns)/Math.min(...ns)}× the say in choosing a senator that a California voter has`;
   document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Voter power
   document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
-  document.getElementById("sen-note").textContent=race==="senate"&&T.d===T.r?"50–50: Democrats control with the vice president’s tie-breaking vote":"";
+  // 2026: legend for the races on the ballot
+  document.getElementById("sen-view").hidden=race!=="senate";
+  ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="senate"?c:g26):""});
+  document.getElementById("sen-note").textContent=race==="senate"&&!y26&&T.d===T.r?"50–50: Democrats control with the vice president’s tie-breaking vote":"";
   panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
   if(race==="president") presYear=year; else chYear=year;
@@ -1022,6 +1109,15 @@ function moveThumb(tab,animate){
   thumb.style.left=tab.offsetLeft+"px"; thumb.style.width=tab.offsetWidth+"px";
   if(!animate){void thumb.offsetWidth;thumb.style.transition=""}
 }
+// Legend for a 2026 map: what the shading means (with counts) and how the calls were made
+function projLegend(race,n){
+  if(race==="house") return `<span>All 435 seats are up on Nov 3, 2026. No seat is called (grey): the House polls are national, so the bar shows the generic ballot, the average of the latest poll from each of ${GENERIC.n} pollsters since Sep 1 (yellow, like a toss-up: undecided or other, ${+(100-GENERIC.d-GENERIC.r).toFixed(1)}%)</span>`;
+  const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
+  return sw("hatch-d",`Democrats ahead (${n.D})`)+sw("hatch-r",`Republicans ahead (${n.R})`)+
+    sw("hatch-t",`Toss-up (${n.T})`)+sw("hatch-n",`Can’t call (${n.N})`)+
+    `<span>${race==="senate"?"Solid circles: seats not up in 2026":"Solid states: no race in 2026"}. How races are called: for each race we average the latest poll from every pollster since Aug 1 (NYT/Siena, Emerson, CNN, Fox News, Washington Post, YouGov, Marist, Quinnipiac and others; campaign-internal polls left out). With two or more pollsters, a lead of more than ${LEAN} points calls the race; ${LEAN} or less is a toss-up. With fewer, we use the Cook Political Report rating (Solid, Likely or Lean = that party; Toss Up = toss-up). Can’t call: no rating and too few polls, or a lone poll contradicting the rating. Toss-ups and can’t-calls are not in the totals. Polls as of Oct 8, 2026</span>`;
+}
+
 function show(race,animate){
   if(!countryOf(race)) race="president";
   if(race===current) return;
@@ -1037,7 +1133,7 @@ function show(race,animate){
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("st-view").hidden=race!=="states";
-  if(us){const years=race==="president"?PRES_YEARS:CH_YEARS;
+  if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
     setStepper(years,usYear(race),false,y=>{setUS(usRace,true,y);setStepper(years,y,true,stepOnPick)})}
   if(!us) inRace=race;
   if(from===to){ if(us) setUS(race,animate); else renderIn(animate,true); current=race; history.replaceState(null,"","#"+race); return }
@@ -1082,6 +1178,7 @@ cMenu.addEventListener("keydown",e=>{
   else if(e.key==="Escape"){openMenu(false);cBtn.focus()}
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".country"))openMenu(false)});
+
 
 addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
 // Once the tally bar scrolls to the top (phones) or under the pinned top bar (desktop), pin a compact copy of the

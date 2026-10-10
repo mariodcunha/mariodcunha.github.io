@@ -1078,11 +1078,59 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      majority line). syncMini clones .under as well (hidden on phones).
      Pushed 2026-10-09.
 
+ 50. 2026 midterms for House, Senate and Governors (2026-10-09). Pushed
+     2026-10-09. Stepper for those three races = US_YEARS (CH_YEARS + 2026;
+     CH_YEARS itself is unchanged because drawUS rebuilds earlier House years
+     from later ones). Base map = today: SEN_HIST[2026] = 2024; GOV_HIST[2026]
+     = 2024 + VA (Spanberger, Nov 2025); HOUSE_COL[2026] = 2024 winners.
+     Races on the ballot are hatched by the POLL AGGREGATE call (owner,
+     2026-10-09: one aggregate, no poll picker; it replaced a short-lived
+     NYT/Siena vs Emerson-Fox-CNN picker): blue / red hatch = that party
+     called (counted in the totals), yellow hatch = toss-up, white/grey hatch
+     = can't call (toss-ups and can't-calls are NOT counted).
+     SVG patterns #hd #hr #ht #hn (userSpaceOnUse, so a governor state's
+     squares share one stripe grid; stroke = fill); CSS .hatch-d/r/t/n for
+     the bar and legend swatches.
+     Senate: SEN_UP = class 2 seats + OH and FL specials (seat index: SEN_HIST
+     lists the lower class first). Main numbers = not up + called; bar =
+     held | called | toss-up | can't call | called | held, with a white gap
+     between groups (bar has 7 <i> with data-g; gaps set in setUS). Seats /
+     Voter power still works in 2026.
+     Governors: GOV_UP (36). House 2026: map = 2024 winners, tally and bar =
+     national generic ballot average %, undecided share hatched yellow like a
+     toss-up; House squares all grey in 2026 (no seat called); majority mark
+     at 50% (label hidden on phones, #panel-us.pct). .tally.pct adds %.
+     The legend carries the method text (projLegend).
+
+2026 POLL AGGREGATE (collected 2026-10-08/09; data in AGG_POLLS + COOK)
+-------------------------------------------------------------------
+Source: RealClearPolling race tables (all pollsters: NYT/Siena, Emerson,
+CNN, Fox, Washington Post, YouGov, Marist, Quinnipiac, ...); nytimes.com is
+not reachable from here. Per race: each pollster's latest poll ending Aug 1
+2026 or later; RCP "**" (campaign-internal) polls left out. Generic ballot:
+latest per pollster since Sep 1 (20 pollsters, D 50.4 / R 42.0). ABC News
+published no 2026 state race polls; its partner the Washington Post's polls
+are included. Cook Political Report ratings: Senate Oct 6, Gov Oct 1, 2026.
+Call rule (projOf): 2+ pollsters -> average lead > 3 = that party, else
+toss-up. Fewer -> Cook (Solid/Likely/Lean = party, Toss Up = toss-up),
+unless a lone poll has the other party ahead by > 3 -> can't call. No polls
+and no rating -> can't call. (No race is "can't call" today.)
+Result: Senate 48 D - 44 R, 8 toss-ups (AK IA KS ME MN NE SC TX).
+  Called D: GA +7.8, MI +3.2, OH +3.5, NH +5.9, NC +8.8, NM +16.5 by polls;
+  CO DE IL MA NJ OR RI VA by Cook. Called R: FL -6.2 by polls; AL AR ID KY
+  LA MS MT OK SD TN WV WY by Cook. Toss-ups: AK +2.3, IA +0.7, KS -0.2,
+  ME +1.4, MN +2.1, NE -2 (Osborn I vs Ricketts), SC -2.3, TX +3.0.
+Governors 24 D - 19 R, 7 toss-ups (FL -3, GA -1.8, NV 0, OR 0, TX -1.9,
+  NE -3, WI: one poll + Cook Toss Up). Called by polls: AK AZ CA IA ME MI
+  NY NM OH(+3.2) PA MN D, NH KS R; by Cook: MD IL CO CT HI MA RI D, AL AR
+  ID OK SC SD TN VT WY R.
+Refresh before each push near the election (re-run the RCP scrape).
+
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 49 (pushed 2026-10-09).
+- Live = everything up to step 50 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
