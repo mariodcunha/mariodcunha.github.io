@@ -60,7 +60,7 @@ svg.india text{font-size:14px}
 #map-india.rs .st-dot{transform:scale(0)}
 #map-india:not(.rs) .rs-seat{transform:scale(0)}
 #map-india.sync .st-dot,#map-india.sync .rs-seat{transition-delay:0s!important}
-svg.india text{transition:transform .45s var(--ease)}
+svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .rs-seat{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),fill .45s var(--ease)}
 .rs-seat.on{transform:scale(1)}
 .rs-seat.vac{fill:var(--house)}
@@ -167,6 +167,10 @@ svg.map text.in{fill:#fff;font-weight:600}
       <span class="win"><span class="view"><span class="drum"></span></span><span class="sr" aria-live="polite"></span></span>
       <button type="button" class="next" aria-label="Later election"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
+    <div class="subtoggle" id="sen-view" role="group" aria-label="Size the Senate circles by" hidden>
+      <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
+      <button type="button" data-sen="power" aria-pressed="false">Voter power</button>
+    </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="seat" aria-pressed="true">Seat share</button>
       <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
@@ -212,7 +216,8 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrat</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--ind)"/></svg>Independent, caucuses with Democrats</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>House districts</span>
+        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts</em></span>
+        <span id="sen-power" hidden></span>
         <span id="sen-note"></span>
       </div>
       <div class="legend" id="legend-governors">
@@ -384,7 +389,58 @@ function countTo(node,to,animate){
     node.textContent=Math.round(from+(to-from)*e); if(t<1) node._raf=requestAnimationFrame(step)};
   node._raf=requestAnimationFrame(step);
 }
-let usRace=null, presYear=2024, chYear=2024;
+let usRace=null, presYear=2024, chYear=2024, senMode="seats";
+// ---------- Senate voter power: a cartogram of circle pairs ----------
+// Circle AREA ~ senators per grey square (2 / squares), scaled so the smallest (California) is as big as Hawaii's
+// was on the seat-sized map (radius .354 squares): r = .354 * sqrt(52 / squares). Each state's two circles sit side
+// by side with its name underneath; the pairs start at the state's place on the map, overlapping pairs are pushed
+// apart (a weak pull keeps each near home), then any still overlapping are settled at the nearest free spot.
+const PW_R0=.5/Math.SQRT2, PW_LAYOUT={};
+// Each grey square counts as one unit of population, the same in every year (today's squares), so the layout and the
+// circle sizes never change with the year: stepping through years only recolours.
+function powerLayout(){
+  return PW_LAYOUT.pos??=placePairs(st=>st.c.length);
+}
+function placePairs(seatsOf){
+  const vb=usSvg.getAttribute("viewBox").split(" ").map(v=>+v/S), X0=vb[0], Y0=vb[1], X1=vb[0]+vb[2], Y1=vb[1]+vb[3];
+  const nodes=CHAMBER.filter(st=>st.c.length).map(st=>{
+    const n=seatsOf(st), r=PW_R0*Math.sqrt(52/n), w=st.h[0].length*.36;
+    const hx=st.c.reduce((a,c)=>a+c[0]+.5,0)/st.c.length, hy=st.c.reduce((a,c)=>a+c[1]+.5,0)/st.c.length;
+    const hw=Math.max(2*r+.05,w/2+.05);                       // half width of the pair + name
+    return {k:st.s,n,r,x:hx,y:hy,hx,hy,hw,up:r+.08,down:r+.95}; // box: x±hw, y-up .. y+down (name below)
+  });
+  const pad=.18, clampO=o=>{o.x=Math.min(Math.max(o.x,X0+o.hw),X1-o.hw); o.y=Math.min(Math.max(o.y,Y0+o.up),Y1-o.down)};
+  // 1. push overlapping pairs apart (along the shorter overlap; sideways when pinned against the frame), the smaller
+  //    pair moving more, with a pull toward home that fades out
+  for(let it=0;it<3000;it++){
+    for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j];
+      const ox=Math.min(a.x+a.hw,b.x+b.hw)-Math.max(a.x-a.hw,b.x-b.hw)+pad;
+      const oy=Math.min(a.y+a.down,b.y+b.down)-Math.max(a.y-a.up,b.y-b.up)+pad;
+      if(ox<=0||oy<=0) continue;
+      let wa=b.r*b.r/(a.r*a.r+b.r*b.r), wb=1-wa;
+      const e=1e-6, stuck=(o,dir,x)=>x?(dir<0?o.x-o.hw<=X0+e:o.x+o.hw>=X1-e):(dir<0?o.y-o.up<=Y0+e:o.y+o.down>=Y1-e);
+      let xs=ox<oy, d=xs?(a.x<b.x?-1:1):(a.y<b.y?-1:1);
+      if(stuck(a,d,xs)||stuck(b,-d,xs)){xs=!xs; d=xs?(a.x<b.x?-1:1):(a.y<b.y?-1:1)}
+      if(stuck(a,d,xs)){wa=0;wb=1} else if(stuck(b,-d,xs)){wa=1;wb=0}
+      if(xs){a.x+=d*ox*wa; b.x-=d*ox*wb} else {a.y+=d*oy*wa; b.y-=d*oy*wb}
+      clampO(a); clampO(b);
+    }
+    const pull=Math.max(0,.01*(1-it/1600));
+    nodes.forEach(o=>{o.x+=(o.hx-o.x)*pull; o.y+=(o.hy-o.y)*pull; clampO(o)});
+  }
+  // 2. settle what still overlaps: biggest pairs first, each at the free spot nearest where step 1 left it
+  const placed=[], spots=[];
+  for(let dx=-24;dx<=24;dx+=.25) for(let dy=-24;dy<=24;dy+=.25) spots.push([dx,dy]);
+  spots.sort((a,b)=>Math.hypot(...a)-Math.hypot(...b));
+  const free=(o,x,y)=>x-o.hw>=X0&&x+o.hw<=X1&&y-o.up>=Y0&&y+o.down<=Y1&&placed.every(p=>
+    x+o.hw+pad<=p.x-p.hw||p.x+p.hw+pad<=x-o.hw||y+o.down+pad<=p.y-p.up||p.y+p.down+pad<=y-o.up);
+  [...nodes].sort((a,b)=>b.r-a.r).forEach(o=>{
+    const s=spots.find(([dx,dy])=>free(o,o.x+dx,o.y+dy))||[0,0];
+    o.x+=s[0]; o.y+=s[1]; placed.push(o);
+  });
+  return Object.fromEntries(nodes.map(o=>[o.k,o]));
+}
 const usYear=race=>race==="president"?presYear:chYear;
 function setUS(race,animate,year=usYear(race)){
   const panel=document.getElementById("panel-us"), diff=CENSUS_DIFF[censusOf(year)];
@@ -403,12 +459,16 @@ function setUS(race,animate,year=usYear(race)){
     } else {
       ESQ[k].forEach(e=>paint(e,false));
       if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,PARTY_FILL[p]); if(j<n) c[p]++});
-      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n,"var(--house)"));
+      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&senMode!=="power","var(--house)"));
       if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
         // borders take the state's own colour, so its squares merge into one shape
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
-    SEAT[k].forEach((e,j)=>{const p=SEN_HIST[year]?.[k]?.[j]; if(p){e.style.fill=PARTY_FILL[p]; if(race==="senate") c[p]++}});
+    SEAT[k].forEach((e,j)=>{const p=SEN_HIST[year]?.[k]?.[j]; if(p){e.style.fill=PARTY_FILL[p]; if(race==="senate") c[p]++}
+      // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
+      // square (radius .5) and California's (52 seats) is 1/52 of that area
+      const o=race==="senate"&&senMode==="power"&&powerLayout()[k];
+      e.style.transform=o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`:""});
   }
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
@@ -425,7 +485,9 @@ function setUS(race,animate,year=usYear(race)){
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
   // names follow the squares on show, so they stay next to their state as it grows or shrinks
+  const pw=race==="senate"&&senMode==="power"&&powerLayout();
   for(const k in LBL){
+    if(pw&&pw[k]){const o=pw[k], L=LBL[k]; L.e.style.transform=`translate(${(o.x-L.x)*S}px,${(o.y+o.r+.5-L.y)*S}px)`; continue}
     const L=LBL[k], on=[...(HSQ[k]||[]),...ESQ[k]].filter(e=>!e.classList.contains("gone")).map(e=>[e.x.baseVal.value/S,e.y.baseVal.value/S])
       .concat(race==="senate"?SEAT[k].map(e=>[e.cx.baseVal.value/S-.5,e.cy.baseVal.value/S-.5]):[]);
     if(!on.length) continue;
@@ -456,6 +518,11 @@ function setUS(race,animate,year=usYear(race)){
   document.getElementById("leg-vacant").hidden=!c.v;
   document.getElementById("leg-gov-ind").hidden=!govI;
   if(govI) document.getElementById("gov-ind-name").textContent=GOV_IND[GOV_HIST[year].i];
+  const power=race==="senate"&&senMode==="power", ns=Object.values(CH_N);
+  document.getElementById("sen-power").hidden=!power;
+  document.getElementById("sen-power").textContent=`Circle size = voter power: senators per grey square, taking each grey square on the House map as the same unit of population. A Wyoming voter has ${Math.max(...ns)/Math.min(...ns)}× the say in choosing a senator that a California voter has`;
+  document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Voter power
+  document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
   document.getElementById("sen-note").textContent=race==="senate"&&T.d===T.r?"50–50: Democrats control with the vice president’s tie-breaking vote":"";
   panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
@@ -671,6 +738,7 @@ const RS_R=.6;   // every Rajya Sabha circle's radius, in squares (Maharashtra's
 // State names as boxes in square units (same size estimate as drawIndia: 12.5-unit text, ~0.7 squares tall)
 const RS_NAMEBOX=INDIA.map(([,name,,[lx,ly,anchor]])=>{const w=name.length*.32*14/11*1.02, x0=anchor==="start"?lx:anchor==="end"?lx-w:lx-w/2;
   return [x0,ly-.45,x0+w,ly+.45]});
+const NAME0=RS_NAMEBOX.map(b=>b.slice()); // the names' Lok Sabha spots
 // Every Rajya Sabha seat is a circle of the same size (RS_R, Maharashtra's) on a regular grid inside its state:
 // the widest spacing d (2 squares down to just over a circle's width) and grid position that fit n centres inside
 // the state's outline (preferably .3 or .15 of a square in) with each circle clear of the state names; the n
@@ -724,6 +792,43 @@ function rsCircles(code,data,n){
 // Names in the Rajya Sabha view: a name that any year's circles would touch moves by the smallest step that
 // clears every circle and every other name (RS_NAME_OFF, applied as a transform in that view only).
 const RS_NAME_OFF=INDIA.map(()=>[0,0]);
+// Each year the names then follow their state's circles (like the US names): a name keeps its side of the state
+// (above / below / left / right of its Lok Sabha squares) but moves up to that year's circles, then, if it would
+// touch a circle or another name, by the smallest step that clears them. States without circles keep their spot.
+const RS_NAME_YEAR={}, RS_NAME_HAS={}; // offsets per year; whether the name's state has circles that year
+function rsNamePlaces(year){
+  if(RS_NAME_YEAR[year]) return RS_NAME_YEAR[year];
+  const data=RS[year], own=INDIA.map(()=>[]), all=[];
+  for(const code in data){
+    const n=data[code].reduce((a,b)=>a+b,0); if(!n) continue;
+    const parts=code==="AP"&&!("TS" in data)?["AP","TS"]:[code];
+    rsCircles(code,data,n).forEach(c=>{const x=c.cx.baseVal.value/S, y=c.cy.baseVal.value/S; all.push([x,y]);
+      let k=INDIA.findIndex(s=>parts.includes(s[0])&&s[2].some(([u,v])=>x>=u&&x<u+1&&y>=v&&y<v+1));
+      if(k<0) k=INDIA.findIndex(s=>s[0]===parts[0]);
+      own[k].push([x,y])});
+  }
+  const R=RS_R, dist=([a,b,c,e],x,y)=>Math.hypot(Math.max(a-x,0,x-c),Math.max(b-y,0,y-e));
+  const at=(B,[dx,dy])=>[B[0]+dx,B[1]+dy,B[2]+dx,B[3]+dy], clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+  const off=RS_NAME_OFF.map(o=>o.slice()), boxes=NAME0.map((B,i)=>at(B,off[i]));
+  const ok=(B,i)=>all.every(([x,y])=>dist(B,x,y)>=R+.14)&&boxes.every((o,k)=>k===i||B[0]>o[2]+.12||o[0]>B[2]+.12||B[1]>o[3]+.12||o[1]>B[3]+.12);
+  INDIA.forEach(([,,cells],i)=>{
+    const B=NAME0[i], C=own[i]; if(!C.length) return;
+    const sq=[Math.min(...cells.map(c=>c[0])),Math.min(...cells.map(c=>c[1])),Math.max(...cells.map(c=>c[0]))+1,Math.max(...cells.map(c=>c[1]))+1];
+    const cb=[Math.min(...C.map(c=>c[0]))-R,Math.min(...C.map(c=>c[1]))-R,Math.max(...C.map(c=>c[0]))+R,Math.max(...C.map(c=>c[1]))+R];
+    const mx=(B[0]+B[2])/2, my=(B[1]+B[3])/2, gap=.16;
+    const side=my<sq[1]?"above":my>sq[3]?"below":mx>sq[2]?"right":mx<sq[0]?"left":my<(sq[1]+sq[3])/2?"above":"below";
+    const want=side==="above"?[clamp(mx,cb[0],cb[2])-mx,cb[1]-gap-B[3]]
+      :side==="below"?[clamp(mx,cb[0],cb[2])-mx,cb[3]+gap-B[1]]
+      :side==="right"?[cb[2]+gap-B[0],clamp(my,cb[1],cb[3])-my]
+      :[cb[0]-gap-B[2],clamp(my,cb[1],cb[3])-my];
+    let best=ok(at(B,want),i)?want:null;
+    for(let rad=.1;rad<=2&&!best;rad+=.1) for(let k=0;k<16;k++){
+      const o=[want[0]+Math.cos(k*Math.PI/8)*rad,want[1]+Math.sin(k*Math.PI/8)*rad]; if(ok(at(B,o),i)){best=o;break}}
+    if(best){off[i]=best; boxes[i]=at(B,best)}
+  });
+  RS_NAME_HAS[year]=own.map(c=>c.length>0);
+  return RS_NAME_YEAR[year]=off;
+}
 (function rsNames(){
   RS_YEARS.forEach(y=>{for(const code in RS[y]) rsCircles(code,RS[y],RS[y][code].reduce((a,b)=>a+b,0))});
   const C=[...RS_LAYOUT.values()].flat().map(c=>[c.cx.baseVal.value/S,c.cy.baseVal.value/S]);
@@ -737,9 +842,10 @@ const RS_NAME_OFF=INDIA.map(()=>[0,0]);
     }
   });
   // grow the viewBox if a moved name or a circle reaches past the Lok Sabha map's frame
+  const placed=RS_YEARS.flatMap(y=>rsNamePlaces(y).map(([dx,dy],i)=>[NAME0[i][0]+dx,NAME0[i][1]+dy,NAME0[i][2]+dx,NAME0[i][3]+dy]));
   const svg=inSvg, vb=svg.getAttribute("viewBox").split(" ").map(Number);
-  const xs=[...RS_NAMEBOX.flatMap(b=>[b[0],b[2]]),...C.flatMap(([x])=>[x-RS_R,x+RS_R])].map(v=>v*S);
-  const ys=[...RS_NAMEBOX.flatMap(b=>[b[1],b[3]]),...C.flatMap(([,y])=>[y-RS_R,y+RS_R])].map(v=>v*S);
+  const xs=[...RS_NAMEBOX.concat(placed).flatMap(b=>[b[0],b[2]]),...C.flatMap(([x])=>[x-RS_R,x+RS_R])].map(v=>v*S);
+  const ys=[...RS_NAMEBOX.concat(placed).flatMap(b=>[b[1],b[3]]),...C.flatMap(([,y])=>[y-RS_R,y+RS_R])].map(v=>v*S);
   const x0=Math.min(vb[0],Math.min(...xs)-6), y0=Math.min(vb[1],Math.min(...ys)-6);
   const x1=Math.max(vb[0]+vb[2],Math.max(...xs)+6), y1=Math.max(vb[1]+vb[3],Math.max(...ys)+6);
   svg.setAttribute("viewBox",`${x0} ${y0} ${x1-x0} ${y1-y0}`);
@@ -783,8 +889,9 @@ function renderIn(animate,sync){
   document.getElementById("in-under").classList.remove("split");
   ["in-total","in-total-oth","in-total-r"].forEach(id=>document.getElementById(id).textContent="");
   document.getElementById("in-total").style.color="var(--muted)";
-  [...inSvg.lastChild.querySelectorAll("text")].forEach((t,i)=>{const [dx,dy]=race==="rajyasabha"?RS_NAME_OFF[i]:[0,0];
-    t.style.transform=`translate(${dx*S}px,${dy*S}px)`});
+  [...inSvg.lastChild.querySelectorAll("text")].forEach((t,i)=>{const [dx,dy]=race==="rajyasabha"?rsNamePlaces(inYear)[i]:[0,0];
+    t.style.transform=`translate(${dx*S}px,${dy*S}px)`;
+    t.style.opacity=race==="rajyasabha"&&!RS_NAME_HAS[inYear][i]?0:""}); // no Rajya Sabha seats: no name (like DC on the Senate map)
   if(race==="loksabha") renderLS(animate); else if(race==="states") renderST(animate); else renderRS(animate);
   document.getElementById("in-bloc").textContent=LS_META[inYear].bloc;
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
@@ -846,6 +953,7 @@ function show(race,animate){
   // year stepper for every race (Governors: 2024 only for now); seat/vote share only for Lok Sabha
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=race!=="loksabha";
+  document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("st-view").hidden=race!=="states";
   if(us){const years=race==="president"?PRES_YEARS:CH_YEARS;
     setStepper(years,usYear(race),false,y=>{setUS(usRace,true,y);setStepper(years,y,true,stepOnPick)})}
@@ -861,6 +969,7 @@ function show(race,animate){
   current=race;
   history.replaceState(null,"","#"+race);
 }
+document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 tabs.forEach(t=>{
   t.addEventListener("click",()=>show(t.dataset.race,true));
   t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;

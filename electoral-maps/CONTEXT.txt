@@ -989,12 +989,55 @@ Work on 2026-10-08 / 09 (committed and pushed together after step 6):
      renderIn(animate, sync) resets shared bits then renderLS / renderST /
      renderRS. setLokSabha(mode) and the Seat % / Chief Minister buttons
      just set lsMode / stMode and re-render. Pushed 2026-10-09.
+ 38. Rajya Sabha names follow their state's circles (rsNamePlaces(year),
+     cached in RS_NAME_YEAR): each name keeps its side of the state
+     (above / below / left / right of its Lok Sabha squares, judged by the
+     name's centre) and moves to .16 squares from that year's circles,
+     then, if it touches a circle or another name, by the smallest step
+     that clears them. Names slide with the view/year (CSS transform).
+     Places with no Rajya Sabha seats (DNH-DD, Ladakh, Chandigarh, A&N,
+     Lakshadweep) hide their names in that view (RS_NAME_HAS; like DC on
+     the Senate map). Checked all 5 years: no overlaps, every name within
+     0.6 squares of its circles. Pushed 2026-10-09.
+ 39. Senate Seats / Voter power toggle (#sen-view, next to the stepper,
+     Senate only; senMode). Voter power: one grey square = one unit of
+     population (a House seat); each state's two circles get AREA ~
+     senators per square (2 / House seats that year) - inline
+     transform scale(.5/.43/sqrt(n)), so 1-seat states fill their square
+     (radius .5) and California is 1/52 of that area; circles morph with
+     the usual .45s transform. Legend: grey square relabelled "About one
+     unit of population (one House seat)" and #sen-power note with the
+     max/min ratio for the year ("a Wyoming voter has 52x the say ... a
+     California voter", from that census's seat counts). Tally / bar
+     unchanged. Checked 2008-2024: no circle touches a name or another
+     state's circle. Pushed 2026-10-09.
+ 40. Voter power redone as a cartogram (owner): grey squares removed in
+     that view (paint gone; legend entry hidden); circle AREA ~ 2 / House
+     seats with the smallest (California) as big as Hawaii's seat-view
+     circle: r = .354 * sqrt(52 / seats) squares (Wyoming r ~2.55). Each
+     state = its two circles side by side + name underneath; positions
+     from powerLayout(census) (cached per census, ~50 ms): start at the
+     state's House-square centroid, 3000 rounds of pushing overlapping
+     boxes apart (shorter overlap axis, sideways when pinned at the
+     frame, smaller pair moves more, fading pull home), then a greedy
+     pass places any still-overlapping pair (biggest first) at the
+     nearest free spot (.25 grid). Stays inside the US viewBox. Circles
+     and names move there via CSS transform (translate + scale), so the
+     switch and census changes animate. Checked 2008-2024: no overlaps,
+     nothing clipped. Geography is approximate (2000/2010 censuses, with
+     Montana at 1 seat, scatter more: e.g. N-Dakota ends up in the east).
+     Pushed 2026-10-09.
+ 41. Voter power uses ONE fixed unit count per state (owner: "assume each
+     grey square is the same unit of population"): today's squares
+     (st.c.length) for every year, no census adjustment. So one layout
+     (powerLayout(), cached) and fixed circle sizes: stepping through the
+     years only recolours. Ratio note fixed at 52x. Pushed 2026-10-09.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 37 (pushed 2026-10-09).
+- Live = everything up to step 41 (pushed 2026-10-09).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
