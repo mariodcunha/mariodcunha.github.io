@@ -1401,14 +1401,33 @@ Refresh before each push near the election (re-run the RCP scrape).
      {margin:-3% 0 -4%} (% of width, scales with phones) trims the empty top /
      bottom of the Map-sized frame the compact map is centred in. Checked desktop
      and 375px: map ~30px closer on desktop, nothing clipped (RS top 5px / 12px).
+  -  Rajya Sabha merge / split transition (owner, 2026-10-11, local): switching
+     to Rajya Sabha, every Lok Sabha / States square-dot (ls-cell) flies into the
+     nearest of its own state's Rajya Sabha circles (capacity ceil(dots/circles)
+     each) while shrinking (.6s), and the circles grow there (.2s delay on race
+     switch); leaving, the circles shrink in place while the dots fly back out
+     to their Compact spots. RS circles now always wait at their Compact spots
+     (rsPack(pk, active), was reset to Map spots when off). rsCirc(year) shared
+     with rsOut. Resting positions and names unchanged (dots verified home).
+  -  Governors / Chief Minister names (owner, 2026-10-11, local; a centre-of-
+     gravity try was reverted): Governors uses Senate's name layout (packLayout
+     key "senate"+census, so pills on rows clear of where Senate's circles sit,
+     else outside; pills take the governors' colours) - identical spots to
+     Senate. Chief Minister (cmPack, cached per pk): a name whose box (+CM_PAD 3px
+     all round, sampled on a 2px grid) lies wholly on its own state's squares when
+     centred on the block's centre of gravity sits there in white (17 states: UP,
+     MH, WB, BR, TN, MP, KA, GJ, RJ, AP, TS, AS, JH, PB, HR, DL, HP); every other
+     name is plain muted text outside, as on States, Seats (outNames with the
+     ST_SPOT picks, clearance from a square's half-width + 1). Checked: Governors
+     = Senate for all 50; CM 36 names, no name/square or name/name overlaps.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
 - Live = everything above, pushed 2026-10-11 on the owner's say-so (latest:
-  Compact only everywhere, India map pulled up, Rajya Sabha Compact on the Map
-  blocks + owner tweaks, one US year, 2px rounded Governors / CM corners).
+  Rajya Sabha merge / split transition; Governors names as Senate; Chief
+  Minister names inside at the centre when they fit, else as States Seats).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019

@@ -57,7 +57,8 @@ svg.india text{font-size:14px}
    their own colour, so each state reads as one solid block. Rajya Sabha: they shrink away and its circles grow. */
 #map-india .st-dot{fill:var(--seat-empty);stroke:var(--bg);stroke-width:0;transform-box:fill-box;transform-origin:center;transition:fill .45s var(--ease),stroke .45s var(--ease),stroke-width .45s var(--ease),rx .45s var(--ease),ry .45s var(--ease),transform .45s var(--ease)}
 #map-india.sq .st-dot{rx:0;ry:0;transform:scale(1.1628);stroke-width:.86}
-#map-india.rs .st-dot{transform:scale(0)}
+#map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}   /* flies into its Rajya Sabha circle (rsPack) */
+#map-india.rs.sync .rs-seat.on{transition-delay:.2s!important}   /* the circles grow as the dots arrive */
 #map-india:not(.rs) .rs-seat{transform:scale(0)}
 #map-india.sync .st-dot,#map-india.sync .rs-seat{transition-delay:0s!important}
 svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
@@ -912,8 +913,10 @@ function setUS(race,animate,year=usYear(race)){
   }
   // Compact: President and House share the Map / Compact choice; House packs its own squares (cached per year)
   // Compact: one Map / Compact choice for every US race (not Senate Representation, which has its own layout).
-  // House and Governors show the same squares, so they share a layout.
-  const packs=presMode==="packed"&&!(race==="senate"&&sm==="power"), lr=race==="governors"?"house":race;
+  // Every race shares one layout; Governors borrows Senate's names.
+  // Governors names sit where Senate's do (owner, 2026-10-11): it uses Senate's layout and name spots, coloured by
+  // the governors' squares (pills read their colours when applied)
+  const packs=presMode==="packed"&&!(race==="senate"&&sm==="power"), lr=race==="governors"?"senate":race;
   PACK_US.race=lr; PACK_US.census=censusOf(year);
   applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
   usSvg.classList.toggle("senate",race==="senate");
@@ -1385,12 +1388,17 @@ function rsCompact(pk){
   return RS_COMPACT;
 }
 // the names for one year: outside that year's circles
-function rsOut(pk,year){
-  if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
+// that year's circles in Compact: [[x, y, state]] in SVG units
+function rsCirc(year){
   const data=RS[year], circ=[];
   for(const code in data){const n=data[code].reduce((a,b)=>a+b,0); if(!n) continue;
     const parts=code==="AP"&&!("TS" in data)?["AP","TS"]:[code], pts=RS_PTS.get(parts.join("+")+":"+n);
     if(pts) circ.push(...pts)}
+  return circ;
+}
+function rsOut(pk,year){
+  if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
+  const circ=rsCirc(year);
   const O=outNames(pk,circ,RS_R*S*pk.f,false,RS_SPOT); if(O) RS_OUT_YEAR[year]=O;
   return O;
 }
@@ -1446,15 +1454,53 @@ function outNames(pk,circ,R,keepOut=true,SP=ST_SPOT){   // keepOut false (Rajya 
     const o=cand[k].find(o=>free(o.q)); if(o){OUT[k]=o; names.push(o.q)}}
   return OUT;
 }
+// Chief Minister names (owner, 2026-10-11): a name that fits well inside its state's block, centred on the block's
+// centre of gravity (its box, plus CM_PAD px all round, entirely on the state's own squares), sits there in white;
+// every other name is plain text outside the blocks, as on States, Seats (the owner's picks first; the blocks are
+// whole squares, so names keep clear of a square's half-width, not a dot's radius).
+let CM_OUT=null, CM_IN=null, cmOutFor=null; const CM_PAD=3;
+function cmPack(pk){
+  if(!pk||!pk.laidOut) return;
+  if(cmOutFor!==pk){const P=(u,a)=>pk.at[a]+pk.f*(u*S-pk.lo[a]), circ=[];
+    for(const k in IN_COMPACT) IN_COMPACT[k].forEach(c=>circ.push([P(c[0]+.5,0),P(c[1]+.5,1),k]));
+    const O=outNames(pk,circ,.5*S*pk.f+1); if(!O) return;
+    const IN={}, t=el("text",{class:"in",style:`font-size:${PACK_IN.fs}px`},inSvg), h=PACK_IN.fs*.75, hs=pk.f*S/2;
+    for(const k in pk.lb){if(pk.lb[k].out) continue; const rs=LS_RECTS[k]; if(!rs) continue;
+      const c=rs.map((r,i)=>{const m=(pk.st[k][i].match(/-?[\d.]+/g)||[]).map(Number);   // translate(x,y) scale(f)
+        return [m[0]+m[2]*(r.x.baseVal.value+S/2),m[1]+m[2]*(r.y.baseVal.value+S/2)]});
+      const x=c.reduce((a,p)=>a+p[0],0)/c.length, y=c.reduce((a,p)=>a+p[1],0)/c.length;
+      t.textContent=PACK_IN.name(k); const w=t.getComputedTextLength()+2*CM_PAD, hh=h+2*CM_PAD;
+      const on=(u,v)=>c.some(p=>Math.abs(p[0]-u)<=hs+.5&&Math.abs(p[1]-v)<=hs+.5);   // on one of its squares
+      let fits=true;   // every point of the padded box, on a 2px grid
+      for(let u=x-w/2;u<=x+w/2+1e-6&&fits;u+=Math.min(2,w)) for(let v=y-hh/2;v<=y+hh/2+1e-6;v+=Math.min(2,hh)) if(!on(u,v)){fits=false; break}
+      if(fits) IN[k]=[x,y]}
+    t.remove(); CM_OUT=O; CM_IN=IN; cmOutFor=pk}
+  for(const k in PACK_IN.PL){const e=PACK_IN.PL[k], o=CM_IN[k]?{x:CM_IN[k][0],y:CM_IN[k][1],a:"middle"}:CM_OUT[k]; if(!o) continue;
+    e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.toggle("in",!!CM_IN[k]);
+    e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
+}
 function stPack(pk){
   const O=pk&&pk.laidOut&&stOut(pk); if(!O) return;
   for(const k in O){const e=PACK_IN.PL[k], o=O[k];
     e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.remove("in");
     e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
 }
-function rsPack(pk){
-  const L=pk&&pk.laidOut&&rsCompact(pk), on=L&&RS[inYear], RS_OUT=on&&rsOut(pk,inYear)||{};
+// active: Rajya Sabha on show. Its circles always wait at their Compact spots (shrunk when not on show), so they grow
+// and shrink in place. Merge / split (owner, 2026-10-11): on Rajya Sabha every square / dot of the other India views
+// flies into the nearest of its own state's circles (each circle takes at most its share, ceil(dots / circles)) while
+// shrinking, and the circles grow there; leaving Rajya Sabha the dots fly back out of them (applyPack's spots).
+function rsPack(pk,active){
+  const L=pk&&pk.laidOut&&rsCompact(pk), on=active&&L&&RS[inYear], RS_OUT=on&&rsOut(pk,inYear)||{};
   RS_LAYOUT.forEach((cs,key)=>cs.forEach((c,i)=>c.parentNode.style.transform=L?L.get(key)[i]:""));
+  if(on){const circ=rsCirc(inYear), f=pk.f;
+    for(const k in LS_RECTS){const own=circ.filter(c=>c[2]===k); if(!own.length) continue;   // no seat that year: shrink in place
+      const rs=LS_RECTS[k], cap=Math.ceil(rs.length/own.length), used=own.map(()=>0), to=new Map();
+      const P=r=>{const t=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(LS_CELL.get(r).style.transform)||[0,0,0];   // the dot's spot now
+        return [+t[1]+f*(r.x.baseVal.value+S/2),+t[2]+f*(r.y.baseVal.value+S/2)]};
+      rs.flatMap(r=>{const p=P(r); return own.map((c,j)=>[r,j,Math.hypot(c[0]-p[0],c[1]-p[1])])}).sort((a,b)=>a[2]-b[2])
+        .forEach(([r,j])=>{if(!to.has(r)&&used[j]<cap){to.set(r,j); used[j]++}});
+      rs.forEach(r=>{const c=own[to.get(r)];
+        LS_CELL.get(r).style.transform=`translate(${(c[0]-f*(r.x.baseVal.value+S/2)).toFixed(2)}px,${(c[1]-f*(r.y.baseVal.value+S/2)).toFixed(2)}px) scale(${f.toFixed(4)})`})}}
   for(const k in PACK_IN.PL){const e=PACK_IN.PL[k];
     // no Rajya Sabha seat that year (Ladakh, the UTs; J&K + Ladakh share one region): no name, as on the Map
     const has=!on||(on[k]||k==="TS"&&!("TS" in on)&&on.AP||[]).some(Boolean);   // undivided Andhra covers Telangana
@@ -1487,7 +1533,7 @@ function renderIn(animate,sync){
     t.style.opacity=race==="rajyasabha"&&!RS_NAME_HAS[inYear][i]?0:""}); // no Rajya Sabha seats: no name (like DC on the Senate map)
   if(race==="loksabha") renderLS(animate); else if(race==="states") renderST(animate); else renderRS(animate);
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
-  applyPack(PACK_IN,pk,LS_GRP); rsPack(race==="rajyasabha"&&pk); stPack(race==="states"&&!cm&&pk);
+  applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha"); stPack(race==="states"&&!cm&&pk); cmPack(race==="states"&&cm&&pk);
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
   document.getElementById("in-bloc").textContent=LS_META[inYear].bloc;
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
