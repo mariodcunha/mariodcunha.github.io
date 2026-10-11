@@ -1195,12 +1195,88 @@ Refresh before each push near the election (re-run the RCP scrape).
      at the .5 gap on both sides). Pills are filled with a linearGradient per
      state (#pl-XX), one hard-edged band per square under the pill, so split
      states (Nebraska, Maine) show the other seat's colour behind the name.
+     Pushed live 2026-10-10 (commit 3b11a24).
+  -  Lok Sabha "Compact" (2026-10-10, local): Map / Compact toggle (#ls-view,
+     data-lsv, lsView) above the India map, Lok Sabha only (hidden and reset
+     for Rajya Sabha / States). packLayout is now shared: packLayout(M,key)
+     with a map description M (PACK_US, PACK_IN: svg, cells, out, tweak,
+     name, row, pill font/height, gradient ids pl-us-XX / pl-in-XX) and
+     applyPack(M,pk,groups). India dots now sit in one <g class="ls-st"> per
+     state (LS_GRP) so a state moves as a block; India names <g class="names">
+     (renderIn finds it by class, not lastChild). India cells are off the
+     whole-square grid: each state's fraction becomes its starting offset.
+     One layout for every year and both shares (cache key "all"). Lakshadweep
+     and A&N sit out, then go left of Kerala / right of Tamil Nadu, level with
+     their bottom rows. (A second, per-axis pass was tried: no
+     difference, removed.) Pills: the name if it fits on a row, else
+     the code; coloured square by square (only hides the white lines). The
+     Figma map is already fairly tight, so Compact closes up less than the US
+     one: interlocking shapes and the single-square UTs leave 1-2 square gaps
+     (Rajasthan-UP, MP-Chhattisgarh, Bihar-Assam). Not cached if text can't be
+     measured (hidden panel).
+  -  Lok Sabha Compact = the owner's HAND-MADE layout (2026-10-10, local), replacing
+     the auto-packing for India: Figma node 3483:8366 ("Frame 1662", same file).
+     States change shape there, so every square moves on its own: each dot sits in
+     its own <g class="ls-cell"> (LS_CELL, rect -> wrapper), and the k-th square of a
+     state in snake order goes to the k-th compact cell in snake order (so colours
+     still fill in patches). Data: IN_COMPACT {code: [[x,y],...]} in square units,
+     each state with its own sub-square offset. PACK_IN.fixed = IN_COMPACT makes
+     packLayout skip packing (st[k] = one transform per square) and applyPack set
+     the per-square transforms. Pills unchanged (name or code, coloured square by
+     square so only the white lines are covered).
+     How it was read: get_metadata child coordinates were stale for some groups
+     (Telangana's children off by ~half a square) and some groups list no children,
+     so squares were taken from the rendered screenshot (connected components of
+     coloured pixels, 536 found), grouped by alignment/adjacency and named by seat
+     count + position (Haryana touches diagonally: two blocks). The Figma frame has
+     no CH, SK, NL, MZ, PY, AN, LD: placed by script nearest to a target spot,
+     0.5 square clear of everything: CH (8.03,9.37) left of Haryana, SK (37,16),
+     NL (46.5,16), MZ (44,22), PY (19.5,39.75), AN (16,46.5), LD (6,46).
+     Checked in the browser: no errors, Map <-> Compact morphs and resets.
+  -  Compact single-seat names OUTSIDE (owner, 2026-10-10, local): LA, CH, SK, NL,
+     MZ, PY, AN, LD get no pill; their Map name (muted, 14px) sits beside the
+     square (PACK_IN.outside): tries right, left, below, above; must clear every
+     square by .08, other such names by .16, and stay in the viewBox. If one can't
+     (Nagaland at the right edge), packLayout insets the map by m (+6 SVG units per
+     try) and re-places, so the whole compact map draws a little smaller. Result:
+     Ladakh/PY/A&N/Mizoram right, Chandigarh/Sikkim/Lakshadweep left, Nagaland
+     below. (Haryana then showed "HR"; now "Hrya.", see next.)
+  -  Compact short names, US rule (owner, 2026-10-10, local): IN_SHORT, used by
+     PACK_IN.name (Compact only; the Map keeps full names). Several words ->
+     capitals: UP MP AP HP TN J&K A&N; 4-6 letters as is (Bihar Assam Delhi Goa
+     Punjab Kerala Odisha Sikkim Ladakh); longer -> 4 letters + ".": Maha. Raja.
+     Guja. Karn. Tela. Jhar. Chha. Mani. Megh. Trip. Mizo. Naga. Chan. Pudu.
+     Laks. Owner's exceptions: Arunachal "Arun." (AP = Andhra), Haryana "Hrya.",
+     Uttarakhand "Uttr.", West Bengal "Bengal" (inside), DNH-DD "DNHD".
+     ALL 1- and 2-seat states are named OUTSIDE (PACK_IN.outside(k) = seats <= 2:
+     Goa, Arun., Mani., Megh., Trip., DNHD + the eight 1-seat ones), placed around
+     the state's bounding box (right, left, below, above).
+  -  Compact nudges (owner, 2026-10-10, local), edits to IN_COMPACT, each checked
+     0.5 square clear of every other state: Telangana -1, -.25 (up is blocked by
+     Maharashtra's lone right square); Andhra + Puducherry -.5, -.25 (Tamil Nadu
+     and Odisha block more); Bengal + Assam, Arunachal, Manipur, Meghalaya,
+     Tripura, Mizoram, Nagaland, Sikkim +.3, -2.42, so Bengal's long left arm sits
+     right under Bihar (exactly .5 below Bihar's bottom row; the +.3 keeps Bengal's
+     neck clear of Bihar's right side).
+  -  More Compact tweaks (owner, 2026-10-10, local): Mizoram (42.55,18.3) right
+     under Assam's tail; Nagaland (45.54,14.22) right above Manipur (0.5 clear of
+     it; only 0.43 from Assam's corner, diagonal); Bengal + Meghalaya .25 lower
+     (Meghalaya moves too, else Bengal's top row closes in on it). The Figma
+     already had some states closer than .5 (Bengal-Assam, Bengal-Meghalaya), so
+     the rule for edits is: never closer than min(.5, the gap before).
+     Pill rows: PACK_IN.row {OD:2 (3rd from top), WB:-4 (4th from bottom),
+     MP:-2 (2nd from bottom)}; negative = counted from the bottom. PACK_IN.mid
+     ["KL","WB"]: the pill is centred on its row (others lean toward the state's
+     middle). Outside names are now placed fewest-free-spots first (Mizoram has
+     only "below"), and the map only shrinks for a name cut off at the edge (a
+     name with no free spot used to shrink the map to the 120 limit).
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to step 51 (pushed 2026-10-09).
+- Live = everything up to Lok Sabha Compact (owner's Figma layout, short names,
+  outside names for 1-2 seat states, nudges); pushed 2026-10-10 on the owner's say-so.
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
