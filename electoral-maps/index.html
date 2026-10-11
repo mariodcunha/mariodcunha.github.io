@@ -128,16 +128,22 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #in-total-oth{text-align:center} #in-total-r{text-align:right}
 .need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:13px;line-height:1.15;transition:left .8s var(--ease)}
 .need small{display:block;font-size:9px;font-weight:600;letter-spacing:.06em}
+.need small.wrap{white-space:nowrap;letter-spacing:0}  /* long label (50-50 Senate): one line; two centred lines on phones */
+@media (max-width:640px){.need small.wrap{white-space:normal;width:200px}}
 .mapwrap{overflow-x:auto}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.in{fill:#fff;font-weight:600}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
+.legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend svg{width:14px;height:14px}
 .legends{display:grid}
 .legend .proj{display:contents}
 .legend .proj:empty{display:none}
+/* Text notes sit below the colour keys, each on its own line */
+.legend .own{order:1;flex-basis:100%}
+.legend .txt{order:2;flex-basis:100%;display:block}
+.legend .txt:empty{display:none}
 .credit{font-size:12px;color:var(--muted);border-top:1px solid #e6e6e6;padding-top:12px}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
@@ -150,6 +156,14 @@ svg.map text.in{fill:#fff;font-weight:600}
 #map-us.senate .seat{transform:scale(1)}
 #map-us text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #map-us:not(.president) text.dc{opacity:0}
+/* President "Compact": states slide together (packLayout), names fade out */
+#map-us .state{transition:transform .6s var(--ease)}
+#map-us.packed .state text{opacity:0}
+#plabels{opacity:0;pointer-events:none;transition:opacity .25s}
+#map-us.packed #plabels{opacity:1;transition:opacity .35s .45s}
+#plabels text{font-size:12px}
+.plabel{transition:transform .6s var(--ease)} #plabels stop{transition:stop-color .45s var(--ease)}
+#pres-view{justify-self:start}
 .bar .mark,.under .need,.under .gain{transition:left .8s var(--ease),opacity .25s}
 .instant,.instant *{transition:none!important;animation:none!important}
 
@@ -244,7 +258,7 @@ svg.map text.in{fill:#fff;font-weight:600}
     </div>
     <div class="subtoggle" id="sen-view" role="group" aria-label="Size the Senate circles by" hidden>
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
-      <button type="button" data-sen="power" aria-pressed="false">Voter power</button>
+      <button type="button" data-sen="power" aria-pressed="false">Representation</button>
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="seat" aria-pressed="true">Seat share</button>
@@ -277,14 +291,17 @@ svg.map text.in{fill:#fff;font-weight:600}
       <div class="bar" id="us-bar" aria-hidden="true"><i id="bar-d" data-g="d" style="background:var(--dem)"></i><i id="bar-dp" data-g="d" class="hatch-d"></i><i id="bar-m" data-g="m"></i><i id="bar-t" data-g="t" class="hatch-t"></i><i id="bar-n" data-g="n" class="hatch-n"></i><i id="bar-rp" data-g="r" class="hatch-r"></i><i id="bar-r" data-g="r" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
       <div class="under"><span class="gain d" id="under-d"></span><span class="gain r" id="under-r"></span><span class="need" id="need"></span></div>
     </div>
+    <div class="subtoggle" id="pres-view" role="group" aria-label="President map layout" hidden>
+      <button type="button" data-pres="map" aria-pressed="true">Map</button>
+      <button type="button" data-pres="packed" aria-pressed="false">Compact</button>
+    </div>
     <div class="mapwrap"><svg class="map" id="map-us" role="img"></svg></div>
     <div class="legends">
       <div class="legend" id="legend-president">
-        <span>Each square is one electoral vote: a state's House seats plus two for its senators (DC has three)</span>
-        <span id="p-note"></span>
+        <span class="txt">Each square is one electoral vote: a state's House seats plus two for its senators (DC has three). <em id="p-note"></em></span>
       </div>
       <div class="legend" id="legend-house">
-        <span>Each square is one district</span>
+        <span class="txt">Each square is one district.</span>
         <span class="proj" id="proj-house"></span>
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
@@ -292,17 +309,16 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrat</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--ind)"/></svg>Independent, caucuses with Democrats</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts</em></span>
+        <span class="own"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
         <span class="proj" id="proj-senate"></span>
-        <span id="sen-power" hidden></span>
-        <span id="sen-note"></span>
+        <span class="txt" id="sen-power" hidden></span>
       </div>
       <div class="legend" id="legend-governors">
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
         <span id="leg-gov-ind" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--ind)"/></svg><em id="gov-ind-name"></em></span>
         <span class="proj" id="proj-governors"></span>
-        <span>Each state is drawn as its House seats, so its size shows its population</span>
+        <span class="txt">Each state is drawn as its House seats, so its size shows its population.</span>
       </div>
     </div>
   </section>
@@ -326,8 +342,8 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--oth)"/></svg>Others</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
-        <span id="ls-note">Each square is one seat</span>
-        <span class="geo-note">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold</span>
+        <span class="txt" id="ls-note">Each square is one seat</span>
+        <span class="txt geo-note">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
       <div class="legend" id="legend-rajyasabha">
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--inc)"/></svg>Congress</span>
@@ -336,9 +352,9 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--house)"/></svg>Vacant</span>
-        <span>One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown</span>
-        <span id="rs-note"></span>
-        <span class="geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold</span>
+        <span class="txt">One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.</span>
+        <span class="txt" id="rs-note"></span>
+        <span class="txt geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
       <div class="legend" id="legend-states">
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--inc)"/></svg>Congress</span>
@@ -347,12 +363,12 @@ svg.map text.in{fill:#fff;font-weight:600}
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--seat-empty)"/></svg>No state assembly</span>
-        <span id="st-note"></span>
-        <span class="geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold</span>
+        <span class="txt" id="st-note"></span>
+        <span class="txt geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
     </div>
   </section>
-  <footer class="credit">Inspired by the dataviz from The New York Times</footer>
+  <footer class="credit">Inspired by the dataviz from The New York Times.</footer>
 </main>
 <script>
 // Winners by year: dem = states won by the Democrat; me2 / ne2 = Maine's and Nebraska's 2nd districts
@@ -360,7 +376,7 @@ const PRES={
   2008:{d:"Obama",r:"McCain",dem:"CA OR WA NV CO NM MN IA WI MI IL IN OH PA VA NC FL MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"d",ne2:"d"},
   2012:{d:"Obama",r:"Romney",dem:"CA OR WA NV CO NM MN IA WI MI IL OH PA VA FL MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"d",ne2:"r"},
   2016:{d:"Clinton",r:"Trump",dem:"CA OR WA NV CO NM MN IL VA MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"r",ne2:"r",
-        note:"Squares show electoral votes won; seven faithless electors made the official count 304–227"},
+        note:"Squares show electoral votes won; seven faithless electors made the official count 304–227."},
   2020:{d:"Biden",r:"Trump",dem:"CA OR WA NV AZ CO NM MN WI MI IL PA GA VA MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"r",ne2:"d"},
   2024:{d:"Harris",r:"Trump",dem:"CA OR WA NM CO MN IL VA MD DE NJ NY CT RI MA VT NH ME HI DC",me2:"r",ne2:"d"},
 };
@@ -369,7 +385,7 @@ const PRES_YEARS=[2008,2012,2016,2020,2024];
 // s: state, c: House squares [x,y,isDem] (2024), x: extra House squares for older censuses,
 // e: the two elector squares added on the President map (House + 2 = electoral votes; DC: 3, no House seat),
 // o: the two Senate seats (squares they sit on), h: label [text, x, y], outside the block
-const CHAMBER=[{"s":"NH","c":[[47,0,1],[47,1,1]],"o":[[47,0],[47,1]],"h":["NH",48,-0.45],"e":[[48,0],[48,1]]},{"s":"ME","c":[[50,0,1],[50,1,1]],"o":[[50,0],[50,1]],"h":["Maine",51,-0.45],"e":[[51,0],[51,1]]},{"s":"VT","c":[[45,1,1]],"o":[[45,0],[45,1]],"h":["Verm.",45.5,-0.45],"e":[[45,0],[44,1]]},{"s":"NY","c":[[42,3,0],[41,4,1],[42,4,1],[40,5,0],[41,5,1],[42,5,0],[39,6,1],[40,6,1],[41,6,1],[42,6,1],[38,7,1],[39,7,1],[40,7,1],[41,7,1],[42,7,1],[37,8,0],[38,8,1],[39,8,0],[40,8,1],[41,8,1],[42,8,1],[42,9,1],[43,9,1],[43,10,1],[44,10,0],[45,10,0]],"o":[[41,4],[42,4]],"h":["NY",42.5,2.55],"x":[[42,10],[41,9],[40,9]],"e":[[43,8],[43,7]]},{"s":"WA","c":[[3,4,1],[4,4,1],[1,5,1],[2,5,1],[3,5,1],[4,5,0],[1,6,1],[2,6,1],[3,6,1],[4,6,0]],"o":[[3,4],[4,4]],"h":["Wash.",3,3.55],"e":[[2,4],[1,4]]},{"s":"MA","c":[[45,4,1],[46,4,1],[47,4,1],[48,4,1],[45,5,1],[46,5,1],[47,5,1],[48,5,1],[49,5,1]],"o":[[45,4],[46,4]],"h":["Mass.",47,3.55],"x":[[49,4]],"e":[[44,4],[44,5]]},{"s":"MT","c":[[10,5,0],[11,5,0]],"o":[[10,5],[11,5]],"h":["Mont.",11,4.55],"e":[[9,5],[12,5]]},{"s":"ND","c":[[15,5,0]],"o":[[15,5],[16,5]],"h":["N-Dako.",15.5,4.55],"e":[[16,5],[14,5]]},{"s":"MN","c":[[19,6,0],[20,6,0],[19,7,0],[20,7,1],[19,8,1],[20,8,1],[19,9,0],[20,9,1]],"o":[[19,6],[20,6]],"h":["Minn.",20,5.55],"e":[[18,7],[18,8]]},{"s":"MI","c":[[27,6,0],[28,6,0],[27,7,1],[28,7,1],[29,7,1],[27,8,0],[28,8,0],[29,8,1],[30,8,0],[27,9,0],[28,9,1],[29,9,1],[26,5,0]],"o":[[27,6],[28,6]],"h":["Mich.",26.5,4.55],"x":[[30,9],[30,7]],"e":[[29,6],[30,6]]},{"s":"WI","c":[[22,7,0],[23,7,0],[24,7,0],[22,8,0],[23,8,0],[24,8,1],[23,9,1],[24,9,0]],"o":[[22,7],[23,7]],"h":["Wisc.",23.5,6.55],"e":[[22,9],[25,8]]},{"s":"CT","c":[[45,7,1],[46,7,1],[47,7,1],[46,8,1],[47,8,1]],"o":[[45,7],[46,7]],"h":["Conn.",47.5,9.45],"e":[[45,8],[48,7]]},{"s":"RI","c":[[50,7,1],[50,8,1]],"o":[[50,7],[50,8]],"h":["RI",51,6.55],"e":[[51,7],[51,8]]},{"s":"ID","c":[[7.5,7.5,0],[7.5,8.5,0]],"o":[[7.5,7.5],[7.5,8.5]],"h":["Idaho",8.5,7.05],"e":[[8.5,7.5],[8.5,8.5]]},{"s":"OR","c":[[0.5,8,1],[1.5,8,1],[2.5,8,1],[0.5,9,1],[2.5,9,0],[1.5,9,1]],"o":[[0.5,8],[1.5,8]],"h":["Oregon",1.5,10.45],"e":[[-0.5,8],[-0.5,9]]},{"s":"WY","c":[[12,8,0]],"o":[[12,8],[13,8]],"h":["Wyom.",12.5,7.55],"e":[[13,8],[11,8]]},{"s":"SD","c":[[15,8,0]],"o":[[15,8],[16,8]],"h":["S-Dako.",16,7.55],"e":[[16,8],[15,9]]},{"s":"PA","c":[[39,11,0],[40,11,0],[36,11,0],[37,11,0],[38,11,0],[36,12,1],[37,12,1],[39,12,1],[38,12,0],[40,12,0],[41,12,1],[36,13,0],[37,13,0],[38,13,0],[39,13,1],[40,13,1],[41,13,1]],"o":[[36,11],[37,11]],"h":["Penn.",38,10.55],"x":[[35,13],[35,12]],"e":[[35,11],[42,12]]},{"s":"CA","c":[[1,13,0],[2,13,1],[3,13,0],[1,14,1],[2,14,1],[3,14,1],[1,15,1],[2,15,1],[3,15,1],[1,16,1],[3,16,0],[1,17,1],[2,17,1],[3,17,1],[1,18,1],[2,18,1],[3,18,1],[4,18,1],[1,19,1],[2,19,0],[3,19,1],[4,19,0],[1,20,1],[3,20,1],[4,20,1],[5,20,0],[2,21,1],[3,21,1],[4,21,1],[5,21,1],[6,21,1],[3,22,1],[4,22,1],[5,22,1],[6,22,1],[7,22,1],[4,23,1],[5,23,1],[7,23,1],[4,24,1],[5,24,1],[6,24,0],[7,24,0],[5,25,1],[7,25,1],[6,25,0],[5,26,1],[6,26,1],[7,26,1],[2,16,1],[2,20,1],[6,23,1]],"o":[[1,13],[2,13]],"h":["Cali.",2.5,12.55],"x":[[4,25]],"e":[[5,19],[5,18]]},{"s":"NV","c":[[5,12,0],[6,12,1],[5,13,1],[6,13,1]],"o":[[5,12],[6,12]],"h":["Nevada",6,10.55],"e":[[5,11],[6,11]]},{"s":"CO","c":[[12,12,1],[13,12,0],[12,13,1],[13,13,1],[12,14,1],[13,14,0],[12,15,0],[13,15,0]],"o":[[12,12],[13,12]],"h":["Colo.",13,11.55],"e":[[11,13],[11,14]]},{"s":"NE","c":[[15,12,0],[16,12,0],[16,13,0]],"o":[[15,12],[16,12]],"h":["Nebr.",16.5,11.55],"e":[[15,13],[17,12]]},{"s":"IL","c":[[23,12,1],[24,12,1],[22,13,1],[23,13,1],[24,13,1],[22,14,1],[23,14,1],[24,14,1],[22,15,1],[23,15,1],[24,15,1],[22,16,1],[23,16,0],[24,16,1],[23,17,1],[24,17,0],[24,18,0]],"o":[[23,12],[24,12]],"h":["Illi.",23.5,11.55],"x":[[23,18],[22,12]],"e":[[25,15],[25,14]]},{"s":"OH","c":[[30,12,1],[32,12,1],[33,12,0],[30,13,0],[31,13,0],[32,13,0],[33,13,1],[30,14,0],[31,14,1],[32,14,0],[33,14,0],[30,15,0],[31,15,1],[32,15,0],[33,15,0]],"o":[[32,12],[33,12]],"h":["Ohio",32,10.55],"x":[[31,12],[30,16],[30,17]],"e":[[34,15],[31,11]]},{"s":"UT","c":[[8,13,0],[9,13,0],[8,14,0],[9,14,0]],"o":[[8,13],[9,13]],"h":["Utah",9,11.55],"e":[[8,12],[9,12]]},{"s":"IA","c":[[19,13,0],[20,13,0],[19,14,0],[20,14,0]],"o":[[19,13],[20,13]],"h":["Iowa",20,12.55],"x":[[19,15]],"e":[[20,15],[18,14]]},{"s":"IN","c":[[27,13,1],[28,13,0],[27,14,0],[28,14,0],[27,15,1],[28,15,0],[27,16,0],[28,16,0],[27,17,0]],"o":[[27,13],[28,13]],"h":["Indi.",28,12.55],"e":[[28,17],[26,17]]},{"s":"NJ","c":[[44,12,1],[45,12,1],[46,12,1],[44,13,1],[45,13,1],[46,13,1],[44,14,0],[45,14,1],[46,14,1],[47,14,1],[46,15,0],[47,15,0]],"o":[[44,12],[45,12]],"h":["NJ",46,11.55],"x":[[47,13]],"e":[[47,12],[48,13]]},{"s":"MD","c":[[36,15,1],[37,15,1],[38,15,1],[39,15,1],[40,15,1],[41,15,0],[40,16,1],[41,16,1]],"o":[[36,15],[37,15]],"h":["Mary.",42.5,17.45],"e":[[42,15],[42,16]]},{"s":"KS","c":[[15,15.5,0],[16,15.5,1],[15,16.5,0],[16,16.5,0]],"o":[[15,15.5],[16,15.5]],"h":["Kansas",16,15.05],"e":[[17,16.5],[16,17.5]]},{"s":"AZ","c":[[7,16,1],[8,16,0],[9,16,0],[7,17,1],[8,17,0],[9,17,0],[7,18,1],[8,18,0],[9,18,0]],"o":[[7,16],[8,16]],"h":["Ariz.",8.5,19.45],"e":[[10,17],[10,16]]},{"s":"NM","c":[[12,17,1],[13,17,1],[12,18,1]],"o":[[12,17],[13,17]],"h":["NM",12.5,20.45],"e":[[13,18],[12,19]]},{"s":"MO","c":[[19,17,1],[20,17,0],[19,18,0],[20,18,0],[21,18,1],[19,19,0],[20,19,0],[21,19,0]],"o":[[19,17],[20,17]],"h":["Misso.",20.5,21.45],"x":[[20,20]],"e":[[19,20],[21,20]]},{"s":"WV","c":[[32,17,0],[33,17,0]],"o":[[32,17],[33,17]],"h":["W-Virg.",32.5,19.45],"x":[[32,18]],"e":[[34,17],[35,17]]},{"s":"VA","c":[[38,17,1],[37,18,0],[38,18,1],[39,18,1],[34,19,0],[35,19,0],[36,19,1],[37,19,1],[38,19,0],[39,19,1],[40,19,0]],"o":[[34,19],[35,19]],"h":["Virg.",37.5,20.45],"e":[[37,17],[40,18]]},{"s":"DE","c":[[44,17,1]],"o":[[44,17],[45,17]],"h":["Dela.",44.5,19.45],"e":[[45,17],[44,18]]},{"s":"KY","c":[[29,19,1],[30,19,0],[27,20,0],[28,20,0],[29,20,0],[30,20,0]],"o":[[29,19],[30,19]],"h":["Kent.",26.01,19.5],"e":[[28,19],[27,19]]},{"s":"OK","c":[[14,20,0],[15,20,0],[16,20,0],[15,21,0],[16,21,0]],"o":[[14,20],[15,20]],"h":["Okla.",16,19.55],"e":[[14,21],[17,20]]},{"s":"TX","c":[[12,23,0],[13,23,0],[12,24,0],[13,24,0],[14,24,0],[15,24,0],[16,24,0],[10,25,1],[12,25,0],[13,25,1],[14,25,1],[15,25,1],[11,25,0],[16,25,0],[11,26,0],[12,26,0],[13,26,0],[14,26,0],[15,26,0],[16,26,0],[12,27,1],[14,27,1],[15,27,1],[11,27,0],[13,27,0],[16,27,0],[12,28,0],[13,28,0],[14,28,1],[15,28,1],[12,29,1],[13,29,1],[14,29,0],[15,29,0],[13,30,1],[14,30,0],[13,31,0],[14,31,1]],"o":[[12,23],[13,23]],"h":["Texas",14,32.45],"e":[[11,28],[16,28]]},{"s":"TN","c":[[22,22,0],[23,22,0],[24,22,0],[25,22,0],[26,22,0],[27,22,0],[22,23,1],[23,23,0],[24,23,0]],"o":[[22,22],[23,22]],"h":["Tenn.",25.5,21.55],"e":[[25,23],[28,22]]},{"s":"GA","c":[[30,22,0],[31,22,0],[32,22,0],[30,23,0],[31,23,1],[32,23,0],[30,24,1],[31,24,1],[32,24,1],[33,24,0],[31,25,1],[30,25,0],[32,25,0],[33,25,0]],"o":[[30,22],[31,22]],"h":["Geor.",32,21.55],"e":[[33,23],[33,22]]},{"s":"NC","c":[[35,22,0],[36,22,0],[37,22,0],[38,22,0],[39,22,1],[40,22,0],[41,22,1],[36,23,0],[37,23,1],[38,23,0],[39,23,0],[40,23,1],[41,23,0],[41,24,0]],"o":[[35,22],[36,22]],"h":["N-Caro.",40.5,21.55],"e":[[35,23],[42,23]]},{"s":"AR","c":[[19,22.5,0],[20,22.5,0],[19,23.5,0],[20,23.5,0]],"o":[[19,22.5],[20,22.5]],"h":["Arka.",19.5,24.95],"e":[[18,22.5],[18,23.5]]},{"s":"AL","c":[[27,24,0],[28,24,0],[27,25,0],[28,25,0],[27,26,1],[28,26,1],[27,27,0]],"o":[[27,24],[28,24]],"h":["Alab.",28,28.45],"e":[[28,27],[26,25]]},{"s":"MS","c":[[23,25,1],[24,25,0],[23,26,0],[24,26,0]],"o":[[23,25],[24,25]],"h":["Missi.",23.5,28.45],"e":[[22,25],[23,27]]},{"s":"SC","c":[[36,25,0],[37,25,0],[38,25,0],[39,25,0],[38,26,1],[37,26,0],[39,26,0]],"o":[[36,25],[37,25]],"h":["S-Caro.",38.5,27.45],"e":[[36,26],[35,25]]},{"s":"LA","c":[[19,26.5,0],[19,27.5,1],[20,27.5,0],[19,28.5,0],[20,28.5,1],[21,28.5,0]],"o":[[19,27.5],[20,27.5]],"h":["Loui.",20,29.95],"x":[[21,27.5]],"e":[[20,26.5],[18,27.5]]},{"s":"FL","c":[[31,28,0],[32,28,0],[33,28,0],[34,28,0],[35,28,0],[33,29,0],[34,29,0],[35,29,0],[36,29,1],[37,29,0],[34,30,0],[35,30,1],[36,30,0],[37,30,1],[38,30,0],[39,30,0],[35,31,0],[36,31,0],[37,31,0],[38,31,1],[39,31,1],[40,31,1],[35,32,0],[36,32,0],[37,32,0],[38,32,0],[39,32,1],[40,32,1]],"o":[[31,28],[32,28]],"h":["Flor.",34,27.55],"e":[[36,28],[38,29]]},{"s":"AK","c":[[4,0,0]],"o":[[4,0],[5,0]],"h":["Alaska",4.5,-0.45],"e":[[5,0],[3,0]]},{"s":"HI","c":[[6,30,1],[7,31,1]],"o":[[6,30],[7,31]],"h":["Hawaii",7,29.55],"e":[[7,30],[6,31]]},{"s":"DC","c":[],"o":[],"e":[[43,20],[44,20],[43,21]],"h":["DC",44,22.45]}];
+const CHAMBER=[{"s":"NH","c":[[47,0,1],[47,1,1]],"o":[[47,0],[47,1]],"h":["NH",48,-0.45],"e":[[48,0],[48,1]]},{"s":"ME","c":[[50,0,1],[50,1,1]],"o":[[50,0],[50,1]],"h":["Maine",51,-0.45],"e":[[51,0],[51,1]]},{"s":"VT","c":[[45,1,1]],"o":[[45,0],[45,1]],"h":["Verm.",45.5,-0.45],"e":[[45,0],[44,1]]},{"s":"NY","c":[[42,3,0],[41,4,1],[42,4,1],[40,5,0],[41,5,1],[42,5,0],[39,6,1],[40,6,1],[41,6,1],[42,6,1],[38,7,1],[39,7,1],[40,7,1],[41,7,1],[42,7,1],[37,8,0],[38,8,1],[39,8,0],[40,8,1],[41,8,1],[42,8,1],[42,9,1],[43,9,1],[43,10,1],[44,10,0],[45,10,0]],"o":[[41,4],[42,4]],"h":["NY",42.5,2.55],"x":[[42,10],[41,9],[40,9]],"e":[[43,8],[43,7]]},{"s":"WA","c":[[3,4,1],[4,4,1],[1,5,1],[2,5,1],[3,5,1],[4,5,0],[1,6,1],[2,6,1],[3,6,1],[4,6,0]],"o":[[3,4],[4,4]],"h":["Wash.",3,3.55],"e":[[2,4],[1,4]]},{"s":"MA","c":[[45,4,1],[46,4,1],[47,4,1],[48,4,1],[45,5,1],[46,5,1],[47,5,1],[48,5,1],[49,5,1]],"o":[[45,4],[46,4]],"h":["Mass.",47,3.55],"x":[[49,4]],"e":[[44,4],[44,5]]},{"s":"MT","c":[[10,5,0],[11,5,0]],"o":[[10,5],[11,5]],"h":["Mont.",11,4.55],"e":[[9,5],[12,5]]},{"s":"ND","c":[[15,5,0]],"o":[[15,5],[16,5]],"h":["N-Dako.",15.5,4.55],"e":[[16,5],[14,5]]},{"s":"MN","c":[[19,6,0],[20,6,0],[19,7,0],[20,7,1],[19,8,1],[20,8,1],[19,9,0],[20,9,1]],"o":[[19,6],[20,6]],"h":["Minn.",20,5.55],"e":[[18,7],[18,8]]},{"s":"MI","c":[[27,6,0],[28,6,0],[27,7,1],[28,7,1],[29,7,1],[27,8,0],[28,8,0],[29,8,1],[30,8,0],[27,9,0],[28,9,1],[29,9,1],[26,5,0]],"o":[[27,6],[28,6]],"h":["Mich.",26.5,4.55],"x":[[30,9],[30,7]],"e":[[29,6],[30,6]]},{"s":"WI","c":[[22,7,0],[23,7,0],[24,7,0],[22,8,0],[23,8,0],[24,8,1],[23,9,1],[24,9,0]],"o":[[22,7],[23,7]],"h":["Wisc.",23.5,6.55],"e":[[22,9],[25,8]]},{"s":"CT","c":[[45,7,1],[46,7,1],[47,7,1],[46,8,1],[47,8,1]],"o":[[45,7],[46,7]],"h":["Conn.",47.5,9.45],"e":[[45,8],[48,7]]},{"s":"RI","c":[[50,7,1],[50,8,1]],"o":[[50,7],[50,8]],"h":["RI",51,6.55],"e":[[51,7],[51,8]]},{"s":"ID","c":[[7.5,7.5,0],[7.5,8.5,0]],"o":[[7.5,7.5],[7.5,8.5]],"h":["Idaho",8.5,7.05],"e":[[8.5,7.5],[8.5,8.5]]},{"s":"OR","c":[[0.5,8,1],[1.5,8,1],[2.5,8,1],[0.5,9,1],[2.5,9,0],[1.5,9,1]],"o":[[0.5,8],[1.5,8]],"h":["Oregon",1.5,10.45],"e":[[-0.5,8],[-0.5,9]]},{"s":"WY","c":[[12,8,0]],"o":[[12,8],[13,8]],"h":["Wyom.",12.5,7.55],"e":[[13,8],[11,8]]},{"s":"SD","c":[[15,8,0]],"o":[[15,8],[16,8]],"h":["S-Dako.",16,7.55],"e":[[16,8],[15,9]]},{"s":"PA","c":[[39,11,0],[40,11,0],[36,11,0],[37,11,0],[38,11,0],[36,12,1],[37,12,1],[39,12,1],[38,12,0],[40,12,0],[41,12,1],[36,13,0],[37,13,0],[38,13,0],[39,13,1],[40,13,1],[41,13,1]],"o":[[36,11],[37,11]],"h":["Penn.",38,10.55],"x":[[35,13],[35,12]],"e":[[35,11],[42,12]]},{"s":"CA","c":[[1,13,0],[2,13,1],[3,13,0],[1,14,1],[2,14,1],[3,14,1],[1,15,1],[2,15,1],[3,15,1],[1,16,1],[3,16,0],[1,17,1],[2,17,1],[3,17,1],[1,18,1],[2,18,1],[3,18,1],[4,18,1],[1,19,1],[2,19,0],[3,19,1],[4,19,0],[1,20,1],[3,20,1],[4,20,1],[5,20,0],[2,21,1],[3,21,1],[4,21,1],[5,21,1],[6,21,1],[3,22,1],[4,22,1],[5,22,1],[6,22,1],[7,22,1],[4,23,1],[5,23,1],[7,23,1],[4,24,1],[5,24,1],[6,24,0],[7,24,0],[5,25,1],[7,25,1],[6,25,0],[5,26,1],[6,26,1],[7,26,1],[2,16,1],[2,20,1],[6,23,1]],"o":[[1,13],[2,13]],"h":["Cali.",2.5,12.55],"x":[[4,25]],"e":[[5,19],[5,18]]},{"s":"NV","c":[[5,12,0],[6,12,1],[5,13,1],[6,13,1]],"o":[[5,12],[6,12]],"h":["Nevada",6,10.55],"e":[[5,11],[6,11]]},{"s":"CO","c":[[12,12,1],[13,12,0],[12,13,1],[13,13,1],[12,14,1],[13,14,0],[12,15,0],[13,15,0]],"o":[[12,12],[13,12]],"h":["Colo.",13,11.55],"e":[[11,13],[11,14]]},{"s":"NE","c":[[15,12,0],[16,12,0],[16,13,0]],"o":[[15,12],[16,12]],"h":["Nebr.",16.5,11.55],"e":[[15,13],[17,12]]},{"s":"IL","c":[[23,12,1],[24,12,1],[22,13,1],[23,13,1],[24,13,1],[22,14,1],[23,14,1],[24,14,1],[22,15,1],[23,15,1],[24,15,1],[22,16,1],[23,16,0],[24,16,1],[23,17,1],[24,17,0],[24,18,0]],"o":[[23,12],[24,12]],"h":["Illi.",23.5,11.55],"x":[[23,18],[22,12]],"e":[[25,15],[25,14]]},{"s":"OH","c":[[30,12,1],[32,12,1],[33,12,0],[30,13,0],[31,13,0],[32,13,0],[33,13,1],[30,14,0],[31,14,1],[32,14,0],[33,14,0],[30,15,0],[31,15,1],[32,15,0],[33,15,0]],"o":[[32,12],[33,12]],"h":["Ohio",32,10.55],"x":[[31,12],[30,16],[30,17]],"e":[[34,15],[31,11]]},{"s":"UT","c":[[8,13,0],[9,13,0],[8,14,0],[9,14,0]],"o":[[8,13],[9,13]],"h":["Utah",9,11.55],"e":[[8,12],[9,12]]},{"s":"IA","c":[[19,13,0],[20,13,0],[19,14,0],[20,14,0]],"o":[[19,13],[20,13]],"h":["Iowa",20,12.55],"x":[[19,15]],"e":[[20,15],[18,14]]},{"s":"IN","c":[[27,13,1],[28,13,0],[27,14,0],[28,14,0],[27,15,1],[28,15,0],[27,16,0],[28,16,0],[27,17,0]],"o":[[27,13],[28,13]],"h":["Indi.",28,12.55],"e":[[28,17],[26,17]]},{"s":"NJ","c":[[44,12,1],[45,12,1],[46,12,1],[44,13,1],[45,13,1],[46,13,1],[44,14,0],[45,14,1],[46,14,1],[47,14,1],[46,15,0],[47,15,0]],"o":[[44,12],[45,12]],"h":["NJ",46,11.55],"x":[[47,13]],"e":[[47,12],[48,13]]},{"s":"MD","c":[[36,15,1],[37,15,1],[38,15,1],[39,15,1],[40,15,1],[41,15,0],[40,16,1],[41,16,1]],"o":[[36,15],[37,15]],"h":["Mary.",42.5,17.45],"e":[[42,15],[42,16]]},{"s":"KS","c":[[15,15.5,0],[16,15.5,1],[15,16.5,0],[16,16.5,0]],"o":[[15,15.5],[16,15.5]],"h":["Kansas",16,15.05],"e":[[17,16.5],[16,17.5]]},{"s":"AZ","c":[[7,16,1],[8,16,0],[9,16,0],[7,17,1],[8,17,0],[9,17,0],[7,18,1],[8,18,0],[9,18,0]],"o":[[7,16],[8,16]],"h":["Ariz.",8.5,20.45],"e":[[7,19],[8,19]]},{"s":"NM","c":[[12,17,1],[13,17,1],[12,18,1]],"o":[[12,17],[13,17]],"h":["NM",12.5,20.45],"e":[[13,18],[12,19]]},{"s":"MO","c":[[19,17,1],[20,17,0],[19,18,0],[20,18,0],[21,18,1],[19,19,0],[20,19,0],[21,19,0]],"o":[[19,17],[20,17]],"h":["Misso.",20.5,21.45],"x":[[20,20]],"e":[[19,20],[21,20]]},{"s":"WV","c":[[32,17,0],[33,17,0]],"o":[[32,17],[33,17]],"h":["W-Virg.",32.5,19.45],"x":[[32,18]],"e":[[34,17],[35,17]]},{"s":"VA","c":[[38,17,1],[37,18,0],[38,18,1],[39,18,1],[34,19,0],[35,19,0],[36,19,1],[37,19,1],[38,19,0],[39,19,1],[40,19,0]],"o":[[34,19],[35,19]],"h":["Virg.",37.5,20.45],"e":[[37,17],[40,18]]},{"s":"DE","c":[[44,17,1]],"o":[[44,17],[45,17]],"h":["Dela.",44.5,19.45],"e":[[45,17],[44,18]]},{"s":"KY","c":[[29,19,1],[30,19,0],[27,20,0],[28,20,0],[29,20,0],[30,20,0]],"o":[[29,19],[30,19]],"h":["Kent.",26.01,19.5],"e":[[28,19],[27,19]]},{"s":"OK","c":[[14,20,0],[15,20,0],[16,20,0],[15,21,0],[16,21,0]],"o":[[14,20],[15,20]],"h":["Okla.",16,19.55],"e":[[14,21],[17,20]]},{"s":"TX","c":[[12,23,0],[13,23,0],[12,24,0],[13,24,0],[14,24,0],[15,24,0],[16,24,0],[10,25,1],[12,25,0],[13,25,1],[14,25,1],[15,25,1],[11,25,0],[16,25,0],[11,26,0],[12,26,0],[13,26,0],[14,26,0],[15,26,0],[16,26,0],[12,27,1],[14,27,1],[15,27,1],[11,27,0],[13,27,0],[16,27,0],[12,28,0],[13,28,0],[14,28,1],[15,28,1],[12,29,1],[13,29,1],[14,29,0],[15,29,0],[13,30,1],[14,30,0],[13,31,0],[14,31,1]],"o":[[12,23],[13,23]],"h":["Texas",14,32.45],"e":[[11,28],[16,28]]},{"s":"TN","c":[[22,22,0],[23,22,0],[24,22,0],[25,22,0],[26,22,0],[27,22,0],[22,23,1],[23,23,0],[24,23,0]],"o":[[22,22],[23,22]],"h":["Tenn.",25.5,21.55],"e":[[25,23],[28,22]]},{"s":"GA","c":[[30,22,0],[31,22,0],[32,22,0],[30,23,0],[31,23,1],[32,23,0],[30,24,1],[31,24,1],[32,24,1],[33,24,0],[31,25,1],[30,25,0],[32,25,0],[33,25,0]],"o":[[30,22],[31,22]],"h":["Geor.",32,21.55],"e":[[33,23],[33,22]]},{"s":"NC","c":[[35,22,0],[36,22,0],[37,22,0],[38,22,0],[39,22,1],[40,22,0],[41,22,1],[36,23,0],[37,23,1],[38,23,0],[39,23,0],[40,23,1],[41,23,0],[41,24,0]],"o":[[35,22],[36,22]],"h":["N-Caro.",40.5,21.55],"e":[[35,23],[42,23]]},{"s":"AR","c":[[19,22.5,0],[20,22.5,0],[19,23.5,0],[20,23.5,0]],"o":[[19,22.5],[20,22.5]],"h":["Arka.",19.5,24.95],"e":[[18,22.5],[18,23.5]]},{"s":"AL","c":[[27,24,0],[28,24,0],[27,25,0],[28,25,0],[27,26,1],[28,26,1],[27,27,0]],"o":[[27,24],[28,24]],"h":["Alab.",28,28.45],"e":[[28,27],[26,25]]},{"s":"MS","c":[[23,25,1],[24,25,0],[23,26,0],[24,26,0]],"o":[[23,25],[24,25]],"h":["Missi.",23.5,28.45],"e":[[22,25],[23,27]]},{"s":"SC","c":[[36,25,0],[37,25,0],[38,25,0],[39,25,0],[38,26,1],[37,26,0],[39,26,0]],"o":[[36,25],[37,25]],"h":["S-Caro.",38.5,27.45],"e":[[36,26],[35,25]]},{"s":"LA","c":[[19,26.5,0],[19,27.5,1],[20,27.5,0],[19,28.5,0],[20,28.5,1],[21,28.5,0]],"o":[[19,27.5],[20,27.5]],"h":["Loui.",20,29.95],"x":[[21,27.5]],"e":[[20,26.5],[18,27.5]]},{"s":"FL","c":[[31,28,0],[32,28,0],[33,28,0],[34,28,0],[35,28,0],[33,29,0],[34,29,0],[35,29,0],[36,29,1],[37,29,0],[34,30,0],[35,30,1],[36,30,0],[37,30,1],[38,30,0],[39,30,0],[35,31,0],[36,31,0],[37,31,0],[38,31,1],[39,31,1],[40,31,1],[35,32,0],[36,32,0],[37,32,0],[38,32,0],[39,32,1],[40,32,1]],"o":[[31,28],[32,28]],"h":["Flor.",34,27.55],"e":[[36,28],[38,29]]},{"s":"AK","c":[[4,0,0]],"o":[[4,0],[5,0]],"h":["Alaska",4.5,-0.45],"e":[[5,0],[3,0]]},{"s":"HI","c":[[6,30,1],[7,31,1]],"o":[[6,30],[7,31]],"h":["Hawaii",7,29.55],"e":[[7,30],[6,31]]},{"s":"DC","c":[],"o":[],"e":[[43,20],[44,20],[43,21]],"h":["DC",44,22.45]}];
 
 // ---------- US history 2008-2024 (see CONTEXT.txt for sources) ----------
 // House seats (= electoral votes - 2) by census, as changes from today's (2020-census) counts.
@@ -461,7 +477,7 @@ const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"}
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
 // the first n and shrinks the rest away; elector squares (President only); two Senate circles.
 const usSvg=document.getElementById("map-us");
-const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={};
+const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
 (function drawUS(){
   const box=[1e9,1e9,-1e9,-1e9], labels=[];
   // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
@@ -473,7 +489,7 @@ const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={};
   const grow=(x,y)=>{box[0]=Math.min(box[0],x);box[1]=Math.min(box[1],y);box[2]=Math.max(box[2],x+1);box[3]=Math.max(box[3],y+1)};
   const sq=(g,[x,y])=>{grow(x,y);return el("rect",{class:"sq",x:x*S,y:y*S,width:S,height:S,"stroke-width":1},g)};
   CHAMBER.forEach(st=>{
-    const g=el("g",{class:"state"},usSvg), k=st.s;
+    const g=el("g",{class:"state"},usSvg), k=st.s; GST[k]=g;
     if(st.c.length){
       const dem=new Map(st.c.map(([x,y,d])=>[x+","+y,d]));
       const cells=[...serp(st.c.map(([x,y])=>[x,y])),...(st.x||[])];
@@ -523,6 +539,122 @@ let usRace=null, presYear=PRES_YEARS.at(-1), chYear=US_YEARS.at(-1), senMode="se
 const PW_R0=.5/Math.SQRT2, PW_LAYOUT={};
 // Each grey square counts as one unit of population, the same in every year (today's squares), so the layout and the
 // circle sizes never change with the year: stepping through years only recolours.
+// ---------- President "Compact": the state blocks packed together like a jigsaw ----------
+// Every state starts where it is on the map and keeps creeping toward the map's centre in small steps (.25 square,
+// split over x and y), each step only as far as it can go without coming within GAP of another state's squares.
+// Nearest states move first; stops when nothing moves. Geography is kept roughly (no state passes another) and the
+// white between neighbours ends up close to GAP everywhere. Alaska sits out and is then put just above Washington;
+// Arizona is nudged a little down and right; West Virginia is pulled in against Virginia. (PACK_TURN can turn a
+// state a quarter, clockwise 1 / counter-clockwise -1; none is turned now that Arizona's two senator squares sit
+// under its House squares and it already stands upright.) Then the packed map is scaled up to fill the map's box
+// (it is smaller and has no outside names). Each state gets its name inside, on a pill of the state's colour so the
+// white grid lines don't cut through it: the short name if it fits on one row of squares, else the postal code.
+// The pill takes the colour of each square under it, so a split state (Nebraska, Maine) keeps its other seat's colour.
+// Built from the squares on show, cached per year: {st:{k:CSS transform}, lb:{k:{x,y,w,t}}} in SVG units.
+const PACK={}, PACK_GAP=.5, PACK_TURN={}, PL_FS=12, PL_H=15;
+const PL_NAME={VT:"VT",HI:"HI"}, PL_ROW={NJ:1};   // pill name overrides; row (from the top) a name sits on
+let plLayer=null;
+const PL={};
+function packLayout(year){
+  if(PACK[year]) return PACK[year];
+  const B={}, G=PACK_GAP;
+  for(const k in GST){const els=[...GST[k].querySelectorAll(".sq:not(.gone)")];
+    let c=els.map(e=>[e.x.baseVal.value/S,e.y.baseVal.value/S]);
+    if(!c.length) continue;
+    let P=null, turn=PACK_TURN[k]||0;
+    if(turn){   // quarter turn about a grid point P near the middle. clockwise: cell (x,y) -> (P.x+P.y-y-1, P.y-P.x+x);
+                // counter-clockwise: (x,y) -> (P.x-P.y+y, P.x+P.y-x-1)
+      P=[0,1].map(a=>Math.round(c.reduce((t,p)=>t+p[a],0)/c.length+.5));
+      c=c.map(([x,y])=>turn>0?[P[0]+P[1]-y-1,P[1]-P[0]+x]:[P[0]-P[1]+y,P[0]+P[1]-x-1]);
+    }
+    B[k]={c,els,P,turn,o:[0,0],lo:[0,1].map(a=>Math.min(...c.map(p=>p[a]))),hi:[0,1].map(a=>Math.max(...c.map(p=>p[a]))+1),
+      m:[0,1].map(a=>c.reduce((t,p)=>t+p[a],0)/c.length+.5)}}
+  const ks=Object.keys(B).filter(k=>k!=="AK"), kAll=Object.keys(B);
+  const span=(a,f,list=ks)=>f(...list.map(k=>f===Math.min?B[k].lo[a]+B[k].o[a]:B[k].hi[a]+B[k].o[a]));
+  const C=[0,1].map(a=>(span(a,Math.min)+span(a,Math.max))/2);
+  // free distance for state k along axis a (0 = x, 1 = y) in direction dir before it comes within G of another state
+  const room=(k,a,dir)=>{
+    const s=B[k], o=1-a; let best=Infinity;
+    for(const j of ks){ const t=B[j]; if(j===k) continue;
+      if(s.lo[o]+s.o[o]>=t.hi[o]+t.o[o]+G||t.lo[o]+t.o[o]>=s.hi[o]+s.o[o]+G) continue;          // not in the same lane
+      if(dir>0?t.hi[a]+t.o[a]<=s.lo[a]+s.o[a]:t.lo[a]+t.o[a]>=s.hi[a]+s.o[a]) continue;          // behind
+      for(const p of s.c){const pa=p[a]+s.o[a], po=p[o]+s.o[o];
+        for(const q of t.c){const qa=q[a]+t.o[a];
+          if(Math.abs(po-q[o]-t.o[o])>=1+G-1e-9||(dir>0?qa<pa-1e-9:qa>pa+1e-9)) continue;
+          best=Math.min(best,dir>0?qa-pa-1-G:pa-qa-1-G)}}}
+    return Math.max(0,best);
+  };
+  // does state k come within G of any other state? (only states that never overlap can be packed)
+  const clash=k=>{const a=B[k]; return ks.some(j=>{const t=B[j]; return j!==k&&a.lo[0]+a.o[0]<t.hi[0]+t.o[0]+G&&t.lo[0]+t.o[0]<a.hi[0]+a.o[0]+G
+    &&a.lo[1]+a.o[1]<t.hi[1]+t.o[1]+G&&t.lo[1]+t.o[1]<a.hi[1]+a.o[1]+G
+    &&a.c.some(p=>t.c.some(q=>Math.abs(p[0]+a.o[0]-q[0]-t.o[0])<1+G-1e-9&&Math.abs(p[1]+a.o[1]-q[1]-t.o[1])<1+G-1e-9))})};
+  // a turned state can land on a neighbour: move it to the nearest clear spot first
+  for(const k in PACK_TURN) if(B[k]&&clash(k)){
+    const tries=[]; for(let dx=-12;dx<=12;dx++) for(let dy=-12;dy<=12;dy++) tries.push([dx/4,dy/4]);
+    tries.sort((p,q)=>Math.hypot(...p)-Math.hypot(...q));
+    for(const t of tries){B[k].o=t; if(!clash(k)) break}
+  }
+  for(let it=0;it<400;it++){
+    let moved=0;
+    const v=Object.fromEntries(ks.map(k=>[k,[0,1].map(a=>C[a]-B[k].m[a]-B[k].o[a])]));
+    ks.sort((p,q)=>Math.hypot(...v[p])-Math.hypot(...v[q]));
+    for(const k of ks){
+      const L=Math.hypot(...v[k]); if(L<.5) continue;
+      for(const a of [0,1]){
+        const want=Math.abs(v[k][a])/L*.25; if(want<1e-3) continue;
+        const dir=Math.sign(v[k][a]), d=Math.min(room(k,a,dir),want); if(d>1e-6){B[k].o[a]+=dir*d; moved+=d}
+      }
+    }
+    if(moved<1e-3) break;
+  }
+  // West Virginia: pulled toward Virginia as far as it goes
+  const pull=(k,j)=>{for(let it=0;it<200;it++){let moved=0;
+    const v=[0,1].map(a=>B[j].m[a]+B[j].o[a]-B[k].m[a]-B[k].o[a]), L=Math.hypot(...v); if(L<.5) break;
+    for(const a of [0,1]){const want=Math.abs(v[a])/L*.25; if(want<1e-3) continue;
+      const dir=Math.sign(v[a]), d=Math.min(room(k,a,dir),want); if(d>1e-6){B[k].o[a]+=dir*d; moved+=d}}
+    if(moved<1e-3) break}};
+  if(B.WV&&B.VA) pull("WV","VA");
+  // Arizona: a little down and to the right, as far as it fits (up to half a square each way)
+  if(B.AZ) for(const d of [.5,.25]){const o=B.AZ.o.slice(); B.AZ.o=[o[0]+d,o[1]+d]; if(!clash("AZ")) break; B.AZ.o=o}
+  // Alaska: left-aligned above Washington, GAP clear of it (and of anything else up there)
+  if(B.AK&&B.WA){const a=B.AK, w=B.WA;
+    a.o=[w.lo[0]+w.o[0]-a.lo[0], w.lo[1]+w.o[1]-G-a.hi[1]];
+    while(clash("AK")) a.o[1]-=.25;
+  }
+  // scale and centre the packed map in the viewBox
+  const vb=usSvg.viewBox.baseVal, lo=[0,1].map(a=>span(a,Math.min,kAll)*S), hi=[0,1].map(a=>span(a,Math.max,kAll)*S);
+  const f=Math.min(vb.width/(hi[0]-lo[0]),vb.height/(hi[1]-lo[1])), at=[vb.x+(vb.width-f*(hi[0]-lo[0]))/2,vb.y+(vb.height-f*(hi[1]-lo[1]))/2];
+  const put=(k,p)=>[0,1].map(a=>at[a]+f*((p[a]+B[k].o[a])*S-lo[a]));   // packed-grid point -> SVG point
+  // names inside the states, on a layer above every state
+  if(!plLayer) plLayer=el("g",{id:"plabels","aria-hidden":"true"},usSvg);
+  const st={}, lb={};
+  for(const k of kAll){const b=B[k], T=put(k,[0,0]);
+    st[k]=`translate(${T[0].toFixed(2)}px,${T[1].toFixed(2)}px) scale(${f.toFixed(4)})`+
+      (b.P?` translate(${b.P[0]*S}px,${b.P[1]*S}px) rotate(${b.turn*90}deg) translate(${-b.P[0]*S}px,${-b.P[1]*S}px)`:"");
+    if(!PL[k]){const g=el("g",{class:"plabel"},plLayer), gr=el("linearGradient",{id:"pl-"+k,x1:0,x2:1,y1:0,y2:0},plLayer);
+      PL[k]={g,gr,r:el("rect",{rx:3,height:PL_H,y:-PL_H/2,fill:`url(#pl-${k})`},g),t:el("text",{class:"in","text-anchor":"middle"},g)}}
+    const runs=[];   // horizontal runs of squares: [y, x0, x1]
+    [...new Set(b.c.map(p=>p[1]))].forEach(y=>{const xs=b.c.filter(p=>p[1]===y).map(p=>p[0]).sort((p,q)=>p-q);
+      let x0=xs[0]; xs.forEach((x,i)=>{if(i===xs.length-1||xs[i+1]!==x+1){runs.push([y,x0,x+1]); x0=xs[i+1]}})});
+    const width=t=>{PL[k].t.textContent=t; return PL[k].t.getComputedTextLength()+8};
+    const near=r=>Math.hypot((r[1]+r[2])/2-b.m[0],r[0]+.5-b.m[1]);
+    const ys=[...new Set(runs.map(r=>r[0]))].sort((p,q)=>p-q), row=PL_ROW[k]!=null&&ys[Math.min(PL_ROW[k],ys.length-1)];
+    const cand=row===false?runs:runs.filter(r=>r[0]===row), fits=w=>cand.filter(r=>(r[2]-r[1])*S*f>=w);
+    let t=PL_NAME[k]||LBL[k].e.textContent, w=width(t), fit=fits(w);
+    if(!fit.length){t=k; w=width(t); fit=fits(w)}
+    const r=(fit.length?fit:cand).sort((p,q)=>near(p)-near(q)||(q[2]-q[1])-(p[2]-p[1]))[0];
+    const half=w/(2*S*f), cx=Math.min(Math.max(b.m[0],r[1]+half),r[2]-half);
+    const [x,y]=put(k,[fit.length?cx:(r[1]+r[2])/2,r[0]+.5]);
+    // colour stops: each square of the run under the pill, split at the edges between squares
+    const L0=x-w/2, at01=gx=>Math.min(1,Math.max(0,(put(k,[gx,0])[0]-L0)/w));
+    const seg=b.c.map((p,i)=>[p,b.els[i]]).filter(([p])=>p[1]===r[0]&&p[0]>=r[1]&&p[0]<r[2]).sort((p,q)=>p[0][0]-q[0][0])
+      .map(([p,e],i,a)=>({e,a:i?at01(p[0]):0,b:i<a.length-1?at01(p[0]+1):1}));
+    lb[k]={x,y,w,t,seg};
+  }
+  return PACK[year]={st,lb};
+}
+let presMode="map";
+
 function powerLayout(){
   return PW_LAYOUT.pos??=placePairs(st=>st.c.length);
 }
@@ -622,7 +754,7 @@ function setUS(race,animate,year=usYear(race)){
   else {
     const [gSide,gN]=CH_GAIN[race][year], house=race==="house";
     T={d:house?c.d:c.d+c.i,r:c.r,nd:"Democrats",nr:"Republicans",tot:house?435:100,mark:house?218/435*100:50,
-      need:house?"218<small>FOR CONTROL</small>":"51<small>FOR MAJORITY</small>",ctl:CONTROL[race][year],
+      need:house?"218<small>FOR CONTROL</small>":c.d+c.i===c.r?"51<small class=\"wrap\">Democrat-controlled, with Democrat Vice President’s tie-breaking vote.</small>":"51<small>FOR MAJORITY</small>",ctl:CONTROL[race][year],
       ud:gSide==="d"?`+${gN} net gain`:"",ur:gSide==="r"?`+${gN} net gain`:"",
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
@@ -640,6 +772,16 @@ function setUS(race,animate,year=usYear(race)){
     if(L.side==="above"||L.side==="below") dx=Math.min(Math.max(L.x,l),r)-L.x;   // keep the name over its squares
     L.e.style.transform=`translate(${dx*S}px,${dy*S}px)`;
   }
+  const packed=race==="president"&&presMode==="packed", pk=packed&&packLayout(year);
+  for(const k in GST) GST[k].style.transform=pk&&pk.st[k]||"";
+  if(pk) for(const k in pk.lb){const L=pk.lb[k], e=PL[k];
+    e.g.style.transform=`translate(${L.x.toFixed(2)}px,${L.y.toFixed(2)}px)`; e.t.textContent=L.t;
+    e.r.setAttribute("x",-L.w/2); e.r.setAttribute("width",L.w);
+    const stops=L.seg.flatMap(s=>[[s.a,s.e.style.fill],[s.b,s.e.style.fill]]);
+    while(e.gr.children.length>stops.length) e.gr.lastChild.remove();
+    while(e.gr.children.length<stops.length) el("stop",{},e.gr);
+    stops.forEach(([o,c],i)=>{const st=e.gr.children[i]; st.setAttribute("offset",o); st.style.stopColor=c})}
+  usSvg.classList.toggle("packed",packed);
   usSvg.classList.toggle("senate",race==="senate");
   usSvg.classList.toggle("president",race==="president");
   usSvg.setAttribute("aria-label",T.label);
@@ -671,14 +813,15 @@ function setUS(race,animate,year=usYear(race)){
   if(govI) document.getElementById("gov-ind-name").textContent=GOV_IND[GOV_HIST[year].i];
   const power=race==="senate"&&sm==="power", ns=Object.values(CH_N);
   document.getElementById("sen-power").hidden=!power;
-  document.getElementById("sen-power").textContent=`Circle size = voter power: senators per grey square, taking each grey square on the House map as the same unit of population. A Wyoming voter has ${Math.max(...ns)/Math.min(...ns)}× the say in choosing a senator that a California voter has`;
-  document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Voter power
+  document.getElementById("sen-power").textContent=`Circle size = representation: senators per grey square, taking each grey square on the House map as the same unit of population. A Wyoming voter has ${Math.max(...ns)/Math.min(...ns)}× the say in choosing a senator that a California voter has.`;
+  document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Representation
   document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
+  document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
+  document.getElementById("pres-view").hidden=race!=="president";
   // 2026: legend for the races on the ballot
   document.getElementById("sen-view").hidden=race!=="senate";
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="senate"?c:g26):""});
-  document.getElementById("sen-note").textContent=race==="senate"&&!y26&&T.d===T.r?"50–50: Democrats control with the vice president’s tie-breaking vote":"";
-  panel.setAttribute("aria-labelledby","tab-"+race);
+    panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
   if(race==="president") presYear=year; else chYear=year;
   if(!animate){void panel.offsetWidth;requestAnimationFrame(()=>panel.classList.remove("instant"))}
@@ -782,7 +925,7 @@ function renderLS(animate){
   document.getElementById("in-check-india").style.display=!vote&&LS_META[year].gov==="upa"?"":"none";
   document.getElementById("ls-note").textContent=(vote
     ?"Squares split each state by vote share; states with 1 or 2 seats show the leading group"
-    :"Each square is one seat")+(year===2024?"":vote?". Drawn on today's state map":", drawn on today's state map");
+    :"Each square is one seat")+(year===2024?"":vote?". Drawn on today's state map":", drawn on today's state map")+".";
   inSvg.setAttribute("aria-label",vote
     ?`Lok Sabha ${year} vote share by state and alliance, drawn on the seat squares`
     :`Lok Sabha ${year} seats by state and alliance, one square per seat`);
@@ -873,8 +1016,8 @@ function renderST(animate){
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
   document.getElementById("st-leg-bloc").textContent=`Congress allies (${LS_META[year].bloc})`;
   document.getElementById("st-note").textContent=cm
-    ?`Each state is one block coloured by its chief minister's party at the end of ${year}; its size is its Lok Sabha seats`
-    :`Each state's circles are split by its assembly seats, from its latest election up to the end of ${year}. ${year} is not an assembly election year for every state: it is a snapshot of all assemblies in the Lok Sabha election year`;
+    ?`Each state is one block coloured by its chief minister's party at the end of ${year}; its size is its Lok Sabha seats.`
+    :`Each state's circles are split by its assembly seats, from its latest election up to the end of ${year}. ${year} is not an assembly election year for every state: it is a snapshot of all assemblies in the Lok Sabha election year.`;
   inSvg.setAttribute("aria-label",cm?`Chief ministers at the end of ${year} by alliance, each state sized by its Lok Sabha seats`
     :`State assemblies at the end of ${year} by alliance, drawn on the Lok Sabha seat squares`);
 }
@@ -1038,7 +1181,7 @@ function renderRS(animate){
   document.getElementById("in-total").textContent=`${tot} elected seats`+(N[5]?` · ${N[5]} vacant`:"");
   const bloc=LS_META[year].bloc;
   document.getElementById("rs-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("rs-note").textContent=`${year} is not a Rajya Sabha election year (a third of its seats are elected every two years): this is a snapshot of the house on 31 Dec of the Lok Sabha election year`;
+  document.getElementById("rs-note").textContent=`${year} is not a Rajya Sabha election year (a third of its seats are elected every two years): this is a snapshot of the house on 31 Dec of the Lok Sabha election year.`;
   inSvg.setAttribute("aria-label",`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
 }
 
@@ -1112,11 +1255,11 @@ function moveThumb(tab,animate){
 }
 // Legend for a 2026 map: what the shading means (with counts) and how the calls were made
 function projLegend(race,n){
-  if(race==="house") return `<span>All 435 seats are up on Nov 3, 2026. No seat is called (grey): the House polls are national, so the bar shows the generic ballot, the average of the latest poll from each of ${GENERIC.n} pollsters since Sep 1 (yellow, like a toss-up: undecided or other, ${+(100-GENERIC.d-GENERIC.r).toFixed(1)}%)</span>`;
+  if(race==="house") return `<span class="txt">All 435 seats are up on Nov 3, 2026. No seat is called (grey): the House polls are national, so the bar shows the generic ballot, the average of the latest poll from each of ${GENERIC.n} pollsters since Sep 1 (yellow, like a toss-up: undecided or other, ${+(100-GENERIC.d-GENERIC.r).toFixed(1)}%).</span>`;
   const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   return sw("hatch-d",`Democrats ahead (${n.D})`)+sw("hatch-r",`Republicans ahead (${n.R})`)+
     sw("hatch-t",`Toss-up (${n.T})`)+sw("hatch-n",`Can’t call (${n.N})`)+
-    `<span>${race==="senate"?"Solid circles: seats not up in 2026":"Solid states: no race in 2026"}. How races are called: for each race we average the latest poll from every pollster since Aug 1 (NYT/Siena, Emerson, CNN, Fox News, Washington Post, YouGov, Marist, Quinnipiac and others; campaign-internal polls left out). With two or more pollsters, a lead of more than ${LEAN} points calls the race; ${LEAN} or less is a toss-up. With fewer, we use the Cook Political Report rating (Solid, Likely or Lean = that party; Toss Up = toss-up). Can’t call: no rating and too few polls, or a lone poll contradicting the rating. Toss-ups and can’t-calls are not in the totals. Polls as of Oct 8, 2026</span>`;
+    `<span class="txt">${race==="senate"?"Solid circles: seats not up in 2026":"Solid states: no race in 2026"}. How races are called: for each race we average the latest poll from every pollster since Aug 1 (NYT/Siena, Emerson, CNN, Fox News, Washington Post, YouGov, Marist, Quinnipiac and others; campaign-internal polls left out). With two or more pollsters, a lead of more than ${LEAN} points calls the race; ${LEAN} or less is a toss-up. With fewer, we use the Cook Political Report rating (Solid, Likely or Lean = that party; Toss Up = toss-up). Can’t call: no rating and too few polls, or a lone poll contradicting the rating. Toss-ups and can’t-calls are not in the totals. Polls as of Oct 8, 2026.</span>`;
 }
 
 function show(race,animate){
@@ -1149,6 +1292,7 @@ function show(race,animate){
   history.replaceState(null,"","#"+race);
 }
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
+document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS("president",true)}}));
 tabs.forEach(t=>{
   t.addEventListener("click",()=>show(t.dataset.race,true));
   t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
@@ -1183,14 +1327,24 @@ document.addEventListener("click",e=>{if(!e.target.closest(".country"))openMenu(
 
 addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
 // Once the tally bar scrolls to the top (phones) or under the pinned top bar (desktop), pin a compact copy of the
-// tally (main numbers, names, bar; on phones also the country picker). The copy is re-cloned whenever the visible
-// panel's tally or bar changes (counters, bar widths).
+// tally (main numbers, names, bar; on phones also the country picker). The copy follows the visible panel's tally
+// and bar: same-shaped nodes are patched in place (text, style, class), so bar widths and the majority mark run
+// their CSS transitions in the copy too; anything that changed shape (another panel / race) is re-cloned.
 const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)"), topbar=document.querySelector(".topbar");
+function cloneNoIds(n){const c=n.cloneNode(true); if(c.nodeType===1){c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))} return c}
+function patch(dst,src){
+  if(dst.nodeType!==src.nodeType||dst.nodeName!==src.nodeName||dst.childNodes.length!==src.childNodes.length){dst.replaceWith(cloneNoIds(src));return}
+  if(src.nodeType===3){if(dst.nodeValue!==src.nodeValue) dst.nodeValue=src.nodeValue;return}
+  if(src.nodeType!==1) return;
+  for(const a of [...dst.attributes]) if(!src.hasAttribute(a.name)) dst.removeAttribute(a.name);
+  for(const a of src.attributes) if(a.name!=="id"&&dst.getAttribute(a.name)!==a.value) dst.setAttribute(a.name,a.value);
+  [...dst.childNodes].forEach((d,i)=>patch(d,src.childNodes[i]));
+}
 function syncMini(){
   const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden); if(!p) return;
-  const t=p.querySelector(".tally").cloneNode(true), b=p.querySelector(".bar").cloneNode(true), u=p.querySelector(".under").cloneNode(true);
-  [t,b,u].forEach(n=>{n.removeAttribute("id");n.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))});
-  mini.replaceChildren(t,b,u);
+  const parts=[".tally",".bar",".under"].map(s=>p.querySelector(s));
+  if(mini.children.length===3) parts.forEach((s,i)=>patch(mini.children[i],s));
+  else mini.replaceChildren(...parts.map(cloneNoIds));
   mini.style.setProperty("--mini-pr",document.querySelector(".country").offsetWidth+26+"px");
 }
 function stickMini(){

@@ -1132,6 +1132,69 @@ Refresh before each push near the election (re-run the RCP scrape).
      election; lastRace.usa = "house". A #president / #senate link still
      opens that race. countTo rounds on the instant path too (House 2026
      showed 50.4 on load, 50 after an animation).
+ 52. Senate toggle "Voter power" renamed "Representation" (owner,
+     2026-10-10, local only). Caption now reads "Circle size =
+     representation: ...". Internal names (data-sen="power", senMode,
+     #sen-power) unchanged; earlier steps still say "Voter power".
+ 53. #mini animates (owner, 2026-10-10, local only): syncMini no longer
+     re-clones on every change; patch() updates the existing copy in place
+     (text, style, class), so bar widths / majority mark run their CSS
+     transitions while stuck, same as the main bar. Nodes whose shape
+     changed (other panel / race) are re-cloned (ids stripped).
+ 54. Legend notes (owner, 2026-10-10, local only): every sentence note
+     (static, dynamic incl. projLegend / P.note, geo-notes, credit footer)
+     ends with a period. Notes carry class "txt" (order:1, flex-basis 100%,
+     hidden when empty), so colour keys come first on their line(s) and each
+     note sits on its own line below. Legend gap is now 8px 16px. Keep both
+     rules for any new legend text. Exception (owner): the President note
+     (#p-note, 2016 faithless electors) is an <em> inside the "Each square
+     is one electoral vote..." span, so it runs on in the same paragraph.
+ 55. Senate grey-square key (class "own": order 1, own line, between the
+     colour keys and the .txt notes, which are now order 2) reads "House
+     districts – each represents a roughly similar number of people (about
+     760,000)". Fact check: 2020 apportionment averages ~761k per district,
+     but whole-state districts range ~540k (MT) to ~990k (DE), hence
+     "roughly". Local only, 2026-10-10.
+ 56. Senate 50-50 (only 2020): the label under "51" reads "Democrat-
+     controlled, with Democrat Vice President’s tie-breaking vote." (owner's
+     wording) instead of FOR MAJORITY; <small class="wrap"> is one line on
+     desktop (nowrap) and 200px wide on phones, so it wraps to two centred
+     lines and clears "+3 net gain". The legend #sen-note (same fact) was
+     removed (span + JS). Local only, 2026-10-10.
+ 57. President "Map | Compact" toggle (#pres-view, .subtoggle between the
+     bar and the map, President only; presMode). Compact: names fade out
+     (#map-us.packed text opacity 0) and every state's <g> (GST[k]) slides
+     via CSS transform (.6s) to packLayout(year): each state creeps toward
+     the map centre in .25-square steps (split over x/y, nearest states
+     first), each step only as far as keeps PACK_GAP (.5 square) from other
+     states' squares; stops when nothing moves (~125 rounds, ~70 ms, cached
+     per year, built from the squares on show). Then the packed map is
+     scaled (~1.2x) and centred to fill the existing viewBox. Stepping years
+     re-packs and morphs; other races clear the transforms. Phones: same
+     560px min-width side-scroll as the Map view. Local only, 2026-10-10.
+ 58. Compact tweaks (owner): Alaska sits out of the packing and is placed
+     left-aligned just above Washington (moved up until clear). Arizona is
+     turned a quarter clockwise (PACK_TURN; cells rotated about a grid point,
+     CSS translate(P) rotate(90deg) translate(-P) on its <g>); a turned
+     state that lands on a neighbour is first moved to the nearest clear
+     spot (clash()), else the packer can't separate them (UT-AZ touched).
+     Names in Compact: #plabels layer above the states, one .plabel per
+     state (rect pill in the winner's colour + white 12px text), centred on
+     the row of squares nearest the state's centre where it fits: short
+     name, else postal code. The outside names fade out. Checked all five
+     years: gaps >= .5 square, every name inside its state. 2026-10-10.
+  -  Compact label tweaks (2026-10-10): pill names VT / HI (PL_NAME), NJ on
+     its second row from the top (PL_ROW). Arizona: the House map's 3x3 is the
+     shape everywhere; its two senator squares (CHAMBER "e") now sit UNDER it
+     at (7,19),(8,19) (were at the right, (10,16),(10,17); name moved to y 20.45
+     so it stays "below"), so President <-> House only adds/removes the bottom
+     two squares. (A first try mirrored Arizona on the President map, which
+     made a jumpy morph to House; dropped.) No state is turned in Compact now
+     (PACK_TURN={}, code kept); Arizona is nudged +.5,+.5 (else +.25) if
+     clear. West Virginia is pulled toward Virginia after packing (already sits
+     at the .5 gap on both sides). Pills are filled with a linearGradient per
+     state (#pl-XX), one hard-edged band per square under the pill, so split
+     states (Nebraska, Maine) show the other seat's colour behind the name.
 
 STATUS / NEXT
 -------------
