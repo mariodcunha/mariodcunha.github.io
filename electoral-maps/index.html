@@ -133,7 +133,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .mapwrap{overflow-x:auto}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
-svg.map text.in{fill:#fff;font-weight:600}
+svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend svg{width:14px;height:14px}
@@ -156,10 +156,13 @@ svg.map text.in{fill:#fff;font-weight:600}
 #map-us.senate .seat{transform:scale(1)}
 #map-us text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #map-us:not(.president) text.dc{opacity:0}
-/* "Compact" (President, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
+/* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .6s var(--ease)}
 #map-us.packed .state text,#map-india.packed .names text{opacity:0}
-#map-india .ls-cell{transition:transform .6s var(--ease)}
+#map-india .ls-cell,#map-india .rs-cell{transition:transform .6s var(--ease)}
+/* Rajya Sabha Compact: plain names (no pill), the circles laid out around them */
+#map-india .plabel rect{transition:opacity .3s}
+#map-india.rs .plabel text{fill:var(--muted);font-weight:500} #map-india.rs .plabel rect{opacity:0}
 .plabels{opacity:0;pointer-events:none;transition:opacity .25s}
 svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .plabel{transition:transform .6s var(--ease)} .plabels stop{transition:stop-color .45s var(--ease)}
@@ -291,9 +294,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <div class="bar" id="us-bar" aria-hidden="true"><i id="bar-d" data-g="d" style="background:var(--dem)"></i><i id="bar-dp" data-g="d" class="hatch-d"></i><i id="bar-m" data-g="m"></i><i id="bar-t" data-g="t" class="hatch-t"></i><i id="bar-n" data-g="n" class="hatch-n"></i><i id="bar-rp" data-g="r" class="hatch-r"></i><i id="bar-r" data-g="r" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
       <div class="under"><span class="gain d" id="under-d"></span><span class="gain r" id="under-r"></span><span class="need" id="need"></span></div>
     </div>
-    <div class="subtoggle" id="pres-view" role="group" aria-label="President map layout" hidden>
-      <button type="button" data-pres="map" aria-pressed="true">Map</button>
-      <button type="button" data-pres="packed" aria-pressed="false">Compact</button>
+    <div class="subtoggle" id="pres-view" role="group" aria-label="Map layout" hidden>
+      <button type="button" data-pres="map" aria-pressed="false">Map</button>
+      <button type="button" data-pres="packed" aria-pressed="true">Compact</button>
     </div>
     <div class="mapwrap"><svg class="map" id="map-us" role="img"></svg></div>
     <div class="legends">
@@ -334,9 +337,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <div class="bar" aria-hidden="true"><i id="in-b-inc" style="background:var(--inc)"></i><i id="in-b-india" style="background:var(--india)"></i><i id="in-b-vac" class="gap" style="background:var(--house)"></i><i id="in-b-oth" style="background:var(--oth)"></i><i id="in-b-nda" class="gap" style="background:var(--nda)"></i><i id="in-b-bjp" style="background:var(--bjp)"></i><span class="mark" id="in-mark" style="left:50.09%"></span></div>
       <div class="under" id="in-under"><span class="gain d" id="in-total" style="color:var(--muted)"></span><span class="gain" id="in-total-oth" style="color:var(--oth)"></span><span class="gain r" id="in-total-r" style="color:var(--bjp)"></span><span class="need" id="in-need" style="left:50.09%">272<small>FOR MAJORITY</small></span></div>
     </div>
-    <div class="subtoggle" id="ls-view" role="group" aria-label="Lok Sabha map layout" hidden>
-      <button type="button" data-lsv="map" aria-pressed="true">Map</button>
-      <button type="button" data-lsv="packed" aria-pressed="false">Compact</button>
+    <div class="subtoggle" id="ls-view" role="group" aria-label="India map layout" hidden>
+      <button type="button" data-lsv="map" aria-pressed="false">Map</button>
+      <button type="button" data-lsv="packed" aria-pressed="true">Compact</button>
     </div>
     <div class="mapwrap"><svg class="map india" id="map-india" role="img"></svg></div>
     <div class="legends">
@@ -557,8 +560,19 @@ const PW_R0=.5/Math.SQRT2, PW_LAYOUT={};
 // India's states sit off the whole-square grid (fractions from the Figma layout): each state's cells are taken to
 // whole squares and the fraction is its starting offset.
 const PACK_GAP=.5, PACK_TURN={};
+// M.fitOut: packed again (up to 4 times) while names go outside; each pass reserves room for each outside name (M.extra: cells beside the state, on
+// the side its Map name uses), so the packer keeps other states clear of it.
 function packLayout(M,key){
   if(M.cache[key]) return M.cache[key];
+  if(!M.fitOut) return packOnce(M,key);
+  let out=packOnce(M,null), need={};
+  for(let i=0;i<4&&out.laidOut;i++){   // again while a new name has gone outside
+    const add=Object.keys(out.need).filter(k=>!need[k]); if(!add.length) break;
+    add.forEach(k=>need[k]=out.need[k]); M.extra=need; out=packOnce(M,null); M.extra=null}
+  if(out.laidOut) M.cache[key]=out;
+  return out;
+}
+function packOnce(M,key){
   const B={}, G=PACK_GAP;
   for(const k of M.keys()){const sq=M.cells(k);   // [[rect giving the position, element giving the colour]]
     if(!sq.length) continue;
@@ -573,7 +587,18 @@ function packLayout(M,key){
       P=[0,1].map(a=>Math.round(c.reduce((t,p)=>t+p[a],0)/c.length+.5));
       c=c.map(([x,y])=>turn>0?[P[0]+P[1]-y-1,P[1]-P[0]+x]:[P[0]-P[1]+y,P[0]+P[1]-x-1]);
     }
-    B[k]={c,els,raw,P,turn,f0,o:f0.slice(),lo:[0,1].map(a=>Math.min(...c.map(p=>p[a]))),hi:[0,1].map(a=>Math.max(...c.map(p=>p[a]))+1),
+    // M.lcells(k, race): the squares a race shows (names sit on these); the packing uses M.cells (the US: President's)
+    const conv=q=>q.map(([e])=>[0,1].map(a=>Math.round((a?e.y:e.x).baseVal.value/S-f0[a])));
+    const lc=r=>M.lcells?M.lcells(k,r):sq, avOf=r=>new Set((M.avoid?.(k,r)||[]).map(p=>p.map((v,a)=>Math.round(v-f0[a])).join()));
+    const realBy={}; for(const r of M.races||[]) realBy[r]={real:conv(lc(r)),av:avOf(r)};
+    const real=M.lcells?conv(lc(M.race)):c, av=avOf(M.race), X=M.extra?.[k];
+    if(M.lcells) els.splice(0,els.length,...lc(M.race).map(q=>q[1]));
+    if(X){const lo=[0,1].map(a=>Math.min(...c.map(p=>p[a]))), hi=[0,1].map(a=>Math.max(...c.map(p=>p[a]))),
+        mx=Math.round(c.reduce((t,p)=>t+p[0],0)/c.length), my=Math.round(c.reduce((t,p)=>t+p[1],0)/c.length), n=X.n, add=[];
+      for(let i=0;i<n;i++) add.push(X.side==="right"?[hi[0]+1+i,my]:X.side==="left"?[lo[0]-1-i,my]
+        :[mx-Math.floor((n-1)/2)+i,X.side==="above"?lo[1]-1:hi[1]+1]);
+      c=c.concat(add.filter(p=>!c.some(q=>q[0]===p[0]&&q[1]===p[1])))}
+    B[k]={c,real,realBy,els,raw,P,turn,f0,av,o:f0.slice(),lo:[0,1].map(a=>Math.min(...c.map(p=>p[a]))),hi:[0,1].map(a=>Math.max(...c.map(p=>p[a]))+1),
       m:[0,1].map(a=>c.reduce((t,p)=>t+p[a],0)/c.length+.5)}}
   const kAll=Object.keys(B), ks=kAll.filter(k=>!M.out.includes(k));
   const span=(a,f,list=ks)=>f(...list.map(k=>f===Math.min?B[k].lo[a]+B[k].o[a]:B[k].hi[a]+B[k].o[a]));
@@ -636,16 +661,31 @@ function packLayout(M,key){
   // M.outside(k): small states get a plain name beside their squares (as on the Map), clear of every square and
   // every other such name; tried right, left, below, above. If one can't stay inside the viewBox, the whole map is
   // drawn a little smaller (m grows) until every name fits.
+  const runsOf=(b,real=b.real,av=b.av)=>{const runs=[], c=real.filter(p=>!av.has(p.join()));   // horizontal runs of squares: [y, x0, x1]
+    [...new Set(c.map(p=>p[1]))].forEach(y=>{const xs=c.filter(p=>p[1]===y).map(p=>p[0]).sort((p,q)=>p-q);
+      let x0=xs[0]; xs.forEach((x,i)=>{if(i===xs.length-1||xs[i+1]!==x+1){runs.push([y,x0,x+1]); x0=xs[i+1]}})});
+    return runs};
   const single=M.outside?kAll.filter(k=>M.outside(k)):[];
+  // M.fitOut: a name wider than every row of its state's squares goes outside instead (no postal-code fallback)
+  // M.races: the races whose outside names get room reserved (one layout for all of them)
+  const anyOut=new Set(), wAll={}, fitsIn=(k,w,real,av)=>runsOf(B[k],real,av).some(r=>(r[2]-r[1])*S*f>=w+8);
+  if(M.fitOut){fit(0); for(const k of kAll){if(single.includes(k)) continue; const e=PL[k].t; e.classList.add("in"); e.textContent=M.name(k);
+    const w=wAll[k]=e.getComputedTextLength(); if(!w){laidOut=false; continue}
+    if(B[k].real.length&&!fitsIn(k,w,B[k].real,B[k].av)) single.push(k);
+    for(const r in B[k].realBy) if(B[k].realBy[r].real.length&&!fitsIn(k,w,B[k].realBy[r].real,B[k].realBy[r].av)) anyOut.add(k)}}
   const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=M.name(k);
     wOut[k]=e.getComputedTextLength(); if(!wOut[k]) laidOut=false});
   for(let m=0;;m+=6){fit(m); if(!single.length) break;
     const boxes=kAll.flatMap(j=>B[j].c.map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S,j]})), done=[];
     let all=true;
-    const hit=(q,r,d)=>q[0]<r[2]+d&&r[0]<q[2]+d&&q[1]<r[3]+d&&r[1]<q[3]+d, pad=.08*S*f, h=M.fs*.8;
+    const hit=(q,r,d)=>q[0]<r[2]+d&&r[0]<q[2]+d&&q[1]<r[3]+d&&r[1]<q[3]+d, pad=(M.pad||.08)*S*f, h=M.fs*.8;
     const cand=Object.fromEntries(single.map(k=>{const w=wOut[k], g=.15*S*f;
-      const [x0,y0]=put(k,[0,1].map(a=>B[k].lo[a])), [x1,y1]=put(k,[0,1].map(a=>B[k].hi[a])), cx=(x0+x1)/2, cy=(y0+y1)/2;
-      const opts=[[x1+g,cy,"start"],[x0-g,cy,"end"],[cx,y1+g+h/2,"middle"],[cx,y0-g-h/2,"middle"]].map(o=>{
+      const rl=[0,1].map(a=>Math.min(...B[k].real.map(p=>p[a]))), rh=[0,1].map(a=>Math.max(...B[k].real.map(p=>p[a]))+1);
+      const [x0,y0]=put(k,rl), [x1,y1]=put(k,rh), cx=(x0+x1)/2, cy=(y0+y1)/2;
+      const sides=[[x1+g,cy,"start","right"],[x0-g,cy,"end","left"],[cx,y1+g+h/2,"middle","below"],[cx,y0-g-h/2,"middle","above"]];
+      const sd=M.extra?.[k]?.side||(typeof M.side==="function"?M.side(k):M.side?.[k]);
+      if(sd) sides.sort((p,q)=>(q[3]===sd)-(p[3]===sd));   // M.side (or the room reserved for it): tried first
+      const opts=sides.map(o=>{
         const l=o[2]==="start"?o[0]:o[2]==="end"?o[0]-w:o[0]-w/2; return {o,q:[l,o[1]-h/2,l+w,o[1]+h/2]}})
         .filter(c=>!boxes.some(r=>r[4]!==k&&hit(c.q,r,pad)));   // clear of every other state's squares
       return [k,opts]}));
@@ -657,17 +697,15 @@ function packLayout(M,key){
       if(!pick){if(ok.length) all=false; pick=ok[0]||cand[k][0]}   // only a name cut off at the edge shrinks the map
       if(!pick){const [x0,y0]=put(k,B[k].lo); pick={o:[x0,y0-h,"start"],q:[x0,y0-h*1.5,x0+wOut[k],y0-h/2]}}
       done.push(pick.q); lb[k]={x:pick.o[0],y:pick.o[1],w:wOut[k],t:M.name(k),seg:[],out:pick.o[2]}}
-    if(all||m>=120) break}
+    if(all||m>=120||M.fitOut) break}   // fitOut: room is reserved, the scale stays the same for every race
   for(const k of kAll){const b=B[k], T=put(k,[0,0]);
     if(M.fixed) st[k]=b.c.map((p,i)=>{const Q=put(k,p);   // each square: from its Map spot to its compact cell
       return `translate(${(Q[0]-f*b.raw[i][0]*S).toFixed(2)}px,${(Q[1]-f*b.raw[i][1]*S).toFixed(2)}px) scale(${f.toFixed(4)})`});
     else st[k]=`translate(${T[0].toFixed(2)}px,${T[1].toFixed(2)}px) scale(${f.toFixed(4)})`+
       (b.P?` translate(${b.P[0]*S}px,${b.P[1]*S}px) rotate(${b.turn*90}deg) translate(${-b.P[0]*S}px,${-b.P[1]*S}px)`:"")+
       (b.f0[0]||b.f0[1]?` translate(${(-b.f0[0]*S).toFixed(2)}px,${(-b.f0[1]*S).toFixed(2)}px)`:"");
-    if(single.includes(k)) continue;
-    const runs=[];   // horizontal runs of squares: [y, x0, x1]
-    [...new Set(b.c.map(p=>p[1]))].forEach(y=>{const xs=b.c.filter(p=>p[1]===y).map(p=>p[0]).sort((p,q)=>p-q);
-      let x0=xs[0]; xs.forEach((x,i)=>{if(i===xs.length-1||xs[i+1]!==x+1){runs.push([y,x0,x+1]); x0=xs[i+1]}})});
+    if(single.includes(k)||!b.real.length) continue;   // no squares in this race (DC off President): no name
+    const runs=runsOf(b);
     const width=t=>{PL[k].t.textContent=t; const n=PL[k].t.getComputedTextLength(); if(!n) laidOut=false; return n+8};
     const near=r=>Math.hypot((r[1]+r[2])/2-b.m[0],r[0]+.5-b.m[1]);
     const ys=[...new Set(runs.map(r=>r[0]))].sort((p,q)=>p-q), row=M.row[k]!=null&&ys[Math.max(0,Math.min(M.row[k]<0?ys.length+M.row[k]:M.row[k],ys.length-1))];   // row < 0: from the bottom
@@ -675,15 +713,18 @@ function packLayout(M,key){
     let t=M.name(k), w=width(t), fit=fits(w);
     if(!fit.length){t=k; w=width(t); fit=fits(w)}
     const r=(fit.length?fit:cand).sort((p,q)=>near(p)-near(q)||(q[2]-q[1])-(p[2]-p[1]))[0];
-    const half=w/(2*S*f), cx=M.mid?.includes(k)?(r[1]+r[2])/2:Math.min(Math.max(b.m[0],r[1]+half),r[2]-half);   // M.mid: centred on its row
+    const half=w/(2*S*f), cx=M.mid===true||M.mid?.includes(k)?(r[1]+r[2])/2:Math.min(Math.max(b.m[0],r[1]+half),r[2]-half);   // M.mid: centred on its row
     const [x,y]=put(k,[fit.length?cx:(r[1]+r[2])/2,r[0]+.5]);
     // colour stops: each square of the run under the pill, split at the edges between squares
     const L0=x-w/2, at01=gx=>Math.min(1,Math.max(0,(put(k,[gx,0])[0]-L0)/w));
-    const seg=b.c.map((p,i)=>[p,b.els[i]]).filter(([p])=>p[1]===r[0]&&p[0]>=r[1]&&p[0]<r[2]).sort((p,q)=>p[0][0]-q[0][0])
+    const seg=b.real.map((p,i)=>[p,b.els[i]]).filter(([p])=>p[1]===r[0]&&p[0]>=r[1]&&p[0]<r[2]).sort((p,q)=>p[0][0]-q[0][0])
       .map(([p,e],i,a)=>({e,a:i?at01(p[0]):0,b:i<a.length-1?at01(p[0]+1):1}));
     lb[k]={x,y,w,t,seg};
   }
-  const out={st,lb}; if(laidOut) M.cache[key]=out;   // a hidden panel can't measure text: try again when shown
+  // names that went outside, for the second pass: how many squares their text needs, and the side the Map uses
+  const need={}; for(const k of anyOut) if(!M.out.includes(k)) need[k]={n:Math.ceil((wAll[k]+2*(M.pad||.08)*S*f)/(S*f)),
+    side:M.extra?.[k]?.side||(typeof M.side==="function"?M.side(k):M.side?.[k])||"right"};
+  const out={st,lb,at,f,lo,laidOut,need}; if(laidOut&&key!=null) M.cache[key]=out;   // a hidden panel can't measure text: try again when shown
   return out;
 }
 // Moves each state's group into place (or back, with pk = null) and shows the pills, coloured square by square
@@ -691,11 +732,14 @@ function applyPack(M,pk,groups){
   if(M.fixed) for(const k of M.keys()) M.cells(k).forEach(([r],i)=>M.wrap(r).style.transform=pk?pk.st[k][i]:"");
   else for(const k in groups) groups[k].style.transform=pk&&pk.st[k]||"";
   M.svg.classList.toggle("packed",!!pk);
+  if(pk) for(const k in M.PL) M.PL[k].g.style.visibility=pk.lb[k]?"":"hidden";   // no squares in this race (DC)
   if(pk) for(const k in pk.lb){const L=pk.lb[k], e=M.PL[k];
     e.g.style.transform=`translate(${L.x.toFixed(2)}px,${L.y.toFixed(2)}px)`; e.t.textContent=L.t;
     e.t.classList.toggle("in",!L.out); e.t.setAttribute("text-anchor",L.out||"middle"); e.r.style.display=L.out?"none":"";
     e.r.setAttribute("x",-L.w/2); e.r.setAttribute("width",L.w);
-    const stops=L.seg.flatMap(s=>[[s.a,s.e.style.fill],[s.b,s.e.style.fill]]);
+    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht/.test(s.e.style.fill)));
+    e.t.classList.toggle("grey",!L.out&&L.seg.every(s=>!s.e.style.fill||/var\(--(house|seat-empty)\)|#hn/.test(s.e.style.fill)));
+    const fill=s=>{const f=s.e.style.fill, h=/#h([drtn])/.exec(f); return h?HATCH_SOLID[h[1]]:f||"var(--seat-empty)"}, stops=L.seg.flatMap(s=>[[s.a,fill(s)],[s.b,fill(s)]]);
     while(e.gr.children.length>stops.length) e.gr.lastChild.remove();
     while(e.gr.children.length<stops.length) el("stop",{},e.gr);
     stops.forEach(([o,c],i)=>{const st=e.gr.children[i]; st.setAttribute("offset",o); st.style.stopColor=c})}
@@ -703,8 +747,22 @@ function applyPack(M,pk,groups){
 // President: from the squares on show (they change with the census), cached per year.
 // Alaska sits out and goes just above Washington; Arizona is nudged a little down and right; West Virginia is
 // pulled in against Virginia. Pill names: VT, HI short; New Jersey on its second row from the top.
-const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],
-  keys:()=>Object.keys(GST), cells:k=>[...GST[k].querySelectorAll(".sq:not(.gone)")].map(e=>[e,e]),
+// Every US race (owner, 2026-10-11): names centred on their row (mid); a name wider than every row of its squares
+// goes outside (fitOut), .3 square clear of other states (pad). Senate: the circles' cells count as the state's (some
+// sit on squares the Senate map hides) and no pill sits on a circle (avoid). race: set by setUS before packing.
+const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
+const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
+const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,fitOut:true,pad:.3,race:"president",side:k=>LBL[k].side,
+  keys:()=>Object.keys(GST), races:["president","house"],
+  // the layout: President's squares (House + the two Senate squares) for the census, so every race shares it and
+  // only adds or drops squares, as on the Map
+  house(k){return (HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census][k]||0))},
+  cells(k){return [...this.house(k),...ESQ[k]].map(e=>[e,e])},
+  lcells(k,race){if(race==="president") return this.cells(k);
+    const hs=this.house(k).map(e=>[e,e]); if(race!=="senate") return hs;
+    const on=new Set(hs.map(([e])=>[e.x.baseVal.value,e.y.baseVal.value].join())), at=(x,y)=>({x:{baseVal:{value:x*S}},y:{baseVal:{value:y*S}}});
+    return hs.concat(SEAT[k].map((c,i)=>[seatCell(c),c]).filter(([[x,y]])=>!on.has([x*S,y*S].join())).map(([[x,y],c])=>[at(x,y),c]))},
+  avoid(k,race){return race==="senate"?SEAT[k].map(seatCell):[]},
   name:k=>({VT:"VT",HI:"HI"})[k]||LBL[k].e.textContent, row:{NJ:1},
   tweak(B,{clash,pull,G}){
     if(B.WV&&B.VA) pull("WV","VA");
@@ -716,7 +774,7 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],
       while(clash("AK")) a.o[1]-=.25;
     }
   }};
-let presMode="map";
+let presMode="packed";   // Map / Compact, shared by every US race (opens on Compact)
 
 function powerLayout(){
   return PW_LAYOUT.pos??=placePairs(st=>st.c.length);
@@ -835,7 +893,12 @@ function setUS(race,animate,year=usYear(race)){
     if(L.side==="above"||L.side==="below") dx=Math.min(Math.max(L.x,l),r)-L.x;   // keep the name over its squares
     L.e.style.transform=`translate(${dx*S}px,${dy*S}px)`;
   }
-  applyPack(PACK_US,race==="president"&&presMode==="packed"&&packLayout(PACK_US,year),GST);
+  // Compact: President and House share the Map / Compact choice; House packs its own squares (cached per year)
+  // Compact: one Map / Compact choice for every US race (not Senate Representation, which has its own layout).
+  // House and Governors show the same squares, so they share a layout.
+  const packs=presMode==="packed"&&!(race==="senate"&&sm==="power"), lr=race==="governors"?"house":race;
+  PACK_US.race=lr; PACK_US.census=censusOf(year);
+  applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
   usSvg.classList.toggle("senate",race==="senate");
   usSvg.classList.toggle("president",race==="president");
   usSvg.setAttribute("aria-label",T.label);
@@ -871,7 +934,7 @@ function setUS(race,animate,year=usYear(race)){
   document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Representation
   document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
-  document.getElementById("pres-view").hidden=race!=="president";
+  document.getElementById("pres-view").hidden=race==="senate"&&sm==="power";
   // 2026: legend for the races on the ballot
   document.getElementById("sen-view").hidden=race!=="senate";
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="senate"?c:g26):""});
@@ -1019,15 +1082,18 @@ const ST_DOT=new Map(), LS_GRP={}, LS_CELL=new Map();
 // the k-th square of a state in snake order (serp) goes to the k-th compact cell in snake order. The Figma frame has
 // no Chandigarh, Sikkim, Nagaland, Mizoram, Puducherry, Andaman or Lakshadweep: those were placed near their
 // neighbours, half a square clear of everything. One layout for every year and both shares.
-const IN_COMPACT={JK:[[9.95,0.04],[10.95,0.04],[11.95,0.04],[10.95,1.04],[11.95,1.04]],LA:[[14.03,1.09]],HP:[[12.67,3.13],[13.67,3.13],[12.67,4.13],[13.67,4.13]],PB:[[9.54,4.62],[10.54,4.62],[8.54,5.62],[9.54,5.62],[10.54,5.62],[11.54,5.62],[8.54,6.62],[9.54,6.62],[10.54,6.62],[11.54,6.62],[8.54,7.62],[9.54,7.62],[10.54,7.62]],DL:[[15.54,5.12],[14.54,6.12],[15.54,6.12],[16.54,6.12],[14.54,7.12],[15.54,7.12],[16.54,7.12]],HR:[[12.73,8.1],[11.73,9.1],[9.73,10.1],[10.73,10.1],[11.73,10.1],[9.73,11.1],[10.73,11.1],[11.73,11.1],[10.73,12.1],[11.73,12.1]],UK:[[14.54,9.35],[15.54,9.35],[16.54,9.35],[14.54,10.35],[15.54,10.35]],UP:[[13.93,12.62],[14.93,12.62],[15.93,12.62],[13.93,13.62],[14.93,13.62],[15.93,13.62],[16.93,13.62],[17.93,13.62],[18.93,13.62],[13.93,14.62],[14.93,14.62],[15.93,14.62],[16.93,14.62],[17.93,14.62],[18.93,14.62],[19.93,14.62],[12.93,15.62],[13.93,15.62],[14.93,15.62],[15.93,15.62],[16.93,15.62],[17.93,15.62],[18.93,15.62],[19.93,15.62],[20.93,15.62],[21.93,15.62],[22.93,15.62],[13.93,16.62],[14.93,16.62],[15.93,16.62],[16.93,16.62],[17.93,16.62],[18.93,16.62],[19.93,16.62],[20.93,16.62],[21.93,16.62],[22.93,16.62],[23.93,16.62],[24.93,16.62],[25.93,16.62],[12.93,16.62],[16.93,17.62],[17.93,17.62],[18.93,17.62],[19.93,17.62],[20.93,17.62],[21.93,17.62],[22.93,17.62],[23.93,17.62],[24.93,17.62],[25.93,17.62],[16.93,18.62],[17.93,18.62],[18.93,18.62],[19.93,18.62],[20.93,18.62],[21.93,18.62],[22.93,18.62],[23.93,18.62],[24.93,18.62],[25.93,18.62],[16.93,19.62],[17.93,19.62],[18.93,19.62],[19.93,19.62],[20.93,19.62],[21.93,19.62],[22.93,19.62],[23.93,19.62],[24.93,19.62],[16.93,20.62],[18.93,20.62],[19.93,20.62],[20.93,20.62],[21.93,20.62],[22.93,20.62],[23.93,20.62],[24.93,20.62],[22.93,21.62],[23.93,21.62]],RJ:[[6.68,12.9],[7.68,12.9],[8.68,12.9],[5.68,13.9],[6.68,13.9],[7.68,13.9],[8.68,13.9],[9.68,13.9],[5.68,14.9],[6.68,14.9],[7.68,14.9],[8.68,14.9],[9.68,14.9],[5.68,15.9],[6.68,15.9],[7.68,15.9],[8.68,15.9],[9.68,15.9],[5.68,16.9],[6.68,16.9],[7.68,16.9],[8.68,16.9],[9.68,16.9],[6.68,17.9],[7.68,17.9]],AR:[[42.04,11.09],[43.04,11.09]],AS:[[44.55,11.79],[41.55,12.79],[42.55,12.79],[43.55,12.79],[44.55,12.79],[39.55,13.79],[40.55,13.79],[41.55,13.79],[42.55,13.79],[43.55,13.79],[41.55,14.79],[42.55,14.79],[42.55,15.79],[42.55,16.79]],BR:[[27.58,16.22],[27.58,17.22],[28.58,17.22],[29.58,17.22],[30.58,17.22],[28.58,18.22],[29.58,18.22],[30.58,18.22],[31.58,18.22],[32.58,18.22],[33.58,18.22],[34.58,18.22],[35.58,18.22],[28.58,19.22],[29.58,19.22],[30.58,19.22],[31.58,19.22],[32.58,19.22],[33.58,19.22],[34.58,19.22],[35.58,19.22],[27.58,20.22],[28.58,20.22],[29.58,20.22],[30.58,20.22],[31.58,20.22],[32.58,20.22],[33.58,20.22],[34.58,20.22],[26.58,21.22],[27.58,21.22],[28.58,21.22],[29.58,21.22],[30.58,21.22],[31.58,21.22],[32.58,21.22],[33.58,21.22],[27.58,22.22],[28.58,22.22],[29.58,22.22]],WB:[[38.12,15.97],[39.12,15.97],[40.12,15.97],[38.12,16.97],[38.12,17.97],[37.12,18.97],[38.12,18.97],[37.12,19.97],[37.12,20.97],[38.12,20.97],[35.12,21.97],[36.12,21.97],[37.12,21.97],[38.12,21.97],[32.12,22.97],[33.12,22.97],[34.12,22.97],[35.12,22.97],[36.12,22.97],[37.12,22.97],[38.12,22.97],[39.12,22.97],[34.12,23.97],[35.12,23.97],[36.12,23.97],[37.12,23.97],[38.12,23.97],[39.12,23.97],[34.12,24.97],[35.12,24.97],[36.12,24.97],[37.12,24.97],[38.12,24.97],[39.12,24.97],[35.12,25.97],[36.12,25.97],[37.12,25.97],[38.12,25.97],[39.12,25.97],[36.12,26.97],[37.12,26.97],[38.12,26.97]],MN:[[45.54,15.72],[45.54,16.72]],MP:[[11.25,18.21],[10.25,19.21],[11.25,19.21],[10.25,20.21],[11.25,20.21],[13.25,20.21],[14.25,20.21],[7.25,21.21],[8.25,21.21],[9.25,21.21],[10.25,21.21],[11.25,21.21],[12.25,21.21],[13.25,21.21],[14.25,21.21],[15.25,21.21],[8.25,22.21],[9.25,22.21],[10.25,22.21],[11.25,22.21],[12.25,22.21],[13.25,22.21],[14.25,22.21],[15.25,22.21],[10.25,23.21],[11.25,23.21],[12.25,23.21],[13.25,23.21],[14.25,23.21]],GJ:[[0.05,18.9],[1.05,18.9],[2.05,18.9],[3.05,18.9],[4.05,18.9],[5.05,18.9],[2.05,19.9],[3.05,19.9],[4.05,19.9],[5.05,19.9],[6.05,19.9],[1.05,19.9],[2.05,20.9],[3.05,20.9],[4.05,20.9],[5.05,20.9],[0.05,21.9],[1.05,21.9],[2.05,21.9],[3.05,21.9],[4.05,21.9],[5.05,21.9],[1.05,22.9],[2.05,22.9],[3.05,22.9],[4.05,22.9]],TR:[[44.05,16.96],[44.05,17.96]],ML:[[39.88,17.55],[40.88,17.55]],CG:[[17.04,23.1],[18.04,23.1],[19.04,23.1],[16.04,24.1],[17.04,24.1],[18.04,24.1],[19.04,24.1],[16.04,25.1],[17.04,25.1],[16.04,26.1],[17.04,26.1]],OD:[[22.53,23.6],[23.53,23.6],[21.53,24.6],[22.53,24.6],[23.53,24.6],[24.53,24.6],[20.53,25.6],[21.53,25.6],[22.53,25.6],[23.53,25.6],[24.53,25.6],[21.53,26.6],[22.53,26.6],[23.53,26.6],[20.53,27.6],[21.53,27.6],[22.53,27.6],[23.53,27.6],[19.53,28.6],[20.53,28.6],[19.53,29.6]],JH:[[26.73,23.93],[27.73,23.93],[28.73,23.93],[29.73,23.93],[26.73,24.93],[27.73,24.93],[28.73,24.93],[29.73,24.93],[26.73,25.93],[27.73,25.93],[28.73,25.93],[27.73,26.93],[28.73,26.93],[29.73,26.93]],MH:[[5.95,24.57],[6.95,24.57],[4.95,25.57],[5.95,25.57],[6.95,25.57],[7.95,25.57],[8.95,25.57],[9.95,25.57],[10.95,25.57],[11.95,25.57],[12.95,25.57],[3.95,26.57],[4.95,26.57],[5.95,26.57],[6.95,26.57],[7.95,26.57],[8.95,26.57],[9.95,26.57],[10.95,26.57],[11.95,26.57],[12.95,26.57],[3.95,27.57],[4.95,27.57],[5.95,27.57],[6.95,27.57],[7.95,27.57],[8.95,27.57],[9.95,27.57],[12.95,27.57],[3.95,28.57],[4.95,28.57],[5.95,28.57],[6.95,28.57],[7.95,28.57],[8.95,28.57],[9.95,28.57],[3.95,29.57],[4.95,29.57],[5.95,29.57],[6.95,29.57],[7.95,29.57],[8.95,29.57],[3.95,30.57],[4.95,30.57],[5.95,30.57],[6.95,30.57],[3.95,31.57],[4.95,31.57]],DD:[[1.2,25.66],[2.2,25.66]],TS:[[12.75,29.12],[13.75,29.12],[14.75,29.12],[11.75,30.12],[12.75,30.12],[13.75,30.12],[14.75,30.12],[15.75,30.12],[11.75,31.12],[12.75,31.12],[13.75,31.12],[14.75,31.12],[15.75,31.12],[11.75,32.12],[12.75,32.12],[13.75,32.12],[14.75,32.12]],KA:[[10.23,31.38],[8.23,32.38],[9.23,32.38],[10.23,32.38],[7.24,33.38],[8.23,33.38],[9.23,33.38],[10.23,33.38],[6.24,34.38],[7.24,34.38],[8.23,34.38],[9.23,34.38],[6.24,35.38],[7.24,35.38],[8.23,35.38],[9.23,35.38],[7.24,36.38],[8.23,36.38],[9.23,36.38],[7.24,37.38],[8.23,37.38],[9.23,37.38],[10.23,37.38],[8.23,38.38],[9.23,38.38],[10.23,38.38],[11.23,38.38],[9.23,39.38]],AP:[[19.74,31.82],[20.74,31.82],[17.74,32.82],[18.74,32.82],[19.74,32.82],[20.74,32.82],[15.74,33.82],[16.74,33.82],[17.74,33.82],[18.74,33.82],[14.74,34.82],[15.74,34.82],[16.74,34.82],[17.74,34.82],[18.74,34.82],[15.74,35.82],[16.74,35.82],[17.74,35.82],[15.74,36.82],[16.74,36.82],[17.74,36.82],[18.74,36.82],[16.74,37.82],[17.74,37.82],[18.74,37.82]],GA:[[4.4,34.55],[4.4,35.55]],KL:[[5.04,39.06],[6.04,39.06],[6.04,40.06],[7.04,40.06],[6.04,41.06],[7.04,41.06],[7.04,42.06],[8.04,42.06],[7.04,43.06],[8.04,43.06],[7.04,44.06],[8.04,44.06],[9.04,44.06],[8.04,45.06],[9.04,45.06],[8.04,46.06],[9.04,46.06],[8.04,47.06],[9.04,47.06],[9.04,48.06]],TN:[[14.18,39.06],[15.18,39.06],[12.18,40.06],[13.18,40.06],[14.18,40.06],[15.18,40.06],[10.18,41.06],[11.18,41.06],[12.18,41.06],[13.18,41.06],[14.18,41.06],[15.18,41.06],[12.18,42.06],[13.18,42.06],[14.18,42.06],[15.18,42.06],[10.18,42.06],[11.18,42.06],[11.18,43.06],[12.18,43.06],[13.18,43.06],[14.18,43.06],[15.18,43.06],[11.18,44.06],[12.18,44.06],[13.18,44.06],[14.18,44.06],[15.18,44.06],[11.18,45.06],[12.18,45.06],[13.18,45.06],[11.18,46.06],[12.18,46.06],[13.18,46.06],[11.18,47.06],[12.18,47.06],[13.18,47.06],[11.18,48.06],[11.18,49.06]],CH:[[8.03,9.37]],SK:[[37.3,13.58]],NL:[[45.54,14.22]],MZ:[[42.55,18.3]],PY:[[19,39.5]],AN:[[16,46.5]],LD:[[6,46]]};
-let lsView="map";
+const IN_COMPACT={JK:[[9.95,0.04],[10.95,0.04],[11.95,0.04],[10.95,1.04],[11.95,1.04]],LA:[[14.03,1.09]],HP:[[12.67,3.13],[13.67,3.13],[12.67,4.13],[13.67,4.13]],PB:[[9.54,4.62],[10.54,4.62],[8.54,5.62],[9.54,5.62],[10.54,5.62],[11.54,5.62],[8.54,6.62],[9.54,6.62],[10.54,6.62],[11.54,6.62],[8.54,7.62],[9.54,7.62],[10.54,7.62]],DL:[[15.54,5.12],[14.54,6.12],[15.54,6.12],[16.54,6.12],[14.54,7.12],[15.54,7.12],[16.54,7.12]],HR:[[12.73,8.1],[11.73,9.1],[9.73,10.1],[10.73,10.1],[11.73,10.1],[9.73,11.1],[10.73,11.1],[11.73,11.1],[10.73,12.1],[11.73,12.1]],UK:[[14.54,9.35],[15.54,9.35],[16.54,9.35],[14.54,10.35],[15.54,10.35]],UP:[[13.93,12.62],[14.93,12.62],[15.93,12.62],[13.93,13.62],[14.93,13.62],[15.93,13.62],[16.93,13.62],[17.93,13.62],[18.93,13.62],[13.93,14.62],[14.93,14.62],[15.93,14.62],[16.93,14.62],[17.93,14.62],[18.93,14.62],[19.93,14.62],[12.93,15.62],[13.93,15.62],[14.93,15.62],[15.93,15.62],[16.93,15.62],[17.93,15.62],[18.93,15.62],[19.93,15.62],[20.93,15.62],[21.93,15.62],[22.93,15.62],[13.93,16.62],[14.93,16.62],[15.93,16.62],[16.93,16.62],[17.93,16.62],[18.93,16.62],[19.93,16.62],[20.93,16.62],[21.93,16.62],[22.93,16.62],[23.93,16.62],[24.93,16.62],[25.93,16.62],[12.93,16.62],[16.93,17.62],[17.93,17.62],[18.93,17.62],[19.93,17.62],[20.93,17.62],[21.93,17.62],[22.93,17.62],[23.93,17.62],[24.93,17.62],[25.93,17.62],[16.93,18.62],[17.93,18.62],[18.93,18.62],[19.93,18.62],[20.93,18.62],[21.93,18.62],[22.93,18.62],[23.93,18.62],[24.93,18.62],[25.93,18.62],[16.93,19.62],[17.93,19.62],[18.93,19.62],[19.93,19.62],[20.93,19.62],[21.93,19.62],[22.93,19.62],[23.93,19.62],[24.93,19.62],[16.93,20.62],[18.93,20.62],[19.93,20.62],[20.93,20.62],[21.93,20.62],[22.93,20.62],[23.93,20.62],[24.93,20.62],[22.93,21.62],[23.93,21.62]],RJ:[[6.68,12.9],[7.68,12.9],[8.68,12.9],[5.68,13.9],[6.68,13.9],[7.68,13.9],[8.68,13.9],[9.68,13.9],[5.68,14.9],[6.68,14.9],[7.68,14.9],[8.68,14.9],[9.68,14.9],[5.68,15.9],[6.68,15.9],[7.68,15.9],[8.68,15.9],[9.68,15.9],[5.68,16.9],[6.68,16.9],[7.68,16.9],[8.68,16.9],[9.68,16.9],[6.68,17.9],[7.68,17.9]],AR:[[42.04,11.09],[43.04,11.09]],AS:[[44.55,11.79],[41.55,12.79],[42.55,12.79],[43.55,12.79],[44.55,12.79],[39.55,13.79],[40.55,13.79],[41.55,13.79],[42.55,13.79],[43.55,13.79],[41.55,14.79],[42.55,14.79],[42.55,15.79],[42.55,16.79]],BR:[[27.58,16.22],[27.58,17.22],[28.58,17.22],[29.58,17.22],[30.58,17.22],[28.58,18.22],[29.58,18.22],[30.58,18.22],[31.58,18.22],[32.58,18.22],[33.58,18.22],[34.58,18.22],[35.58,18.22],[28.58,19.22],[29.58,19.22],[30.58,19.22],[31.58,19.22],[32.58,19.22],[33.58,19.22],[34.58,19.22],[35.58,19.22],[27.58,20.22],[28.58,20.22],[29.58,20.22],[30.58,20.22],[31.58,20.22],[32.58,20.22],[33.58,20.22],[34.58,20.22],[26.58,21.22],[27.58,21.22],[28.58,21.22],[29.58,21.22],[30.58,21.22],[31.58,21.22],[32.58,21.22],[33.58,21.22],[27.58,22.22],[28.58,22.22],[29.58,22.22]],WB:[[38.12,15.97],[39.12,15.97],[40.12,15.97],[38.12,16.97],[38.12,17.97],[37.12,18.97],[38.12,18.97],[37.12,19.97],[37.12,20.97],[38.12,20.97],[35.12,21.97],[36.12,21.97],[37.12,21.97],[38.12,21.97],[32.12,22.97],[33.12,22.97],[34.12,22.97],[35.12,22.97],[36.12,22.97],[37.12,22.97],[38.12,22.97],[39.12,22.97],[34.12,23.97],[35.12,23.97],[36.12,23.97],[37.12,23.97],[38.12,23.97],[39.12,23.97],[34.12,24.97],[35.12,24.97],[36.12,24.97],[37.12,24.97],[38.12,24.97],[39.12,24.97],[35.12,25.97],[36.12,25.97],[37.12,25.97],[38.12,25.97],[39.12,25.97],[36.12,26.97],[37.12,26.97],[38.12,26.97]],MN:[[45.54,15.72],[45.54,16.72]],MP:[[11.25,18.21],[10.25,19.21],[11.25,19.21],[10.25,20.21],[11.25,20.21],[13.25,20.21],[14.25,20.21],[7.25,21.21],[8.25,21.21],[9.25,21.21],[10.25,21.21],[11.25,21.21],[12.25,21.21],[13.25,21.21],[14.25,21.21],[15.25,21.21],[8.25,22.21],[9.25,22.21],[10.25,22.21],[11.25,22.21],[12.25,22.21],[13.25,22.21],[14.25,22.21],[15.25,22.21],[10.25,23.21],[11.25,23.21],[12.25,23.21],[13.25,23.21],[14.25,23.21]],GJ:[[0.05,18.9],[1.05,18.9],[2.05,18.9],[3.05,18.9],[4.05,18.9],[5.05,18.9],[2.05,19.9],[3.05,19.9],[4.05,19.9],[5.05,19.9],[6.05,19.9],[1.05,19.9],[2.05,20.9],[3.05,20.9],[4.05,20.9],[5.05,20.9],[0.05,21.9],[1.05,21.9],[2.05,21.9],[3.05,21.9],[4.05,21.9],[5.05,21.9],[1.05,22.9],[2.05,22.9],[3.05,22.9],[4.05,22.9]],TR:[[44.05,16.96],[44.05,17.96]],ML:[[39.88,17.55],[40.88,17.55]],CG:[[17.04,23.1],[18.04,23.1],[19.04,23.1],[16.04,24.1],[17.04,24.1],[18.04,24.1],[19.04,24.1],[16.04,25.1],[17.04,25.1],[16.04,26.1],[17.04,26.1]],OD:[[22.53,23.6],[23.53,23.6],[21.53,24.6],[22.53,24.6],[23.53,24.6],[24.53,24.6],[20.53,25.6],[21.53,25.6],[22.53,25.6],[23.53,25.6],[24.53,25.6],[21.53,26.6],[22.53,26.6],[23.53,26.6],[20.53,27.6],[21.53,27.6],[22.53,27.6],[23.53,27.6],[19.53,28.6],[20.53,28.6],[19.53,29.6]],JH:[[26.73,23.93],[27.73,23.93],[28.73,23.93],[29.73,23.93],[26.73,24.93],[27.73,24.93],[28.73,24.93],[29.73,24.93],[26.73,25.93],[27.73,25.93],[28.73,25.93],[27.73,26.93],[28.73,26.93],[29.73,26.93]],MH:[[5.95,24.57],[6.95,24.57],[4.95,25.57],[5.95,25.57],[6.95,25.57],[7.95,25.57],[8.95,25.57],[9.95,25.57],[10.95,25.57],[11.95,25.57],[12.95,25.57],[3.95,26.57],[4.95,26.57],[5.95,26.57],[6.95,26.57],[7.95,26.57],[8.95,26.57],[9.95,26.57],[10.95,26.57],[11.95,26.57],[12.95,26.57],[3.95,27.57],[4.95,27.57],[5.95,27.57],[6.95,27.57],[7.95,27.57],[8.95,27.57],[9.95,27.57],[12.95,27.57],[3.95,28.57],[4.95,28.57],[5.95,28.57],[6.95,28.57],[7.95,28.57],[8.95,28.57],[9.95,28.57],[3.95,29.57],[4.95,29.57],[5.95,29.57],[6.95,29.57],[7.95,29.57],[8.95,29.57],[3.95,30.57],[4.95,30.57],[5.95,30.57],[6.95,30.57],[3.95,31.57],[4.95,31.57]],DD:[[1.2,25.66],[2.2,25.66]],TS:[[15.0,28.32],[16.0,28.32],[17.0,28.32],[14.0,29.32],[15.0,29.32],[16.0,29.32],[17.0,29.32],[18.0,29.32],[14.0,30.32],[15.0,30.32],[16.0,30.32],[17.0,30.32],[18.0,30.32],[14.0,31.32],[15.0,31.32],[16.0,31.32],[17.0,31.32]],KA:[[10.23,31.38],[8.23,32.38],[9.23,32.38],[10.23,32.38],[7.24,33.38],[8.23,33.38],[9.23,33.38],[10.23,33.38],[6.24,34.38],[7.24,34.38],[8.23,34.38],[9.23,34.38],[6.24,35.38],[7.24,35.38],[8.23,35.38],[9.23,35.38],[7.24,36.38],[8.23,36.38],[9.23,36.38],[7.24,37.38],[8.23,37.38],[9.23,37.38],[10.23,37.38],[8.23,38.38],[9.23,38.38],[10.23,38.38],[11.23,38.38],[9.23,39.38]],AP:[[19.74,31.82],[20.74,31.82],[17.74,32.82],[18.74,32.82],[19.74,32.82],[20.74,32.82],[15.74,33.82],[16.74,33.82],[17.74,33.82],[18.74,33.82],[14.74,34.82],[15.74,34.82],[16.74,34.82],[17.74,34.82],[18.74,34.82],[15.74,35.82],[16.74,35.82],[17.74,35.82],[15.74,36.82],[16.74,36.82],[17.74,36.82],[18.74,36.82],[16.74,37.82],[17.74,37.82],[18.74,37.82]],GA:[[4.4,34.55],[4.4,35.55]],KL:[[5.04,39.06],[6.04,39.06],[6.04,40.06],[7.04,40.06],[6.04,41.06],[7.04,41.06],[7.04,42.06],[8.04,42.06],[7.04,43.06],[8.04,43.06],[7.04,44.06],[8.04,44.06],[9.04,44.06],[8.04,45.06],[9.04,45.06],[8.04,46.06],[9.04,46.06],[8.04,47.06],[9.04,47.06],[9.04,48.06]],TN:[[14.18,39.06],[15.18,39.06],[12.18,40.06],[13.18,40.06],[14.18,40.06],[15.18,40.06],[10.18,41.06],[11.18,41.06],[12.18,41.06],[13.18,41.06],[14.18,41.06],[15.18,41.06],[12.18,42.06],[13.18,42.06],[14.18,42.06],[15.18,42.06],[10.18,42.06],[11.18,42.06],[11.18,43.06],[12.18,43.06],[13.18,43.06],[14.18,43.06],[15.18,43.06],[11.18,44.06],[12.18,44.06],[13.18,44.06],[14.18,44.06],[15.18,44.06],[11.18,45.06],[12.18,45.06],[13.18,45.06],[11.18,46.06],[12.18,46.06],[13.18,46.06],[11.18,47.06],[12.18,47.06],[13.18,47.06],[11.18,48.06],[11.18,49.06]],CH:[[8.03,9.37]],SK:[[38.05,13.79]],NL:[[45.54,14.22]],MZ:[[42.55,18.3]],PY:[[16.74,39.32]],AN:[[16,46.5]],LD:[[6,46.5]]};
+let lsView="packed";   // Rajya Sabha only: Map or Compact (opens on Compact). Lok Sabha and States are always
+                       // Compact, with no toggle (owner, 2026-10-11)
+const inView=race=>race==="rajyasabha"?lsView:"packed";
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:14,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
-  name:k=>IN_SHORT[k]||INDIA.find(s=>s[0]===k)[1], row:{OD:2,WB:-4,MP:-2}, mid:["KL","WB"], outside:k=>LS_RECTS[k].length<=2, tweak(){}};
+  name:k=>IN_SHORT[k]||INDIA.find(s=>s[0]===k)[1], row:{OD:2,WB:-4,MP:-2}, mid:["KL","WB","HR","KA","AP","OD"], side:{DD:"below",CH:"below"}, outside:k=>LS_RECTS[k].length<=2, tweak(){}};
 // Compact names, the US rule (owner, 2026-10-10): several words -> capitals (UP, MP, AP, HP, TN, J&K, A&N); 4-6
 // letters as is; longer -> first 4 letters + "." Exceptions: Arunachal "Arun." (AP is Andhra), Haryana "Hrya.",
-// Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "DNHD". States with 1 or 2 seats are named outside.
-const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"DNHD",AR:"Arun.",WB:"Bengal",
+// Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "D&D" (below its squares, as is Chandigarh: PACK_IN.side).
+// States with 1 or 2 seats are named outside. PACK_IN.mid: pill centred on its row.
+const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AR:"Arun.",WB:"Bengal",
   MH:"Maha.",RJ:"Raja.",GJ:"Guja.",KA:"Karn.",TS:"Tela.",JH:"Jhar.",CG:"Chha.",HR:"Hrya.",UK:"Uttr.",MN:"Mani.",
   ML:"Megh.",TR:"Trip.",MZ:"Mizo.",NL:"Naga.",CH:"Chan.",PY:"Pudu.",LD:"Laks."};
 // Split n squares by shares (largest remainder)
@@ -1114,13 +1180,16 @@ const NAME0=RS_NAMEBOX.map(b=>b.slice()); // the names' Lok Sabha spots
 // the widest spacing d (2 squares down to just over a circle's width) and grid position that fit n centres inside
 // the state's outline (preferably .3 or .15 of a square in) with each circle clear of the state names; the n
 // points nearest the state's centre are kept, ordered row by row (snake) so colours stay grouped.
-function gridSeats(cells,n,r,avoidNames,others=[]){
+function gridSeats(cells,n,r,boxes,others=[],split=false){
   const c=cells.length, cx=cells.reduce((a,p)=>a+p[0]+.5,0)/c, cy=cells.reduce((a,p)=>a+p[1]+.5,0)/c;
-  const [ox,oy]=cells[0], keys=new Set(cells.map(([x,y])=>Math.round(x-ox)+","+Math.round(y-oy)));
-  const inside=(x,y)=>keys.has(Math.floor(x-ox+1e-9)+","+Math.floor(y-oy+1e-9));
+  // split: cells from states with different sub-square offsets (undivided Andhra on the Compact map) are kept on
+  // their own grids; otherwise every cell is snapped to the first cell's grid (as on the Map)
+  const grids=[]; for(const p of cells){let g=split?grids.find(g=>[0,1].every(a=>Math.abs(((p[a]-g.o[a])%1+1.5)%1-.5)<.02)):grids[0];
+    if(!g) grids.push(g={o:p,k:new Set()}); g.k.add(Math.round(p[0]-g.o[0])+","+Math.round(p[1]-g.o[1]))}
+  const inside=(x,y)=>grids.some(g=>g.k.has(Math.floor(x-g.o[0]+1e-9)+","+Math.floor(y-g.o[1]+1e-9)));
   const deep=(x,y,m)=>inside(x,y)&&inside(x-m,y)&&inside(x+m,y)&&inside(x,y-m)&&inside(x,y+m)&&
     inside(x-m*.7,y-m*.7)&&inside(x+m*.7,y-m*.7)&&inside(x-m*.7,y+m*.7)&&inside(x+m*.7,y+m*.7);
-  const clear=(x,y)=>(!avoidNames||RS_NAMEBOX.every(([a,b,c,e])=>Math.hypot(Math.max(a-x,0,x-c),Math.max(b-y,0,y-e))>=r+.12))&&
+  const clear=(x,y)=>(!boxes||boxes.every(([a,b,c,e])=>Math.hypot(Math.max(a-x,0,x-c),Math.max(b-y,0,y-e))>=r+.12))&&
     others.every(([u,v])=>Math.hypot(u-x,v-y)>=2*r*1.08);   // ...and clear of neighbouring states' circles
   const x0=Math.min(...cells.map(p=>p[0])), y0=Math.min(...cells.map(p=>p[1]));
   const x1=Math.max(...cells.map(p=>p[0]))+1, y1=Math.max(...cells.map(p=>p[1]))+1;
@@ -1157,8 +1226,8 @@ function rsCircles(code,data,n){
     // circles already placed for other states (not this region's other years, e.g. AP+TS vs AP)
     const others=[...RS_LAYOUT.entries()].filter(([k])=>!k.split(":")[0].split("+").some(c=>parts.includes(c)))
       .flatMap(([,cs])=>cs.map(c=>[c.cx.baseVal.value/S,c.cy.baseVal.value/S]));
-    const seats=gridSeats(cells,n,RS_R,true,others)||gridSeats(cells,n,RS_R,false,others);
-    RS_LAYOUT.set(key,seats.map(([x,y])=>el("circle",{class:"rs-seat",cx:x*S,cy:y*S,r:RS_R*S},rsLayer)));
+    const seats=gridSeats(cells,n,RS_R,RS_NAMEBOX,others)||gridSeats(cells,n,RS_R,null,others);
+    RS_LAYOUT.set(key,seats.map(([x,y])=>el("circle",{class:"rs-seat",cx:x*S,cy:y*S,r:RS_R*S},el("g",{class:"rs-cell"},rsLayer))));
   }
   return RS_LAYOUT.get(key);
 }
@@ -1259,10 +1328,112 @@ function renderRS(animate){
   inSvg.setAttribute("aria-label",`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
 }
 
+// Rajya Sabha "Compact": every region's circles are laid out again inside its Compact shape (IN_COMPACT, same size,
+// same grid rule), clear of the Compact names (drawn as plain names in this view) and of other states' circles;
+// each Map circle then slides to its Compact spot (the k-th circle in snake order to the k-th spot), and scales
+// with the map. Built once the Compact names can be measured; one layout per region and seat count, like the Map.
+const RS_COMPACT=new Map();
+function rsCompact(pk){
+  if(RS_COMPACT.size) return RS_COMPACT;
+  const toU=(x,y)=>[(x-pk.at[0])/pk.f/S+pk.lo[0]/S,(y-pk.at[1])/pk.f/S+pk.lo[1]/S], hU=PACK_IN.h/pk.f/S;
+  const box=L=>{const w=(L.out?L.w:L.w-8)/pk.f/S, [x,y]=toU(L.x,L.y);
+    const x0=L.out==="start"?x:L.out==="end"?x-w:x-w/2; return [x0,y-hU*.4,x0+w,y+hU*.4]};
+  const boxes=Object.fromEntries(Object.entries(pk.lb).map(([k,L])=>[k,box(L)]));
+  const placed=[];   // [parts, [[x,y],...]]
+  RS_LAYOUT.forEach((cs,key)=>{const parts=key.split(":")[0].split("+"), cells=parts.flatMap(c=>IN_COMPACT[c]);
+    const others=placed.filter(([p])=>!p.some(c=>parts.includes(c))).flatMap(([,q])=>q);
+    // no room around its own name (Himachal: 3 circles in 2 x 2 squares): the name goes outside (RS_OUT)
+    let seats=gridSeats(cells,cs.length,RS_R,Object.values(boxes),others,true);
+    if(!seats){parts.forEach(c=>RS_OUT[c]=1);
+      seats=gridSeats(cells,cs.length,RS_R,Object.entries(boxes).filter(([k])=>!parts.includes(k)).map(e=>e[1]),others,true)
+        ||gridSeats(cells,cs.length,RS_R,null,others,true)}
+    placed.push([parts,seats]);
+    RS_COMPACT.set(key,cs.map((c,i)=>{const X=pk.at[0]+pk.f*(seats[i][0]*S-pk.lo[0]), Y=pk.at[1]+pk.f*(seats[i][1]*S-pk.lo[1]);
+      return `translate(${(X-pk.f*c.cx.baseVal.value).toFixed(2)}px,${(Y-pk.f*c.cy.baseVal.value).toFixed(2)}px) scale(${pk.f.toFixed(4)})`}))});
+  // names moved outside: beside the state's circles (every year's), right, left, below or above, clear of every
+  // other circle and name
+  const R=RS_R*S*pk.f, gap=.15*S*pk.f, h=PACK_IN.fs*.8, all=placed.flatMap(([p,q])=>q.map(c=>[p,c]));
+  const svgPt=([x,y])=>[pk.at[0]+pk.f*(x*S-pk.lo[0]),pk.at[1]+pk.f*(y*S-pk.lo[1])];
+  const names=Object.entries(pk.lb).filter(([k])=>!RS_OUT[k]).map(([k,L])=>{const b=box(L);
+    return [...svgPt([b[0],b[1]]),...svgPt([b[2],b[3]])]});
+  for(const k in RS_OUT){const L=pk.lb[k], w=L.out?L.w:L.w-8;
+    const own=all.filter(([p])=>p.includes(k)).map(([,c])=>svgPt(c)), oth=all.filter(([p])=>!p.includes(k)).map(([,c])=>svgPt(c));
+    const x0=Math.min(...own.map(c=>c[0]))-R, x1=Math.max(...own.map(c=>c[0]))+R, y0=Math.min(...own.map(c=>c[1]))-R, y1=Math.max(...own.map(c=>c[1]))+R;
+    const cx=(x0+x1)/2, cy=(y0+y1)/2;
+    const opts=[[x1+gap,cy,"start"],[x0-gap,cy,"end"],[cx,y1+gap+h/2,"middle"],[cx,y0-gap-h/2,"middle"]].map(([x,y,a])=>{
+      const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2]}});
+    const clear=o=>oth.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+gap*.6)
+      &&names.every(n=>o.q[0]>n[2]+gap||n[0]>o.q[2]+gap||o.q[1]>n[3]+gap||n[1]>o.q[3]+gap);
+    const o=opts.find(clear)||opts[0]; RS_OUT[k]={x:o.x,y:o.y,a:o.a}; names.push(o.q)}
+  return RS_COMPACT;
+}
+// States, Seats (circles) in Compact: every name sits outside the circles (owner, 2026-10-11). The 1-2 seat states
+// keep their Lok Sabha spot; every other name tries a spot right / left / below / above each of its own circles, the
+// one nearest the state's middle that clears every circle and every other name. No spot: it keeps its pill.
+// Owner's picks (2026-10-11): tr right of the top row, tc above the top row (centred on it), tl left of the block at
+// the top row, b below the bottom row (centred on it); MH right of its top row, one square along; KL higher, clear of Laks.
+const ST_SPOT={HP:"tr",DL:"tr",TN:"tr",AP:"tr",UP:"tr",UK:"tr",BR:"tr",PB:"tc",RJ:"tc",TS:"tc",CG:"tc",AR:"tc",
+  GJ:"tl",AS:"tl",JH:"b",WB:"b",MH:"mh",KL:"kl"};
+const ST_OUT={}; let stOutFor=null;
+function stOut(pk){
+  if(stOutFor===pk) return ST_OUT;
+  const f=pk.f, R=.43*S*f, gap=3, h=PACK_IN.fs*.75, vb=inSvg.viewBox.baseVal;
+  const P=(u,a)=>pk.at[a]+f*(u*S-pk.lo[a]);
+  const circ=[]; for(const k in IN_COMPACT) IN_COMPACT[k].forEach(c=>circ.push([P(c[0]+.5,0),P(c[1]+.5,1),k]));
+  const names=[], free=q=>names.every(n=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2), cand={};
+  for(const k in pk.lb){const L=pk.lb[k]; if(L.out){const l=L.out==="start"?L.x:L.out==="end"?L.x-L.w:L.x-L.w/2;
+    names.push([l,L.y-h/2,l+L.w,L.y+h/2])}}
+  const t=el("text",{style:`font-size:${PACK_IN.fs}px`},inSvg);
+  for(const k in pk.lb){if(pk.lb[k].out) continue;
+    t.textContent=PACK_IN.name(k); const w=t.getComputedTextLength(), own=circ.filter(c=>c[2]===k);
+    if(!w){t.remove(); return null}   // hidden panel: try again when shown
+    const mx=own.reduce((s,c)=>s+c[0],0)/own.length, my=own.reduce((s,c)=>s+c[1],0)/own.length;
+    if(ST_SPOT[k]){const ys=own.map(c=>c[1]), t0=Math.min(...ys), b0=Math.max(...ys), row=y=>own.filter(c=>Math.abs(c[1]-y)<1),
+        xs=y=>row(y).map(c=>c[0]), mid=y=>(Math.min(...xs(y))+Math.max(...xs(y)))/2, s=ST_SPOT[k], cell=S*f;
+      const rows=[...new Set(ys.map(y=>Math.round(y*100)/100))].sort((p,q)=>p-q);
+      // tr / tl: the highest row whose spot is clear (TN: under Puducherry; Assam: under Arunachal)
+      const spots=s==="tr"?rows.map(y=>[Math.max(...xs(y))+R+gap,y,"start"]):s==="tl"?rows.map(y=>[Math.min(...xs(y))-R-gap,y,"end"])
+        :[s==="tc"?[mid(t0),t0-R-gap-h/2,"middle"]:s==="b"?[mid(b0),b0+R+gap+h/2,"middle"]
+        :s==="mh"?[Math.max(...xs(t0))+cell+R+gap,t0,"start"]:[Math.min(...xs(rows[2]))-R-gap,rows[2],"end"]];   // KL: left of its third row
+      cand[k]=spots.map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],fix:1}})
+        .filter((o,i,A)=>A.length===1||circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5));
+      continue}
+    cand[k]=own.flatMap(([x,y])=>[[x+R+gap,y,"start"],[x-R-gap,y,"end"],[x,y+R+gap+h/2,"middle"],[x,y-R-gap-h/2,"middle"]])
+      .map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],d:Math.hypot(l+w/2-mx,y-my)}})
+      .filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&o.q[1]>=vb.y&&o.q[3]<=vb.y+vb.height
+        &&circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5))
+      .sort((p,q)=>p.d-q.d)}
+  t.remove();
+  for(const k in ST_OUT) delete ST_OUT[k];
+  for(const k in cand) if(ST_SPOT[k]){const o=cand[k].find(o=>free(o.q))||cand[k][0]; if(o){ST_OUT[k]=o; names.push(o.q)}}   // owner's picks first
+  for(const k of Object.keys(cand).filter(k=>!ST_OUT[k]).sort((p,q)=>cand[p].length-cand[q].length)){   // fewest spots first
+    const o=cand[k].find(o=>free(o.q)); if(o){ST_OUT[k]=o; names.push(o.q)}}
+  stOutFor=pk;
+  return ST_OUT;
+}
+function stPack(pk){
+  const O=pk&&pk.laidOut&&stOut(pk); if(!O) return;
+  for(const k in O){const e=PACK_IN.PL[k], o=O[k];
+    e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.remove("in");
+    e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
+}
+const RS_OUT={};   // Rajya Sabha Compact: names drawn outside their state, {x, y, anchor} in SVG units
+function rsPack(pk){
+  const L=pk&&pk.laidOut&&rsCompact(pk), on=L&&RS[inYear];
+  RS_LAYOUT.forEach((cs,key)=>cs.forEach((c,i)=>c.parentNode.style.transform=L?L.get(key)[i]:""));
+  for(const k in PACK_IN.PL){const e=PACK_IN.PL[k];
+    // no Rajya Sabha seat that year (Ladakh, the UTs; J&K + Ladakh share one region): no name, as on the Map
+    const has=!on||(on[k]||k==="TS"&&!("TS" in on)&&on.AP||[]).some(Boolean);   // undivided Andhra covers Telangana
+    e.g.style.opacity=has?"":0;
+    if(on&&RS_OUT[k]){const o=RS_OUT[k]; e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`;
+      e.t.classList.remove("in"); e.t.setAttribute("text-anchor",o.a)}}
+}
+
 // ---------- India: one map for Lok Sabha, Rajya Sabha and States ----------
 // sync: a change of view (all squares move at once); otherwise a change of year (top-to-bottom wipe)
 function renderIn(animate,sync){
   const race=inRace, cm=race==="states"&&stMode==="cm";
+  if(cm) sync=true;   // Chief Minister: every block changes colour at once, no top-to-bottom wipe (like US Governors)
   if(animate&&sync){inSvg.classList.add("sync"); clearTimeout(inSvg._sync); inSvg._sync=setTimeout(()=>inSvg.classList.remove("sync"),500)}
   const panel=document.getElementById("panel-in");
   if(!animate) panel.classList.add("instant");
@@ -1280,8 +1451,8 @@ function renderIn(animate,sync){
     t.style.transform=`translate(${dx*S}px,${dy*S}px)`;
     t.style.opacity=race==="rajyasabha"&&!RS_NAME_HAS[inYear][i]?0:""}); // no Rajya Sabha seats: no name (like DC on the Senate map)
   if(race==="loksabha") renderLS(animate); else if(race==="states") renderST(animate); else renderRS(animate);
-  applyPack(PACK_IN,race==="loksabha"&&lsView==="packed"&&packLayout(PACK_IN,"all"),LS_GRP);
-  document.getElementById("ls-view").hidden=race!=="loksabha";
+  const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
+  applyPack(PACK_IN,pk,LS_GRP); rsPack(race==="rajyasabha"&&pk); stPack(race==="states"&&!cm&&pk);
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
   document.getElementById("in-bloc").textContent=LS_META[inYear].bloc;
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
@@ -1354,6 +1525,7 @@ function show(race,animate){
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("st-view").hidden=race!=="states";
+  document.getElementById("ls-view").hidden=race!=="rajyasabha";
   if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
     setStepper(years,usYear(race),false,y=>{setUS(usRace,true,y);setStepper(years,y,true,stepOnPick)})}
   if(!us) inRace=race;
@@ -1363,14 +1535,15 @@ function show(race,animate){
     document.querySelectorAll(".panel").forEach(p=>{if(p!==to){p.hidden=true;p.classList.remove("out","in")}});
     to.hidden=false; to.classList.remove("out");
     if(animate&&!reduce){to.classList.remove("in");void to.offsetWidth;to.classList.add("in")}
+    if(!us&&inView(race)==="packed"&&!PACK_IN.cache.all) renderIn(false,true);   // hidden panel: lay Compact out now
   };
   if(from&&animate&&!reduce){from.classList.add("out");setTimeout(reveal,200)} else reveal();
   current=race;
   history.replaceState(null,"","#"+race);
 }
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
-document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS("president",true)}}));
-document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace==="loksabha") renderIn(true,true)}}));
+document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
+document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
 tabs.forEach(t=>{
   t.addEventListener("click",()=>show(t.dataset.race,true));
   t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;

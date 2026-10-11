@@ -11,7 +11,7 @@ Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/ind
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
-Last updated: 2026-10-09
+Last updated: 2026-10-11
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -1270,14 +1270,100 @@ Refresh before each push near the election (re-run the RCP scrape).
      middle). Outside names are now placed fewest-free-spots first (Mizoram has
      only "below"), and the map only shrinks for a name cut off at the edge (a
      name with no free spot used to shrink the map to the 120 limit).
+  -  Compact for ALL India views, and India opens on Compact (owner, 2026-10-10/11,
+     local): one Map / Compact toggle (#ls-view, aria "India map layout", lsView
+     now starts "packed") shown on Lok Sabha, Rajya Sabha and States (hidden on
+     USA); switching race keeps the choice. Same IN_COMPACT layout, short names
+     (IN_SHORT), pill rows and outside names for 1-2 seat states everywhere.
+     States (Seats and Chief Minister): the same dots move, so it works as on Lok
+     Sabha; pills take the dots' colours (grey --seat-empty for no assembly).
+     Rajya Sabha: each RS circle now sits in its own <g class="rs-cell">; rsCompact
+     re-runs gridSeats on the region's IN_COMPACT cells (same RS_R, same rules,
+     split=true so undivided Andhra keeps AP's and TS's own sub-square grids),
+     clear of the Compact name boxes and other states' circles, and each Map circle
+     slides (.6s) to its Compact spot (k-th to k-th, snake order) scaled with the
+     map. Names in RS Compact are plain muted text (pill rect hidden), at the Lok
+     Sabha Compact spot. A state whose circles can't avoid its own name (Himachal:
+     3 circles in 2x2; J&K) gets its name outside (RS_OUT: right/left/below/above
+     its circles, clear of all other circles and names). States with no RS seat
+     that year (Ladakh, the UTs) hide their name, as on the Map. gridSeats now
+     takes the boxes to avoid (Map passes RS_NAMEBOX; same result as before).
+     packLayout returns at/f/lo (packed-grid -> SVG mapping) and laidOut. If the
+     page opens straight on an India view (hidden panel, text not measurable),
+     reveal() re-renders once the panel shows. Checked in the browser, all five
+     years: 233 circles, no circle-circle, circle-name or name-name overlap; States
+     Seats / Chief Minister and Lok Sabha Compact unchanged otherwise; no errors.
+  -  Compact tweaks + States names outside + CM snap (owner, 2026-10-11, local):
+     DNH-DD short name "D&D"; D&D and Chandigarh named BELOW their squares
+     (PACK_IN.side {DD,CH:"below"}, tried first). Sikkim (38.05,13.79): level
+     with Assam's label row, nearer Bengal. Lakshadweep (6,46.5) level with A&N.
+     Puducherry (16.74,39.32): under Andhra's tail, .5 below AP and .56 right of
+     Tamil Nadu. Telangana +2.25 right, -.8 up: right under Chhattisgarh, .5
+     clear of AP and Odisha. PACK_IN.mid now KL WB HR KA AP OD (pill centred on
+     its row). States, Seats (circles) in Compact: no pills; every name is plain
+     muted text OUTSIDE the circles (stOut/stPack, ST_OUT): 1-2 seat states keep
+     their Lok Sabha spot, the rest try right/left/below/above each own circle,
+     nearest the state's middle, clear of every circle (R + 1.5) and name,
+     fewest spots first; all 36 place (no fallback needed). Chief Minister keeps
+     the pills on its blocks. Chief Minister year change is now sync (all blocks
+     at once, .45s, no top-to-bottom row wipe), like US Governors.
+  -  Map view dropped for Lok Sabha and States (owner, 2026-10-11, local): they are
+     always Compact and the Map / Compact toggle (#ls-view) is hidden there; it
+     shows only on Rajya Sabha, which keeps both (lsView, opens on Compact).
+     inView(race) gives the layout in use ("packed" except Rajya Sabha's choice).
+     The Map code stays (Rajya Sabha Map uses it; morphs from Rajya Sabha Map to
+     Lok Sabha/States go straight to Compact).
+  -  States Seats name spots (owner, 2026-10-11, local): ST_SPOT fixes 18 names,
+     placed before the automatic ones. Right of the top row: HP, Delhi, UP, Uttr.,
+     Bihar, AP, TN. Above the top row, centred on it: Punjab, Raja., Tela., Chha.,
+     Arun. Left at the top: Guja., Assam. Below, centred: Jhar., Bengal. Maha.:
+     right of its top row, one square along. Kerala: left of its third row (higher,
+     away from Laks.). Right/left-top take the highest row that's clear, so TN
+     drops to its third row (Puducherry's circle beside its top two) and Assam to
+     its second (Arunachal beside its top). Checked: no name-name or name-circle
+     overlap.
+  -  House Compact (owner, 2026-10-11, local): the President Map / Compact toggle
+     (#pres-view, aria now "Map layout") also shows on House; one shared choice
+     (presMode), so President <-> House stays in the chosen layout. House packs its
+     own squares with the same packLayout + PACK_US tweaks (Alaska above
+     Washington, Arizona nudge, WV pulled to VA, NJ second row), cached per year
+     as "h"+year. Pills on all-grey squares (2026, nothing called) get muted text
+     (text.in.grey) instead of white. Checked 2008-2026: 50 names each, no errors.
+  -  Compact for ALL of USA, default (owner, 2026-10-11, local): presMode opens
+     "packed"; the Map / Compact toggle (#pres-view) shows on every US race except
+     Senate Representation (own layout, no Compact). Senate packs its squares plus
+     its circles' cells (some circles sit on squares the Senate map hides) and no
+     pill sits on a circle (PACK_US.avoid); Governors shares House's layout
+     ("h"+year), Senate "s"+year. Names (PACK_US.mid=true) are centred on their
+     row; a name wider than every row of its squares goes OUTSIDE (fitOut; no
+     postal-code fallback), plain text, .3 square clear of other states and names
+     (pad), tried first on the side its Map name uses (side). packLayout now packs
+     again (packOnce, up to 4 passes) while names go outside, each pass reserving
+     cells for those names (M.extra) so the packer keeps other states off them.
+     Pills: hatched 2026 squares use their solid colour (HATCH_SOLID); grey pills
+     muted text, toss-up yellow pills dark text; pills of states with no squares
+     in a race (DC) hidden. Checked all 35 race-years: every outside name >= .3
+     square from other states' squares/circles and names; no errors. India
+     unchanged (no fitOut/avoid there).
+  -  ONE US Compact layout, President's (owner, 2026-10-11): the packing now uses
+     President's squares (House seats for the census + the two Senate squares,
+     PACK_US.cells / house(), from HSQ/ESQ, not the squares on show) for EVERY
+     race, so President, House, Senate and Governors put each state in the same
+     spot and switching race only adds/drops squares, as on the Map. Names come
+     from the race's own squares (lcells(k, race)). Room is reserved for names
+     that go outside in President OR House (races), so the scale and layout are
+     identical; no shrink loop with fitOut. Cache key race+census (Governors =
+     House). Checked: group transforms identical across the four races; every
+     outside name >= ~.3 square clear in all 35 race-years (Idaho .28 in House
+     2022-26).
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything up to Lok Sabha Compact (owner's Figma layout, short names,
-  outside names for 1-2 seat states, nudges); pushed 2026-10-10 on the owner's say-so.
-  Keep the commit rule.
+- Live = everything above, pushed 2026-10-11 on the owner's say-so (States
+  name spots, House/US Compact as default with President's layout, centred /
+  outside names). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
