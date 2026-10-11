@@ -132,6 +132,9 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 @media (max-width:640px){.need small.wrap{white-space:normal;width:200px}}
 .mapwrap{overflow-x:auto}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
+/* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
+   legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
+#map-india{margin:-3% 0 -4%}
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
@@ -158,6 +161,8 @@ svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .6s var(--ease)}
+/* Governors and Chief Minister: each state's merged block gets 2px rounded outer corners (roundFilter) */
+#map-us.governors .sqs{filter:url(#round-us)} #map-india.cm .ls-st{filter:url(#round-in)}
 #map-us.packed .state text,#map-india.packed .names text{opacity:0}
 #map-india .ls-cell,#map-india .rs-cell{transition:transform .6s var(--ease)}
 /* Rajya Sabha Compact: plain names (no pill), the circles laid out around them */
@@ -484,11 +489,19 @@ const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"}
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
 // the first n and shrinks the rest away; elector squares (President only); two Senate circles.
 const usSvg=document.getElementById("map-us");
+// Rounds the OUTER corners of a solid block of squares by about 2px on screen: blur the shape, cut the blur at half
+// (straight edges stay put, corners round off with radius ~1.86 x sd), and keep the original (colour, hatching) inside it.
+function roundFilter(defs,id,sd){
+  const f=el("filter",{id,x:"-5%",y:"-5%",width:"110%",height:"110%","color-interpolation-filters":"sRGB"},defs);
+  el("feGaussianBlur",{in:"SourceAlpha",stdDeviation:sd,result:"b"},f);
+  el("feColorMatrix",{in:"b",type:"matrix",values:"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 24 -12",result:"m"},f);
+  el("feComposite",{in:"SourceGraphic",in2:"m",operator:"in"},f);
+}
 const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
 (function drawUS(){
   const box=[1e9,1e9,-1e9,-1e9], labels=[];
   // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
-  const defs=el("defs",{},usSvg);
+  const defs=el("defs",{},usSvg); roundFilter(defs,"round-us",.97);
   [["hd","var(--dem)","#cfe5f8"],["hr","var(--rep)","#f9d4d1"],["ht","#e8bd2e","#fbefc4"],["hn","#a9a9a9","#ffffff"]].forEach(([id,a,b])=>{
     const pt=el("pattern",{id,width:7,height:7,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
     el("rect",{width:7,height:7,style:`fill:${b}`},pt); el("rect",{width:3.5,height:7,style:`fill:${a}`},pt);
@@ -497,15 +510,16 @@ const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
   const sq=(g,[x,y])=>{grow(x,y);return el("rect",{class:"sq",x:x*S,y:y*S,width:S,height:S,"stroke-width":1},g)};
   CHAMBER.forEach(st=>{
     const g=el("g",{class:"state"},usSvg), k=st.s; GST[k]=g;
+    const sg=el("g",{class:"sqs"},g);   // the squares on their own, so Governors can round the block's corners
     if(st.c.length){
       const dem=new Map(st.c.map(([x,y,d])=>[x+","+y,d]));
       const cells=[...serp(st.c.map(([x,y])=>[x,y])),...(st.x||[])];
       CH_N[k]=st.c.length;
       HOUSE_COL[2024]??={}; HOUSE_COL[2024][k]=cells.slice(0,st.c.length).map(([x,y])=>dem.get(x+","+y)?"d":"r");
       HOUSE_COL[2026]=HOUSE_COL[2024];   // 2026: the map stays at the 2024 winners
-      HSQ[k]=cells.map(c=>sq(g,c));
+      HSQ[k]=cells.map(c=>sq(sg,c));
     }
-    ESQ[k]=st.e.map(c=>sq(g,c));
+    ESQ[k]=st.e.map(c=>sq(sg,c));
     SEAT[k]=st.o.map(([x,y])=>{grow(x,y);return el("circle",{class:"seat",cx:(x+.5)*S,cy:(y+.5)*S,r:S*.43},g)});
     // name: which side of the state's squares it sits on (judged against all squares any race can show)
     const all=[...st.c,...st.e,...(st.x||[])], bx=[Math.min(...all.map(c=>c[0])),Math.min(...all.map(c=>c[1])),Math.max(...all.map(c=>c[0]))+1,Math.max(...all.map(c=>c[1]))+1];
@@ -537,7 +551,9 @@ function countTo(node,to,animate){
   node._raf=requestAnimationFrame(step);
 }
 // Visitors land on the latest election: House / Senate / Governors start at the newest year (2026 midterms)
-let usRace=null, presYear=PRES_YEARS.at(-1), chYear=US_YEARS.at(-1), senMode="seats";
+// One year for every US race (owner, 2026-10-11): the page opens on House 2026 (the next election); after that each
+// race keeps the last year picked. President has no midterms: it shows the latest presidential year up to that one.
+let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
 // ---------- Senate voter power: a cartogram of circle pairs ----------
 // Circle AREA ~ senators per grey square (2 / squares), scaled so the smallest (California) is as big as Hawaii's
 // was on the seat-sized map (radius .354 squares): r = .354 * sqrt(52 / squares). Each state's two circles sit side
@@ -774,7 +790,8 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,f
       while(clash("AK")) a.o[1]-=.25;
     }
   }};
-let presMode="packed";   // Map / Compact, shared by every US race (opens on Compact)
+let presMode="packed";   // USA is always Compact (owner, 2026-10-11): no Map / Compact toggle; the Map code stays
+                         // (Senate Representation and the morphs still use it)
 
 function powerLayout(){
   return PW_LAYOUT.pos??=placePairs(st=>st.c.length);
@@ -819,7 +836,7 @@ function placePairs(seatsOf){
   });
   return Object.fromEntries(nodes.map(o=>[o.k,o]));
 }
-const usYear=race=>race==="president"?presYear:chYear;
+const usYear=race=>race==="president"?PRES_YEARS.filter(y=>y<=usYearPick).at(-1)??PRES_YEARS[0]:usYearPick;
 function setUS(race,animate,year=usYear(race)){
   const panel=document.getElementById("panel-us"), diff=CENSUS_DIFF[censusOf(year)];
   if(!animate) panel.classList.add("instant");
@@ -901,6 +918,7 @@ function setUS(race,animate,year=usYear(race)){
   applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
   usSvg.classList.toggle("senate",race==="senate");
   usSvg.classList.toggle("president",race==="president");
+  usSvg.classList.toggle("governors",race==="governors");
   usSvg.setAttribute("aria-label",T.label);
   countTo(document.getElementById("num-d"),T.d,animate);
   countTo(document.getElementById("num-r"),T.r,animate);
@@ -934,13 +952,12 @@ function setUS(race,animate,year=usYear(race)){
   document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Representation
   document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
-  document.getElementById("pres-view").hidden=race==="senate"&&sm==="power";
+  document.getElementById("pres-view").hidden=true;   // USA: Compact only
   // 2026: legend for the races on the ballot
   document.getElementById("sen-view").hidden=race!=="senate";
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="senate"?c:g26):""});
     panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
-  if(race==="president") presYear=year; else chYear=year;
   if(!animate){void panel.offsetWidth;requestAnimationFrame(()=>panel.classList.remove("instant"))}
 }
 
@@ -1072,6 +1089,7 @@ const ST_RECTS=LS_RECTS;
 const ST_DOT=new Map(), LS_GRP={}, LS_CELL=new Map();
 (function(){
   const names=inSvg.lastChild, g=el("g",{},inSvg); inSvg.insertBefore(g,names);
+  roundFilter(el("defs",{},g),"round-in",1.15);
   for(const code in ST_RECTS){const sg=LS_GRP[code]=el("g",{class:"ls-st"},g);
     ST_RECTS[code].forEach(r=>{const w=el("g",{class:"ls-cell"},sg); LS_CELL.set(r,w);
       ST_DOT.set(r,el("rect",{class:"st-dot",x:r.x.baseVal.value+S*.07,y:r.y.baseVal.value+S*.07,
@@ -1083,9 +1101,9 @@ const ST_DOT=new Map(), LS_GRP={}, LS_CELL=new Map();
 // no Chandigarh, Sikkim, Nagaland, Mizoram, Puducherry, Andaman or Lakshadweep: those were placed near their
 // neighbours, half a square clear of everything. One layout for every year and both shares.
 const IN_COMPACT={JK:[[9.95,0.04],[10.95,0.04],[11.95,0.04],[10.95,1.04],[11.95,1.04]],LA:[[14.03,1.09]],HP:[[12.67,3.13],[13.67,3.13],[12.67,4.13],[13.67,4.13]],PB:[[9.54,4.62],[10.54,4.62],[8.54,5.62],[9.54,5.62],[10.54,5.62],[11.54,5.62],[8.54,6.62],[9.54,6.62],[10.54,6.62],[11.54,6.62],[8.54,7.62],[9.54,7.62],[10.54,7.62]],DL:[[15.54,5.12],[14.54,6.12],[15.54,6.12],[16.54,6.12],[14.54,7.12],[15.54,7.12],[16.54,7.12]],HR:[[12.73,8.1],[11.73,9.1],[9.73,10.1],[10.73,10.1],[11.73,10.1],[9.73,11.1],[10.73,11.1],[11.73,11.1],[10.73,12.1],[11.73,12.1]],UK:[[14.54,9.35],[15.54,9.35],[16.54,9.35],[14.54,10.35],[15.54,10.35]],UP:[[13.93,12.62],[14.93,12.62],[15.93,12.62],[13.93,13.62],[14.93,13.62],[15.93,13.62],[16.93,13.62],[17.93,13.62],[18.93,13.62],[13.93,14.62],[14.93,14.62],[15.93,14.62],[16.93,14.62],[17.93,14.62],[18.93,14.62],[19.93,14.62],[12.93,15.62],[13.93,15.62],[14.93,15.62],[15.93,15.62],[16.93,15.62],[17.93,15.62],[18.93,15.62],[19.93,15.62],[20.93,15.62],[21.93,15.62],[22.93,15.62],[13.93,16.62],[14.93,16.62],[15.93,16.62],[16.93,16.62],[17.93,16.62],[18.93,16.62],[19.93,16.62],[20.93,16.62],[21.93,16.62],[22.93,16.62],[23.93,16.62],[24.93,16.62],[25.93,16.62],[12.93,16.62],[16.93,17.62],[17.93,17.62],[18.93,17.62],[19.93,17.62],[20.93,17.62],[21.93,17.62],[22.93,17.62],[23.93,17.62],[24.93,17.62],[25.93,17.62],[16.93,18.62],[17.93,18.62],[18.93,18.62],[19.93,18.62],[20.93,18.62],[21.93,18.62],[22.93,18.62],[23.93,18.62],[24.93,18.62],[25.93,18.62],[16.93,19.62],[17.93,19.62],[18.93,19.62],[19.93,19.62],[20.93,19.62],[21.93,19.62],[22.93,19.62],[23.93,19.62],[24.93,19.62],[16.93,20.62],[18.93,20.62],[19.93,20.62],[20.93,20.62],[21.93,20.62],[22.93,20.62],[23.93,20.62],[24.93,20.62],[22.93,21.62],[23.93,21.62]],RJ:[[6.68,12.9],[7.68,12.9],[8.68,12.9],[5.68,13.9],[6.68,13.9],[7.68,13.9],[8.68,13.9],[9.68,13.9],[5.68,14.9],[6.68,14.9],[7.68,14.9],[8.68,14.9],[9.68,14.9],[5.68,15.9],[6.68,15.9],[7.68,15.9],[8.68,15.9],[9.68,15.9],[5.68,16.9],[6.68,16.9],[7.68,16.9],[8.68,16.9],[9.68,16.9],[6.68,17.9],[7.68,17.9]],AR:[[42.04,11.09],[43.04,11.09]],AS:[[44.55,11.79],[41.55,12.79],[42.55,12.79],[43.55,12.79],[44.55,12.79],[39.55,13.79],[40.55,13.79],[41.55,13.79],[42.55,13.79],[43.55,13.79],[41.55,14.79],[42.55,14.79],[42.55,15.79],[42.55,16.79]],BR:[[27.58,16.22],[27.58,17.22],[28.58,17.22],[29.58,17.22],[30.58,17.22],[28.58,18.22],[29.58,18.22],[30.58,18.22],[31.58,18.22],[32.58,18.22],[33.58,18.22],[34.58,18.22],[35.58,18.22],[28.58,19.22],[29.58,19.22],[30.58,19.22],[31.58,19.22],[32.58,19.22],[33.58,19.22],[34.58,19.22],[35.58,19.22],[27.58,20.22],[28.58,20.22],[29.58,20.22],[30.58,20.22],[31.58,20.22],[32.58,20.22],[33.58,20.22],[34.58,20.22],[26.58,21.22],[27.58,21.22],[28.58,21.22],[29.58,21.22],[30.58,21.22],[31.58,21.22],[32.58,21.22],[33.58,21.22],[27.58,22.22],[28.58,22.22],[29.58,22.22]],WB:[[38.12,15.97],[39.12,15.97],[40.12,15.97],[38.12,16.97],[38.12,17.97],[37.12,18.97],[38.12,18.97],[37.12,19.97],[37.12,20.97],[38.12,20.97],[35.12,21.97],[36.12,21.97],[37.12,21.97],[38.12,21.97],[32.12,22.97],[33.12,22.97],[34.12,22.97],[35.12,22.97],[36.12,22.97],[37.12,22.97],[38.12,22.97],[39.12,22.97],[34.12,23.97],[35.12,23.97],[36.12,23.97],[37.12,23.97],[38.12,23.97],[39.12,23.97],[34.12,24.97],[35.12,24.97],[36.12,24.97],[37.12,24.97],[38.12,24.97],[39.12,24.97],[35.12,25.97],[36.12,25.97],[37.12,25.97],[38.12,25.97],[39.12,25.97],[36.12,26.97],[37.12,26.97],[38.12,26.97]],MN:[[45.54,15.72],[45.54,16.72]],MP:[[11.25,18.21],[10.25,19.21],[11.25,19.21],[10.25,20.21],[11.25,20.21],[13.25,20.21],[14.25,20.21],[7.25,21.21],[8.25,21.21],[9.25,21.21],[10.25,21.21],[11.25,21.21],[12.25,21.21],[13.25,21.21],[14.25,21.21],[15.25,21.21],[8.25,22.21],[9.25,22.21],[10.25,22.21],[11.25,22.21],[12.25,22.21],[13.25,22.21],[14.25,22.21],[15.25,22.21],[10.25,23.21],[11.25,23.21],[12.25,23.21],[13.25,23.21],[14.25,23.21]],GJ:[[0.05,18.9],[1.05,18.9],[2.05,18.9],[3.05,18.9],[4.05,18.9],[5.05,18.9],[2.05,19.9],[3.05,19.9],[4.05,19.9],[5.05,19.9],[6.05,19.9],[1.05,19.9],[2.05,20.9],[3.05,20.9],[4.05,20.9],[5.05,20.9],[0.05,21.9],[1.05,21.9],[2.05,21.9],[3.05,21.9],[4.05,21.9],[5.05,21.9],[1.05,22.9],[2.05,22.9],[3.05,22.9],[4.05,22.9]],TR:[[44.05,16.96],[44.05,17.96]],ML:[[39.88,17.55],[40.88,17.55]],CG:[[17.04,23.1],[18.04,23.1],[19.04,23.1],[16.04,24.1],[17.04,24.1],[18.04,24.1],[19.04,24.1],[16.04,25.1],[17.04,25.1],[16.04,26.1],[17.04,26.1]],OD:[[22.53,23.6],[23.53,23.6],[21.53,24.6],[22.53,24.6],[23.53,24.6],[24.53,24.6],[20.53,25.6],[21.53,25.6],[22.53,25.6],[23.53,25.6],[24.53,25.6],[21.53,26.6],[22.53,26.6],[23.53,26.6],[20.53,27.6],[21.53,27.6],[22.53,27.6],[23.53,27.6],[19.53,28.6],[20.53,28.6],[19.53,29.6]],JH:[[26.73,23.93],[27.73,23.93],[28.73,23.93],[29.73,23.93],[26.73,24.93],[27.73,24.93],[28.73,24.93],[29.73,24.93],[26.73,25.93],[27.73,25.93],[28.73,25.93],[27.73,26.93],[28.73,26.93],[29.73,26.93]],MH:[[5.95,24.57],[6.95,24.57],[4.95,25.57],[5.95,25.57],[6.95,25.57],[7.95,25.57],[8.95,25.57],[9.95,25.57],[10.95,25.57],[11.95,25.57],[12.95,25.57],[3.95,26.57],[4.95,26.57],[5.95,26.57],[6.95,26.57],[7.95,26.57],[8.95,26.57],[9.95,26.57],[10.95,26.57],[11.95,26.57],[12.95,26.57],[3.95,27.57],[4.95,27.57],[5.95,27.57],[6.95,27.57],[7.95,27.57],[8.95,27.57],[9.95,27.57],[12.95,27.57],[3.95,28.57],[4.95,28.57],[5.95,28.57],[6.95,28.57],[7.95,28.57],[8.95,28.57],[9.95,28.57],[3.95,29.57],[4.95,29.57],[5.95,29.57],[6.95,29.57],[7.95,29.57],[8.95,29.57],[3.95,30.57],[4.95,30.57],[5.95,30.57],[6.95,30.57],[3.95,31.57],[4.95,31.57]],DD:[[1.2,25.66],[2.2,25.66]],TS:[[15.0,28.32],[16.0,28.32],[17.0,28.32],[14.0,29.32],[15.0,29.32],[16.0,29.32],[17.0,29.32],[18.0,29.32],[14.0,30.32],[15.0,30.32],[16.0,30.32],[17.0,30.32],[18.0,30.32],[14.0,31.32],[15.0,31.32],[16.0,31.32],[17.0,31.32]],KA:[[10.23,31.38],[8.23,32.38],[9.23,32.38],[10.23,32.38],[7.24,33.38],[8.23,33.38],[9.23,33.38],[10.23,33.38],[6.24,34.38],[7.24,34.38],[8.23,34.38],[9.23,34.38],[6.24,35.38],[7.24,35.38],[8.23,35.38],[9.23,35.38],[7.24,36.38],[8.23,36.38],[9.23,36.38],[7.24,37.38],[8.23,37.38],[9.23,37.38],[10.23,37.38],[8.23,38.38],[9.23,38.38],[10.23,38.38],[11.23,38.38],[9.23,39.38]],AP:[[19.74,31.82],[20.74,31.82],[17.74,32.82],[18.74,32.82],[19.74,32.82],[20.74,32.82],[15.74,33.82],[16.74,33.82],[17.74,33.82],[18.74,33.82],[14.74,34.82],[15.74,34.82],[16.74,34.82],[17.74,34.82],[18.74,34.82],[15.74,35.82],[16.74,35.82],[17.74,35.82],[15.74,36.82],[16.74,36.82],[17.74,36.82],[18.74,36.82],[16.74,37.82],[17.74,37.82],[18.74,37.82]],GA:[[4.4,34.55],[4.4,35.55]],KL:[[5.04,39.06],[6.04,39.06],[6.04,40.06],[7.04,40.06],[6.04,41.06],[7.04,41.06],[7.04,42.06],[8.04,42.06],[7.04,43.06],[8.04,43.06],[7.04,44.06],[8.04,44.06],[9.04,44.06],[8.04,45.06],[9.04,45.06],[8.04,46.06],[9.04,46.06],[8.04,47.06],[9.04,47.06],[9.04,48.06]],TN:[[14.18,39.06],[15.18,39.06],[12.18,40.06],[13.18,40.06],[14.18,40.06],[15.18,40.06],[10.18,41.06],[11.18,41.06],[12.18,41.06],[13.18,41.06],[14.18,41.06],[15.18,41.06],[12.18,42.06],[13.18,42.06],[14.18,42.06],[15.18,42.06],[10.18,42.06],[11.18,42.06],[11.18,43.06],[12.18,43.06],[13.18,43.06],[14.18,43.06],[15.18,43.06],[11.18,44.06],[12.18,44.06],[13.18,44.06],[14.18,44.06],[15.18,44.06],[11.18,45.06],[12.18,45.06],[13.18,45.06],[11.18,46.06],[12.18,46.06],[13.18,46.06],[11.18,47.06],[12.18,47.06],[13.18,47.06],[11.18,48.06],[11.18,49.06]],CH:[[8.03,9.37]],SK:[[38.05,13.79]],NL:[[45.54,14.22]],MZ:[[42.55,18.3]],PY:[[16.74,39.32]],AN:[[16,46.5]],LD:[[6,46.5]]};
-let lsView="packed";   // Rajya Sabha only: Map or Compact (opens on Compact). Lok Sabha and States are always
+let lsView="packed";   // every India view is Compact only (owner, 2026-10-11): no Map / Compact toggle. Lok Sabha and States are always
                        // Compact, with no toggle (owner, 2026-10-11)
-const inView=race=>race==="rajyasabha"?lsView:"packed";
+const inView=()=>"packed";   // the Map code stays (Map layouts are where the Compact morphs start from)
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:14,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
   name:k=>IN_SHORT[k]||INDIA.find(s=>s[0]===k)[1], row:{OD:2,WB:-4,MP:-2}, mid:["KL","WB","HR","KA","AP","OD"], side:{DD:"below",CH:"below"}, outside:k=>LS_RECTS[k].length<=2, tweak(){}};
@@ -1328,44 +1346,53 @@ function renderRS(animate){
   inSvg.setAttribute("aria-label",`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
 }
 
-// Rajya Sabha "Compact": every region's circles are laid out again inside its Compact shape (IN_COMPACT, same size,
-// same grid rule), clear of the Compact names (drawn as plain names in this view) and of other states' circles;
-// each Map circle then slides to its Compact spot (the k-th circle in snake order to the k-th spot), and scales
-// with the map. Built once the Compact names can be measured; one layout per region and seat count, like the Map.
-const RS_COMPACT=new Map();
+// Rajya Sabha "Compact" (owner, 2026-10-11): the Map is the standard. Each region's block of circles keeps its Map
+// shape exactly and only moves, as one piece: its middle goes to the middle of its Lok Sabha Compact shape
+// (IN_COMPACT, as on States / Chief Minister), then blocks that would come closer than RS_GAP (circle edge to circle
+// edge, in squares) are pushed apart along the line between them until none do. Names are ignored while placing;
+// afterwards every name goes outside the circles, as on States, Seats (rsOut). Blocks of the same region in different
+// years (Andhra before / after 2014) never meet, so they don't push each other.
+const RS_COMPACT=new Map(), RS_PTS=new Map(), RS_OUT_YEAR={}, RS_GAP=.6;
+// Owner's nudges after the blocks are spread (squares; applied only if still RS_GAP clear): Andhra up, Telangana down-left
+// Telangana mostly left (moving down would block Andhra going up): TS -.75,+.25 lets AP rise .37 of its .5
+const RS_NUDGE={TS:[-.75,.25],AP:[0,-.5]};   // in this order (Telangana first, then Andhra as far as fits)
 function rsCompact(pk){
   if(RS_COMPACT.size) return RS_COMPACT;
-  const toU=(x,y)=>[(x-pk.at[0])/pk.f/S+pk.lo[0]/S,(y-pk.at[1])/pk.f/S+pk.lo[1]/S], hU=PACK_IN.h/pk.f/S;
-  const box=L=>{const w=(L.out?L.w:L.w-8)/pk.f/S, [x,y]=toU(L.x,L.y);
-    const x0=L.out==="start"?x:L.out==="end"?x-w:x-w/2; return [x0,y-hU*.4,x0+w,y+hU*.4]};
-  const boxes=Object.fromEntries(Object.entries(pk.lb).map(([k,L])=>[k,box(L)]));
-  const placed=[];   // [parts, [[x,y],...]]
-  RS_LAYOUT.forEach((cs,key)=>{const parts=key.split(":")[0].split("+"), cells=parts.flatMap(c=>IN_COMPACT[c]);
-    const others=placed.filter(([p])=>!p.some(c=>parts.includes(c))).flatMap(([,q])=>q);
-    // no room around its own name (Himachal: 3 circles in 2 x 2 squares): the name goes outside (RS_OUT)
-    let seats=gridSeats(cells,cs.length,RS_R,Object.values(boxes),others,true);
-    if(!seats){parts.forEach(c=>RS_OUT[c]=1);
-      seats=gridSeats(cells,cs.length,RS_R,Object.entries(boxes).filter(([k])=>!parts.includes(k)).map(e=>e[1]),others,true)
-        ||gridSeats(cells,cs.length,RS_R,null,others,true)}
-    placed.push([parts,seats]);
-    RS_COMPACT.set(key,cs.map((c,i)=>{const X=pk.at[0]+pk.f*(seats[i][0]*S-pk.lo[0]), Y=pk.at[1]+pk.f*(seats[i][1]*S-pk.lo[1]);
-      return `translate(${(X-pk.f*c.cx.baseVal.value).toFixed(2)}px,${(Y-pk.f*c.cy.baseVal.value).toFixed(2)}px) scale(${pk.f.toFixed(4)})`}))});
-  // names moved outside: beside the state's circles (every year's), right, left, below or above, clear of every
-  // other circle and name
-  const R=RS_R*S*pk.f, gap=.15*S*pk.f, h=PACK_IN.fs*.8, all=placed.flatMap(([p,q])=>q.map(c=>[p,c]));
-  const svgPt=([x,y])=>[pk.at[0]+pk.f*(x*S-pk.lo[0]),pk.at[1]+pk.f*(y*S-pk.lo[1])];
-  const names=Object.entries(pk.lb).filter(([k])=>!RS_OUT[k]).map(([k,L])=>{const b=box(L);
-    return [...svgPt([b[0],b[1]]),...svgPt([b[2],b[3]])]});
-  for(const k in RS_OUT){const L=pk.lb[k], w=L.out?L.w:L.w-8;
-    const own=all.filter(([p])=>p.includes(k)).map(([,c])=>svgPt(c)), oth=all.filter(([p])=>!p.includes(k)).map(([,c])=>svgPt(c));
-    const x0=Math.min(...own.map(c=>c[0]))-R, x1=Math.max(...own.map(c=>c[0]))+R, y0=Math.min(...own.map(c=>c[1]))-R, y1=Math.max(...own.map(c=>c[1]))+R;
-    const cx=(x0+x1)/2, cy=(y0+y1)/2;
-    const opts=[[x1+gap,cy,"start"],[x0-gap,cy,"end"],[cx,y1+gap+h/2,"middle"],[cx,y0-gap-h/2,"middle"]].map(([x,y,a])=>{
-      const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2]}});
-    const clear=o=>oth.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+gap*.6)
-      &&names.every(n=>o.q[0]>n[2]+gap||n[0]>o.q[2]+gap||o.q[1]>n[3]+gap||n[1]>o.q[3]+gap);
-    const o=opts.find(clear)||opts[0]; RS_OUT[k]={x:o.x,y:o.y,a:o.a}; names.push(o.q)}
+  const R=RS_R, blocks=[...RS_LAYOUT.entries()].map(([key,cs])=>{const parts=key.split(":")[0].split("+");
+    const c=cs.map(e=>[e.cx.baseVal.value/S,e.cy.baseVal.value/S]), cells=parts.flatMap(k=>IN_COMPACT[k]);
+    const m=[0,1].map(a=>c.reduce((t,p)=>t+p[a],0)/c.length), t=[0,1].map(a=>cells.reduce((s,p)=>s+p[a]+.5,0)/cells.length);
+    return {key,cs,parts,c,o:[t[0]-m[0],t[1]-m[1]]}});
+  const meet=(A,B)=>!A.parts.some(k=>B.parts.includes(k));
+  for(let it=0;it<400;it++){let moved=0;
+    for(let i=0;i<blocks.length;i++) for(let j=i+1;j<blocks.length;j++){const A=blocks[i], B=blocks[j]; if(!meet(A,B)) continue;
+      let need=0, dir=null;   // the deepest overlap between the two blocks, and its direction (A's circle -> B's circle)
+      for(const p of A.c) for(const q of B.c){const dx=q[0]+B.o[0]-p[0]-A.o[0], dy=q[1]+B.o[1]-p[1]-A.o[1], d=Math.hypot(dx,dy);
+        if(2*R+RS_GAP-d>need){need=2*R+RS_GAP-d; dir=d>1e-6?[dx/d,dy/d]:[1,0]}}
+      if(need>1e-4){const w=Math.min(need,.25)/2+1e-3;
+        A.o[0]-=dir[0]*w; A.o[1]-=dir[1]*w; B.o[0]+=dir[0]*w; B.o[1]+=dir[1]*w; moved+=w}}
+    if(moved<1e-4) break}
+  const clearOf=A=>blocks.every(B=>B===A||!meet(A,B)||A.c.every(p=>B.c.every(q=>
+    Math.hypot(q[0]+B.o[0]-p[0]-A.o[0],q[1]+B.o[1]-p[1]-A.o[1])>=2*R+RS_GAP-1e-6)));
+  for(const k0 in RS_NUDGE) for(const b of blocks){const n=b.parts.length===1&&b.parts[0]===k0&&RS_NUDGE[k0]; if(!n) continue;
+    for(const k of [1,.75,.5,.25]){const o=b.o.slice(); b.o=[o[0]+n[0]*k,o[1]+n[1]*k]; if(clearOf(b)) break; b.o=o}}   // as far as fits
+  for(const b of blocks){
+    const pts=b.c.map(([x,y])=>[pk.at[0]+pk.f*((x+b.o[0])*S-pk.lo[0]),pk.at[1]+pk.f*((y+b.o[1])*S-pk.lo[1])]);
+    // each circle belongs to the part whose Compact square is nearest (undivided Andhra: AP or Telangana's name)
+    const own=b.c.map(([x,y])=>b.parts.length<2?b.parts[0]:b.parts.map(k=>[k,Math.min(...IN_COMPACT[k].map(q=>Math.hypot(q[0]+.5-x-b.o[0],q[1]+.5-y-b.o[1])))])
+      .sort((u,v)=>u[1]-v[1])[0][0]);
+    RS_PTS.set(b.key,pts.map((p,i)=>[...p,own[i]]));
+    RS_COMPACT.set(b.key,b.cs.map((c,i)=>`translate(${(pts[i][0]-pk.f*c.cx.baseVal.value).toFixed(2)}px,${(pts[i][1]-pk.f*c.cy.baseVal.value).toFixed(2)}px) scale(${pk.f.toFixed(4)})`))}
   return RS_COMPACT;
+}
+// the names for one year: outside that year's circles
+function rsOut(pk,year){
+  if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
+  const data=RS[year], circ=[];
+  for(const code in data){const n=data[code].reduce((a,b)=>a+b,0); if(!n) continue;
+    const parts=code==="AP"&&!("TS" in data)?["AP","TS"]:[code], pts=RS_PTS.get(parts.join("+")+":"+n);
+    if(pts) circ.push(...pts)}
+  const O=outNames(pk,circ,RS_R*S*pk.f,false,RS_SPOT); if(O) RS_OUT_YEAR[year]=O;
+  return O;
 }
 // States, Seats (circles) in Compact: every name sits outside the circles (owner, 2026-10-11). The 1-2 seat states
 // keep their Lok Sabha spot; every other name tries a spot right / left / below / above each of its own circles, the
@@ -1374,42 +1401,50 @@ function rsCompact(pk){
 // the top row, b below the bottom row (centred on it); MH right of its top row, one square along; KL higher, clear of Laks.
 const ST_SPOT={HP:"tr",DL:"tr",TN:"tr",AP:"tr",UP:"tr",UK:"tr",BR:"tr",PB:"tc",RJ:"tc",TS:"tc",CG:"tc",AR:"tc",
   GJ:"tl",AS:"tl",JH:"b",WB:"b",MH:"mh",KL:"kl"};
-const ST_OUT={}; let stOutFor=null;
+// Owner's name picks for Rajya Sabha (else as States): Gujarat, Maharashtra, Bihar top-left; Puducherry right
+const RS_SPOT={...ST_SPOT,GJ:"tl",MH:"tl",BR:"tl",PY:"tr"};
+let ST_OUT={}, stOutFor=null;
 function stOut(pk){
   if(stOutFor===pk) return ST_OUT;
-  const f=pk.f, R=.43*S*f, gap=3, h=PACK_IN.fs*.75, vb=inSvg.viewBox.baseVal;
-  const P=(u,a)=>pk.at[a]+f*(u*S-pk.lo[a]);
+  const P=(u,a)=>pk.at[a]+pk.f*(u*S-pk.lo[a]);
   const circ=[]; for(const k in IN_COMPACT) IN_COMPACT[k].forEach(c=>circ.push([P(c[0]+.5,0),P(c[1]+.5,1),k]));
+  const O=outNames(pk,circ,.43*S*pk.f); if(!O) return null;
+  ST_OUT=O; stOutFor=pk;
+  return ST_OUT;
+}
+// Names outside the circles, circ: [[x, y, state]] in SVG units, R: circle radius. The names the Compact map already
+// puts outside (1-2 seat states, pk.lb .out) keep that spot; the owner's picks (ST_SPOT) go first.
+function outNames(pk,circ,R,keepOut=true,SP=ST_SPOT){   // keepOut false (Rajya Sabha): those names are placed too
+  const f=pk.f, gap=3, h=PACK_IN.fs*.75, vb=inSvg.viewBox.baseVal, OUT={};
   const names=[], free=q=>names.every(n=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2), cand={};
-  for(const k in pk.lb){const L=pk.lb[k]; if(L.out){const l=L.out==="start"?L.x:L.out==="end"?L.x-L.w:L.x-L.w/2;
+  if(keepOut) for(const k in pk.lb){const L=pk.lb[k]; if(L.out){const l=L.out==="start"?L.x:L.out==="end"?L.x-L.w:L.x-L.w/2;
     names.push([l,L.y-h/2,l+L.w,L.y+h/2])}}
   const t=el("text",{style:`font-size:${PACK_IN.fs}px`},inSvg);
-  for(const k in pk.lb){if(pk.lb[k].out) continue;
+  for(const k in pk.lb){if(keepOut&&pk.lb[k].out) continue;
     t.textContent=PACK_IN.name(k); const w=t.getComputedTextLength(), own=circ.filter(c=>c[2]===k);
     if(!w){t.remove(); return null}   // hidden panel: try again when shown
+    if(!own.length) continue;   // no circles (Rajya Sabha: no seat that year)
     const mx=own.reduce((s,c)=>s+c[0],0)/own.length, my=own.reduce((s,c)=>s+c[1],0)/own.length;
-    if(ST_SPOT[k]){const ys=own.map(c=>c[1]), t0=Math.min(...ys), b0=Math.max(...ys), row=y=>own.filter(c=>Math.abs(c[1]-y)<1),
-        xs=y=>row(y).map(c=>c[0]), mid=y=>(Math.min(...xs(y))+Math.max(...xs(y)))/2, s=ST_SPOT[k], cell=S*f;
+    if(SP[k]){const ys=own.map(c=>c[1]), t0=Math.min(...ys), b0=Math.max(...ys), row=y=>own.filter(c=>Math.abs(c[1]-y)<1),
+        xs=y=>row(y).map(c=>c[0]), mid=y=>(Math.min(...xs(y))+Math.max(...xs(y)))/2, s=SP[k], cell=S*f;
       const rows=[...new Set(ys.map(y=>Math.round(y*100)/100))].sort((p,q)=>p-q);
       // tr / tl: the highest row whose spot is clear (TN: under Puducherry; Assam: under Arunachal)
       const spots=s==="tr"?rows.map(y=>[Math.max(...xs(y))+R+gap,y,"start"]):s==="tl"?rows.map(y=>[Math.min(...xs(y))-R-gap,y,"end"])
         :[s==="tc"?[mid(t0),t0-R-gap-h/2,"middle"]:s==="b"?[mid(b0),b0+R+gap+h/2,"middle"]
-        :s==="mh"?[Math.max(...xs(t0))+cell+R+gap,t0,"start"]:[Math.min(...xs(rows[2]))-R-gap,rows[2],"end"]];   // KL: left of its third row
+        :s==="mh"?[Math.max(...xs(t0))+cell+R+gap,t0,"start"]:[Math.min(...xs(rows[Math.min(2,rows.length-1)]))-R-gap,rows[Math.min(2,rows.length-1)],"end"]];   // KL: left of its third row
       cand[k]=spots.map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],fix:1}})
-        .filter((o,i,A)=>A.length===1||circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5));
-      continue}
+        .filter(o=>circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5));
+      if(cand[k].length) continue}   // the pick lands on circles (Rajya Sabha's Maharashtra): search as for the others
     cand[k]=own.flatMap(([x,y])=>[[x+R+gap,y,"start"],[x-R-gap,y,"end"],[x,y+R+gap+h/2,"middle"],[x,y-R-gap-h/2,"middle"]])
       .map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],d:Math.hypot(l+w/2-mx,y-my)}})
       .filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&o.q[1]>=vb.y&&o.q[3]<=vb.y+vb.height
         &&circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5))
       .sort((p,q)=>p.d-q.d)}
   t.remove();
-  for(const k in ST_OUT) delete ST_OUT[k];
-  for(const k in cand) if(ST_SPOT[k]){const o=cand[k].find(o=>free(o.q))||cand[k][0]; if(o){ST_OUT[k]=o; names.push(o.q)}}   // owner's picks first
-  for(const k of Object.keys(cand).filter(k=>!ST_OUT[k]).sort((p,q)=>cand[p].length-cand[q].length)){   // fewest spots first
-    const o=cand[k].find(o=>free(o.q)); if(o){ST_OUT[k]=o; names.push(o.q)}}
-  stOutFor=pk;
-  return ST_OUT;
+  for(const k in cand) if(SP[k]&&cand[k][0]?.fix){const o=cand[k].find(o=>free(o.q))||cand[k][0]; if(o){OUT[k]=o; names.push(o.q)}}   // owner's picks first
+  for(const k of Object.keys(cand).filter(k=>!OUT[k]).sort((p,q)=>cand[p].length-cand[q].length)){   // fewest spots first
+    const o=cand[k].find(o=>free(o.q)); if(o){OUT[k]=o; names.push(o.q)}}
+  return OUT;
 }
 function stPack(pk){
   const O=pk&&pk.laidOut&&stOut(pk); if(!O) return;
@@ -1417,16 +1452,15 @@ function stPack(pk){
     e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.remove("in");
     e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
 }
-const RS_OUT={};   // Rajya Sabha Compact: names drawn outside their state, {x, y, anchor} in SVG units
 function rsPack(pk){
-  const L=pk&&pk.laidOut&&rsCompact(pk), on=L&&RS[inYear];
+  const L=pk&&pk.laidOut&&rsCompact(pk), on=L&&RS[inYear], RS_OUT=on&&rsOut(pk,inYear)||{};
   RS_LAYOUT.forEach((cs,key)=>cs.forEach((c,i)=>c.parentNode.style.transform=L?L.get(key)[i]:""));
   for(const k in PACK_IN.PL){const e=PACK_IN.PL[k];
     // no Rajya Sabha seat that year (Ladakh, the UTs; J&K + Ladakh share one region): no name, as on the Map
     const has=!on||(on[k]||k==="TS"&&!("TS" in on)&&on.AP||[]).some(Boolean);   // undivided Andhra covers Telangana
     e.g.style.opacity=has?"":0;
     if(on&&RS_OUT[k]){const o=RS_OUT[k]; e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`;
-      e.t.classList.remove("in"); e.t.setAttribute("text-anchor",o.a)}}
+      e.t.classList.remove("in"); e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}}
 }
 
 // ---------- India: one map for Lok Sabha, Rajya Sabha and States ----------
@@ -1439,6 +1473,7 @@ function renderIn(animate,sync){
   if(!animate) panel.classList.add("instant");
   inSvg.classList.toggle("rs",race==="rajyasabha");
   inSvg.classList.toggle("sq",race==="loksabha"||cm);
+  inSvg.classList.toggle("cm",!!cm);
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""});
   // reset what only some views use
   document.getElementById("in-b-vac").style.width="0%";
@@ -1525,9 +1560,9 @@ function show(race,animate){
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("st-view").hidden=race!=="states";
-  document.getElementById("ls-view").hidden=race!=="rajyasabha";
+  document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
-    setStepper(years,usYear(race),false,y=>{setUS(usRace,true,y);setStepper(years,y,true,stepOnPick)})}
+    setStepper(years,usYear(race),false,y=>{usYearPick=y; setUS(usRace,true,y);setStepper(years,y,true,stepOnPick)})}
   if(!us) inRace=race;
   if(from===to){ if(us) setUS(race,animate); else renderIn(animate,true); current=race; history.replaceState(null,"","#"+race); return }
   if(us) setUS(race,false); else renderIn(false,true);

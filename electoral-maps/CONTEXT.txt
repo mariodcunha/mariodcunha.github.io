@@ -1356,14 +1356,60 @@ Refresh before each push near the election (re-run the RCP scrape).
      House). Checked: group transforms identical across the four races; every
      outside name >= ~.3 square clear in all 35 race-years (Idaho .28 in House
      2022-26).
+  -  Rounded corners, 2px (owner, 2026-10-11, local): Governors (US) and Chief
+     Minister (India) blocks only. roundFilter(defs,id,sd): blur SourceAlpha, cut
+     at half, keep SourceGraphic inside, so outer corners round (~1.86 x sd) and
+     straight edges, colours and 2026 hatching stay crisp; inner corners stay
+     square. US squares now sit in a <g class="sqs"> per state (filter there, not
+     on the names/circles); #map-us.governors .sqs -> #round-us (sd .97, ~1.1
+     px/unit), #map-india.cm .ls-st -> #round-in (sd 1.15, ~.93 px/unit); new
+     svg classes governors / cm.
+  -  USA Compact ONLY (owner, 2026-10-11, local): the Map / Compact toggle
+     (#pres-view) is always hidden and presMode stays "packed" for every US race.
+     Senate Representation keeps its own layout (not Compact). Map code kept.
+  -  Rajya Sabha Compact, Map as the standard (owner, 2026-10-11, local; replaces
+     a first redo that re-gridded the circles): each region's block of circles
+     keeps its MAP shape exactly and only moves as one piece. Its middle goes to
+     the middle of its Lok Sabha Compact shape (IN_COMPACT, as on States / CM),
+     then blocks closer than RS_GAP (.6 square, circle edge to edge) are pushed
+     apart along the line between their nearest circles (<= 400 rounds); names
+     are ignored while placing. Then EVERY name goes outside the circles, per
+     year (rsOut -> outNames(pk, circ, R, keepOut=false)): stOut's placement is
+     now the shared outNames, with the owner's ST_SPOT picks; a pick that lands on
+     circles falls back to the normal search (Rajya Sabha Maharashtra). Undivided
+     Andhra's circles split between the AP / Telangana names by nearest Compact
+     square. Old RS_OUT / name-box logic removed. Checked 2004/2014/2024: no
+     name-name or name-circle overlap, nothing off the map, states >= .5 circle
+     apart, States Seats names unchanged.
+  -  One US year (owner, 2026-10-11, local): presYear / chYear replaced by
+     usYearPick, shared by all four US races. The page opens on House 2026 (the
+     next election); after that every race keeps the last year the user stepped
+     to (only the stepper's pick changes it, not just viewing a race). President
+     shows the latest presidential year up to the pick (2018 -> 2016, 2026 ->
+     2024). Checked: start House 2026; President steps to 2016 -> House 2016 ->
+     2018 -> Senate/Governors 2018 -> President 2016.
+  -  Rajya Sabha Compact owner tweaks (2026-10-11, local): RS_NUDGE after the
+     spreading, each only as far as it stays RS_GAP clear, Telangana first: TS
+     -.75 x / +.25 y (down-left), then AP up (gets -.37 of -.5; AP up and TS down
+     push against each other). Names: RS_SPOT = ST_SPOT + Gujarat, Maharashtra,
+     Bihar "tl" (top-left), Puducherry "tr" (right); outNames takes the pick
+     table (SP). Checked 2004/2014/2024: picks used, no overlaps.
+  -  Compact ONLY everywhere (owner, 2026-10-11, local): Rajya Sabha's Map /
+     Compact toggle (#ls-view) is always hidden and inView() is always "packed",
+     so no view anywhere (USA or India) shows the Map layout; the Map code stays
+     (morph starting points). India map pulled toward the bar: #map-india
+     {margin:-3% 0 -4%} (% of width, scales with phones) trims the empty top /
+     bottom of the Map-sized frame the compact map is centred in. Checked desktop
+     and 375px: map ~30px closer on desktop, nothing clipped (RS top 5px / 12px).
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything above, pushed 2026-10-11 on the owner's say-so (States
-  name spots, House/US Compact as default with President's layout, centred /
-  outside names). Keep the commit rule.
+- Live = everything above, pushed 2026-10-11 on the owner's say-so (latest:
+  Compact only everywhere, India map pulled up, Rajya Sabha Compact on the Map
+  blocks + owner tweaks, one US year, 2px rounded Governors / CM corners).
+  Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
