@@ -1125,6 +1125,42 @@ Governors 24 D - 19 R, 7 toss-ups (FL -3, GA -1.8, NV 0, OR 0, TX -1.9,
   NY NM OH(+3.2) PA MN D, NH KS R; by Cook: MD IL CO CT HI MA RI D, AL AR
   ID OK SC SD TN VT WY R.
 Refresh before each push near the election (re-run the RCP scrape).
+SENATE SOURCE CHANGED 2026-10-11 (owner): Senate now uses the NYT "select
+pollsters" list (nytimes.com/interactive/polls/senate-polls-2026.html; the page
+blocks scripts here, so the owner pasted its list). Same rule: each pollster's
+latest poll ending Aug 1+, nominees only (Jackson-Collins ME, Markey MA,
+Sununu NH, El-Sayed MI, Nixon FL; Kansas NYT/Siena = full-ballot question, 0).
+Montana: Bodnar (Ind.) minus Alme, like Nebraska's Osborn. Governors and the
+generic ballot are still RCP (Oct 8). Legend source text and date are per race.
+Result: Senate 50 D - 46 R, 4 toss-ups (AK +7 one poll -> Cook Toss Up; IA
++1.5; KS +1.0; ME +2.7). Called D by polls: MA +24.5, MI +4.3, NH +6.5, OH
++5.6, TX +3.4 (just over the line; 7 pollsters); by one poll + Cook: NM, RI;
+by Cook alone (no NYT poll since Aug 1): GA MN NC + CO DE IL NJ OR VA.
+Called R: AR (Hendrix, Shoffner +3, not > 3, so Cook stands), FL (-10), MT
+(-8) + Cook; NE SC (no NYT poll since Aug 1, Cook Likely R) and the rest.
+vs the RCP set: MN, TX -> D; NE, SC -> R (they lost their RCP-only polls).
+GOVERNORS SOURCE CHANGED 2026-10-11 (owner): same, from the NYT governor
+list (pasted). Full-ballot question where there are two (ME: Pingree-Charles
+with Bennett, Ind.); AK = ranked-choice final round (Kreiss-Tomkins-Wilson);
+RI = Foulkes minus Block (Ind., runner-up). The legend text and "Polls as of
+Oct 11" are the same for Senate and Governors.
+HOUSE / GENERIC BALLOT SOURCE CHANGED 2026-10-11 (owner): the NYT House
+(generic ballot) list, pasted, 148 polls; same rule, each pollster's latest
+since Sep 1 -> 12 pollsters (Reuters/Ipsos, Pew, Cygnal, Quinnipiac, Emerson,
+WSJ, CNN, NBC, Marist, Fox, NYT/Siena, Marquette). D 50.2 / R 41.2
+(undecided/other 8.6); was D 50.4 / R 42.0 from 20 RCP pollsters. Emerson's
+RealClear/Unite America poll (9/12-15) is older than its own 9/21-22 poll.
+ALL 2026 POLLS NOW FROM THE NYT; the RCP data is gone from the page.
+Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
+  Toss-ups: TX -1.1 (7 polls); AK +3, NV +2, WI +3 (one poll each, Cook Toss
+  Up); GA (no NYT poll since Aug 1, Cook Toss Up). Can't call: VT (one poll,
+  UNH, Janoo D +6 against Cook Solid R for Phil Scott).
+  Called D by polls: CA +23.5 CT +17 IA +9.5 MA +19 ME +11.6 MI +9.4 NY +13
+  OH +5 PA +23 RI +21.5; one poll + Cook: MD NM; Cook alone: AZ (only poll,
+  Tarrance, ends Jul 30) CO HI IL MN OR. Called R by polls: KS -5.5, NH -7.5;
+  one poll + Cook: AR FL; Cook alone: AL ID NE OK SC SD TN WY.
+  vs the RCP set: AK D -> toss-up; FL, NE toss-up -> R; OR toss-up -> D;
+  VT R -> can't call.
 
  51. Landing (2026-10-09, pushed): no / unknown #hash opens
      House at the newest year (2026); chYear starts at US_YEARS.at(-1) and
@@ -1420,14 +1456,23 @@ Refresh before each push near the election (re-run the RCP scrape).
      name is plain muted text outside, as on States, Seats (outNames with the
      ST_SPOT picks, clearance from a square's half-width + 1). Checked: Governors
      = Senate for all 50; CM 36 names, no name/square or name/name overlaps.
+  -  Senate 2026 poll aggregate switched to the NYT select pollsters (owner,
+     2026-10-11, local): see 2026 POLL AGGREGATE, "SENATE SOURCE CHANGED".
+     Checked: script parses; calls 50 D - 46 R - 4 toss-ups.
+  -  Governors 2026 likewise switched to the NYT select pollsters (owner,
+     2026-10-11, local): "GOVERNORS SOURCE CHANGED". Checked: script parses;
+     24 D - 20 R - 5 toss-ups - 1 can't call (VT).
+  -  House generic ballot likewise switched to the NYT list (owner,
+     2026-10-11, local): D 50.2 / R 41.2, 12 pollsters. Legend says "12 of the
+     New York Times' select pollsters since Sep 1, as of Oct 11".
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
 - Live = everything above, pushed 2026-10-11 on the owner's say-so (latest:
-  Rajya Sabha merge / split transition; Governors names as Senate; Chief
-  Minister names inside at the centre when they fit, else as States Seats).
+  2026 House, Senate and Governors polls switched to the NYT select-pollster
+  lists).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
