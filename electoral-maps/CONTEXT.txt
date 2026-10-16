@@ -1584,6 +1584,10 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  No bold state names (owner, 2026-10-16, local): names inside a block
      (text.in) were 600, outside 500; svg.map text.in now inherits 500, so
      every map (US and India), race and year uses one weight.
+  -  Landing view is Senate 2026, Seats (owner, 2026-10-16, local): a bare
+     link (no #hash) opens #senate; senMode starts "seats" (Seats button
+     aria-pressed in the HTML); lastRace.usa = "senate", so picking USA from
+     India also lands there. #house etc. links still open their race.
 
 STATUS / NEXT
 -------------

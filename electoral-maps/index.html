@@ -282,9 +282,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" class="next" aria-label="Later election"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <div class="subtoggle" id="sen-view" role="group" aria-label="Size the Senate circles by" hidden>
-      <button type="button" data-sen="all" aria-pressed="true">All</button>
+      <button type="button" data-sen="all" aria-pressed="false">All</button>
       <button type="button" data-sen="power" aria-pressed="false">Representation</button>
-      <button type="button" data-sen="seats" aria-pressed="false">Seats</button>
+      <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="seat" aria-pressed="true">Seat share</button>
@@ -572,9 +572,9 @@ function countTo(node,to,animate){
   node._raf=requestAnimationFrame(step);
 }
 // Visitors land on the latest election: House / Senate / Governors start at the newest year (2026 midterms)
-// One year for every US race (owner, 2026-10-11): the page opens on House 2026 (the next election); after that each
+// One year for every US race (owner, 2026-10-11): the page opens on Senate 2026, Seats view (owner, 2026-10-16); after that each
 // race keeps the last year picked. President has no midterms: it shows the latest presidential year up to that one.
-let usRace=null, usYearPick=US_YEARS.at(-1), senMode="all";
+let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
 // ---------- Senate Alt: a tile grid, one square per state (owner, 2026-10-15) ----------
 // [state, column, row]. Alaska sits diagonally up-left of Washington, Hawaii diagonally down-left of Arizona.
 const ALT_GRID=`AK 0 1|ME 11 0|WI 6 1|VT 10 1|NH 11 1|WA 1 2|ID 2 2|MT 3 2|ND 4 2|MN 5 2|IL 6 2|MI 7 2|NY 9 2|MA 10 2|
@@ -1673,7 +1673,7 @@ const thumb=document.querySelector('.toggle .thumb');
 const visibleTabs=()=>tabs.filter(t=>!t.hidden);
 const panelOf=r=>document.getElementById(countryOf(r)==="usa"?"panel-us":"panel-in");
 const countryOf=r=>tabs.find(t=>t.dataset.race===r)?.dataset.country;
-let current=null, lastRace={usa:"house",india:"loksabha"};
+let current=null, lastRace={usa:"senate",india:"loksabha"};
 function moveThumb(tab,animate){
   if(!animate) thumb.style.transition="none";
   thumb.style.left=tab.offsetLeft+"px"; thumb.style.width=tab.offsetWidth+"px";
@@ -1689,7 +1689,7 @@ function projLegend(race,n){
 }
 
 function show(race,animate){
-  if(!countryOf(race)) race="house";   // no or unknown #hash: the latest election, House first
+  if(!countryOf(race)) race="senate";   // no or unknown #hash: the latest election, Senate (Seats view) first
   if(race===current) return;
   setCountryUI(countryOf(race));
   const tab=tabs.find(t=>t.dataset.race===race);
