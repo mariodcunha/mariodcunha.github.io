@@ -118,10 +118,10 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,#f9d4d1 2.5px 5px)}
 .hatch-t{background:repeating-linear-gradient(135deg,#e8bd2e 0 2.5px,#fbefc4 2.5px 5px)}
 .hatch-n{background:repeating-linear-gradient(135deg,#a9a9a9 0 2px,#fff 2px 5px);box-shadow:inset 0 0 0 1px #d8d8d8}
-/* Senate (owner, 2026-10-16): flat light colours instead of hatching, as on the Seats tiles (ALT_PROJ) */
-.bar.flat .hatch-d,#proj-senate .hatch-d{background:#a8d3f4}
-.bar.flat .hatch-r,#proj-senate .hatch-r{background:#f5aca6}
-.bar.flat .hatch-t,#proj-senate .hatch-t{background:#f2cf4a}
+/* Senate and Governors (owner, 2026-10-16): flat light colours instead of hatching, as on the Seats tiles (ALT_PROJ) */
+.bar.flat .hatch-d,#proj-senate .hatch-d,#proj-governors .hatch-d{background:#a8d3f4}
+.bar.flat .hatch-r,#proj-senate .hatch-r,#proj-governors .hatch-r{background:#f5aca6}
+.bar.flat .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t{background:#f2cf4a}
 .legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
@@ -472,7 +472,6 @@ function projOf(race,k){
   if(ps.length===1&&(cook==="D"&&m<-LEAN||cook==="R"&&m>LEAN)) return "N";
   return cook;
 }
-const PROJ_FILL={D:"url(#hd)",R:"url(#hr)",T:"url(#ht)",N:"url(#hn)"};
 
 const S=20, NS="http://www.w3.org/2000/svg";
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -939,7 +938,7 @@ function setUS(race,animate,year=usYear(race)){
       // 2026: the House polls are national (generic ballot), so no seat is called: every square grey
       if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,y26?"var(--house)":PARTY_FILL[p]); if(j<n) c[p]++});
       if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
-      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=PROJ_FILL[g];
+      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
       else if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
         // borders take the state's own colour, so its squares merge into one shape
@@ -1011,7 +1010,7 @@ function setUS(race,animate,year=usYear(race)){
   PACK_US.race=lr; PACK_US.census=censusOf(year);
   applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
   usSvg.classList.toggle("senate",race==="senate");
-  document.getElementById("us-bar").classList.toggle("flat",race==="senate");
+  document.getElementById("us-bar").classList.toggle("flat",race==="senate"||race==="governors");
   usSvg.classList.toggle("president",race==="president");
   usSvg.classList.toggle("governors",race==="governors");
   usSvg.classList.toggle("seats",race==="senate"&&sm==="seats");

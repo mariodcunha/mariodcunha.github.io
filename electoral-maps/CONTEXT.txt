@@ -1575,6 +1575,12 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  "Compare" renamed "All" (owner, 2026-10-16): data-sen / senMode "all"
      (the default). Senate toggle is now All / Representation / Seats; read
      "Compare" in the notes above as All.
+  -  Governors 2026 calls flat too (owner, 2026-10-16, local): the states on
+     the ballot, the top bar and the legend use ALT_PROJ like Senate (light
+     blue / light red / yellow; can't-call keeps the grey hatch). #us-bar.flat
+     now on Senate and Governors; #proj-governors joins the CSS overrides;
+     PROJ_FILL (the hatch fills) removed, now unused. Only House 2026 (all grey
+     squares, hatched yellow undecided in the bar) still hatches.
 
 STATUS / NEXT
 -------------
