@@ -140,8 +140,9 @@ svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
 #map-india{margin-top:-3%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
+/* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
-svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
+svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend svg{width:14px;height:14px}

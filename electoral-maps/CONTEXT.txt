@@ -1581,6 +1581,9 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      now on Senate and Governors; #proj-governors joins the CSS overrides;
      PROJ_FILL (the hatch fills) removed, now unused. Only House 2026 (all grey
      squares, hatched yellow undecided in the bar) still hatches.
+  -  No bold state names (owner, 2026-10-16, local): names inside a block
+     (text.in) were 600, outside 500; svg.map text.in now inherits 500, so
+     every map (US and India), race and year uses one weight.
 
 STATUS / NEXT
 -------------
