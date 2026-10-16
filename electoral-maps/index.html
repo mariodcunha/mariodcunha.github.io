@@ -968,7 +968,7 @@ function setUS(race,animate,year=usYear(race)){
       label:`2026 governors, poll aggregate: ${d} Democrats incl. ${g26.D} called, ${r} Republicans incl. ${g26.R} called, ${g26.T} toss-ups${g26.N?`, ${g26.N} can't call`:""}`};}
   else if(race==="president") T={d:c.d,r:c.r,nd:P.d,nr:P.r,tot:538,mark:270/538*100,need:"270<small>TO WIN</small>",ctl:c.d>c.r?"d":"r",
     label:`${year} presidential electoral votes, one square per vote: ${P.d} ${c.d}, ${P.r} ${c.r}`};
-  else if(race==="governors") T={d:govD,r:govR,nd:"Democrats",nr:"Republicans",bd:c.d,br:c.r,tot:435,mark:null,ctl:null,
+  else if(race==="governors") T={d:govD,r:govR,nd:"Democrats",nr:"Republicans",seg:{d:c.d,m:c.i,r:c.r},tot:435,mark:null,ctl:null,
     ud:`Govern ${Math.round(c.d/435*100)}% of Americans`,ur:`Govern ${Math.round(c.r/435*100)}% of Americans`,
     label:`Governors after the ${year} elections: ${govD} Democrats, ${govR} Republicans${govI?`, ${govI} independent`:""}; each state sized by its House seats`};
   else {
@@ -1027,10 +1027,13 @@ function setUS(race,animate,year=usYear(race)){
   // wherever one group ends and the next begins
   const seg=T.seg||{d:T.bd??T.d,r:T.br??T.r}, sum=["d","D","T","N","R","r"].reduce((a,g)=>a+(seg[g]||0),0);
   seg.m??=Math.max(0,T.tot-sum);
+  // Governors: an independent governor's states fill the middle in their map colour, not as a blank strip that would
+  // widen the white gap between the sides
+  document.getElementById("bar-m").style.background=race==="governors"&&!y26&&c.i?"var(--ind)":"";
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
-    const grp=race==="senate"?g:e.dataset.g;   // Senate: a white gap between every segment, solid and light too
+    const grp=race==="senate"||race==="governors"?g:e.dataset.g;   // Senate and Governors: a white gap between every segment, solid and light too
     e.classList.toggle("gap",w>0&&prev!==null&&prev!==grp); if(w>0) prev=grp;
   }
   document.getElementById("us-tally").classList.toggle("pct",!!T.pct);

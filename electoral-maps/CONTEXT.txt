@@ -1588,6 +1588,11 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      link (no #hash) opens #senate; senMode starts "seats" (Seats button
      aria-pressed in the HTML); lastRace.usa = "senate", so picking USA from
      India also lands there. #house etc. links still open their race.
+  -  Governors bar gaps (owner, 2026-10-16, local): Governors uses Senate's
+     gap rule, a 3px white gap between every segment (2026: dark blue | light
+     blue | yellow | grey | light red | dark red). Years with an independent
+     governor (2010-2016) fill bar-m with var(--ind) (seg.m = c.i) instead of
+     a blank strip that made that gap ~3x wider.
 
 STATUS / NEXT
 -------------
