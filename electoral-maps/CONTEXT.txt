@@ -11,7 +11,7 @@ Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/ind
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
-Last updated: 2026-10-11
+Last updated: 2026-10-16
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -1465,14 +1465,124 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  House generic ballot likewise switched to the NYT list (owner,
      2026-10-11, local): D 50.2 / R 41.2, 12 pollsters. Legend says "12 of the
      New York Times' select pollsters since Sep 1, as of Oct 11".
+  -  India map inner scroll removed (owner, 2026-10-15, local): #map-india's
+     -4% bottom margin made the svg overhang its .mapwrap (overflow-x:auto
+     forces overflow-y auto), so the box scrolled ~40px vertically. The bottom
+     trim now sits on the box (.mapwrap.in{margin-bottom:-4%}; svg keeps
+     margin-top:-3%, an upward overhang doesn't scroll). Same position as
+     before; checked desktop + 375px on all three India views: no vertical
+     scroll in the box, phones still side-scroll, nothing clipped.
+  -  Senate "Alt" view (owner, 2026-10-15, local): third Senate sub-toggle
+     after Seats / Representation. A plain tile grid, one rounded square per
+     state with its postal code, no party colours (owner: "don't color it").
+     Grid in ALT_GRID (12 cols x 8 rows, no DC): Alaska diagonally up-left of
+     Washington, Hawaii diagonally down-left of Arizona. House squares,
+     circles and names step aside; the tally bar stays. Not Compact.
+     Checked desktop + narrow pane, no console errors, back to Seats restores.
+  -  Senate Alt split tiles (owner, 2026-10-16, local): each tile is two rounded
+     halves (gap .05 tile, rx .1 each), one per Senate seat (left = SEN_HIST
+     seat 0). The postal code's letters sit one per half, anchored at the split
+     (.03 tile from the gap) so they read as one pair of initials. Coloured ONLY
+     for 2024 and 2026 (paintAlt(year), called from setUS on Senate): 2024 =
+     SEN_HIST, 2026 = seats not up + projOf calls (hatched, as on Seats); white
+     letters on solid halves, dark on hatched / toss-up; other years stay plain
+     grey. ALT[k] = [{r,t},{r,t}]. Checked 2022 / 2024 / 2026, no console errors.
+     Then (owner, same day): each letter moved to the top centre of its own half
+     (baseline-centred .95 x font size below the top), font .26 tile (was .3),
+     weight 500 (was 700).
+     Then (owner, same day): the whole postal code sits together at the top
+     centre of the LEFT half; the right half has no text (ALT[k][1].t = false).
+     Its colour follows the left half's party. Font then .21 tile (owner).
+     Then (owner, same day): font .19 tile; on Alt the 2026 calls are flat, not
+     hatched (ALT_PROJ): light blue #a8d3f4 = Dem ahead, light red #f5aca6 =
+     Rep ahead, yellow #f2cf4a = toss-up (can't-call keeps the grey hatch).
+     Seats view, bar and legend keep the hatching.
+  -  Senate Representation bar chart, 2024 and 2026 only (owner, 2026-10-16,
+     local): the Alt tile halves slide (CSS x/y/width/height/rx transitions)
+     into a bar chart; other years keep the circle cartogram. setUS turns
+     senMode "power" into sm "chart" for those years (svg class .chart).
+     x = the 50 states by grey squares (CH_N, today's House map), fewest left,
+     ties A-Z; codes on two staggered rows under the axis. y = representation:
+     each senator one thin rounded bar of length 1/squares (one-seat states
+     reach the top, CA is 1/52), the state's two stacked (seat 0 bottom), with
+     Alt colours. Axes with arrows, "Representation" and "Population", Low/High
+     at the ends (drawRepAxes, repChart, placeAlt). Checked 2024 / 2026, back to
+     Alt and to 2022 circles, no console errors.
+     Then (owner, same day): the Alt <-> chart morph runs in two steps (Web
+     Animations keyframes in placeAlt, 1s, states staggered 10ms; the CSS
+     geometry transitions were removed so they don't override the keyframes).
+     To the chart: each half drops down in its own tile's column and stretches
+     to its bar, then slides sideways to its x-axis place. Back: slides to its
+     tile's column, then flies up and widens. Codes follow the same path.
+     Checked mid-frames both ways and the end states.
+  -  Senate Representation tally (owner, 2026-10-16, local): in Representation
+     (every year 2008-2026) the top bar and big numbers
+     show each side's share of representation, not seats. Each senator counts
+     1 / their state's grey squares that year (CH_N + CENSUS_DIFF; weights in
+     rw, built in the SEAT loop of setUS), shares as % (pct class), no 50% mark,
+     seat counts moved under the bar ("47 seats") in party blue / red (only
+     the 2026 House "undecided" note stays grey: T.urMuted). 2026 keeps the solid / leaning
+     / toss-up split, weighted the same way. Seats view unchanged. E.g. 2020:
+     50-50 seats, Democrats 44% of representation; 2024: D 40%, R 60%.
+  -  Senate toggle renamed (owner, 2026-10-16, local): "Seats" -> "Compare"
+     (data-sen / senMode "compare": circles on the grey House map, still the
+     default) and "Alt" -> "Seats" (data-sen "seats"; svg class #map-us.seats,
+     was .alt). Order unchanged: Compare / Representation / Seats. Internal
+     tile-grid names (ALT, ALT_PROJ, paintAlt, placeAlt, .alt-grid) kept, so
+     "Alt" in older notes above means today's Seats view. The representation
+     tally now applies only to Representation (sm power/chart); it had leaked
+     into Alt/Seats. Checked all three modes, no console errors.
+  -  Senate Seats view coloured for every year 2008-2026 (owner, 2026-10-16,
+     local): paintAlt no longer limits colour to 2024 / 2026; each half takes
+     SEN_HIST[year][state][seat] (d / r / i), 2026 as before. Tile counts match
+     the tally every year (e.g. 2014: 54 R, 44 D, 2 I).
+  -  Senate Representation bar chart REMOVED (owner, 2026-10-16, local):
+     Representation is the circle cartogram in every year again, 2024 and 2026
+     included. Deleted repBox / repChart / drawRepAxes / placeAlt / altChart,
+     the "chart" sm value and svg class, the .rep-axes CSS and the bar-chart
+     note text. The tile halves stay where drawAlt puts them (Seats view). The
+     bar-chart entries above are history only. Checked 2024 / 2026 circles,
+     Seats tiles, no console errors.
+  -  Senate morphs (owner, 2026-10-16, local), every year: Seats <->
+     Compare / Representation turns each senator's tile half into that
+     senator's circle or back (senMorph, 800ms Web Animations on the rect's
+     x/y/width/height/rx): it slides, grows or shrinks, and rounds off (rx =
+     half the width). Circle spots come from the transforms set on the circle
+     and its state group (seatCircle, DOMMatrix), so Compact's packing counts.
+     #map-us.morph keeps the halves on show and hides the circles and codes
+     until the halves land; then leaving Seats hides the tiles at once,
+     entering Seats fades the codes in. setUS tracks the last Senate mode in
+     senPrev; senMorphRun guards against clicks mid-morph. Compare <->
+     Representation unchanged (circles already slide and resize). Checked
+     start / end frames match the circles exactly (2012, 2026), no errors.
+  -  Senate 2026 calls flat, no hatching (owner, 2026-10-16, local): the
+     circles, top bar and legend use the Seats-tile colours (ALT_PROJ): light
+     blue #a8d3f4 = Dem ahead, light red #f5aca6 = Rep ahead, yellow #f2cf4a =
+     toss-up; can't-call keeps the grey hatch. Bar: #us-bar.flat on Senate
+     (CSS overrides .hatch-*; #proj-senate for the legend) and a white gap
+     between every segment (solid | light | toss-up | light | solid). Compact
+     pills take dark text on the light fills. House and Governors 2026 keep
+     their hatching. Note: light blue is close to the independent colour
+     (--ind #74bcf0).
+  -  Cut-off names fixed (owner, 2026-10-16, local): in Senate Compare (and
+     Governors, which borrows its layout) for 2012-2020 (2010 census),
+     "Oregon" went outside its block to the left and ran 24px off the map:
+     only President's and House's outside names got room reserved. PACK_US
+     races is now ["president","house","senate"], so Senate's outside names
+     reserve room too (the shared Compact layouts shift slightly). Checked
+     every race, year and Senate view at desktop and 375px: no name past the
+     map's edge.
+  -  "Compare" renamed "All" (owner, 2026-10-16): data-sen / senMode "all"
+     (the default). Senate toggle is now All / Representation / Seats; read
+     "Compare" in the notes above as All.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything above, pushed 2026-10-11 on the owner's say-so (latest:
-  2026 House, Senate and Governors polls switched to the NYT select-pollster
-  lists).
+- Live = everything above, pushed 2026-10-16 on the owner's say-so (latest:
+  Senate All / Representation / Seats with shape morphs, representation-share
+  tally, flat 2026 Senate colours, Oregon name fix).
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019

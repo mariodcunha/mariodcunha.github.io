@@ -118,6 +118,10 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,#f9d4d1 2.5px 5px)}
 .hatch-t{background:repeating-linear-gradient(135deg,#e8bd2e 0 2.5px,#fbefc4 2.5px 5px)}
 .hatch-n{background:repeating-linear-gradient(135deg,#a9a9a9 0 2px,#fff 2px 5px);box-shadow:inset 0 0 0 1px #d8d8d8}
+/* Senate (owner, 2026-10-16): flat light colours instead of hatching, as on the Seats tiles (ALT_PROJ) */
+.bar.flat .hatch-d,#proj-senate .hatch-d{background:#a8d3f4}
+.bar.flat .hatch-r,#proj-senate .hatch-r{background:#f5aca6}
+.bar.flat .hatch-t,#proj-senate .hatch-t{background:#f2cf4a}
 .legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
@@ -135,7 +139,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
-#map-india{margin:-3% 0 -4%}
+#map-india{margin-top:-3%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
@@ -159,6 +163,17 @@ svg.map text.in{fill:#fff;font-weight:600} svg.map text.in.grey{fill:var(--muted
 #map-us .seat{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),fill .45s var(--ease)}
 #map-us.senate .seat{transform:scale(1)}
 #map-us text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
+/* Senate Alt: one plain tile per state on a grid (no colours); the House squares, circles and names step aside */
+#map-us .alt-grid{opacity:0;pointer-events:none;transition:opacity .35s}
+#map-us.seats .alt-grid{opacity:1;transition:opacity .35s .2s}
+#map-us.seats .state text{opacity:0}
+#map-us .alt-grid text{transform-box:fill-box;transform-origin:center}
+#map-us .alt-grid rect{fill:#efeeea;stroke:#d9d7d0;stroke-width:1}
+#map-us .alt-grid rect{transition:fill .45s var(--ease)} #map-us .alt-grid rect.on{stroke:none}
+#map-us .alt-grid text{fill:#a3a19a;font-weight:500;transition:fill .45s var(--ease),opacity .3s}
+/* Seats <-> circles morph (senMorph): the tile halves stay on show and travel; the circles wait hidden, the codes too */
+#map-us.morph .alt-grid{opacity:1;transition:none} #map-us.morph .seat{opacity:0} #map-us.morph .alt-grid text{opacity:0;transition:none}
+#map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .6s var(--ease)}
@@ -266,8 +281,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" class="next" aria-label="Later election"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <div class="subtoggle" id="sen-view" role="group" aria-label="Size the Senate circles by" hidden>
-      <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
+      <button type="button" data-sen="all" aria-pressed="true">All</button>
       <button type="button" data-sen="power" aria-pressed="false">Representation</button>
+      <button type="button" data-sen="seats" aria-pressed="false">Seats</button>
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="seat" aria-pressed="true">Seat share</button>
@@ -347,7 +363,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-lsv="map" aria-pressed="false">Map</button>
       <button type="button" data-lsv="packed" aria-pressed="true">Compact</button>
     </div>
-    <div class="mapwrap"><svg class="map india" id="map-india" role="img"></svg></div>
+    <div class="mapwrap in"><svg class="map india" id="map-india" role="img"></svg></div>
     <div class="legends">
       <div class="legend" id="legend-loksabha">
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--inc)"/></svg>Congress</span>
@@ -558,7 +574,63 @@ function countTo(node,to,animate){
 // Visitors land on the latest election: House / Senate / Governors start at the newest year (2026 midterms)
 // One year for every US race (owner, 2026-10-11): the page opens on House 2026 (the next election); after that each
 // race keeps the last year picked. President has no midterms: it shows the latest presidential year up to that one.
-let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
+let usRace=null, usYearPick=US_YEARS.at(-1), senMode="all";
+// ---------- Senate Alt: a tile grid, one square per state (owner, 2026-10-15) ----------
+// [state, column, row]. Alaska sits diagonally up-left of Washington, Hawaii diagonally down-left of Arizona.
+const ALT_GRID=`AK 0 1|ME 11 0|WI 6 1|VT 10 1|NH 11 1|WA 1 2|ID 2 2|MT 3 2|ND 4 2|MN 5 2|IL 6 2|MI 7 2|NY 9 2|MA 10 2|
+OR 1 3|NV 2 3|WY 3 3|SD 4 3|IA 5 3|IN 6 3|OH 7 3|PA 8 3|NJ 9 3|CT 10 3|RI 11 3|
+CA 1 4|UT 2 4|CO 3 4|NE 4 4|MO 5 4|KY 6 4|WV 7 4|VA 8 4|MD 9 4|DE 10 4|
+AZ 2 5|NM 3 5|KS 4 5|AR 5 5|TN 6 5|NC 7 5|SC 8 5|HI 1 6|OK 4 6|LA 5 6|MS 6 6|AL 7 6|GA 8 6|TX 4 7|FL 9 7`
+  .split("|").map(t=>t.trim().split(" ")).map(([k,x,y])=>[k,+x,+y]);
+// Each tile is split down the middle into two rounded halves, one per Senate seat (SEN_HIST order: left = seat 0).
+// The postal code sits whole at the top centre of the left half (the right half has no text).
+const ALT={};
+(function drawAlt(){
+  const vb=usSvg.viewBox.baseVal, cols=12, rows=8, p=Math.min(vb.width/cols,vb.height/rows), t=p*.88;
+  const x0=vb.x+(vb.width-p*cols)/2, y0=vb.y+(vb.height-p*rows)/2, gap=t*.05, w=(t-gap)/2, fz=t*.19;
+  const g=el("g",{class:"alt-grid","aria-hidden":"true"},usSvg);
+  ALT_GRID.forEach(([k,x,y])=>{const cx=x0+(x+.5)*p, cy=y0+(y+.5)*p, fs=`font-size:${fz.toFixed(1)}px`;
+    ALT[k]=[0,1].map(j=>{const o={x:j?cx+gap/2:cx-t/2,y:cy-t/2,width:w,height:t,rx:t*.1};
+      return {r:el("rect",o,g),o,t:!j&&Object.assign(el("text",{x:cx-t/2+w/2,y:cy-t/2+fz*.95,style:fs,"text-anchor":"middle"},g),{textContent:k})}})});
+})();
+// Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
+// The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
+const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
+function paintAlt(year){
+  for(const k in ALT) ALT[k].forEach(({r,t},j)=>{let p=SEN_HIST[year]?.[k]?.[j];   // every year 2008-2026
+    if(year===2026&&SEN_UP[k]===j) p=projOf("senate",k);
+    r.style.fill=p?PARTY_FILL[p]||ALT_PROJ[p]:""; r.classList.toggle("on",!!p);
+    if(t) t.setAttribute("class",!p?"":/^[dri]$/.test(p)?"in":"dk")});
+}
+// ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
+// Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
+// shrinks to the circle's size and its corners round off (rx = half its width). The real circles stay hidden until the
+// halves land on them. All <-> Representation needs nothing extra: the circles already slide and resize.
+let senPrev=null, senMorphRun=0;
+// Where senator j of state k's circle is drawn, read from the transforms set on it and on its state (Compact), so
+// it is where the circle is going, not where a running transition has got to.
+function seatCircle(k,j){
+  const e=SEAT[k][j], c=new DOMMatrix(e.style.transform||"none"), g=new DOMMatrix(GST[k].style.transform||"none");
+  const p=g.transformPoint({x:e.cx.baseVal.value+c.e,y:e.cy.baseVal.value+c.f}), r=e.r.baseVal.value*Math.hypot(c.a,c.b)*Math.hypot(g.a,g.b);
+  return {x:p.x-r,y:p.y-r,width:2*r,height:2*r,rx:r};
+}
+const seatCircles=()=>Object.fromEntries(Object.keys(ALT).map(k=>[k,[0,1].map(j=>seatCircle(k,j))]));
+function senMorph(from){
+  const run=++senMorphRun, toSeats=!!from, to=toSeats?null:seatCircles();
+  const px=g=>({x:g.x+"px",y:g.y+"px",width:g.width+"px",height:g.height+"px",rx:g.rx+"px",ry:g.rx+"px"});
+  const opt={duration:800,easing:"cubic-bezier(.65,0,.35,1)",fill:"forwards"};
+  usSvg.classList.add("morph");
+  const anims=[];
+  for(const k in ALT) ALT[k].forEach(({r,o},j)=>{r.getAnimations().forEach(a=>a.cancel());
+    anims.push(r.animate(toSeats?[px(from[k][j]),px(o)]:[px(o),px(to[k][j])],opt))});
+  Promise.all(anims.map(a=>a.finished)).then(()=>{
+    if(run!==senMorphRun) return;
+    const grid=usSvg.querySelector(".alt-grid");
+    if(!toSeats) grid.style.transition="none";   // leaving Seats: the halves vanish the moment the circles show
+    usSvg.classList.remove("morph"); grid.getBoundingClientRect();
+    grid.style.transition=""; anims.forEach(a=>a.cancel());
+  }).catch(()=>{});
+}
 // ---------- Senate voter power: a cartogram of circle pairs ----------
 // Circle AREA ~ senators per grey square (2 / squares), scaled so the smallest (California) is as big as Hawaii's
 // was on the seat-sized map (radius .354 squares): r = .354 * sqrt(52 / squares). Each state's two circles sit side
@@ -758,7 +830,7 @@ function applyPack(M,pk,groups){
     e.g.style.transform=`translate(${L.x.toFixed(2)}px,${L.y.toFixed(2)}px)`; e.t.textContent=L.t;
     e.t.classList.toggle("in",!L.out); e.t.setAttribute("text-anchor",L.out||"middle"); e.r.style.display=L.out?"none":"";
     e.r.setAttribute("x",-L.w/2); e.r.setAttribute("width",L.w);
-    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht/.test(s.e.style.fill)));
+    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht|#a8d3f4|#f5aca6|#f2cf4a|rgb\((168, 211, 244|245, 172, 166|242, 207, 74)\)/.test(s.e.style.fill)));
     e.t.classList.toggle("grey",!L.out&&L.seg.every(s=>!s.e.style.fill||/var\(--(house|seat-empty)\)|#hn/.test(s.e.style.fill)));
     const fill=s=>{const f=s.e.style.fill, h=/#h([drtn])/.exec(f); return h?HATCH_SOLID[h[1]]:f||"var(--seat-empty)"}, stops=L.seg.flatMap(s=>[[s.a,fill(s)],[s.b,fill(s)]]);
     while(e.gr.children.length>stops.length) e.gr.lastChild.remove();
@@ -774,7 +846,7 @@ function applyPack(M,pk,groups){
 const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
 const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,fitOut:true,pad:.3,race:"president",side:k=>LBL[k].side,
-  keys:()=>Object.keys(GST), races:["president","house"],
+  keys:()=>Object.keys(GST), races:["president","house","senate"],   // senate too: its Oregon name (2010 census) goes outside
   // the layout: President's squares (House + the two Senate squares) for the census, so every race shares it and
   // only adds or drops squares, as on the Map
   house(k){return (HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census][k]||0))},
@@ -844,10 +916,15 @@ function placePairs(seatsOf){
 const usYear=race=>race==="president"?PRES_YEARS.filter(y=>y<=usYearPick).at(-1)??PRES_YEARS[0]:usYearPick;
 function setUS(race,animate,year=usYear(race)){
   const panel=document.getElementById("panel-us"), diff=CENSUS_DIFF[censusOf(year)];
+  // Senate: switching between Seats and a circle view (All / Representation) morphs the halves into the circles or back
+  const morph=race==="senate"&&animate&&!reduce&&senPrev&&(senPrev==="seats")!==(senMode==="seats");
+  const fromCircles=morph&&senMode==="seats"&&seatCircles();   // where the circles are now, before they move
   if(!animate) panel.classList.add("instant");
   const P=PRES[year], dem=race==="president"&&new Set(P.dem.split(" "));
   const c={d:0,r:0,i:0,v:0,D:0,R:0,T:0,N:0}; let govD=0,govR=0,govI=0;
-  const y26=year===2026&&race!=="president", sm=senMode, g26={D:0,R:0,T:0,N:0};
+  const y26=year===2026&&race!=="president", g26={D:0,R:0,T:0,N:0};
+  const rw={d:0,r:0,i:0,D:0,R:0,T:0,N:0};   // Senate Representation: each senator weighted 1 / the state's grey squares
+  const sm=senMode;
   const paint=(e,show,fill,stroke)=>{e.classList.toggle("gone",!show); if(show){e.style.fill=fill; e.style.stroke=stroke||"var(--bg)"}};
   for(const k in ESQ){
     const n=(CH_N[k]||0)+(diff[k]||0), hs=HSQ[k]||[];
@@ -861,7 +938,7 @@ function setUS(race,animate,year=usYear(race)){
       ESQ[k].forEach(e=>paint(e,false));
       // 2026: the House polls are national (generic ballot), so no seat is called: every square grey
       if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,y26?"var(--house)":PARTY_FILL[p]); if(j<n) c[p]++});
-      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm!=="power","var(--house)"));
+      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
       if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=PROJ_FILL[g];
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
       else if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
@@ -869,16 +946,16 @@ function setUS(race,animate,year=usYear(race)){
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
     SEAT[k].forEach((e,j)=>{let p=SEN_HIST[year]?.[k]?.[j]; if(y26&&SEN_UP[k]===j) p=projOf("senate",k);
-      if(p){e.style.fill=PARTY_FILL[p]||PROJ_FILL[p]; if(race==="senate") c[p]++}
+      if(p){e.style.fill=PARTY_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}}
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
       const o=race==="senate"&&sm==="power"&&powerLayout()[k];
-      e.style.transform=o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`:""});
+      e.style.transform=race==="senate"&&sm==="seats"?"scale(0)":o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`:""});
   }
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
   const pctOf=n=>Math.round(n/435*100);
-  if(y26&&race==="house") T={d:GENERIC.d,r:GENERIC.r,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"50%<small>FOR MAJORITY</small>",ctl:null,pct:true,
+  if(y26&&race==="house") T={d:GENERIC.d,r:GENERIC.r,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"50%<small>FOR MAJORITY</small>",ctl:null,pct:true,urMuted:true,
     seg:{d:GENERIC.d,T:+(100-GENERIC.d-GENERIC.r).toFixed(1),r:GENERIC.r},ud:`Generic ballot · ${GENERIC.n} polls`,ur:`${+(100-GENERIC.d-GENERIC.r).toFixed(1)}% undecided`,
     label:`2026 House: generic ballot, average of ${GENERIC.n} national polls: Democrats ${GENERIC.d}%, Republicans ${GENERIC.r}%`};
   else if(y26&&race==="senate"){const d=c.d+c.i+c.D, r=c.r+c.R;
@@ -901,6 +978,16 @@ function setUS(race,animate,year=usYear(race)){
       ud:gSide==="d"?`+${gN} net gain`:"",ur:gSide==="r"?`+${gN} net gain`:"",
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
+  // Senate Representation (every year): the tally shows each side's share of representation, not seats. A senator
+  // counts 1 / their state's grey squares (that year's House map), so Wyoming's two outweigh California's two 52 to 1
+  if(race==="senate"&&sm==="power"){
+    const W=Object.values(rw).reduce((a,b)=>a+b,0), pc=v=>v/W*100, sd=T.d, sr=T.r;
+    const d=pc(rw.d+rw.i+rw.D), r=pc(rw.r+rw.R);
+    T={...T,d:Math.round(d),r:Math.round(r),tot:100,mark:null,pct:true,
+      seg:{d:pc(rw.d+rw.i),D:pc(rw.D),T:pc(rw.T),N:pc(rw.N),R:pc(rw.R),r:pc(rw.r)},
+      ud:`${sd} seats`,ur:`${sr} seats`,
+      label:`${year} Senate representation: senators weighted by 1 over their state's House seats. Democrats ${d.toFixed(1)}% (${sd} seats), Republicans ${r.toFixed(1)}% (${sr} seats)`};
+  }
   // names follow the squares on show, so they stay next to their state as it grows or shrinks
   const pw=race==="senate"&&sm==="power"&&powerLayout();
   for(const k in LBL){
@@ -920,12 +1007,17 @@ function setUS(race,animate,year=usYear(race)){
   // Every race shares one layout; Governors borrows Senate's names.
   // Governors names sit where Senate's do (owner, 2026-10-11): it uses Senate's layout and name spots, coloured by
   // the governors' squares (pills read their colours when applied)
-  const packs=presMode==="packed"&&!(race==="senate"&&sm==="power"), lr=race==="governors"?"senate":race;
+  const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="governors"?"senate":race;
   PACK_US.race=lr; PACK_US.census=censusOf(year);
   applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
   usSvg.classList.toggle("senate",race==="senate");
+  document.getElementById("us-bar").classList.toggle("flat",race==="senate");
   usSvg.classList.toggle("president",race==="president");
   usSvg.classList.toggle("governors",race==="governors");
+  usSvg.classList.toggle("seats",race==="senate"&&sm==="seats");
+  if(race==="senate") paintAlt(year);
+  if(morph) senMorph(fromCircles);
+  senPrev=race==="senate"?senMode:null;
   usSvg.setAttribute("aria-label",T.label);
   countTo(document.getElementById("num-d"),T.d,animate);
   countTo(document.getElementById("num-r"),T.r,animate);
@@ -938,7 +1030,8 @@ function setUS(race,animate,year=usYear(race)){
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
-    e.classList.toggle("gap",w>0&&prev!==null&&prev!==e.dataset.g); if(w>0) prev=e.dataset.g;
+    const grp=race==="senate"?g:e.dataset.g;   // Senate: a white gap between every segment, solid and light too
+    e.classList.toggle("gap",w>0&&prev!==null&&prev!==grp); if(w>0) prev=grp;
   }
   document.getElementById("us-tally").classList.toggle("pct",!!T.pct);
   panel.classList.toggle("pct",!!T.pct);   // phones: no room for the 50% label between the two notes
@@ -946,7 +1039,7 @@ function setUS(race,animate,year=usYear(race)){
   mark.style.opacity=need.style.opacity=T.mark==null?0:1;
   if(T.mark!=null){mark.style.left=need.style.left=T.mark+"%"; need.innerHTML=T.need}
   const ud=document.getElementById("under-d"), ur=document.getElementById("under-r");
-  const applyUnder=()=>{ud.textContent=T.ud||"";ur.textContent=T.ur||"";ud.style.opacity=ur.style.opacity=1;ur.style.color=T.pct?"var(--muted)":""};
+  const applyUnder=()=>{ud.textContent=T.ud||"";ur.textContent=T.ur||"";ud.style.opacity=ur.style.opacity=1;ur.style.color=T.urMuted?"var(--muted)":""};
   if(animate&&!reduce&&(ud.textContent!==(T.ud||"")||ur.textContent!==(T.ur||""))){ud.style.opacity=ur.style.opacity=0;setTimeout(applyUnder,250)} else applyUnder();
   ["president","house","senate","governors"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   document.getElementById("p-note").textContent=race==="president"&&P.note||"";
@@ -956,7 +1049,7 @@ function setUS(race,animate,year=usYear(race)){
   const power=race==="senate"&&sm==="power", ns=Object.values(CH_N);
   document.getElementById("sen-power").hidden=!power;
   document.getElementById("sen-power").textContent=`Circle size = representation: senators per grey square, taking each grey square on the House map as the same unit of population. A Wyoming voter has ${Math.max(...ns)/Math.min(...ns)}× the say in choosing a senator that a California voter has.`;
-  document.getElementById("sen-sq").parentElement.hidden=power;   // no grey squares in Representation
+  document.getElementById("sen-sq").parentElement.hidden=race==="senate"&&sm!=="all";   // no grey squares in Representation
   document.querySelectorAll("[data-sen]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sen===senMode));
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
   document.getElementById("pres-view").hidden=true;   // USA: Compact only
