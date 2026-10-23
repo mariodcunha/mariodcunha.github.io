@@ -542,7 +542,8 @@ Data: ST = {2024: {code: [bjp, nda, oth, india, inc] | null}}, ST_YEARS,
 UI (panel-states): tally = MLAs (NDA / Others / INDIA, with BJP/allies and
   Congress/allies sub-lines), five-part bar, "4,123 MLAs in 31 assemblies",
   map #map-states, legend. No majority marker. Year stepper shows 2024 only
-  for now (arrows disabled); no seat/vote share toggle.
+  for now (arrows disabled); no seat/vote share toggle. (Since 2026-10-23:
+  2004-2026 with 2025 and 2026; see HISTORY.)
 2024 groups per state (sum = assembly size; checked):
   AP 8/156/11/0/0 (TDP 135, JSP 21; YSRCP 11)   AR 46/8/5/0/1
   AS 60/15/21/1/29   BR 74/48/7/95/19   CG 54/0/1/0/35   GA 20/2/4/3/11
@@ -1608,6 +1609,45 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      SEN_CALL d / r; 38 D, 32 R) and "N leaning" (light; 14 D, 13 R), so
      38+14 = 52 and 32+13 = 45. One per line (.gain white-space:pre-line).
      aria-label says the same.
+  -  Toss-up yellow solid on every bar (owner, 2026-10-23, local): ".bar
+     .hatch-t" is flat #f2cf4a for every race, so House 2026's undecided
+     segment matches the Senate / Governors toss-ups (was hatched).
+  -  States 2025 and 2026 (owner, 2026-10-23, local): the States view (Seats
+     and Chief Minister) now steps 2004-2019, 2024, 2025, 2026 (ST_YEARS);
+     the other India views keep IN_YEARS and drop to 2024 when left on a
+     later year. 2026 = as of October 2026 (stWhen), not year end. Data from
+     Wikipedia (2025 Delhi / Bihar, 2026 Assam / Kerala / TN / WB /
+     Puducherry election pages, List of current Indian chief ministers),
+     written as changes on the year before (see the code comments):
+     2025: DL BJP 48 / AAP 22; BR 89/113/6/29/6; AAP out of INDIA (18 Jul
+     2025) -> its MLAs not aligned (DL, PB 92, GJ 5, GA 2, JK 1); AIADMK back
+     in NDA (TN 66). CM: Delhi BJP, Punjab oth, Manipur left out
+     (President's rule 13 Feb 2025 - 4 Feb 2026).
+     2026: AS 82/20/2/3/19, KL 3/0/0/74/63 (LDF stays Congress allies),
+     TN 1/52/108/68/5 (TVK 108 not aligned), WB 208/0/3/81/2 (incl. Falta
+     re-poll), PY 4/14/6/5/1. CM: MN, BR (Samrat Choudhary), WB, AS BJP;
+     TN oth (Vijay, TVK); KL INC; PY NDA. Every state checked to sum to its
+     assembly size. Notes say "grouped by each party's alliance then".
+  -  States every year 2004-2026 (owner, 2026-10-23, local): ST_YEARS is now
+     all 23 years (Seats and Chief Minister); Lok Sabha / Rajya Sabha keep
+     IN_YEARS. The year drum has 10 faces, so only faces within 2 of the
+     current year are drawn. blocOf(y): UPA before 2023, INDIA from 2023.
+     Built by build_states.py (in this folder; run:
+       python3 build_states.py dm_results.json st.json
+     where dm_results.json = DataMeet assembly.csv winners per party; the
+     script writes st.json and st_cm.json). It holds every election's party
+     totals from 2012 Gujarat / 2014 on, the NDA and UPA/INDIA membership
+     year by year (NDA / UPA dicts), the Maharashtra splits (Shiv Sena 2019
+     seats 40 NDA / 16 Thackeray from 2022; NCP 41 / 13 from 2023) and the
+     CM table (CMS: group spans per state). Checked: it reproduces the CM
+     snapshots 2004-2024 exactly and the seat snapshots within 1-2 seats
+     (Kerala minor UDF/LDF parties, JH 2014 AJSU, MH 2014/2019 one seat;
+     2004 BR/JH come from the Bihar 2000 split). The page keeps the original
+     2004/2009/2014/2019/2024 values and adds 2005-2008, 2010-2013,
+     2015-2018 and 2020-2023 from the script (Object.assign(ST, ...)).
+     Null at year end: Delhi 2014, J&K 2018-2023, Ladakh from 2019. CM left
+     out: Karnataka 2007, J&K 2008 and 2018-2023, Delhi 2014, Manipur 2025.
+     Ladakh no longer takes J&K's CM colour from 2019 (no legislature).
 
 STATUS / NEXT
 -------------

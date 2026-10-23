@@ -121,7 +121,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 /* Senate and Governors (owner, 2026-10-16): flat light colours instead of hatching, as on the Seats tiles (ALT_PROJ) */
 .bar.flat .hatch-d,#proj-senate .hatch-d,#proj-governors .hatch-d{background:#a8d3f4}
 .bar.flat .hatch-r,#proj-senate .hatch-r,#proj-governors .hatch-r{background:#f5aca6}
-.bar.flat .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t{background:#f2cf4a}
+.bar .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t{background:#f2cf4a}   /* toss-up / undecided: solid yellow on every bar, House too (owner, 2026-10-23) */
 .legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
@@ -1182,7 +1182,11 @@ document.querySelectorAll("[data-ls]").forEach(b=>b.addEventListener("click",()=
 // ---------- States: each state's assembly, drawn on its Lok Sabha squares ----------
 // Assembly seats by group [BJP, NDA allies, not aligned, INDIA allies, INC] from each state's latest election up to
 // 31 Dec of the year (parties grouped by their alliance at that date). null = no legislature (squares stay grey).
-const ST_YEARS=IN_YEARS;
+// States steps through every year 2004-2026 (owner, 2026-10-23): assemblies and chief ministers follow their own
+// calendars, so each year is a snapshot (the other India views stop at Lok Sabha years)
+const ST_YEARS=Array.from({length:23},(_,i)=>2004+i);
+const blocOf=y=>LS_META[y]?.bloc||(y>=2023?"INDIA":"UPA");   // the INDIA bloc formed in July 2023
+const stWhen=y=>y===2026?"October 2026":`the end of ${y}`;   // 2026: as of now, not year end
 const ST={2004:{AP:[2,47,30,30,185],AR:[9,0,15,2,34],AS:[8,2,42,3,71],JH:[32,8,9,21,11],BR:[35,47,34,115,12],CG:[50,0,2,1,37],DL:[20,0,2,1,47],GA:[17,0,6,1,16],GJ:[127,2,2,0,51],HR:[6,0,61,2,21],HP:[16,0,9,0,43],JK:[1,0,50,16,20],KA:[79,5,74,1,65],KL:[0,0,51,27,62],MP:[173,1,17,1,38],MH:[54,62,31,72,69],MN:[4,3,30,3,20],ML:[2,0,22,14,22],MZ:[0,21,7,0,12],NL:[7,23,9,0,21],OD:[32,61,12,4,38],PY:[1,3,6,7,13],PB:[3,41,11,0,62],RJ:[120,2,22,0,56],SK:[0,0,31,0,1],TN:[4,132,15,53,30],TR:[0,0,47,0,13],UP:[88,2,288,0,25],UK:[19,0,14,1,36],WB:[0,60,208,0,26],CH:null,DD:null,LD:null,AN:null},
   2009:{AP:[2,10,119,7,156],AR:[3,0,5,10,42],AS:[10,24,38,1,53],BR:[55,88,90,1,9],CG:[50,0,2,0,38],DL:[23,0,4,0,43],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[4,32,14,0,40],HP:[41,0,4,0,23],JK:[11,0,31,28,17],JH:[18,2,29,18,14],KA:[110,0,34,0,80],KL:[0,0,101,15,24],MP:[143,0,16,0,71],MH:[46,44,54,62,82],MN:[0,0,25,5,30],ML:[1,0,19,15,25],MZ:[0,0,8,0,32],NL:[2,0,33,2,23],OD:[6,0,110,4,27],PY:[0,0,13,7,10],PB:[19,49,5,0,44],RJ:[78,1,25,0,96],SK:[0,0,32,0,0],TN:[0,0,102,98,34],TR:[0,0,50,0,10],UP:[51,11,319,0,22],UK:[34,0,15,0,21],WB:[0,0,243,30,21],CH:null,DD:null,LD:null,AN:null},
   2014:{AS:[5,0,43,0,78],BR:[91,3,122,23,4],CG:[49,0,2,0,39],GA:[21,0,10,0,9],HP:[26,0,6,0,36],KA:[40,0,62,0,122],KL:[0,0,67,35,38],MP:[165,0,7,0,58],MN:[0,5,12,1,42],ML:[0,2,27,2,29],MZ:[0,0,6,0,34],NL:[1,38,9,4,8],PY:[0,15,8,0,7],PB:[12,56,3,0,46],RJ:[163,4,12,0,21],TN:[0,32,197,0,5],TR:[0,0,50,0,10],UP:[47,1,317,10,28],UK:[31,0,7,0,32],WB:[0,0,252,0,42],AP:[4,102,69,0,0],TS:[5,15,78,0,21],AR:[11,0,7,0,42],GJ:[115,0,4,2,61],HR:[47,1,27,0,15],JK:[25,0,35,15,12],JH:[37,0,19,19,6],MH:[122,64,19,41,42],OD:[10,0,121,0,16],SK:[0,0,32,0,0],DL:null,CH:null,DD:null,LD:null,AN:null},
@@ -1192,6 +1196,38 @@ const ST={2004:{AP:[2,47,30,30,185],AR:[9,0,15,2,34],AS:[8,2,42,3,71],JH:[32,8,9
   MH:[132,103,3,34,16],MN:[32,18,5,0,5],ML:[2,26,22,5,5],MZ:[2,10,27,0,1],NL:[12,44,4,0,0],OD:[78,0,54,1,14],PB:[2,0,5,92,18],
   RJ:[115,1,10,4,70],SK:[0,31,1,0,0],TN:[4,5,66,141,18],TS:[8,0,46,1,64],TR:[32,14,0,11,3],UP:[255,32,3,111,2],UK:[47,0,4,0,19],
   WB:[77,0,1,216,0],DL:[8,0,0,62,0],PY:[6,10,6,6,2],JK:[29,0,8,47,6],LA:null,CH:null,DD:null,LD:null,AN:null}};
+// 2025 = 2024 plus (Wikipedia, checked 2026-10-23): Delhi Feb 2025 (BJP 48, AAP 22); Bihar Nov 2025 (BJP 89; JD(U) 85,
+// LJP(RV) 19, HAM 5, RLM 4; AIMIM 5, BSP 1; RJD 25, CPI(ML)L 2, CPI(M) 1, IIP 1; INC 6). AAP left the INDIA bloc on
+// 18 Jul 2025, so its MLAs are not aligned (Delhi 22, Punjab 92, Gujarat 5, Goa 2, J&K 1); AIADMK rejoined the NDA
+// (Apr 2025): Tamil Nadu's 66 move to NDA allies. Manipur's assembly sat suspended under President's rule (seats kept).
+ST[2025]={...ST[2024],DL:[48,0,22,0,0],BR:[89,113,6,29,6],PB:[2,0,97,0,18],GJ:[156,0,8,1,17],GA:[20,2,6,1,11],
+  JK:[29,0,9,46,6],TN:[4,71,0,141,18]};
+// 2026 = 2025 plus the April-May 2026 elections: Assam (BJP 82; AGP 10, BPF 10; AIUDF 2; Raijor Dal 2, AITC 1;
+// INC 19), Kerala (BJP 3; LDF 35 + UDF allies 39 = Congress allies, as in 2024; INC 63), Tamil Nadu (BJP 1; AIADMK
+// 47 + NDA allies 5; TVK 108; DMK 59 + SPA allies 9; INC 5), West Bengal (BJP 208 incl. the Falta re-poll; AJUP 2,
+// ISF 1; AITC 80, CPI(M) 1; INC 2), Puducherry (BJP 4; AINRC 12, LJK 1, AIADMK 1; TVK 2, NMK 1, IND 3; DMK 5; INC 1)
+ST[2026]={...ST[2025],AS:[82,20,2,3,19],KL:[3,0,0,74,63],TN:[1,52,108,68,5],WB:[208,0,3,81,2],PY:[4,14,6,5,1]};
+// 2005-2023 between the Lok Sabha years (owner, 2026-10-23), built by the same rule: elections to 2013 from DataMeet
+// (as for 2004 and 2009), later ones from the official party totals; parties grouped by their alliance at 31 Dec of each
+// year (e.g. JD(U) flips 2013 / 2015 / 2017 / 2022 / 2024; Shiv Sena 2019 seats split 40 Shinde (NDA) / 16 Thackeray
+// from 2022, NCP 41 Ajit / 13 Sharad from 2023; the Left and SP join the Congress side with INDIA in 2023). See CONTEXT.txt.
+Object.assign(ST,{
+  2005:{AP:[2,0,77,30,185],AR:[9,0,15,2,34],AS:[8,2,42,3,71],BR:[55,88,26,65,9],CG:[50,0,2,1,37],DL:[20,0,2,1,47],GA:[17,0,6,1,16],GJ:[127,2,2,0,51],HR:[2,0,20,1,67],HP:[16,0,9,0,43],JK:[1,0,50,16,20],JH:[30,6,11,25,9],KA:[79,5,75,0,65],KL:[0,0,47,31,62],MP:[173,1,17,1,38],MH:[54,62,32,71,69],MN:[4,3,30,3,20],ML:[2,0,22,14,22],MZ:[0,21,7,0,12],NL:[7,23,9,0,21],OD:[32,61,12,4,38],PY:[1,0,9,7,13],PB:[3,41,11,0,62],RJ:[120,2,22,0,56],SK:[0,0,31,0,1],TN:[4,0,147,53,30],TR:[0,0,47,0,13],UP:[88,2,288,0,25],UK:[19,0,14,1,36],WB:[0,60,208,0,26],CH:null,DD:null,LD:null,AN:null},
+  2006:{AP:[2,0,103,4,185],AR:[9,0,15,2,34],AS:[10,0,62,1,53],BR:[55,88,26,65,9],CG:[50,0,2,1,37],DL:[20,0,2,1,47],GA:[17,0,6,1,16],GJ:[127,2,2,0,51],HR:[2,0,20,1,67],HP:[16,0,9,0,43],JK:[1,0,50,16,20],JH:[30,6,11,25,9],KA:[79,5,75,0,65],KL:[0,0,100,16,24],MP:[173,1,17,1,38],MH:[54,62,32,71,69],MN:[4,3,30,3,20],ML:[2,0,22,14,22],MZ:[0,21,7,0,12],NL:[7,23,9,0,21],OD:[32,61,12,4,38],PY:[0,0,11,9,10],PB:[3,41,11,0,62],RJ:[120,2,22,0,56],SK:[0,0,31,0,1],TN:[0,0,84,116,34],TR:[0,0,47,0,13],UP:[88,2,288,0,25],UK:[19,0,14,1,36],WB:[0,0,272,1,21],CH:null,DD:null,LD:null,AN:null},
+  2007:{AP:[2,0,103,4,185],AR:[9,0,15,2,34],AS:[10,0,62,1,53],BR:[55,88,26,65,9],CG:[50,0,2,1,37],DL:[20,0,2,1,47],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[2,0,20,1,67],HP:[41,0,4,0,23],JK:[1,0,50,16,20],JH:[30,6,11,25,9],KA:[79,5,75,0,65],KL:[0,0,100,16,24],MP:[173,1,17,1,38],MH:[54,62,32,71,69],MN:[0,0,22,8,30],ML:[2,0,22,14,22],MZ:[0,21,7,0,12],NL:[7,23,9,0,21],OD:[32,61,12,4,38],PY:[0,0,11,9,10],PB:[19,49,5,0,44],RJ:[120,2,22,0,56],SK:[0,0,31,0,1],TN:[0,0,84,116,34],TR:[0,0,47,0,13],UP:[51,1,329,0,22],UK:[34,0,15,0,21],WB:[0,0,272,1,21],CH:null,DD:null,LD:null,AN:null},
+  2008:{AP:[2,0,103,4,185],AR:[9,0,15,2,34],AS:[10,0,62,1,53],BR:[55,88,26,65,9],CG:[50,0,2,0,38],DL:[23,0,3,1,43],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[2,0,20,1,67],HP:[41,0,4,0,23],JK:[11,0,59,0,17],JH:[30,6,11,25,9],KA:[110,0,34,0,80],KL:[0,0,100,16,24],MP:[143,0,16,0,71],MH:[54,62,32,71,69],MN:[0,0,22,8,30],ML:[1,0,19,15,25],MZ:[0,3,5,0,32],NL:[2,26,7,2,23],OD:[32,61,12,4,38],PY:[0,0,11,9,10],PB:[19,49,5,0,44],RJ:[78,1,25,0,96],SK:[0,0,31,0,1],TN:[0,0,84,116,34],TR:[0,0,50,0,10],UP:[51,1,329,0,22],UK:[34,0,15,0,21],WB:[0,0,272,1,21],CH:null,DD:null,LD:null,AN:null},
+  2010:{AP:[2,0,129,7,156],AR:[3,0,5,10,42],AS:[10,24,38,1,53],BR:[91,115,33,0,4],CG:[50,0,2,0,38],DL:[23,0,4,0,43],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[4,1,45,0,40],HP:[41,0,4,0,23],JK:[11,0,31,28,17],JH:[18,2,47,0,14],KA:[110,0,34,0,80],KL:[0,0,100,16,24],MP:[143,0,16,0,71],MH:[46,44,54,62,82],MN:[0,0,25,5,30],ML:[1,0,19,15,25],MZ:[0,0,8,0,32],NL:[2,0,33,2,23],OD:[6,0,110,4,27],PY:[0,0,13,7,10],PB:[19,49,5,0,44],RJ:[78,1,25,0,96],SK:[0,0,32,0,0],TN:[0,0,102,98,34],TR:[0,0,50,0,10],UP:[51,11,319,0,22],UK:[34,0,15,0,21],WB:[0,0,243,30,21],CH:null,DD:null,LD:null,AN:null},
+  2011:{AP:[2,0,111,7,174],AR:[3,0,5,10,42],AS:[5,0,42,1,78],BR:[91,115,33,0,4],CG:[50,0,2,0,38],DL:[23,0,4,0,43],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[4,7,39,0,40],HP:[41,0,4,0,23],JK:[11,0,31,28,17],JH:[18,2,47,0,14],KA:[110,0,34,0,80],KL:[0,0,67,35,38],MP:[143,0,16,0,71],MH:[46,44,54,62,82],MN:[0,0,25,5,30],ML:[1,0,19,15,25],MZ:[0,0,8,0,32],NL:[2,0,33,2,23],OD:[6,0,110,4,27],PY:[0,0,21,2,7],PB:[19,49,5,0,44],RJ:[78,1,25,0,96],SK:[0,0,32,0,0],TN:[0,0,206,23,5],TR:[0,0,50,0,10],UP:[51,1,319,10,22],UK:[34,0,15,0,21],WB:[0,0,68,184,42],CH:null,DD:null,LD:null,AN:null},
+  2012:{AP:[2,0,118,0,174],AR:[3,0,10,5,42],AS:[5,0,43,0,78],BR:[91,115,33,0,4],CG:[50,0,2,0,38],DL:[23,0,4,0,43],GA:[21,0,10,0,9],GJ:[115,1,3,2,61],HR:[4,7,39,0,40],HP:[26,0,6,0,36],JK:[11,0,31,28,17],JH:[18,2,47,0,14],KA:[110,0,34,0,80],KL:[0,0,67,35,38],MP:[143,0,16,0,71],MH:[46,44,54,62,82],MN:[0,0,17,1,42],ML:[1,0,19,15,25],MZ:[0,0,8,0,32],NL:[2,0,33,2,23],OD:[6,0,110,4,27],PY:[0,0,21,2,7],PB:[12,56,3,0,46],RJ:[78,1,25,0,96],SK:[0,0,32,0,0],TN:[0,0,206,23,5],TR:[0,0,50,0,10],UP:[47,0,318,10,28],UK:[31,0,7,0,32],WB:[0,0,252,0,42],CH:null,DD:null,LD:null,AN:null},
+  2013:{AP:[2,0,118,0,174],AR:[3,0,10,5,42],AS:[5,0,43,0,78],BR:[91,0,147,1,4],CG:[49,0,2,0,39],DL:[31,1,30,0,8],GA:[21,0,10,0,9],GJ:[115,0,4,2,61],HR:[4,7,39,0,40],HP:[26,0,6,0,36],JK:[11,0,31,28,17],JH:[18,0,31,18,14],KA:[40,0,62,0,122],KL:[0,0,67,35,38],MP:[165,0,7,0,58],MH:[46,44,54,62,82],MN:[0,0,17,1,42],ML:[0,0,29,2,29],MZ:[0,0,6,0,34],NL:[1,0,47,4,8],OD:[6,0,110,4,27],PY:[0,0,23,0,7],PB:[12,56,3,0,46],RJ:[163,0,16,0,21],SK:[0,0,32,0,0],TN:[0,0,229,0,5],TR:[0,0,50,0,10],UP:[47,0,318,10,28],UK:[31,0,7,0,32],WB:[0,0,252,0,42],CH:null,DD:null,LD:null,AN:null},
+  2015:{AP:[4,102,69,0,0],TS:[5,15,78,0,21],AR:[11,0,7,0,42],AS:[5,0,43,0,78],BR:[53,5,7,151,27],CG:[49,0,2,0,39],DL:[3,0,67,0,0],GA:[21,0,10,0,9],GJ:[115,0,3,3,61],HR:[47,1,27,0,15],HP:[26,0,6,0,36],JK:[25,30,5,15,12],JH:[37,5,14,19,6],KA:[40,0,62,0,122],KL:[0,0,65,37,38],MP:[165,0,7,0,58],MH:[122,64,19,41,42],MN:[0,5,12,1,42],ML:[0,2,27,2,29],MZ:[0,0,6,0,34],NL:[1,38,8,5,8],OD:[10,0,121,0,16],PY:[0,15,8,0,7],PB:[12,56,3,0,46],RJ:[163,4,12,0,21],SK:[0,0,32,0,0],TN:[0,32,197,0,5],TR:[0,0,50,0,10],UP:[47,1,317,10,28],UK:[31,0,7,0,32],WB:[0,0,252,0,42],CH:null,DD:null,LD:null,AN:null},
+  2016:{AP:[4,102,69,0,0],TS:[5,15,78,0,21],AR:[11,0,7,0,42],AS:[60,26,14,0,26],BR:[53,5,7,151,27],CG:[49,0,2,0,39],DL:[3,0,67,0,0],GA:[21,0,10,0,9],GJ:[115,0,3,3,61],HR:[47,1,27,0,15],HP:[26,0,6,0,36],JK:[25,30,5,15,12],JH:[37,5,14,19,6],KA:[40,0,62,0,122],KL:[1,0,98,19,22],MP:[165,0,7,0,58],MH:[122,64,19,41,42],MN:[0,5,12,1,42],ML:[0,2,27,2,29],MZ:[0,5,1,0,34],NL:[1,38,8,5,8],OD:[10,0,121,0,16],PY:[0,8,5,2,15],PB:[12,56,3,0,46],RJ:[163,4,12,0,21],SK:[0,0,32,0,0],TN:[0,0,136,90,8],TR:[0,0,50,0,10],UP:[47,1,317,10,28],UK:[31,0,7,0,32],WB:[3,0,247,0,44],CH:null,DD:null,LD:null,AN:null},
+  2017:{AP:[4,102,69,0,0],TS:[5,15,78,0,21],AR:[11,0,7,0,42],AS:[60,26,14,0,26],BR:[53,76,7,80,27],CG:[49,0,2,0,39],DL:[3,0,67,0,0],GA:[13,6,3,1,17],GJ:[99,0,5,1,77],HR:[47,1,27,0,15],HP:[44,0,3,0,21],JK:[25,30,5,15,12],JH:[37,5,14,19,6],KA:[40,0,62,0,122],KL:[1,0,98,19,22],MP:[165,0,7,0,58],MH:[122,64,19,41,42],MN:[21,9,2,0,28],ML:[0,2,27,2,29],MZ:[0,5,1,0,34],NL:[1,39,8,4,8],OD:[10,0,121,0,16],PY:[0,8,5,2,15],PB:[3,15,22,0,77],RJ:[163,4,12,0,21],SK:[0,0,32,0,0],TN:[0,0,136,90,8],TR:[0,0,50,0,10],UP:[312,13,70,1,7],UK:[57,0,2,0,11],WB:[3,0,247,0,44],CH:null,DD:null,LD:null,AN:null},
+  2018:{AP:[4,0,171,0,0],TS:[1,0,99,0,19],AR:[11,0,7,0,42],AS:[60,26,14,0,26],BR:[53,73,7,83,27],CG:[15,0,7,0,68],DL:[3,0,67,0,0],GA:[13,6,3,1,17],GJ:[99,0,5,1,77],HR:[47,1,27,0,15],HP:[44,0,3,0,21],JK:null,JH:[37,5,14,19,6],KA:[104,0,3,37,80],KL:[1,0,92,25,22],MP:[109,0,7,0,114],MH:[122,64,19,41,42],MN:[21,9,2,0,28],ML:[2,20,16,1,21],MZ:[1,26,8,0,5],NL:[12,47,1,0,0],OD:[10,0,121,0,16],PY:[0,8,5,2,15],PB:[3,15,22,0,77],RJ:[73,0,27,0,100],SK:[0,0,32,0,0],TN:[0,0,136,90,8],TR:[36,8,16,0,0],UP:[312,13,71,0,7],UK:[57,0,2,0,11],WB:[3,0,247,0,44],CH:null,DD:null,LD:null,AN:null},
+  2020:{AP:[0,1,174,0,0],TS:[1,0,99,0,19],AR:[41,12,3,0,4],AS:[60,14,14,12,26],BR:[74,52,23,75,19],CG:[15,0,7,0,68],DL:[8,0,62,0,0],GA:[13,0,9,1,17],GJ:[99,0,5,1,77],HR:[40,10,9,0,31],HP:[44,0,3,0,21],JK:null,JH:[25,2,6,32,16],KA:[104,0,40,0,80],KL:[1,0,98,19,22],MP:[109,0,7,0,114],MH:[105,1,28,110,44],MN:[21,9,2,0,28],ML:[2,20,16,1,21],MZ:[1,26,8,0,5],NL:[12,47,1,0,0],OD:[23,0,115,0,9],PY:[0,12,1,2,15],PB:[3,0,37,0,77],RJ:[73,0,27,0,100],SK:[0,17,15,0,0],TN:[0,136,0,90,8],TR:[36,8,16,0,0],UP:[312,9,75,0,7],UK:[57,0,2,0,11],WB:[3,0,247,0,44],LA:null,CH:null,DD:null,LD:null,AN:null},
+  2021:{AP:[0,1,174,0,0],TS:[1,0,99,0,19],AR:[41,12,3,0,4],AS:[60,15,18,4,29],BR:[74,52,23,75,19],CG:[15,0,7,0,68],DL:[8,0,62,0,0],GA:[13,0,9,1,17],GJ:[99,0,5,1,77],HR:[40,10,9,0,31],HP:[44,0,3,0,21],JK:null,JH:[25,2,6,32,16],KA:[104,0,40,0,80],KL:[0,0,99,19,22],MP:[109,0,7,0,114],MH:[105,1,28,110,44],MN:[21,9,2,0,28],ML:[2,20,16,1,21],MZ:[1,26,8,0,5],NL:[12,47,1,0,0],OD:[23,0,115,0,9],PY:[6,10,6,6,2],PB:[3,0,37,0,77],RJ:[73,0,27,0,100],SK:[0,17,15,0,0],TN:[4,71,4,137,18],TR:[36,8,16,0,0],UP:[312,9,75,0,7],UK:[57,0,2,0,11],WB:[77,0,217,0,0],LA:null,CH:null,DD:null,LD:null,AN:null},
+  2022:{AP:[0,1,174,0,0],TS:[1,0,99,0,19],AR:[41,5,3,7,4],AS:[60,15,18,4,29],BR:[74,1,27,122,19],CG:[15,0,7,0,68],DL:[8,0,62,0,0],GA:[20,2,6,1,11],GJ:[156,0,9,0,17],HR:[40,10,9,0,31],HP:[25,0,3,0,40],JK:null,JH:[25,2,6,32,16],KA:[104,0,40,0,80],KL:[0,0,99,19,22],MP:[109,0,7,0,114],MH:[105,41,28,70,44],MN:[32,14,3,6,5],ML:[2,20,16,1,21],MZ:[1,26,8,0,5],NL:[12,46,1,1,0],OD:[23,0,115,0,9],PY:[6,10,6,6,2],PB:[2,0,97,0,18],RJ:[73,0,27,0,100],SK:[0,17,15,0,0],TN:[4,71,4,137,18],TR:[36,8,16,0,0],UP:[255,18,128,0,2],UK:[47,0,4,0,19],WB:[77,0,217,0,0],LA:null,CH:null,DD:null,LD:null,AN:null},
+  2023:{AP:[0,1,174,0,0],TS:[8,0,46,1,64],AR:[41,5,3,7,4],AS:[60,15,21,1,29],BR:[74,5,11,134,19],CG:[54,0,1,0,35],DL:[8,0,0,62,0],GA:[20,2,4,3,11],GJ:[156,0,3,6,17],HR:[40,10,9,0,31],HP:[25,0,3,0,40],JK:null,JH:[25,3,5,32,16],KA:[66,19,4,0,135],KL:[0,0,0,118,22],MP:[163,0,1,0,66],MH:[105,82,25,32,44],MN:[32,12,5,6,5],ML:[2,26,22,5,5],MZ:[2,10,27,0,1],NL:[12,43,4,1,0],OD:[23,0,114,1,9],PY:[6,10,6,6,2],PB:[2,0,5,92,18],RJ:[115,0,14,1,69],SK:[0,17,15,0,0],TN:[4,5,66,141,18],TR:[32,1,13,11,3],UP:[255,24,3,119,2],UK:[47,0,4,0,19],WB:[77,0,1,216,0],LA:null,CH:null,DD:null,LD:null,AN:null}});
 const ST_RECTS=LS_RECTS;
 // States are drawn as circles (one per Lok Sabha square, same spot) instead of squares; the squares stay in the
 // DOM, hidden, to give the order (snake rows) and shapes.
@@ -1240,19 +1276,41 @@ function regionRects(all,code,data){
 // Chief minister's group at 31 Dec of the year, grouped like ST that year (so e.g. the Left is "oth" before 2024);
 // states without a legislature or under President's rule are left out. Regions as in ST (undivided AP, J&K + Ladakh).
 const cmGroups=(o)=>Object.fromEntries(Object.entries(o).flatMap(([g,c])=>c.split(" ").map(k=>[k,g])));
+// Every year 2004-2026 (2026 = October). 2025: Rekha Gupta (BJP) Delhi, Mann (AAP, out of INDIA) Punjab, Manipur under
+// President's rule; 2026: Khemchand Singh (BJP) Manipur, Samrat Choudhary (BJP) Bihar, Suvendu Adhikari (BJP) West Bengal,
+// Vijay (TVK) Tamil Nadu, Satheesan (INC) Kerala. Left out (rule / no assembly): KA 2007, J&K 2008 and 2018-23, Delhi 2014,
+// Manipur 2025.
 const CM={
   2004:cmGroups({bjp:"CG GA GJ JH MP RJ",nda:"MZ NL OD TN",oth:"HR SK TR UP WB",india:"BR JK",inc:"AP AR AS DL HP KA KL MH MN ML PY PB UK"}),
+  2005:cmGroups({bjp:"CG GJ JH MP RJ",nda:"BR MZ NL OD",oth:"SK TN TR UP WB",inc:"AP AR AS DL GA HR HP JK KA KL MH MN ML PY PB UK"}),
+  2006:cmGroups({bjp:"CG GJ MP RJ",nda:"BR MZ NL OD",oth:"KA KL SK TR UP WB",india:"JH TN",inc:"AP AR AS DL GA HR HP JK MH MN ML PY PB UK"}),
+  2007:cmGroups({bjp:"CG GJ HP MP RJ UK",nda:"BR MZ NL OD PB",oth:"KL SK TR UP WB",india:"JH TN",inc:"AP AR AS DL GA HR JK MH MN ML PY"}),
+  2008:cmGroups({bjp:"CG GJ HP KA MP UK",nda:"BR NL OD PB",oth:"KL ML SK TR UP WB",india:"JH TN",inc:"AP AR AS DL GA HR MH MN MZ PY RJ"}),
   2009:cmGroups({bjp:"CG GJ HP KA MP UK",nda:"BR PB",oth:"KL NL OD SK TR UP WB",india:"JK JH TN",inc:"AP AR AS DL GA HR MH MN ML MZ PY RJ"}),
-  2014:cmGroups({bjp:"CG GA GJ HR JH MH MP RJ",nda:"AP NL PY PB",oth:"BR OD SK TN TS TR UP WB",india:"JK",inc:"AR AS HP KA KL MN ML MZ UK"}),
-  2019:cmGroups({bjp:"AR AS GA GJ HR HP KA MN TR UP UK",nda:"BR ML MZ NL SK TN",oth:"AP DL KL OD TS WB",india:"JH MH",inc:"CG MP PY PB RJ"}),
-  2024:{AR:"bjp",AS:"bjp",CG:"bjp",GA:"bjp",GJ:"bjp",HR:"bjp",MP:"bjp",MH:"bjp",MN:"bjp",OD:"bjp",RJ:"bjp",TR:"bjp",UP:"bjp",UK:"bjp",
-  AP:"nda",BR:"nda",ML:"nda",NL:"nda",SK:"nda",PY:"nda",MZ:"oth",
-  JH:"india",KL:"india",PB:"india",TN:"india",WB:"india",DL:"india",JK:"india",HP:"inc",KA:"inc",TS:"inc"}};
+  2010:cmGroups({bjp:"CG GJ HP JH KA MP UK",nda:"BR PB",oth:"KL NL OD SK TR UP WB",india:"JK TN",inc:"AP AR AS DL GA HR MH MN ML MZ PY RJ"}),
+  2011:cmGroups({bjp:"CG GJ HP JH KA MP UK",nda:"BR PB",oth:"NL OD PY SK TN TR UP",india:"JK WB",inc:"AP AR AS DL GA HR KL MH MN ML MZ RJ"}),
+  2012:cmGroups({bjp:"CG GA GJ JH KA MP",nda:"BR PB",oth:"NL OD PY SK TN TR UP WB",india:"JK",inc:"AP AR AS DL HR HP KL MH MN ML MZ RJ UK"}),
+  2013:cmGroups({bjp:"CG GA GJ MP RJ",nda:"PB",oth:"BR DL NL OD PY SK TN TR UP WB",india:"JK JH",inc:"AP AR AS HR HP KA KL MH MN ML MZ UK"}),
+  2014:cmGroups({bjp:"CG GA GJ HR JH MP MH RJ",nda:"AP NL PY PB",oth:"TS BR OD SK TN TR UP WB",india:"JK",inc:"AR AS HP KA KL MN ML MZ UK"}),
+  2015:cmGroups({bjp:"CG GA GJ HR JH MP MH RJ",nda:"AP JK NL PY PB",oth:"TS DL OD SK TN TR UP WB",india:"BR",inc:"AR AS HP KA KL MN ML MZ UK"}),
+  2016:cmGroups({bjp:"AR AS CG GA GJ HR JH MP MH RJ",nda:"AP JK NL PB",oth:"TS DL KL OD SK TN TR UP WB",india:"BR",inc:"HP KA MN ML MZ PY UK"}),
+  2017:cmGroups({bjp:"AR AS CG GA GJ HR HP JH MP MH MN RJ UP UK",nda:"AP BR JK NL",oth:"TS DL KL OD SK TN TR WB",inc:"KA ML MZ PY PB"}),
+  2018:cmGroups({bjp:"AR AS GA GJ HR HP JH MH MN TR UP UK",nda:"BR ML MZ NL",oth:"AP TS DL KL OD SK TN WB",india:"KA",inc:"CG MP PY PB RJ"}),
+  2019:cmGroups({bjp:"AR AS GA GJ HR HP KA MN TR UP UK",nda:"BR ML MZ NL SK TN",oth:"AP TS DL KL OD WB",india:"JH MH",inc:"CG MP PY PB RJ"}),
+  2020:cmGroups({bjp:"AR AS GA GJ HR HP KA MP MN TR UP UK",nda:"BR ML MZ NL SK TN",oth:"AP TS DL KL OD WB",india:"JH MH",inc:"CG PY PB RJ"}),
+  2021:cmGroups({bjp:"AR AS GA GJ HR HP KA MP MN TR UP UK",nda:"BR ML MZ NL PY SK",oth:"AP TS DL KL OD WB",india:"JH MH TN",inc:"CG PB RJ"}),
+  2022:cmGroups({bjp:"AR AS GA GJ HR KA MP MN TR UP UK",nda:"MH ML MZ NL PY SK",oth:"AP TS DL KL OD PB WB",india:"BR JH TN",inc:"CG HP RJ"}),
+  2023:cmGroups({bjp:"AR AS CG GA GJ HR MP MN RJ TR UP UK",nda:"MH ML NL PY SK",oth:"AP MZ OD",india:"BR DL JH KL PB TN WB",inc:"TS HP KA"}),
+  2024:cmGroups({bjp:"AR AS CG GA GJ HR MP MH MN OD RJ TR UP UK",nda:"AP BR ML NL PY SK",oth:"MZ",india:"DL JK JH KL PB TN WB",inc:"TS HP KA"}),
+  2025:cmGroups({bjp:"AR AS CG DL GA GJ HR MP MH OD RJ TR UP UK",nda:"AP BR ML NL PY SK",oth:"MZ PB",india:"JK JH KL TN WB",inc:"TS HP KA"}),
+  2026:cmGroups({bjp:"AR AS BR CG DL GA GJ HR MP MH MN OD RJ TR UP UK WB",nda:"AP ML NL PY SK",oth:"MZ PB TN",india:"JK JH",inc:"TS HP KA KL"})};
 let stMode="seats";
 function renderST(animate){
   const year=inYear, cm=stMode==="cm", N=[0,0,0,0,0], L=[0,0,0,0,0], data=ST[year];
+  // from 2019 Ladakh is a UT with no legislature: it stays grey rather than taking J&K's colour
+  const cmData=year>=2019?{...CM[year],LA:null}:CM[year];
   if(cm) for(const code in CM[year]){
-    const i=LS_GROUPS.indexOf(CM[year][code]), rects=regionRects(ST_RECTS,code,CM[year]);
+    const i=LS_GROUPS.indexOf(CM[year][code]), rects=regionRects(ST_RECTS,code,cmData);
     N[i]++; L[i]+=rects.length;
     rects.forEach(r=>{const d=ST_DOT.get(r); d.style.fill=d.style.stroke=LS_FILL[LS_GROUPS[i]]});
   }
@@ -1275,7 +1333,7 @@ function renderST(animate){
   const pct=v=>Math.round(v/543*100), tl=document.getElementById("in-total");
   document.getElementById("in-under").classList.toggle("split",cm);
   tl.style.color=cm?"var(--inc)":"var(--muted)";
-  tl.textContent=cm?`${LS_META[year].bloc}-led states have ${pct(L[3]+L[4])}% of the population`
+  tl.textContent=cm?`${blocOf(year)}-led states have ${pct(L[3]+L[4])}% of the population`
     :`${tot.toLocaleString("en-IN")} MLAs in ${Object.values(data).filter(Boolean).length} assemblies`;
   document.getElementById("in-total-oth").textContent=cm&&pct(L[2])?`Others ${pct(L[2])}%`:"";
   document.getElementById("in-total-r").textContent=cm?`NDA-led states have ${pct(L[0]+L[1])}% of the population`:"";
@@ -1283,12 +1341,12 @@ function renderST(animate){
     g.innerHTML=cm?`<rect width="14" height="14" fill="${f}"/>`:`<circle cx="7" cy="7" r="6.5" fill="${f}"/>`});
   document.querySelector("#legend-states .geo-note").hidden=cm;
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
-  document.getElementById("st-leg-bloc").textContent=`Congress allies (${LS_META[year].bloc})`;
+  document.getElementById("st-leg-bloc").textContent=`Congress allies (${blocOf(year)})`;
   document.getElementById("st-note").textContent=cm
-    ?`Each state is one block coloured by its chief minister's party at the end of ${year}; its size is its Lok Sabha seats.`
-    :`Each state's circles are split by its assembly seats, from its latest election up to the end of ${year}. ${year} is not an assembly election year for every state: it is a snapshot of all assemblies in the Lok Sabha election year.`;
-  inSvg.setAttribute("aria-label",cm?`Chief ministers at the end of ${year} by alliance, each state sized by its Lok Sabha seats`
-    :`State assemblies at the end of ${year} by alliance, drawn on the Lok Sabha seat squares`);
+    ?`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
+    :`Each state's circles are split by its assembly seats, from its latest election up to ${stWhen(year)}, grouped by each party's alliance then. States vote on their own calendars: this is a snapshot of every assembly.`;
+  inSvg.setAttribute("aria-label",cm?`Chief ministers in ${stWhen(year)} by alliance, each state sized by its Lok Sabha seats`
+    :`State assemblies in ${stWhen(year)} by alliance, drawn on the Lok Sabha seat squares`);
 }
 document.querySelectorAll("[data-st]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.st!==stMode){stMode=b.dataset.st; if(inRace==="states") renderIn(true,true)}}));
 
@@ -1620,7 +1678,8 @@ function rsPack(pk,active){
 // ---------- India: one map for Lok Sabha, Rajya Sabha and States ----------
 // sync: a change of view (all squares move at once); otherwise a change of year (top-to-bottom wipe)
 function renderIn(animate,sync){
-  const race=inRace, cm=race==="states"&&stMode==="cm";
+  const race=inRace, cm=race==="states"&&stMode==="cm", years=race==="states"?ST_YEARS:IN_YEARS;
+  if(!years.includes(inYear)) inYear=years[years.length-1];
   if(cm) sync=true;   // Chief Minister: every block changes colour at once, no top-to-bottom wipe (like US Governors)
   if(animate&&sync){inSvg.classList.add("sync"); clearTimeout(inSvg._sync); inSvg._sync=setTimeout(()=>inSvg.classList.remove("sync"),500)}
   const panel=document.getElementById("panel-in");
@@ -1643,10 +1702,10 @@ function renderIn(animate,sync){
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
   applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha"); stPack(race==="states"&&!cm&&pk); cmPack(race==="states"&&cm&&pk);
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
-  document.getElementById("in-bloc").textContent=LS_META[inYear].bloc;
+  document.getElementById("in-bloc").textContent=blocOf(inYear);
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
-  setStepper(IN_YEARS,inYear,animate&&!sync,y=>{inYear=y; renderIn(true,false)});
+  setStepper(years,inYear,animate&&!sync,y=>{inYear=y; renderIn(true,false)});
   if(!animate){void panel.offsetWidth;requestAnimationFrame(()=>panel.classList.remove("instant"))}
 }
 
@@ -1668,7 +1727,7 @@ function setStepper(years,year,animate,onPick){
   if(!animate) drum.style.transition="none";
   drum.style.transform=`translateZ(${-STEP_R}px) rotateX(${-(n-1-i)*STEP_DEG}deg)`;
   if(!animate){void drum.offsetWidth; drum.style.transition=""}
-  [...drum.children].forEach((f,k)=>f.setAttribute("aria-hidden",k!==i));
+  [...drum.children].forEach((f,k)=>{f.setAttribute("aria-hidden",k!==i); f.style.visibility=Math.abs(k-i)<=2?"":"hidden"});   // 10-sided drum: hide faces that would wrap round onto the front
   stepEl.querySelector(".prev").disabled=i<=0;
   stepEl.querySelector(".next").disabled=i>=n-1;
   stepLive.textContent=year;
