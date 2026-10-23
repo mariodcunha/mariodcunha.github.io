@@ -1593,6 +1593,21 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      blue | yellow | grey | light red | dark red). Years with an independent
      governor (2010-2016) fill bar-m with var(--ind) (seg.m = c.i) instead of
      a blank strip that made that gap ~3x wider.
+  -  Owner's 2026 Senate calls (owner, 2026-10-23, local): SEN_CALL overrides
+     projOf for the Senate: d/r = called outright (full colour, counted as
+     won like seats not up), D/R = lean, T = toss-up. AK ME MI OH TX lean D;
+     GA MN NH NC called D; NE called R; IA KS SC toss-up. Tally 52 D - 45 R,
+     3 toss-ups. Legend: "Solid circles" now also covers races called
+     outright, plus "Senate calls updated Oct 23, 2026."
+  -  Senate independents in Democratic blue (owner, 2026-10-23, local):
+     SEN_FILL (PARTY_FILL with i = var(--dem)) paints Senate circles and
+     Seats tiles; the legend's two blues are one entry, "Democrats (or
+     caucused)". Governors keep var(--ind) for independent governors.
+  -  Senate 2026 notes under the bar (owner, 2026-10-23, local): the big
+     number split into "N called" (the solid segment: seats not up plus
+     SEN_CALL d / r; 38 D, 32 R) and "N leaning" (light; 14 D, 13 R), so
+     38+14 = 52 and 32+13 = 45. One per line (.gain white-space:pre-line).
+     aria-label says the same.
 
 STATUS / NEXT
 -------------

@@ -126,7 +126,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 .bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
-.gain{position:absolute;top:0;font-weight:500;transition:opacity .25s}
+.gain{position:absolute;top:0;font-weight:500;transition:opacity .25s;white-space:pre-line}
 .gain.d{left:0;color:var(--dem)} .gain.r{right:0;color:var(--rep)}
 .under.split{display:flex;justify-content:space-between;gap:12px}
 .under.split .gain{position:static}
@@ -332,8 +332,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
       <div class="legend" id="legend-senate">
-        <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrat</span>
-        <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--ind)"/></svg>Independent, caucuses with Democrats</span>
+        <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
         <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
         <span class="own"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
         <span class="proj" id="proj-senate"></span>
@@ -466,7 +465,11 @@ const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.r
 // 2+ pollsters: their average lead decides (> 3 points = that party, else toss-up). Fewer: Cook's rating (Solid, Likely,
 // Lean = that party; Toss Up = toss-up), unless a lone poll has the other party ahead by > 3 (then: can't call).
 // No polls and no rating: can't call.
+// Owner's Senate calls (2026-10-23) override the above: d / r = called (full colour, counted as won), D / R = leaning,
+// T = toss-up
+const SEN_CALL={AK:"D",GA:"d",IA:"T",KS:"T",ME:"D",MI:"D",MN:"d",NE:"r",NH:"d",NC:"d",OH:"D",SC:"T",TX:"D"};
 function projOf(race,k){
+  if(race==="senate"&&SEN_CALL[k]) return SEN_CALL[k];
   const ps=AGG_POLLS[race][k]||[], m=ps.length?ps.reduce((a,p)=>a+p[2],0)/ps.length:0, cook=cookOf(race,k);
   if(ps.length>=2) return m>LEAN?"D":m<-LEAN?"R":"T";
   if(!cook) return "N";
@@ -505,6 +508,8 @@ GOV_HIST[2026]={d:GOV_HIST[2024].d+" VA"};  // 2026 starts from today: Spanberge
 const GOV_IND={RI:"Independent governor (Lincoln Chafee, Rhode Island)",AK:"Independent governor (Bill Walker, Alaska)"};
 const govOf=(year,k)=>GOV_HIST[year].d.split(" ").includes(k)?"d":(GOV_HIST[year].i||"").split(" ").includes(k)?"i":"r";
 const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"};
+// Senate: independents who caucus with the Democrats take the Democrats' blue (owner, 2026-10-23)
+const SEN_FILL={...PARTY_FILL,i:"var(--dem)"};
 
 // ---------- USA map: President, House, Senate and Governors on the same squares ----------
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
@@ -599,7 +604,7 @@ const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
 function paintAlt(year){
   for(const k in ALT) ALT[k].forEach(({r,t},j)=>{let p=SEN_HIST[year]?.[k]?.[j];   // every year 2008-2026
     if(year===2026&&SEN_UP[k]===j) p=projOf("senate",k);
-    r.style.fill=p?PARTY_FILL[p]||ALT_PROJ[p]:""; r.classList.toggle("on",!!p);
+    r.style.fill=p?SEN_FILL[p]||ALT_PROJ[p]:""; r.classList.toggle("on",!!p);
     if(t) t.setAttribute("class",!p?"":/^[dri]$/.test(p)?"in":"dk")});
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
@@ -946,7 +951,7 @@ function setUS(race,animate,year=usYear(race)){
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
     SEAT[k].forEach((e,j)=>{let p=SEN_HIST[year]?.[k]?.[j]; if(y26&&SEN_UP[k]===j) p=projOf("senate",k);
-      if(p){e.style.fill=PARTY_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}}
+      if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}}
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
       const o=race==="senate"&&sm==="power"&&powerLayout()[k];
@@ -959,9 +964,12 @@ function setUS(race,animate,year=usYear(race)){
     seg:{d:GENERIC.d,T:+(100-GENERIC.d-GENERIC.r).toFixed(1),r:GENERIC.r},ud:`Generic ballot · ${GENERIC.n} polls`,ur:`${+(100-GENERIC.d-GENERIC.r).toFixed(1)}% undecided`,
     label:`2026 House: generic ballot, average of ${GENERIC.n} national polls: Democrats ${GENERIC.d}%, Republicans ${GENERIC.r}%`};
   else if(y26&&race==="senate"){const d=c.d+c.i+c.D, r=c.r+c.R;
+    // under the bar: the big number split into called (solid: seats not up plus SEN_CALL d / r) and leaning (light)
+    const cd=c.d+c.i, cr=c.r;
+    const note=(n,l)=>[n&&`${n} called`,l&&`${l} leaning`].filter(Boolean).join("\n");   // one per line (.gain keeps line breaks)
     T={d,r,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"51<small>FOR MAJORITY</small>",ctl:d>=51?"d":r>=50?"r":null,
-      seg:{d:c.d+c.i,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},ud:c.D?`+${c.D} called`:"",ur:c.R?`+${c.R} called`:"",
-      label:`2026 Senate, poll aggregate: ${d} Democratic seats incl. ${c.D} called, ${r} Republican incl. ${c.R} called, ${c.T} toss-ups${c.N?`, ${c.N} can't call`:""}`};}
+      seg:{d:c.d+c.i,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},ud:note(cd,c.D),ur:note(cr,c.R),
+      label:`2026 Senate: ${d} Democratic seats, ${cd} called and ${c.D} leaning; ${r} Republican, ${cr} called and ${c.R} leaning; ${c.T} toss-ups${c.N?`, ${c.N} can't call`:""}`};}
   else if(y26&&race==="governors"){const d=govD+g26.D, r=govR+g26.R;
     T={d,r,nd:"Democrats",nr:"Republicans",tot:435,mark:null,ctl:null,seg:{d:c.d,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},
       ud:`Govern ${pctOf(c.d+c.D)}% of Americans`,ur:`Govern ${pctOf(c.r+c.R)}% of Americans`,
@@ -1688,7 +1696,7 @@ function projLegend(race,n){
   const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   return sw("hatch-d",`Democrats ahead (${n.D})`)+sw("hatch-r",`Republicans ahead (${n.R})`)+
     sw("hatch-t",`Toss-up (${n.T})`)+sw("hatch-n",`Can’t call (${n.N})`)+
-    `<span class="txt">${race==="senate"?"Solid circles: seats not up in 2026":"Solid states: no race in 2026"}. How races are called: for each race we average the latest poll from every pollster since Aug 1 (the New York Times’ select pollsters: NYT/Siena, Emerson, CNN, Fox News, Washington Post, Marist, Suffolk, Quinnipiac, UNH and others). With two or more pollsters, a lead of more than ${LEAN} points calls the race; ${LEAN} or less is a toss-up. With fewer, we use the Cook Political Report rating (Solid, Likely or Lean = that party; Toss Up = toss-up). Can’t call: no rating and too few polls, or a lone poll contradicting the rating. Toss-ups and can’t-calls are not in the totals. Polls as of Oct 11, 2026.</span>`;
+    `<span class="txt">${race==="senate"?"Solid circles: seats not up in 2026, or races called outright (GA, MN, NE, NH, NC)":"Solid states: no race in 2026"}. How races are called: for each race we average the latest poll from every pollster since Aug 1 (the New York Times’ select pollsters: NYT/Siena, Emerson, CNN, Fox News, Washington Post, Marist, Suffolk, Quinnipiac, UNH and others). With two or more pollsters, a lead of more than ${LEAN} points calls the race; ${LEAN} or less is a toss-up. With fewer, we use the Cook Political Report rating (Solid, Likely or Lean = that party; Toss Up = toss-up). Can’t call: no rating and too few polls, or a lone poll contradicting the rating. Toss-ups and can’t-calls are not in the totals. Polls as of Oct 11, 2026.${race==="senate"?" Senate calls updated Oct 23, 2026.":""}</span>`;
 }
 
 function show(race,animate){
