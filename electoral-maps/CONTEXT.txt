@@ -1710,6 +1710,11 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      edge. MT also swapped House and elector squares in CHAMBER (House 9-10,
      electors 11-12), as reordering alone couldn't close its gap. Colours in
      HOUSE_COL still come from the original order; positions unchanged.
+  -  "Oreg." on Senate All (owner, 2026-11-04, local): "Oregon" went outside
+     and off the map's left edge in 2008-2020. PACK_US.label gives the Senate
+     layout the short name, on the free bottom row. Governors shares Senate's
+     names, so it reads "Oreg." too. Room is still reserved from M.name, so
+     the layout doesn't change.
 
 STATUS / NEXT
 -------------

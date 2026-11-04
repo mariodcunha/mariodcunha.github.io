@@ -793,12 +793,15 @@ function packOnce(M,key){
   const single=M.outside?kAll.filter(k=>M.outside(k)):[];
   // M.fitOut: a name wider than every row of its state's squares goes outside instead (no postal-code fallback)
   // M.races: the races whose outside names get room reserved (one layout for all of them)
+  // M.label(k): a shorter name for the race on show. The layout's room still comes from M.name, so no state moves
+  const nameOf=k=>M.label?.(k)||M.name(k);
   const anyOut=new Set(), wAll={}, fitsIn=(k,w,real,av)=>runsOf(B[k],real,av).some(r=>(r[2]-r[1])*S*f>=w+8);
   if(M.fitOut){fit(0); for(const k of kAll){if(single.includes(k)) continue; const e=PL[k].t; e.classList.add("in"); e.textContent=M.name(k);
     const w=wAll[k]=e.getComputedTextLength(); if(!w){laidOut=false; continue}
-    if(B[k].real.length&&!fitsIn(k,w,B[k].real,B[k].av)) single.push(k);
+    e.textContent=nameOf(k);
+    if(B[k].real.length&&!fitsIn(k,e.getComputedTextLength(),B[k].real,B[k].av)) single.push(k);
     for(const r in B[k].realBy) if(B[k].realBy[r].real.length&&!fitsIn(k,w,B[k].realBy[r].real,B[k].realBy[r].av)) anyOut.add(k)}}
-  const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=M.name(k);
+  const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=nameOf(k);
     wOut[k]=e.getComputedTextLength(); if(!wOut[k]) laidOut=false});
   for(let m=0;;m+=6){fit(m); if(!single.length) break;
     const boxes=kAll.flatMap(j=>B[j].c.map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S,j]})), done=[];
@@ -821,7 +824,7 @@ function packOnce(M,key){
       let pick=ok.find(inside);
       if(!pick){if(ok.length) all=false; pick=ok[0]||cand[k][0]}   // only a name cut off at the edge shrinks the map
       if(!pick){const [x0,y0]=put(k,B[k].lo); pick={o:[x0,y0-h,"start"],q:[x0,y0-h*1.5,x0+wOut[k],y0-h/2]}}
-      done.push(pick.q); lb[k]={x:pick.o[0],y:pick.o[1],w:wOut[k],t:M.name(k),seg:[],out:pick.o[2]}}
+      done.push(pick.q); lb[k]={x:pick.o[0],y:pick.o[1],w:wOut[k],t:nameOf(k),seg:[],out:pick.o[2]}}
     if(all||m>=120||M.fitOut) break}   // fitOut: room is reserved, the scale stays the same for every race
   for(const k of kAll){const b=B[k], T=put(k,[0,0]);
     if(M.fixed) st[k]=b.c.map((p,i)=>{const Q=put(k,p);   // each square: from its Map spot to its compact cell
@@ -835,7 +838,7 @@ function packOnce(M,key){
     const near=r=>Math.hypot((r[1]+r[2])/2-b.m[0],r[0]+.5-b.m[1]);
     const ys=[...new Set(runs.map(r=>r[0]))].sort((p,q)=>p-q), row=M.row[k]!=null&&ys[Math.max(0,Math.min(M.row[k]<0?ys.length+M.row[k]:M.row[k],ys.length-1))];   // row < 0: from the bottom
     const cand=row===false?runs:runs.filter(r=>r[0]===row), fits=w=>cand.filter(r=>(r[2]-r[1])*S*f>=w);
-    let t=M.name(k), w=width(t), fit=fits(w);
+    let t=nameOf(k), w=width(t), fit=fits(w);
     if(!fit.length){t=k; w=width(t); fit=fits(w)}
     const r=(fit.length?fit:cand).sort((p,q)=>near(p)-near(q)||(q[2]-q[1])-(p[2]-p[1]))[0];
     const half=w/(2*S*f), cx=M.mid===true||M.mid?.includes(k)?(r[1]+r[2])/2:Math.min(Math.max(b.m[0],r[1]+half),r[2]-half);   // M.mid: centred on its row
@@ -893,6 +896,8 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,f
     return hs.concat(SEAT[k].map((c,i)=>[seatCell(c),c]).filter(([[x,y]])=>!on.has([x*S,y*S].join())).map(([[x,y],c])=>[at(x,y),c]))},
   avoid(k,race){return race==="senate"?SEAT[k].map(seatCell):[]},
   name:k=>({VT:"VT",HI:"HI"})[k]||LBL[k].e.textContent, row:{NJ:1},
+  // Senate circles fill Oregon's top row: the short name fits the free squares under them (owner, 2026-11-04)
+  label(k){return this.race==="senate"&&k==="OR"?"Oreg.":null},
   tweak(B,{clash,pull,G}){
     // The Northwest, by hand (owner, 2026-11-04): Oregon on California's left edge, Washington straight above it, Nevada
     // level with California; Idaho and Montana spaced evenly up to South Dakota, level with each other; Wyoming under Montana.
