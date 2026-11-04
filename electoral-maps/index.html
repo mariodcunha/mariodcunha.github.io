@@ -608,6 +608,9 @@ function countTo(node,to,animate){
 // One year for every US race (owner, 2026-10-11): the page opens on Senate 2026, Seats view (owner, 2026-10-16); after that each
 // race keeps the last year picked. President has no midterms: it shows the latest presidential year up to that one.
 let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
+// Arriving on Senate from another map shows All, so the map visibly morphs, until the viewer picks a Senate view
+// themselves; after that their pick stays (owner, 2026-11-04). The page itself still opens on Seats.
+let senPicked=false;
 // ---------- Senate Alt: a tile grid, one square per state (owner, 2026-10-15) ----------
 // [state, column, row]. Alaska sits diagonally up-left of Washington, Hawaii diagonally down-left of Arizona.
 const ALT_GRID=`AK 0 1|ME 11 0|WI 6 1|VT 10 1|NH 11 1|WA 1 2|ID 2 2|MT 3 2|ND 4 2|MN 5 2|IL 6 2|MI 7 2|NY 9 2|MA 10 2|
@@ -1812,6 +1815,7 @@ function projLegend(race,n){
 function show(race,animate){
   if(!countryOf(race)) race="senate";   // no or unknown #hash: the latest election, Senate (Seats view) first
   if(race===current) return;
+  if(race==="senate"&&current&&!senPicked) senMode="all";
   setCountryUI(countryOf(race));
   const tab=tabs.find(t=>t.dataset.race===race);
   tabs.forEach(t=>{const on=t===tab;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1});
@@ -1840,7 +1844,7 @@ function show(race,animate){
   current=race;
   history.replaceState(null,"","#"+race);
 }
-document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
+document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
 tabs.forEach(t=>{

@@ -1715,6 +1715,15 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      layout the short name, on the free bottom row. Governors shares Senate's
      names, so it reads "Oreg." too. Room is still reserved from M.name, so
      the layout doesn't change.
+  -  Governors 2008 jigsaw trial, exported then removed (owner, 2026-11-04,
+     local): a layout with state blocks about one House square apart, no names.
+     Its shapes are in governors-2008-svgs/ (one SVG per state, all-states.svg,
+     not committed); spaced-layout.patch there restores the code. Governors
+     2008 is back on the shared layout like every other year.
+  -  Senate view on arrival (owner, 2026-11-04, local): coming to Senate from
+     another map shows All, so the morph is visible (show(), senPicked). Once
+     the viewer clicks any Senate view, that pick stays. The page still opens
+     on Senate Seats.
 
 STATUS / NEXT
 -------------
