@@ -1695,6 +1695,21 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      2026 race on screen. AK then called D on the owner's say-so (2026-11-04):
      then MI, OR and NV too (NV had no votes in the table). 29 D called, 1
      leading (KS); 20 R called. v / No result stays in the code for later.
+  -  One US layout for every year (owner, 2026-11-04, local): PACK_US.cells
+     packs each state's largest President block over the three censuses, and
+     PACK_US.races = race@census reserves outside-name room for all of them,
+     so states never move between years or races; only squares come and go.
+     Names still read each census (lcells). Checked: 1 distinct layout over
+     25 race-years, no state closer than .45 square, nothing clipped.
+  -  Northwest by hand (owner, 2026-11-04, local), PACK_US.tweak: OR on CA's
+     left edge, WA straight above it, AK above WA (all four share one left
+     edge); NV level with CA, its name below (side); ID and MT level, spaced
+     evenly up to SD; WY under MT.
+  -  No holes in a block (owner, 2026-11-04, local): HSQ_LAST lists the squares
+     that drop first (MI MO MT NJ OH OR PA SC), so a dropped seat comes off an
+     edge. MT also swapped House and elector squares in CHAMBER (House 9-10,
+     electors 11-12), as reordering alone couldn't close its gap. Colours in
+     HOUSE_COL still come from the original order; positions unchanged.
 
 STATUS / NEXT
 -------------
