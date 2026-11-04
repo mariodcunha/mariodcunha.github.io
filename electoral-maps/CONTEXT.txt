@@ -11,7 +11,7 @@ Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/ind
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
-Last updated: 2026-10-16
+Last updated: 2026-11-03
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -1648,6 +1648,43 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      Null at year end: Delhi 2014, J&K 2018-2023, Ladakh from 2019. CM left
      out: Karnataka 2007, J&K 2008 and 2018-2023, Delhi 2014, Manipur 2025.
      Ladakh no longer takes J&K's CM colour from 2019 (no legislature).
+  -  Senate 2026 results (owner, 2026-11-03, local): SEN_CALL now holds all
+     35 races from the owner's NYT results table, replacing the Oct 23 calls.
+     d/r = check mark on the table (called); D/R = leading, not called.
+     Called D: CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC.
+     Called R: FL AL AR KY LA OK SD TN WV WY. Leading D: MI AK MS (MS by
+     under 0.01). Leading R: NE ID MT. Tally 56 D (53 called, 3 leading) -
+     44 R (41 called, 3 leading). "Leaning" -> "leading" under the bar; the
+     Senate legend drops toss-up, can't-call and the poll method. To finish
+     a race, move it from D/R to d/r in SEN_CALL.
+  -  Senate seat order (owner, 2026-11-03, local): senSeats(year,k) sorts a
+     state's two seats for the Seats tiles and the circles, every year: blue
+     left, red right; two of one colour, lighter left (SEN_RANK). Seat j no
+     longer means SEN_HIST / class order when drawn. On the All map five
+     states stack their circles (ID ME NH RI VT): the first seat is on top.
+  -  ID and MT called R (owner, 2026-11-03, local): no check mark on the NYT
+     table, called on the owner's say-so; NE stays light red (R). Tally 56 D
+     (53 called, 3 leading) - 44 R (43 called, 1 leading).
+  -  House 2026 results (owner, 2026-11-03, local): replaces the generic
+     ballot and all-grey map. HOUSE_26 = per state [D called, D favored,
+     toss-up, R favored, R called], read from the NYT results page, Live
+     forecast table, 1:31 a.m. ET Nov 4 (all 435 districts; the owner's
+     screenshot showed about 80). 220 D called (219 in the screenshot; MI 8
+     was called after it), 126 R called, 30 D favored, 46 R favored, 7
+     toss-ups (MI 4, AK, AZ 2, MN 1, NC 5, TN 4, TX 9), 6 no result (NV x4,
+     LA 5, LA 6). Called includes same-party races NYT counts as won (CA 4
+     7 11 14 29 34 D, CA 40 R). Big numbers = called only, matching NYT's
+     bar (the Senate's include leading). house26() orders a state's squares
+     light blue, blue, yellow, grey, light red, red; squares are per state,
+     not per district. Bar flat on House. GENERIC and AGG_POLLS.generic stay
+     in the code, unused on screen.
+  -  Governors 2026 results (owner, 2026-11-03, local): GOV_CALL overrides
+     projOf for all 36 races, from the owner's NYT table. d/r = called,
+     D = leading, v = no votes yet (grey, NV). Check marks plus the owner's
+     calls AZ (D), AL and NE (R). Leading D: AK MI OR KS. Under the bar: called
+     / leading, then the share of Americans governed. Legend drops toss-up,
+     can't-call and the poll method. COOK and AGG_POLLS no longer decide any
+     2026 race on screen.
 
 STATUS / NEXT
 -------------
