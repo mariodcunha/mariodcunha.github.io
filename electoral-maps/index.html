@@ -466,28 +466,30 @@ const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.r
 // Lean = that party; Toss Up = toss-up), unless a lone poll has the other party ahead by > 3 (then: can't call).
 // No polls and no rating: can't call.
 // Senate results (owner's NYT results table, 2026-11-03), all 35 races, override the above: d / r = called (a check mark
-// on the table, plus ID and MT on the owner's call: full colour, counted as won), D / R = leading but not called (light;
-// MS is D by under 0.01)
+// on the table, plus ID, MI, MT and NE on the owner's call: full colour, counted as won), D / R = leading but not called
+// (light; MS is D by under 0.01; AK is R on the owner's call, though the table had it D+11 at 22% in)
 const SEN_CALL=Object.fromEntries(Object.entries({
-  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC",D:"MI AK MS",
-  r:"FL AL AR KY LA OK SD TN WV WY ID MT",R:"NE"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
-// House results (NYT Live forecast table, 1:31 a.m. ET Nov 4, 2026), per state: [D called, D favored, toss-up, R favored,
+  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI",D:"MS",
+  r:"FL AL AR KY LA OK SD TN WV WY ID MT NE",R:"AK"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
+// House results (NYT Live forecast table, 5:00 a.m. ET Nov 4, 2026), per state: [D called, D favored, toss-up, R favored,
 // R called]. Called includes same-party races NYT counts as won (CA 4 7 11 14 29 34 D, CA 40 R). The state's other
-// squares have no result: NV (all four, not reporting), LA 5 (NYT shows "Advanced"), LA 6 (no forecast).
-const HOUSE_26={"AK":[0,0,1,0,0],"AL":[2,0,0,0,5],"AR":[0,0,0,1,3],"AZ":[3,2,1,3,0],"CA":[41,7,0,2,2],"CO":[5,2,0,1,0],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,4,16],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,1,1],"IL":[14,0,0,0,3],"IN":[3,0,0,1,5],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[6,2,1,0,4],"MN":[4,0,1,2,1],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[0,1,0,0,1],"NC":[4,5,1,4,0],"ND":[0,0,0,0,1],"NE":[1,0,0,1,1],"NH":[2,0,0,0,0],"NJ":[10,1,0,0,1],"NM":[3,0,0,0,0],"NV":[0,0,0,0,0],"NY":[17,3,0,3,3],"OH":[6,2,0,0,7],"OK":[0,0,0,1,4],"OR":[4,1,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[1,1,0,1,4],"SD":[0,0,0,0,1],"TN":[0,0,1,2,6],"TX":[13,0,1,13,11],"UT":[1,0,0,2,1],"VA":[7,1,0,1,2],"VT":[1,0,0,0,0],"WA":[7,1,0,2,0],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
+// squares have no result: LA 5 (NYT shows "Advanced"), LA 6 (no forecast).
+const HOUSE_26={"AK":[0,0,1,0,0],"AL":[2,0,0,0,5],"AR":[0,0,0,1,3],"AZ":[3,3,0,2,1],"CA":[44,4,0,1,3],"CO":[5,2,0,1,0],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,4,16],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,0,2],"IL":[14,0,0,0,3],"IN":[3,0,0,0,6],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[6,2,1,0,4],"MN":[4,1,0,0,3],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[0,1,0,0,1],"NC":[4,5,1,4,0],"ND":[0,0,0,0,1],"NE":[1,0,0,1,1],"NH":[2,0,0,0,0],"NJ":[10,1,0,0,1],"NM":[3,0,0,0,0],"NV":[3,0,1,0,0],"NY":[17,3,0,3,3],"OH":[7,1,0,0,7],"OK":[0,0,0,1,4],"OR":[5,0,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[1,1,0,1,4],"SD":[0,0,0,0,1],"TN":[0,0,1,2,6],"TX":[13,1,0,6,18],"UT":[1,0,0,2,1],"VA":[7,1,0,1,2],"VT":[1,0,0,0,0],"WA":[7,1,0,2,0],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
 // Drawn light before solid, blue to red, like senSeats (owner, 2026-11-03)
 function house26(k,n){const [d,D,T,R,r]=HOUSE_26[k];
   return [["D",D],["d",d],["T",T],["v",n-d-D-T-R-r],["R",R],["r",r]].flatMap(([p,m])=>Array(m).fill(p))}
 // A state's two Senate seats as drawn, every view and year (owner, 2026-11-03): blue left, red right; with two of one
 // colour, the lighter on the left. Light blue, blue, (toss-up / can't call), light red, red.
 const SEN_RANK={D:0,d:1,i:1,T:2,N:2,R:3,r:4};
+const SEN_FLIP="PA SC OH NC WI".split(" ");   // the owner's exceptions (2026-11-04): a blue and a red seat go red left, blue right
 function senSeats(year,k){const s=[...(SEN_HIST[year]?.[k]||"")];
   if(year===2026&&k in SEN_UP) s[SEN_UP[k]]=projOf("senate",k);
-  return s.sort((a,b)=>SEN_RANK[a]-SEN_RANK[b])}
+  s.sort((a,b)=>SEN_RANK[a]-SEN_RANK[b]);
+  return SEN_FLIP.includes(k)&&SEN_RANK[s[0]]<2&&SEN_RANK[s[1]]>2?s.reverse():s}
 // Governor results (owner's NYT results table, 2026-11-03), all 36 races: d / r = called (a check mark on the table, plus
-// AZ, AL and NE on the owner's call: full colour, counted as won), D = leading but not called (light), v = no votes yet
+// AZ, AK, AL, MI, NE, NV and OR on the owner's call: full colour, counted as won), D = leading but not called (light)
 const GOV_CALL=Object.fromEntries(Object.entries({
-  d:"AZ CA CO CT HI IL ME MD MA MN NM NY PA RI IA OH WI GA TX",D:"AK MI OR KS",v:"NV",
+  d:"AZ CA CO CT HI IL ME MD MA MN NM NY PA RI IA OH WI GA TX AK MI OR NV",D:"KS",
   r:"FL NE AL AR ID NH OK SC SD TN VT WY"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
 function projOf(race,k){
   if(race==="senate"&&SEN_CALL[k]) return SEN_CALL[k];
@@ -995,7 +997,7 @@ function setUS(race,animate,year=usYear(race)){
     const note=(n,l,sq)=>[[n&&`${n} called`,l&&`${l} leading`].filter(Boolean).join(", "),`Govern ${pctOf(sq)}% of Americans`].join("\n");
     T={d,r,nd:"Democrats",nr:"Republicans",tot:435,mark:null,ctl:null,seg:{d:c.d,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},
       ud:note(cd,g26.D,c.d+c.D),ur:note(cr,g26.R,c.r+c.R),
-      label:`2026 governors: ${d} Democrats, ${cd} called and ${g26.D} leading; ${r} Republicans, ${cr} called and ${g26.R} leading; ${g26.v} with no result`};}
+      label:`2026 governors: ${d} Democrats, ${cd} called and ${g26.D} leading; ${r} Republicans, ${cr} called and ${g26.R} leading${g26.v?`; ${g26.v} with no result`:""}`};}
   else if(race==="president") T={d:c.d,r:c.r,nd:P.d,nr:P.r,tot:538,mark:270/538*100,need:"270<small>TO WIN</small>",ctl:c.d>c.r?"d":"r",
     label:`${year} presidential electoral votes, one square per vote: ${P.d} ${c.d}, ${P.r} ${c.r}`};
   else if(race==="governors") T={d:govD,r:govR,nd:"Democrats",nr:"Republicans",seg:{d:c.d,m:c.i,r:c.r},tot:435,mark:null,ctl:null,
@@ -1776,12 +1778,12 @@ function projLegend(race,n){
   const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   if(race==="house") return `<span><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats favored (${n.D})`)+sw("hatch-t",`Toss-up (${n.T})`)+
     `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans favored (${n.R})`)+`<span><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
-    `<span class="txt">The totals count called seats only. Favored and toss-up come from the New York Times live forecast. No result: Nevada (not reporting) and Louisiana’s 5th and 6th. Results from The New York Times and The Associated Press, as of 1:31 a.m. ET, Nov 4, 2026.</span>`;
+    `<span class="txt">The totals count called seats only. Favored and toss-up come from the New York Times live forecast. No result: Louisiana’s 5th and 6th. Results from The New York Times and The Associated Press, as of 5:00 a.m. ET, Nov 4, 2026.</span>`;
   if(race==="senate") return sw("hatch-d",`Democrats leading, not called (${n.D})`)+sw("hatch-r",`Republicans leading, not called (${n.R})`)+
-    `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, updated Nov 3, 2026.</span>`;
+    `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Idaho, Michigan, Montana and Nebraska are called here ahead of it, and Alaska’s lean is our own.</span>`;
   return sw("hatch-d",`Democrats leading, not called (${n.D})`)+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
-    `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+
-    `<span class="txt">Solid states: no race in 2026, or races called. Light states: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Arizona, Alabama and Nebraska are called here ahead of it.</span>`;
+    (n.v?`<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"")+
+    `<span class="txt">Solid states: no race in 2026, or races called. Light states: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Alabama, Alaska, Arizona, Michigan, Nebraska, Nevada and Oregon are called here ahead of it.</span>`;
 }
 
 function show(race,animate){
