@@ -11,7 +11,9 @@ Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/ind
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
-Last updated: 2026-11-05
+    US President map = node 3566:9143 ("Frame 1663"), House = node 3566:10367
+    ("Frame 1664"), page "Electoral Maps"
+Last updated: 2026-11-06
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -1756,6 +1758,56 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      (297 D, 138 R). Its shapes are in house-temp-svgs/ (one SVG per state,
      all-states.svg, all-states-squares.svg; not committed). The page has no
      trace of it.
+  -  US map = the owner's Figma layout (owner, 2026-11-06, local): every state now
+     sits where Figma nodes 3566:9143 (President) and 3566:10367 (House) put it,
+     about one square of white between neighbours, in every race and year.
+     CHAMBER's c / e / x / o hold those grid cells (51 x 30). PACK_US.static:
+     nothing is packed or tweaked; the old packer stays in the code unused.
+     President = House block + 2 elector squares, which are the squares Figma
+     whites out on the House frame.
+     Corrections to Figma: Delaware drawn with 2 House / 4 electoral squares,
+     now 1 / 3 (bottom-right square dropped); DC's House square dropped (DC has
+     no House seat). Totals 538 / 435 for all three censuses.
+     Other years: seats a state has lost since (st.x) were placed by hand in
+     notches of its block: CA 4,15; MI 27,5 29,7; NJ 46,12; NY 38,4 37,5 39,3;
+     PA 33,9 34,8; MO 19,16; IL 21,16 21,17; OH 28,14 30,10 31,10; WV 34,15.
+     MA, IA, LA's extra 2000-census seat sits on an elector's square, and on
+     President that elector steps aside for those years (st.y, ESQ_2000), so
+     the House block stays whole. Seats a state has gained drop off the end of
+     its list (serpentine); AZ's goes first from 6,15 (HSQ_LAST), so its block
+     does not split and its top row, under the circles, is there every year.
+     Only touch: WV's third seat (2008-2020) meets Virginia at one corner.
+     Names: President always inside the block, short name else postal code
+     (ME, WY, NV, NM, WV, VT, NH, RI, HI, NJ, NY...). House, Senate All and
+     Governors share ONE set (race "chamber"), read from the fewest squares a
+     state has in any year and clear of the Senate circles, so a name never
+     moves between those maps or years. The "Oreg." rule is gone.
+     Outside names (owner, 2026-11-06): always above the state's topmost,
+     leftmost square, left-aligned to it (PACK_US.topLeft). On these three
+     maps a state of 1 or 2 squares (fewest in any year) or one column goes
+     by its postal code (PACK_US.small / label): AK DE HI ID ME MT ND NH RI
+     SD VT WV WY. Nevada, Nebr., Utah, Kansas, NM keep their names, outside.
+     Senate All circles (owner, 2026-11-06): on each state's first two grey
+     squares, the topmost, leftmost one and the square right of it (else below
+     it). One-square states: the second circle goes right, else below, else
+     left, on a spot with no other state beside it (only VT goes left). MT's
+     stays put in the years it has one seat. Hawaii: its two squares.
+     Oregon and S-Caro. lose their inside row to the circles in the fewest-
+     seats years, so on these three maps their names sit outside, above.
+     Senate Seats and
+     Representation keep their own layouts: the viewBox is fixed at
+     -16 -23 1062 689 and st.m keeps each state's old home for placePairs.
+     Checked over all 35 race-years against the previous page: tallies, seat
+     colours, Senate Seats, Representation and India identical; no overlapping
+     squares, clipped names, names on squares or circles, overhanging pills;
+     1 name layout for the 30 chamber race-years, 1 for the 5 President years.
+  -  Governors corners sharp (owner, 2026-11-06, local): the round-us filter is
+     gone, so state blocks are plain solid shapes with square corners in every
+     year. India's round-in filter stays.
+  -  US names on hover, TRIAL (owner, 2026-11-06, local, may revert): President,
+     House, Senate All and Governors hide state names until the cursor is on
+     the map. Senate Seats, Representation and touch screens always show them.
+     One CSS block marked TRIAL under .plabel; delete it to revert.
 
 STATUS / NEXT
 -------------
@@ -1765,6 +1817,10 @@ STATUS / NEXT
   AK leaning D, KS governor called D, House refreshed to 253-155, VT / NH / ME
   row, font-load relayout). The *-svgs/ export folders stay uncommitted.
   Keep the commit rule.
+- Live also has the 2026-11-06 work, pushed on the owner's say-so: the Figma US
+  layout, top-left outside names, postal codes for small states, Senate circles
+  on the first two squares, sharp Governors corners, and the hover-names TRIAL
+  (may still be reverted).
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

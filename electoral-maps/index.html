@@ -178,8 +178,8 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .6s var(--ease)}
-/* Governors and Chief Minister: each state's merged block gets 2px rounded outer corners (roundFilter) */
-#map-us.governors .sqs{filter:url(#round-us)} #map-india.cm .ls-st{filter:url(#round-in)}
+/* Chief Minister: each state's merged block gets 2px rounded outer corners (roundFilter). US Governors stay sharp */
+#map-india.cm .ls-st{filter:url(#round-in)}
 #map-us.packed .state text,#map-india.packed .names text{opacity:0}
 #map-india .ls-cell,#map-india .rs-cell{transition:transform .6s var(--ease)}
 /* Rajya Sabha Compact: plain names (no pill), the circles laid out around them */
@@ -188,6 +188,9 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .plabels{opacity:0;pointer-events:none;transition:opacity .25s}
 svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .plabel{transition:transform .6s var(--ease)} .plabels stop{transition:stop-color .45s var(--ease)}
+/* TRIAL (owner, 2026-11-06, may revert: delete this block): US state names show only while the cursor is on the map.
+   Touch screens can't hover, so they keep the names; so do Senate Seats and Representation (not .packed) */
+@media (hover:hover){#map-us.packed:not(:hover) text,#map-us.packed:not(:hover) .plabels{opacity:0} #map-us.packed:hover .plabels{transition:opacity .15s}}
 #pres-view,#ls-view{justify-self:start}
 .bar .mark,.under .need,.under .gain{transition:left .8s var(--ease),opacity .25s}
 .instant,.instant *{transition:none!important;animation:none!important}
@@ -414,7 +417,7 @@ const PRES_YEARS=[2008,2012,2016,2020,2024];
 // s: state, c: House squares [x,y,isDem] (2024), x: extra House squares for older censuses,
 // e: the two elector squares added on the President map (House + 2 = electoral votes; DC: 3, no House seat),
 // o: the two Senate seats (squares they sit on), h: label [text, x, y], outside the block
-const CHAMBER=[{"s":"NH","c":[[47,0,1],[47,1,1]],"o":[[47,0],[47,1]],"h":["NH",48,-0.45],"e":[[48,0],[48,1]]},{"s":"ME","c":[[50,0,1],[50,1,1]],"o":[[50,0],[50,1]],"h":["Maine",51,-0.45],"e":[[51,0],[51,1]]},{"s":"VT","c":[[45,1,1]],"o":[[45,0],[45,1]],"h":["Verm.",45.5,-0.45],"e":[[45,0],[44,1]]},{"s":"NY","c":[[42,3,0],[41,4,1],[42,4,1],[40,5,0],[41,5,1],[42,5,0],[39,6,1],[40,6,1],[41,6,1],[42,6,1],[38,7,1],[39,7,1],[40,7,1],[41,7,1],[42,7,1],[37,8,0],[38,8,1],[39,8,0],[40,8,1],[41,8,1],[42,8,1],[42,9,1],[43,9,1],[43,10,1],[44,10,0],[45,10,0]],"o":[[41,4],[42,4]],"h":["NY",42.5,2.55],"x":[[42,10],[41,9],[40,9]],"e":[[43,8],[43,7]]},{"s":"WA","c":[[3,4,1],[4,4,1],[1,5,1],[2,5,1],[3,5,1],[4,5,0],[1,6,1],[2,6,1],[3,6,1],[4,6,0]],"o":[[3,4],[4,4]],"h":["Wash.",3,3.55],"e":[[2,4],[1,4]]},{"s":"MA","c":[[45,4,1],[46,4,1],[47,4,1],[48,4,1],[45,5,1],[46,5,1],[47,5,1],[48,5,1],[49,5,1]],"o":[[45,4],[46,4]],"h":["Mass.",47,3.55],"x":[[49,4]],"e":[[44,4],[44,5]]},{"s":"MT","c":[[9,5,0],[10,5,0]],"o":[[9,5],[10,5]],"h":["Mont.",11,4.55],"e":[[11,5],[12,5]]},{"s":"ND","c":[[15,5,0]],"o":[[15,5],[16,5]],"h":["N-Dako.",15.5,4.55],"e":[[16,5],[14,5]]},{"s":"MN","c":[[19,6,0],[20,6,0],[19,7,0],[20,7,1],[19,8,1],[20,8,1],[19,9,0],[20,9,1]],"o":[[19,6],[20,6]],"h":["Minn.",20,5.55],"e":[[18,7],[18,8]]},{"s":"MI","c":[[27,6,0],[28,6,0],[27,7,1],[28,7,1],[29,7,1],[27,8,0],[28,8,0],[29,8,1],[30,8,0],[27,9,0],[28,9,1],[29,9,1],[26,5,0]],"o":[[27,6],[28,6]],"h":["Mich.",26.5,4.55],"x":[[30,9],[30,7]],"e":[[29,6],[30,6]]},{"s":"WI","c":[[22,7,0],[23,7,0],[24,7,0],[22,8,0],[23,8,0],[24,8,1],[23,9,1],[24,9,0]],"o":[[22,7],[23,7]],"h":["Wisc.",23.5,6.55],"e":[[22,9],[25,8]]},{"s":"CT","c":[[45,7,1],[46,7,1],[47,7,1],[46,8,1],[47,8,1]],"o":[[45,7],[46,7]],"h":["Conn.",47.5,9.45],"e":[[45,8],[48,7]]},{"s":"RI","c":[[50,7,1],[50,8,1]],"o":[[50,7],[50,8]],"h":["RI",51,6.55],"e":[[51,7],[51,8]]},{"s":"ID","c":[[7.5,7.5,0],[7.5,8.5,0]],"o":[[7.5,7.5],[7.5,8.5]],"h":["Idaho",8.5,7.05],"e":[[8.5,7.5],[8.5,8.5]]},{"s":"OR","c":[[0.5,8,1],[1.5,8,1],[2.5,8,1],[0.5,9,1],[2.5,9,0],[1.5,9,1]],"o":[[0.5,8],[1.5,8]],"h":["Oregon",1.5,10.45],"e":[[-0.5,8],[-0.5,9]]},{"s":"WY","c":[[12,8,0]],"o":[[12,8],[13,8]],"h":["Wyom.",12.5,7.55],"e":[[13,8],[11,8]]},{"s":"SD","c":[[15,8,0]],"o":[[15,8],[16,8]],"h":["S-Dako.",16,7.55],"e":[[16,8],[15,9]]},{"s":"PA","c":[[39,11,0],[40,11,0],[36,11,0],[37,11,0],[38,11,0],[36,12,1],[37,12,1],[39,12,1],[38,12,0],[40,12,0],[41,12,1],[36,13,0],[37,13,0],[38,13,0],[39,13,1],[40,13,1],[41,13,1]],"o":[[36,11],[37,11]],"h":["Penn.",38,10.55],"x":[[35,13],[35,12]],"e":[[35,11],[42,12]]},{"s":"CA","c":[[1,13,0],[2,13,1],[3,13,0],[1,14,1],[2,14,1],[3,14,1],[1,15,1],[2,15,1],[3,15,1],[1,16,1],[3,16,0],[1,17,1],[2,17,1],[3,17,1],[1,18,1],[2,18,1],[3,18,1],[4,18,1],[1,19,1],[2,19,0],[3,19,1],[4,19,0],[1,20,1],[3,20,1],[4,20,1],[5,20,0],[2,21,1],[3,21,1],[4,21,1],[5,21,1],[6,21,1],[3,22,1],[4,22,1],[5,22,1],[6,22,1],[7,22,1],[4,23,1],[5,23,1],[7,23,1],[4,24,1],[5,24,1],[6,24,0],[7,24,0],[5,25,1],[7,25,1],[6,25,0],[5,26,1],[6,26,1],[7,26,1],[2,16,1],[2,20,1],[6,23,1]],"o":[[1,13],[2,13]],"h":["Cali.",2.5,12.55],"x":[[4,25]],"e":[[5,19],[5,18]]},{"s":"NV","c":[[5,12,0],[6,12,1],[5,13,1],[6,13,1]],"o":[[5,12],[6,12]],"h":["Nevada",6,10.55],"e":[[5,11],[6,11]]},{"s":"CO","c":[[12,12,1],[13,12,0],[12,13,1],[13,13,1],[12,14,1],[13,14,0],[12,15,0],[13,15,0]],"o":[[12,12],[13,12]],"h":["Colo.",13,11.55],"e":[[11,13],[11,14]]},{"s":"NE","c":[[15,12,0],[16,12,0],[16,13,0]],"o":[[15,12],[16,12]],"h":["Nebr.",16.5,11.55],"e":[[15,13],[17,12]]},{"s":"IL","c":[[23,12,1],[24,12,1],[22,13,1],[23,13,1],[24,13,1],[22,14,1],[23,14,1],[24,14,1],[22,15,1],[23,15,1],[24,15,1],[22,16,1],[23,16,0],[24,16,1],[23,17,1],[24,17,0],[24,18,0]],"o":[[23,12],[24,12]],"h":["Illi.",23.5,11.55],"x":[[23,18],[22,12]],"e":[[25,15],[25,14]]},{"s":"OH","c":[[30,12,1],[32,12,1],[33,12,0],[30,13,0],[31,13,0],[32,13,0],[33,13,1],[30,14,0],[31,14,1],[32,14,0],[33,14,0],[30,15,0],[31,15,1],[32,15,0],[33,15,0]],"o":[[32,12],[33,12]],"h":["Ohio",32,10.55],"x":[[31,12],[30,16],[30,17]],"e":[[34,15],[31,11]]},{"s":"UT","c":[[8,13,0],[9,13,0],[8,14,0],[9,14,0]],"o":[[8,13],[9,13]],"h":["Utah",9,11.55],"e":[[8,12],[9,12]]},{"s":"IA","c":[[19,13,0],[20,13,0],[19,14,0],[20,14,0]],"o":[[19,13],[20,13]],"h":["Iowa",20,12.55],"x":[[19,15]],"e":[[20,15],[18,14]]},{"s":"IN","c":[[27,13,1],[28,13,0],[27,14,0],[28,14,0],[27,15,1],[28,15,0],[27,16,0],[28,16,0],[27,17,0]],"o":[[27,13],[28,13]],"h":["Indi.",28,12.55],"e":[[28,17],[26,17]]},{"s":"NJ","c":[[44,12,1],[45,12,1],[46,12,1],[44,13,1],[45,13,1],[46,13,1],[44,14,0],[45,14,1],[46,14,1],[47,14,1],[46,15,0],[47,15,0]],"o":[[44,12],[45,12]],"h":["NJ",46,11.55],"x":[[47,13]],"e":[[47,12],[48,13]]},{"s":"MD","c":[[36,15,1],[37,15,1],[38,15,1],[39,15,1],[40,15,1],[41,15,0],[40,16,1],[41,16,1]],"o":[[36,15],[37,15]],"h":["Mary.",42.5,17.45],"e":[[42,15],[42,16]]},{"s":"KS","c":[[15,15.5,0],[16,15.5,1],[15,16.5,0],[16,16.5,0]],"o":[[15,15.5],[16,15.5]],"h":["Kansas",16,15.05],"e":[[17,16.5],[16,17.5]]},{"s":"AZ","c":[[7,16,1],[8,16,0],[9,16,0],[7,17,1],[8,17,0],[9,17,0],[7,18,1],[8,18,0],[9,18,0]],"o":[[7,16],[8,16]],"h":["Ariz.",8.5,20.45],"e":[[7,19],[8,19]]},{"s":"NM","c":[[12,17,1],[13,17,1],[12,18,1]],"o":[[12,17],[13,17]],"h":["NM",12.5,20.45],"e":[[13,18],[12,19]]},{"s":"MO","c":[[19,17,1],[20,17,0],[19,18,0],[20,18,0],[21,18,1],[19,19,0],[20,19,0],[21,19,0]],"o":[[19,17],[20,17]],"h":["Misso.",20.5,21.45],"x":[[20,20]],"e":[[19,20],[21,20]]},{"s":"WV","c":[[32,17,0],[33,17,0]],"o":[[32,17],[33,17]],"h":["W-Virg.",32.5,19.45],"x":[[32,18]],"e":[[34,17],[35,17]]},{"s":"VA","c":[[38,17,1],[37,18,0],[38,18,1],[39,18,1],[34,19,0],[35,19,0],[36,19,1],[37,19,1],[38,19,0],[39,19,1],[40,19,0]],"o":[[34,19],[35,19]],"h":["Virg.",37.5,20.45],"e":[[37,17],[40,18]]},{"s":"DE","c":[[44,17,1]],"o":[[44,17],[45,17]],"h":["Dela.",44.5,19.45],"e":[[45,17],[44,18]]},{"s":"KY","c":[[29,19,1],[30,19,0],[27,20,0],[28,20,0],[29,20,0],[30,20,0]],"o":[[29,19],[30,19]],"h":["Kent.",26.01,19.5],"e":[[28,19],[27,19]]},{"s":"OK","c":[[14,20,0],[15,20,0],[16,20,0],[15,21,0],[16,21,0]],"o":[[14,20],[15,20]],"h":["Okla.",16,19.55],"e":[[14,21],[17,20]]},{"s":"TX","c":[[12,23,0],[13,23,0],[12,24,0],[13,24,0],[14,24,0],[15,24,0],[16,24,0],[10,25,1],[12,25,0],[13,25,1],[14,25,1],[15,25,1],[11,25,0],[16,25,0],[11,26,0],[12,26,0],[13,26,0],[14,26,0],[15,26,0],[16,26,0],[12,27,1],[14,27,1],[15,27,1],[11,27,0],[13,27,0],[16,27,0],[12,28,0],[13,28,0],[14,28,1],[15,28,1],[12,29,1],[13,29,1],[14,29,0],[15,29,0],[13,30,1],[14,30,0],[13,31,0],[14,31,1]],"o":[[12,23],[13,23]],"h":["Texas",14,32.45],"e":[[11,28],[16,28]]},{"s":"TN","c":[[22,22,0],[23,22,0],[24,22,0],[25,22,0],[26,22,0],[27,22,0],[22,23,1],[23,23,0],[24,23,0]],"o":[[22,22],[23,22]],"h":["Tenn.",25.5,21.55],"e":[[25,23],[28,22]]},{"s":"GA","c":[[30,22,0],[31,22,0],[32,22,0],[30,23,0],[31,23,1],[32,23,0],[30,24,1],[31,24,1],[32,24,1],[33,24,0],[31,25,1],[30,25,0],[32,25,0],[33,25,0]],"o":[[30,22],[31,22]],"h":["Geor.",32,21.55],"e":[[33,23],[33,22]]},{"s":"NC","c":[[35,22,0],[36,22,0],[37,22,0],[38,22,0],[39,22,1],[40,22,0],[41,22,1],[36,23,0],[37,23,1],[38,23,0],[39,23,0],[40,23,1],[41,23,0],[41,24,0]],"o":[[35,22],[36,22]],"h":["N-Caro.",40.5,21.55],"e":[[35,23],[42,23]]},{"s":"AR","c":[[19,22.5,0],[20,22.5,0],[19,23.5,0],[20,23.5,0]],"o":[[19,22.5],[20,22.5]],"h":["Arka.",19.5,24.95],"e":[[18,22.5],[18,23.5]]},{"s":"AL","c":[[27,24,0],[28,24,0],[27,25,0],[28,25,0],[27,26,1],[28,26,1],[27,27,0]],"o":[[27,24],[28,24]],"h":["Alab.",28,28.45],"e":[[28,27],[26,25]]},{"s":"MS","c":[[23,25,1],[24,25,0],[23,26,0],[24,26,0]],"o":[[23,25],[24,25]],"h":["Missi.",23.5,28.45],"e":[[22,25],[23,27]]},{"s":"SC","c":[[36,25,0],[37,25,0],[38,25,0],[39,25,0],[38,26,1],[37,26,0],[39,26,0]],"o":[[36,25],[37,25]],"h":["S-Caro.",38.5,27.45],"e":[[36,26],[35,25]]},{"s":"LA","c":[[19,26.5,0],[19,27.5,1],[20,27.5,0],[19,28.5,0],[20,28.5,1],[21,28.5,0]],"o":[[19,27.5],[20,27.5]],"h":["Loui.",20,29.95],"x":[[21,27.5]],"e":[[20,26.5],[18,27.5]]},{"s":"FL","c":[[31,28,0],[32,28,0],[33,28,0],[34,28,0],[35,28,0],[33,29,0],[34,29,0],[35,29,0],[36,29,1],[37,29,0],[34,30,0],[35,30,1],[36,30,0],[37,30,1],[38,30,0],[39,30,0],[35,31,0],[36,31,0],[37,31,0],[38,31,1],[39,31,1],[40,31,1],[35,32,0],[36,32,0],[37,32,0],[38,32,0],[39,32,1],[40,32,1]],"o":[[31,28],[32,28]],"h":["Flor.",34,27.55],"e":[[36,28],[38,29]]},{"s":"AK","c":[[4,0,0]],"o":[[4,0],[5,0]],"h":["Alaska",4.5,-0.45],"e":[[5,0],[3,0]]},{"s":"HI","c":[[6,30,1],[7,31,1]],"o":[[6,30],[7,31]],"h":["Hawaii",7,29.55],"e":[[7,30],[6,31]]},{"s":"DC","c":[],"o":[],"e":[[43,20],[44,20],[43,21]],"h":["DC",44,22.45]}];
+const CHAMBER=[{"s":"NH","c":[[46,1,1],[47,1,1]],"o":[[46,1],[47,1]],"h":["NH",48,-0.45],"e":[[46,0],[47,0]],"m":[47.5,1.0]},{"s":"ME","c":[[49,0,1],[49,1,1]],"o":[[49,0],[49,1]],"h":["Maine",51,-0.45],"e":[[50,0],[50,1]],"m":[50.5,1.0]},{"s":"VT","c":[[44,1,1]],"o":[[43,1],[44,1]],"h":["Verm.",45.5,-0.45],"e":[[43,1],[44,0]],"m":[45.5,1.5]},{"s":"NY","c":[[41,2,0],[41,3,1],[40,3,1],[39,4,0],[40,4,1],[41,4,0],[41,5,1],[40,5,1],[39,5,1],[38,5,1],[37,6,1],[38,6,1],[39,6,1],[40,6,1],[41,6,1],[41,7,1],[40,7,1],[39,7,1],[38,7,0],[37,7,1],[36,7,0],[40,8,1],[41,8,1],[44,9,0],[43,9,0],[42,9,1]],"o":[[41,2],[41,3]],"h":["NY",42.5,2.55],"x":[[38,4],[37,5],[39,3]],"e":[[42,8],[43,8]],"m":[41.42307692307692,7.461538461538462]},{"s":"WA","c":[[0,2,1],[1,2,1],[3,3,0],[2,3,1],[1,3,1],[0,3,1],[0,4,1],[1,4,1],[2,4,1],[3,4,0]],"o":[[0,2],[1,2]],"h":["Wash.",3,3.55],"e":[[2,2],[3,2]],"m":[3.2,5.7]},{"s":"MA","c":[[43,3,1],[44,3,1],[45,3,1],[46,3,1],[47,4,1],[46,4,1],[45,4,1],[44,4,1],[43,4,1]],"o":[[43,3],[44,3]],"h":["Mass.",47,3.55],"x":[[47,3]],"e":[[47,3],[48,4]],"y":[[0,48,3]],"m":[47.27777777777778,5.055555555555555]},{"s":"MT","c":[[7,5,0],[8,5,0]],"o":[[7,5],[8,5]],"h":["Mont.",11,4.55],"e":[[7,4],[8,4]],"m":[10.0,5.5]},{"s":"ND","c":[[14,5,0]],"o":[[14,5],[15,5]],"h":["N-Dako.",15.5,4.55],"e":[[15,5],[16,5]],"m":[15.5,5.5]},{"s":"MN","c":[[18,5,0],[19,5,0],[19,6,1],[18,6,0],[18,7,1],[19,7,1],[19,8,1],[18,8,0]],"o":[[18,5],[19,5]],"h":["Minn.",20,5.55],"e":[[20,5],[20,6]],"m":[20.0,8.0]},{"s":"MI","c":[[25,5,0],[26,5,0],[26,6,0],[26,7,1],[27,7,1],[28,7,1],[29,8,0],[28,8,1],[27,8,0],[26,8,0],[26,9,0],[27,9,1],[28,9,1]],"o":[[25,5],[26,5]],"h":["Mich.",26.5,4.55],"x":[[27,5],[29,7]],"e":[[27,6],[28,6]],"m":[28.423076923076923,7.961538461538462]},{"s":"WI","c":[[22,6,0],[23,6,0],[24,7,0],[23,7,1],[22,7,0],[22,8,0],[23,8,1],[24,8,0]],"o":[[22,6],[23,6]],"h":["Wisc.",23.5,6.55],"e":[[23,9],[24,9]],"m":[23.625,8.375]},{"s":"CT","c":[[43,6,1],[44,6,1],[45,6,1],[46,6,1],[45,7,1]],"o":[[43,6],[44,6]],"h":["Conn.",47.5,9.45],"e":[[46,7],[46,8]],"m":[46.7,7.9]},{"s":"RI","c":[[48,6,1],[48,7,1]],"o":[[48,6],[48,7]],"h":["RI",51,6.55],"e":[[49,6],[49,7]],"m":[50.5,8.0]},{"s":"ID","c":[[5,5,0],[5,6,0]],"o":[[5,5],[5,6]],"h":["Idaho",8.5,7.05],"e":[[5,7],[6,7]],"m":[8.0,8.5]},{"s":"OR","c":[[0,6,1],[1,6,1],[2,6,1],[2,7,0],[1,7,1],[0,7,1]],"o":[[0,6],[1,6]],"h":["Oregon",1.5,10.45],"e":[[3,6],[3,7]],"m":[2.0,9.0]},{"s":"WY","c":[[10,5,0]],"o":[[10,5],[11,5]],"h":["Wyom.",12.5,7.55],"e":[[10,6],[11,6]],"m":[12.5,8.5]},{"s":"SD","c":[[14,7,0]],"o":[[14,7],[15,7]],"h":["S-Dako.",16,7.55],"e":[[15,7],[16,7]],"m":[15.5,8.5]},{"s":"PA","c":[[34,9,0],[35,9,0],[36,9,0],[37,9,0],[38,9,0],[39,10,1],[38,10,0],[37,10,1],[36,10,0],[35,10,1],[34,10,1],[34,11,0],[35,11,0],[36,11,0],[37,11,1],[38,11,1],[39,11,1]],"o":[[34,9],[35,9]],"h":["Penn.",38,10.55],"x":[[33,9],[34,8]],"e":[[40,10],[40,11]],"m":[38.85294117647059,12.558823529411764]},{"s":"CA","c":[[0,9,0],[1,9,1],[2,9,0],[2,10,1],[1,10,1],[0,10,1],[0,11,1],[1,11,1],[2,11,1],[2,12,0],[1,12,1],[0,12,1],[0,13,1],[1,13,1],[2,13,1],[3,14,1],[2,14,1],[1,14,1],[0,14,1],[0,15,1],[1,15,0],[2,15,1],[3,15,0],[4,16,0],[3,16,1],[2,16,1],[1,16,1],[0,16,1],[1,17,1],[2,17,1],[3,17,1],[4,17,1],[5,17,1],[6,18,1],[5,18,1],[4,18,1],[3,18,1],[2,18,1],[3,19,1],[4,19,1],[5,19,1],[6,19,1],[6,20,0],[5,20,0],[4,20,1],[3,20,1],[4,21,1],[5,21,0],[6,21,1],[6,22,1],[5,22,1],[4,22,1]],"o":[[0,9],[1,9]],"h":["Cali.",2.5,12.55],"x":[[4,15]],"e":[[1,18],[2,19]],"m":[4.153846153846154,20.28846153846154]},{"s":"NV","c":[[4,10,0],[5,10,1],[5,11,1],[4,11,1]],"o":[[4,10],[5,10]],"h":["Nevada",6,10.55],"e":[[4,12],[5,12]],"m":[6.0,13.0]},{"s":"CO","c":[[10,8,1],[11,8,0],[11,9,1],[10,9,1],[10,10,1],[11,10,0],[11,11,0],[10,11,0]],"o":[[10,8],[11,8]],"h":["Colo.",13,11.55],"e":[[12,10],[12,11]],"m":[13.0,14.0]},{"s":"NE","c":[[14,9,0],[15,9,0],[15,10,0]],"o":[[14,9],[15,9]],"h":["Nebr.",16.5,11.55],"e":[[16,9],[16,10]],"m":[16.166666666666668,12.833333333333334]},{"s":"IL","c":[[21,11,1],[22,11,1],[23,11,1],[23,12,1],[22,12,1],[21,12,1],[21,13,1],[22,13,1],[23,13,1],[23,14,1],[22,14,1],[21,14,1],[21,15,0],[22,15,1],[23,15,0],[23,16,1],[23,17,0]],"o":[[21,11],[22,11]],"h":["Illi.",23.5,11.55],"x":[[21,16],[21,17]],"e":[[22,16],[22,17]],"m":[23.676470588235293,15.205882352941176]},{"s":"OH","c":[[28,11,1],[29,11,1],[30,11,0],[31,11,1],[31,12,0],[30,12,0],[29,12,0],[28,12,0],[28,13,1],[29,13,0],[30,13,0],[31,13,0],[31,14,0],[30,14,1],[29,14,0]],"o":[[28,11],[29,11]],"h":["Ohio",32,10.55],"x":[[28,14],[30,10],[31,10]],"e":[[32,11],[32,12]],"m":[32.03333333333333,14.1]},{"s":"UT","c":[[7,9,0],[8,9,0],[8,10,0],[7,10,0]],"o":[[7,9],[8,9]],"h":["Utah",9,11.55],"e":[[7,11],[8,11]],"m":[9.0,14.0]},{"s":"IA","c":[[18,10,0],[19,10,0],[19,11,0],[18,11,0]],"o":[[18,10],[19,10]],"h":["Iowa",20,12.55],"x":[[18,12]],"e":[[18,12],[19,12]],"y":[[0,18,13]],"m":[20.0,14.0]},{"s":"IN","c":[[25,11,1],[26,11,0],[26,12,0],[25,12,0],[25,13,1],[26,13,0],[26,14,0],[25,14,0],[25,15,0]],"o":[[25,11],[26,11]],"h":["Indi.",28,12.55],"e":[[25,16],[26,15]],"m":[27.944444444444443,15.277777777777779]},{"s":"NJ","c":[[42,11,1],[43,11,1],[44,11,1],[45,11,1],[45,12,1],[44,12,1],[43,12,0],[42,12,1],[43,13,1],[44,13,1],[45,13,0],[43,14,0]],"o":[[42,11],[43,11]],"h":["NJ",46,11.55],"x":[[46,12]],"e":[[44,14],[45,14]],"m":[45.916666666666664,13.916666666666666]},{"s":"MD","c":[[36,13,1],[37,13,1],[38,13,1],[39,13,1],[40,13,1],[40,14,0],[39,14,1],[40,15,1]],"o":[[36,13],[37,13]],"h":["Mary.",42.5,17.45],"e":[[41,14],[41,15]],"m":[39.5,15.75]},{"s":"KS","c":[[14,12,0],[15,12,1],[15,13,0],[14,13,0]],"o":[[14,12],[15,12]],"h":["Kansas",16,15.05],"e":[[16,12],[16,13]],"m":[16.0,16.5]},{"s":"AZ","c":[[7,13,1],[8,13,0],[8,14,0],[7,14,0],[6,14,0],[6,15,1],[7,15,1],[8,15,0],[8,16,0]],"o":[[7,13],[8,13]],"h":["Ariz.",8.5,20.45],"e":[[7,16],[8,17]],"m":[8.5,17.5]},{"s":"NM","c":[[10,13,1],[11,13,1],[10,14,1]],"o":[[10,13],[11,13]],"h":["NM",12.5,20.45],"e":[[10,15],[11,14]],"m":[12.833333333333334,17.833333333333332]},{"s":"MO","c":[[17,15,1],[18,15,0],[18,16,1],[17,16,0],[17,17,0],[18,17,0],[19,17,0],[18,18,0]],"o":[[17,15],[18,15]],"h":["Misso.",20.5,21.45],"x":[[19,16]],"e":[[17,18],[19,18]],"m":[20.375,18.625]},{"s":"WV","c":[[33,14,0],[34,14,0]],"o":[[33,14],[34,14]],"h":["W-Virg.",32.5,19.45],"x":[[34,15]],"e":[[33,15],[34,13]],"m":[33.0,17.5]},{"s":"VA","c":[[36,15,1],[37,15,1],[37,16,1],[36,16,0],[35,16,0],[33,17,0],[34,17,1],[35,17,1],[36,17,0],[37,17,1],[38,17,0]],"o":[[36,15],[37,15]],"h":["Virg.",37.5,20.45],"e":[[38,16],[39,17]],"m":[37.86363636363637,19.045454545454547]},{"s":"DE","c":[[44,16,1]],"o":[[44,16],[45,16]],"h":["Dela.",44.5,19.45],"e":[[44,17],[45,16]],"m":[44.5,17.5]},{"s":"KY","c":[[29,16,1],[30,16,0],[30,17,0],[29,17,0],[28,17,0],[27,17,0]],"o":[[29,16],[30,16]],"h":["Kent.",26.01,19.5],"e":[[31,16],[31,17]],"m":[29.333333333333332,20.166666666666668]},{"s":"OK","c":[[13,15,0],[14,15,0],[14,16,0],[13,16,0],[12,16,0]],"o":[[13,15],[14,15]],"h":["Okla.",16,19.55],"e":[[13,17],[14,17]],"m":[15.7,20.9]},{"s":"TX","c":[[10,18,0],[11,18,0],[13,19,0],[12,19,0],[11,19,0],[10,19,0],[8,20,0],[9,20,1],[10,20,0],[11,20,0],[12,20,1],[13,20,1],[14,20,1],[14,21,0],[13,21,0],[12,21,0],[11,21,0],[10,21,0],[9,21,0],[9,22,0],[10,22,0],[11,22,1],[12,22,0],[13,22,1],[14,22,1],[14,23,0],[13,23,1],[12,23,1],[11,23,0],[10,23,0],[10,24,1],[11,24,1],[12,24,0],[13,24,0],[12,25,0],[11,25,1],[11,26,0],[12,26,1]],"o":[[10,18],[11,18]],"h":["Texas",14,32.45],"e":[[15,20],[15,21]],"m":[13.921052631578947,27.05263157894737]},{"s":"TN","c":[[21,19,0],[22,19,0],[23,19,0],[24,19,0],[25,19,0],[24,20,0],[23,20,0],[22,20,0],[21,20,1]],"o":[[21,19],[22,19]],"h":["Tenn.",25.5,21.55],"e":[[25,20],[26,19]],"m":[24.5,22.833333333333332]},{"s":"GA","c":[[28,19,0],[29,19,0],[30,20,0],[29,20,0],[28,20,1],[28,21,0],[29,21,1],[30,21,1],[30,22,1],[29,22,0],[28,22,0],[28,23,0],[29,23,1],[30,23,0]],"o":[[28,19],[29,19]],"h":["Geor.",32,21.55],"e":[[31,22],[31,23]],"m":[31.785714285714285,24.142857142857142]},{"s":"NC","c":[[33,19,0],[34,19,0],[35,19,0],[36,19,0],[37,19,1],[38,19,0],[39,19,1],[38,20,0],[37,20,1],[36,20,0],[35,20,0],[34,20,1],[33,20,0],[33,21,0]],"o":[[33,19],[34,19]],"h":["N-Caro.",40.5,21.55],"e":[[39,20],[40,19]],"m":[38.92857142857143,23.071428571428573]},{"s":"AR","c":[[17,20,0],[18,20,0],[18,21,0],[17,21,0]],"o":[[17,20],[18,20]],"h":["Arka.",19.5,24.95],"e":[[17,22],[19,20]],"m":[20.0,23.5]},{"s":"AL","c":[[24,22,0],[25,22,0],[26,22,0],[26,23,0],[25,23,1],[24,23,1],[24,24,0]],"o":[[24,22],[25,22]],"h":["Alab.",28,28.45],"e":[[25,24],[26,24]],"m":[27.928571428571427,25.785714285714285]},{"s":"MS","c":[[21,22,1],[22,22,0],[22,23,0],[21,23,0]],"o":[[21,22],[22,22]],"h":["Missi.",23.5,28.45],"e":[[21,24],[22,24]],"m":[24.0,26.0]},{"s":"SC","c":[[35,22,0],[36,22,0],[37,22,0],[38,22,0],[36,23,0],[35,23,1],[34,23,0]],"o":[[35,22],[36,22]],"h":["S-Caro.",38.5,27.45],"e":[[37,23],[39,22]],"m":[38.214285714285715,25.928571428571427]},{"s":"LA","c":[[17,24,0],[18,25,0],[17,25,1],[17,26,0],[18,26,1],[19,26,0]],"o":[[17,24],[17,25]],"h":["Loui.",20,29.95],"x":[[18,24]],"e":[[18,24],[19,25]],"y":[[0,19,24]],"m":[20.166666666666668,28.333333333333332]},{"s":"FL","c":[[28,25,0],[29,25,0],[30,25,0],[31,25,0],[32,25,0],[34,26,0],[33,26,1],[32,26,0],[31,26,0],[30,26,0],[31,27,0],[32,27,1],[33,27,0],[34,27,1],[35,27,0],[36,27,0],[37,28,1],[36,28,1],[35,28,1],[34,28,0],[33,28,0],[32,28,0],[32,29,0],[33,29,0],[34,29,0],[35,29,0],[36,29,1],[37,29,1]],"o":[[28,25],[29,25]],"h":["Flor.",34,27.55],"e":[[38,28],[38,29]],"m":[36.535714285714285,30.607142857142858]},{"s":"AK","c":[[0,0,0]],"o":[[0,0],[1,0]],"h":["Alaska",4.5,-0.45],"e":[[1,0],[2,0]],"m":[4.5,0.5]},{"s":"HI","c":[[4,24,1],[5,25,1]],"o":[[4,24],[5,25]],"h":["Hawaii",7,29.55],"e":[[6,25],[7,25]],"m":[7.0,31.0]},{"s":"DC","c":[],"o":[],"e":[[41,17],[42,17],[42,18]],"h":["DC",44,22.45]}];
 
 // ---------- US history 2008-2024 (see CONTEXT.txt for sources) ----------
 // House seats (= electoral votes - 2) by census, as changes from today's (2020-census) counts.
@@ -505,11 +508,6 @@ function projOf(race,k){
 const S=20, NS="http://www.w3.org/2000/svg";
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
-// viewBox around the squares [x0,y0,x1,y1] and the names (width estimated at .3 squares per letter)
-function fitBox(b,labels){
-  labels.forEach(([t,x,y])=>{const w=t.length*.3/2;b[0]=Math.min(b[0],x-w);b[2]=Math.max(b[2],x+w);b[1]=Math.min(b[1],y-.4);b[3]=Math.max(b[3],y+.4)});
-  return [b[0]*S-6,b[1]*S-6,(b[2]-b[0])*S+12,(b[3]-b[1])*S+12];
-}
 function label(parent,[t,x,y,a,b],cls=""){
   const inside=a===1, anchor=typeof a==="string"?a:b;
   const e=el("text",{x:x*S,y:y*S,class:(inside?"in ":"")+cls,"text-anchor":inside?"middle":(anchor||"middle")},parent);
@@ -548,23 +546,21 @@ function roundFilter(defs,id,sd){
   el("feColorMatrix",{in:"b",type:"matrix",values:"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 24 -12",result:"m"},f);
   el("feComposite",{in:"SourceGraphic",in2:"m",operator:"in"},f);
 }
-// House squares that drop first when a state has fewer seats, first to go first, so a block never has a hole in it
-// (owner, 2026-11-04). Only which square shows changes: the layout uses every square, so no state moves.
-const HSQ_LAST={MI:"30,9 29,9",MO:"21,18",MT:"9,5",NJ:"46,15",OH:"30,17 30,16 30,15",OR:"2.5,9",PA:"41,13 35,13",SC:"39,26"};
-const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
+// House squares that drop first when a state has fewer seats, first to go first, so a block never splits or has a hole
+// in it (owner, 2026-11-04). Serpentine order already does that everywhere on the Figma layout except Arizona.
+const HSQ_LAST={AZ:"6,15"};
+const HSQ={}, ESQ={}, ESQ_2000={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
 (function drawUS(){
-  const box=[1e9,1e9,-1e9,-1e9], labels=[];
   // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
-  const defs=el("defs",{},usSvg); roundFilter(defs,"round-us",.97);
+  const defs=el("defs",{},usSvg);
   [["hd","var(--dem)","#cfe5f8"],["hr","var(--rep)","#f9d4d1"],["ht","#e8bd2e","#fbefc4"],["hn","#a9a9a9","#ffffff"]].forEach(([id,a,b])=>{
     const pt=el("pattern",{id,width:7,height:7,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
     el("rect",{width:7,height:7,style:`fill:${b}`},pt); el("rect",{width:3.5,height:7,style:`fill:${a}`},pt);
   });
-  const grow=(x,y)=>{box[0]=Math.min(box[0],x);box[1]=Math.min(box[1],y);box[2]=Math.max(box[2],x+1);box[3]=Math.max(box[3],y+1)};
-  const sq=(g,[x,y])=>{grow(x,y);return el("rect",{class:"sq",x:x*S,y:y*S,width:S,height:S,"stroke-width":1},g)};
+  const sq=(g,[x,y])=>el("rect",{class:"sq",x:x*S,y:y*S,width:S,height:S,"stroke-width":1},g);
   CHAMBER.forEach(st=>{
     const g=el("g",{class:"state"},usSvg), k=st.s; GST[k]=g;
-    const sg=el("g",{class:"sqs"},g);   // the squares on their own, so Governors can round the block's corners
+    const sg=el("g",{class:"sqs"},g);
     if(st.c.length){
       const dem=new Map(st.c.map(([x,y,d])=>[x+","+y,d]));
       const base=[...serp(st.c.map(([x,y])=>[x,y])),...(st.x||[])], last=(HSQ_LAST[k]||"").split(" ").filter(Boolean);
@@ -575,13 +571,17 @@ const HSQ={}, ESQ={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
       HSQ[k]=cells.map(c=>sq(sg,c));
     }
     ESQ[k]=st.e.map(c=>sq(sg,c));
-    SEAT[k]=st.o.map(([x,y])=>{grow(x,y);return el("circle",{class:"seat",cx:(x+.5)*S,cy:(y+.5)*S,r:S*.43},g)});
+    // st.y: [elector, x, y]. MA, IA, LA's extra 2000-census seat sits on this elector's square so the House block stays
+    // in one piece; on President that elector steps aside to x, y for those years
+    if(st.y) ESQ_2000[k]=st.y.map(([j,x,y])=>({e:ESQ[k][j],at:[x,y],home:st.e[j]}));
+    SEAT[k]=st.o.map(([x,y])=>el("circle",{class:"seat",cx:(x+.5)*S,cy:(y+.5)*S,r:S*.43},g));
     // name: which side of the state's squares it sits on (judged against all squares any race can show)
     const all=[...st.c,...st.e,...(st.x||[])], bx=[Math.min(...all.map(c=>c[0])),Math.min(...all.map(c=>c[1])),Math.max(...all.map(c=>c[0]))+1,Math.max(...all.map(c=>c[1]))+1];
     const [,hx,hy]=st.h, side=hy<bx[1]?"above":hy>bx[3]?"below":hx>bx[2]?"right":"left";
-    LBL[k]={e:label(g,st.h,k==="DC"?"dc":""),x:hx,y:hy,side,bx}; labels.push(st.h);
+    LBL[k]={e:label(g,st.h,k==="DC"?"dc":""),x:hx,y:hy,side,bx};
   });
-  usSvg.setAttribute("viewBox",fitBox(box,labels).join(" "));
+  // fixed: Senate Seats and Representation are laid out on this box, whatever the squares' positions
+  usSvg.setAttribute("viewBox","-16 -23 1062 689");
   // Earlier House years start from the next election's colours and change as few squares as possible,
   // so stepping through the years only recolours the seats that changed hands (per state, not per district).
   for(let i=CH_YEARS.length-2;i>=0;i--){
@@ -693,7 +693,7 @@ const PACK_GAP=.5, PACK_TURN={};
 // the side its Map name uses), so the packer keeps other states clear of it.
 function packLayout(M,key){
   if(M.cache[key]) return M.cache[key];
-  if(!M.fitOut) return packOnce(M,key);
+  if(!M.fitOut||M.static) return packOnce(M,key);
   let out=packOnce(M,null), need={};
   for(let i=0;i<4&&out.laidOut;i++){   // again while a new name has gone outside
     const add=Object.keys(out.need).filter(k=>!need[k]); if(!add.length) break;
@@ -754,7 +754,7 @@ function packOnce(M,key){
     tries.sort((p,q)=>Math.hypot(...p)-Math.hypot(...q));
     const o0=B[k].o.slice(); for(const t of tries){B[k].o=[o0[0]+t[0],o0[1]+t[1]]; if(!clash(k)) break}
   }
-  if(!M.fixed) for(let it=0;it<400;it++){
+  if(!M.fixed&&!M.static) for(let it=0;it<400;it++){
     let moved=0;
     const v=Object.fromEntries(ks.map(k=>[k,[0,1].map(a=>C[a]-B[k].m[a]-B[k].o[a])]));
     ks.sort((p,q)=>Math.hypot(...v[p])-Math.hypot(...v[q]));
@@ -800,22 +800,20 @@ function packOnce(M,key){
   // M.label(k): a shorter name for the race on show. The layout's room still comes from M.name, so no state moves
   const nameOf=k=>M.label?.(k)||M.name(k);
   const anyOut=new Set(), wAll={}, fitsIn=(k,w,real,av)=>runsOf(B[k],real,av).some(r=>(r[2]-r[1])*S*f>=w+8);
-  if(M.fitOut){fit(0); for(const k of kAll){if(single.includes(k)) continue; const e=PL[k].t; e.classList.add("in"); e.textContent=M.name(k);
+  if(M.fitOut){fit(M.inset||0); for(const k of kAll){if(single.includes(k)) continue; const e=PL[k].t; e.classList.add("in"); e.textContent=M.name(k);
     const w=wAll[k]=e.getComputedTextLength(); if(!w){laidOut=false; continue}
-    if(M.above?.includes(k)){single.push(k); anyOut.add(k); continue}   // M.above: always outside, see cand below
     e.textContent=nameOf(k);
-    if(B[k].real.length&&!fitsIn(k,e.getComputedTextLength(),B[k].real,B[k].av)) single.push(k);
+    if(!M.inside?.()&&B[k].real.length&&!fitsIn(k,e.getComputedTextLength(),B[k].real,B[k].av)) single.push(k);
     for(const r in B[k].realBy) if(B[k].realBy[r].real.length&&!fitsIn(k,w,B[k].realBy[r].real,B[k].realBy[r].av)) anyOut.add(k)}}
   const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=nameOf(k);
     wOut[k]=e.getComputedTextLength(); if(!wOut[k]) laidOut=false});
-  for(let m=0;;m+=6){fit(m); if(!single.length) break;
+  for(let m=M.inset||0;;m+=6){fit(m); if(!single.length) break;
     const boxes=kAll.flatMap(j=>B[j].c.map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S,j]})), done=[];
     let all=true;
     const hit=(q,r,d)=>q[0]<r[2]+d&&r[0]<q[2]+d&&q[1]<r[3]+d&&r[1]<q[3]+d, pad=(M.pad||.08)*S*f, h=M.fs*.8;
     const cand=Object.fromEntries(single.map(k=>{const w=wOut[k], g=.15*S*f;
-      // M.above: the name starts at the left edge of the state's top row, so it stays put in every race and year
-      if(M.above?.includes(k)){const c=B[k].c.slice(0,B[k].raw.length), top=Math.min(...c.map(p=>p[1])),
-          [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===top).map(p=>p[0])),top]);
+      // M.topLeft: above the topmost, leftmost square, left-aligned to it
+      if(M.topLeft?.()){const c=B[k].real, top=Math.min(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===top).map(p=>p[0])),top]);
         return [k,[{o:[X,Y-g-h/2,"start","above"],q:[X,Y-g-h,X+w,Y-g]}]]}
       const rl=[0,1].map(a=>Math.min(...B[k].real.map(p=>p[a]))), rh=[0,1].map(a=>Math.max(...B[k].real.map(p=>p[a]))+1);
       const [x0,y0]=put(k,rl), [x1,y1]=put(k,rh), cx=(x0+x1)/2, cy=(y0+y1)/2;
@@ -859,7 +857,7 @@ function packOnce(M,key){
     lb[k]={x,y,w,t,seg};
   }
   // names that went outside, for the second pass: how many squares their text needs, and the side the Map uses
-  const need={}; for(const k of anyOut) if(!M.out.includes(k)) need[k]=M.above?.includes(k)?{n:1,side:"above"}:{n:Math.ceil((wAll[k]+2*(M.pad||.08)*S*f)/(S*f)),
+  const need={}; for(const k of anyOut) if(!M.out.includes(k)) need[k]={n:Math.ceil((wAll[k]+2*(M.pad||.08)*S*f)/(S*f)),
     side:M.extra?.[k]?.side||(typeof M.side==="function"?M.side(k):M.side?.[k])||"right"};
   const out={st,lb,at,f,lo,laidOut,need}; if(laidOut&&key!=null) M.cache[key]=out;   // a hidden panel can't measure text: try again when shown
   return out;
@@ -881,68 +879,43 @@ function applyPack(M,pk,groups){
     while(e.gr.children.length<stops.length) el("stop",{},e.gr);
     stops.forEach(([o,c],i)=>{const st=e.gr.children[i]; st.setAttribute("offset",o); st.style.stopColor=c})}
 }
-// President: from the squares on show (they change with the census), cached per year.
-// Alaska sits out and goes just above Washington; Arizona is nudged a little down and right; West Virginia is
-// pulled in against Virginia. Pill names: VT, HI short; New Jersey on its second row from the top.
-// Every US race (owner, 2026-10-11): names centred on their row (mid); a name wider than every row of its squares
-// goes outside (fitOut), .3 square clear of other states (pad). Senate: the circles' cells count as the state's (some
-// sit on squares the Senate map hides) and no pill sits on a circle (avoid). race: set by setUS before packing.
+// USA (owner, 2026-11-06): every state sits exactly where the owner's Figma frames put it (node 3566:9143 President,
+// 3566:10367 House): CHAMBER holds those cells, one square of white between neighbours, so nothing is packed (M.static).
+// President = the House block + its two elector squares; House, Senate and Governors = the block alone, so they get
+// a little more air. Years only add or drop squares (st.x / the end of each list); no state ever moves.
+// Names: President's sit inside the block, short name else postal code (M.inside). House, Senate and Governors share ONE
+// set of spots (race "chamber") read from the fewest squares a state has in any year and clear of the Senate circles
+// (M.avoid), so a name is in the same place in all three maps and every year. A name that doesn't fit goes outside: above
+// the state's topmost, leftmost square, left-aligned to it (M.topLeft). States of one or two squares, or one column, go
+// by their postal code on these maps (M.label; owner, 2026-11-06).
 const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
-const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],above:["VT","NH","ME"],mid:true,fitOut:true,pad:.3,race:"president",side:k=>k==="NV"?"below":LBL[k].side,
+const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:[],static:true,inset:0,mid:true,fitOut:true,pad:.15,race:"president",row:{},
   keys:()=>Object.keys(GST),
-  // room is reserved for names that go outside in any race and census, so one layout serves them all
-  races:["president","house","senate"].flatMap(r=>[2000,2010,2020].map(c=>r+"@"+c)),
-  // the layout: each state's largest President block over the three censuses (House + the two Senate squares), so every
-  // race and year shares ONE set of positions and only adds or drops squares (owner, 2026-11-04)
-  house(k,cen=this.census){return (HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[cen][k]||0))},
-  cells(k){const most=Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0));
-    return [...(HSQ[k]||[]).slice(0,(CH_N[k]||0)+most),...ESQ[k]].map(e=>[e,e])},
-  lcells(k,race){const [r,cen=this.census]=race.split("@"), hs=this.house(k,cen).map(e=>[e,e]);
-    if(r==="president") return [...hs,...ESQ[k].map(e=>[e,e])];
-    if(r!=="senate") return hs;
-    const on=new Set(hs.map(([e])=>[e.x.baseVal.value,e.y.baseVal.value].join())), at=(x,y)=>({x:{baseVal:{value:x*S}},y:{baseVal:{value:y*S}}});
-    return hs.concat(SEAT[k].map((c,i)=>[seatCell(c),c]).filter(([[x,y]])=>!on.has([x*S,y*S].join())).map(([[x,y],c])=>[at(x,y),c]))},
-  avoid(k,race){return race==="senate"?SEAT[k].map(seatCell):[]},
-  name:k=>({VT:"VT",HI:"HI"})[k]||LBL[k].e.textContent, row:{NJ:1},
-  // Senate circles fill Oregon's top row: the short name fits the free squares under them (owner, 2026-11-04)
-  label(k){return this.race==="senate"&&k==="OR"?"Oreg.":null},
-  tweak(B,{clash,pull,G}){
-    // The Northwest, by hand (owner, 2026-11-04): Oregon on California's left edge, Washington straight above it, Nevada
-    // level with California; Idaho and Montana spaced evenly up to South Dakota, level with each other; Wyoming under Montana.
-    const box=(k,a)=>{const b=B[k], v=b.c.slice(0,b.raw.length).map(p=>p[a]+b.o[a]); return [Math.min(...v),Math.max(...v)+1]};
-    const set=(k,x,y)=>{if(x!=null) B[k].o[0]+=x-box(k,0)[0]; if(y!=null) B[k].o[1]+=y-box(k,1)[0]};
-    if(B.CA&&B.OR&&B.WA&&B.NV&&B.ID&&B.MT&&B.WY&&B.SD){
-      const x=box("CA",0)[0], top=box("CA",1)[0];
-      set("NV",null,top); set("OR",x,top-G-2); set("WA",x,box("OR",1)[0]-G-3);
-      const east=box("OR",0)[1], g=(box("SD",0)[0]-east-6)/3, y=box("WY",1)[0]-G-1;
-      set("ID",east+g,y); set("MT",box("ID",0)[1]+g,y); set("WY",box("MT",0)[0]+.5,null);
-    }
-    if(B.WV&&B.VA) pull("WV","VA");
-    // Arizona: a little down and to the right, as far as it fits (up to half a square each way)
-    if(B.AZ) for(const d of [.5,.25]){const o=B.AZ.o.slice(); B.AZ.o=[o[0]+d,o[1]+d]; if(!clash("AZ")) break; B.AZ.o=o}
-    // Vermont, New Hampshire, Maine: one row, side by side, GAP apart, names above (M.above), every race and year (owner, 2026-11-05)
-    if(B.VT&&B.NH&&B.ME){const x=box("NH",0)[0]; let y=box("NH",1)[0];
-      const row=()=>{set("NH",x,y); set("VT",x-G-2,y); set("ME",x+2+G,y)};
-      row(); for(let i=0;i<80&&["VT","NH","ME"].some(clash);i++){y-=.25; row()}
-    }
-    // Alaska: left-aligned above Washington, GAP clear of it (and of anything else up there)
-    if(B.AK&&B.WA){const a=B.AK, w=B.WA;
-      a.o=[w.lo[0]+w.o[0]-a.lo[0], w.lo[1]+w.o[1]-G-a.hi[1]];
-      while(clash("AK")) a.o[1]-=.25;
-    }
-  }};
+  inside(){return this.race==="president"},
+  topLeft(){return this.race!=="president"},
+  most:k=>(CH_N[k]||0)+Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
+  least:k=>(CH_N[k]||0)+Math.min(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
+  // the map's extent: each state's largest President block over the three censuses
+  cells(k){return [...(HSQ[k]||[]).slice(0,this.most(k)),...ESQ[k]].map(e=>[e,e])},
+  // the squares a state has in every year: the only ones a name may rest on
+  lcells(k,race){const hs=(HSQ[k]||[]).slice(0,this.least(k)).map(e=>[e,e]); return race==="president"?[...hs,...ESQ[k].map(e=>[e,e])]:hs},
+  avoid(k,race){return race==="chamber"?SEAT[k].map(seatCell):[]},
+  name:k=>({VT:"VT",HI:"HI"})[k]||LBL[k].e.textContent,
+  small(k){const h=(HSQ[k]||[]).slice(0,this.most(k)); return this.least(k)<=2||new Set(h.map(e=>e.x.baseVal.value)).size===1},
+  label(k){return this.race!=="president"&&this.small(k)?k:null},
+  tweak(){}};
 let presMode="packed";   // USA is always Compact (owner, 2026-10-11): no Map / Compact toggle; the Map code stays
                          // (Senate Representation and the morphs still use it)
 
 function powerLayout(){
   return PW_LAYOUT.pos??=placePairs(st=>st.c.length);
 }
-function placePairs(seatsOf){
+function placePairs(seatsOf){   // st.m: each state's home on Representation (the map's old geography, not the Figma blocks)
   const vb=usSvg.getAttribute("viewBox").split(" ").map(v=>+v/S), X0=vb[0], Y0=vb[1], X1=vb[0]+vb[2], Y1=vb[1]+vb[3];
   const nodes=CHAMBER.filter(st=>st.c.length).map(st=>{
     const n=seatsOf(st), r=PW_R0*Math.sqrt(52/n), w=st.h[0].length*.36;
-    const hx=st.c.reduce((a,c)=>a+c[0]+.5,0)/st.c.length, hy=st.c.reduce((a,c)=>a+c[1]+.5,0)/st.c.length;
+    const [hx,hy]=st.m;
     const hw=Math.max(2*r+.05,w/2+.05);                       // half width of the pair + name
     return {k:st.s,n,r,x:hx,y:hy,hx,hy,hw,up:r+.08,down:r+.95}; // box: x±hw, y-up .. y+down (name below)
   });
@@ -991,6 +964,7 @@ function setUS(race,animate,year=usYear(race)){
   const rw={d:0,r:0,i:0,D:0,R:0,T:0,N:0};   // Senate Representation: each senator weighted 1 / the state's grey squares
   const sm=senMode;
   const paint=(e,show,fill,stroke)=>{e.classList.toggle("gone",!show); if(show){e.style.fill=fill; e.style.stroke=stroke||"var(--bg)"}};
+  for(const k in ESQ_2000) ESQ_2000[k].forEach(({e,at,home})=>{const [x,y]=censusOf(year)===2000?at:home; e.setAttribute("x",x*S); e.setAttribute("y",y*S)});
   for(const k in ESQ){
     const n=(CH_N[k]||0)+(diff[k]||0), hs=HSQ[k]||[];
     if(race==="president"){
@@ -1071,14 +1045,11 @@ function setUS(race,animate,year=usYear(race)){
     if(L.side==="above"||L.side==="below") dx=Math.min(Math.max(L.x,l),r)-L.x;   // keep the name over its squares
     L.e.style.transform=`translate(${dx*S}px,${dy*S}px)`;
   }
-  // Compact: President and House share the Map / Compact choice; House packs its own squares (cached per year)
-  // Compact: one Map / Compact choice for every US race (not Senate Representation, which has its own layout).
-  // Every race shares one layout; Governors borrows Senate's names.
-  // Governors names sit where Senate's do (owner, 2026-10-11): it uses Senate's layout and name spots, coloured by
-  // the governors' squares (pills read their colours when applied)
-  const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="governors"?"senate":race;
-  PACK_US.race=lr; PACK_US.census=censusOf(year);
-  applyPack(PACK_US,packs&&packLayout(PACK_US,lr+PACK_US.census),GST);
+  // Every race but Senate Seats and Representation sits on the Figma layout; President has its own names, the rest
+  // share one set (see PACK_US). Pills read the squares' colours when applied.
+  const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:"chamber";
+  PACK_US.race=lr;
+  applyPack(PACK_US,packs&&packLayout(PACK_US,lr),GST);
   usSvg.classList.toggle("senate",race==="senate");
   document.getElementById("us-bar").classList.toggle("flat",race==="senate"||race==="governors"||race==="house");
   usSvg.classList.toggle("president",race==="president");
