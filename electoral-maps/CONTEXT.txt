@@ -1843,7 +1843,10 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      2008, 2020, 2022, and AK 2022's final instant-runoff round). Unopposed =
      100. Appointed senators show the last election's margin. Independents shade
      blue, like SEN_FILL. 2004: exact votes where the page had them, and AR, NC
-     from their own pages (KY stays rounded; lightest either way). 2026 stays flat.
+     from their own pages (KY stays rounded; lightest either way). 2026 (owner, 2026-11-06):
+     seats up use CURRENT COUNTS from Wikipedia's race boxes on 2026-11-06, not
+     final, refresh when counting ends; the rest as 2024. AK and MS have no count
+     yet (null), so they stay on the flat leading colour until called.
      marginFill(year, key, w, table) falls back to PARTY_FILL. Names go dark on
      steps 1-16 if any square under them is that pale (PALE_SHADE). Legend text:
      MARGIN_NOTE, GOV_NOTE. Tally bars stay full colour.
@@ -1858,6 +1861,32 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      subtoggles and country button are 8px rounded rectangles, not pills. Selected
      = --sel #6b6c72 highlight, white text (tab thumb, pressed subtoggle, year
      window). #margin-view sits after #sen-view: year, graph type, Results / Margins.
+  -  Play button (owner, 2026-11-06, local): #play, left of the country picker.
+     Grey with a white icon while running. One tour: President Results then
+     Margins, House, Senate (All, then slowly to Seats in the first year; no Representation,
+     then the years, then Margins from the first year), Governors Results then
+     Margins, then it resets. Starts from any view, India included. Stops where it
+     is on a second press, or any click on a bar button or arrow key there.
+     startPlay / playPass drive setUS and stepOnPick, never clicks. Phones skip
+     Senate Margins. playStep 1500ms a year; playSlow 3200ms for the slow Senate.
+  -  USA map fits phones (owner, 2026-11-06, local): #map-us drops the 560px
+     min-width at max-width 640px, so no side-scroll in any US race (India keeps
+     it). At that size names would be under 4px, so phones use postal codes at
+     fs 22 / pill 27 (PACK_US reads narrow; the change listener re-lays them),
+     Representation names 20, Senate Seats codes 23. Checked every race, year
+     and Senate view at 375px: no overlaps, nothing past the edge.
+  -  Tally alignment rule (owner, 2026-11-06, local): everywhere, blue side flush
+     left of the bar, red side flush right, every line. .gain.d / .gain.r now set
+     text-align themselves; before, the red side's multi-line notes (2026
+     Governors, Senate) were ragged. Same for the India sides.
+  -  Senate tie note (owner, 2026-11-06, local): now "Tiebreaker by the Democrat
+     Vice President" under the 51.
+  -  Bar midpoint labels (owner, 2026-11-06, local): no FOR MAJORITY / FOR CONTROL
+     under the number; it's understood. TO WIN (President) and the 50-50 tie note stay.
+  -  Senate 2026 note under the bar is one line: "54 called, 2 leading" (owner,
+     2026-11-06, local).
+  -  Governors 2026 note under the bar: only "Govern N% of Americans", no called /
+     leading line, as in the other years (owner, 2026-11-06, local).
 
 STATUS / NEXT
 -------------
@@ -1875,6 +1904,10 @@ STATUS / NEXT
   shades for President, Governors and Senate Seats, the Results / Margins toggle,
   and the button bar restyle. To do: refresh GOV_MARGINS[2026] when counting ends
   (AK and KS first). Keep the commit rule.
+- Live also has, pushed 2026-11-06 on the owner's say-so: the play button, the
+  phone-width USA map, Senate Seats 2026 margins, the Senate split-state fix
+  (margins travel with their seat through senPairs), tally alignment, and the
+  bar label changes. Refresh SEN_MARGINS[2026] too when counting ends (AK, MS).
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
