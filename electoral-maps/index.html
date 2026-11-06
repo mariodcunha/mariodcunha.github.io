@@ -1965,8 +1965,7 @@ function projLegend(race,n){
   if(race==="senate") return sw("hatch-d",`Democrats leading, not called (${n.D})`)+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
     `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Idaho, Michigan, Montana and Nebraska are called here ahead of it.</span>`;
   return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
-    (n.v?`<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"")+
-    `<span class="txt">Solid states: no race in 2026, or races called.${n.D||n.R?" Light states: races still being counted, shown by who leads, and counted in the totals as leading.":""} Results from The New York Times, Nov 4, 2026; Alabama, Alaska, Arizona, Kansas, Michigan, Nebraska, Nevada and Oregon are called here ahead of it.</span>`;
+    (n.v?`<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"");
 }
 
 function show(race,animate){

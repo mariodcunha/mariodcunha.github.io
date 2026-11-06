@@ -2007,6 +2007,9 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      Same class everywhere: USA, India, compact bar, phone and desktop.
   -  Landing page (owner, 2026-11-06, local): no #hash (or an unknown one) now opens
      Governors, latest year, instead of Senate Seats. Links with a #hash still work.
+  -  Governors 2026 note removed (owner, 2026-11-06, local): no "Solid states..." line
+     in projLegend. If counting leaves a race leading again, the legend keys stay but
+     nothing explains the light shade.
 
 STATUS / NEXT
 -------------
@@ -2040,7 +2043,7 @@ STATUS / NEXT
   winner check. Known: ID and UT touch on phone President Margins 2012-2024. Keep the
   commit rule.
 - Live also has, pushed 2026-11-06 on the owner's say-so: Governors as the landing
-  page. Keep the commit rule.
+  page, and no Governors 2026 "Solid states" note. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
