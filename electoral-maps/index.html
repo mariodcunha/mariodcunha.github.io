@@ -122,7 +122,9 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand span{font-size:clamp(14px,1.8vw,18px);font-weight:700}
 .cand.d b,.cand.d span{color:var(--dem)} .cand.r b,.cand.r span{color:var(--rep)} .cand.r{text-align:right}
 .cand.d .check{background:var(--dem)}
-.check{display:inline-grid;place-items:center;width:1em;height:1em;border-radius:50%;background:var(--rep);color:#fff;font-size:.72em;margin-right:4px;vertical-align:-.08em;font-style:normal}
+/* winner badge: the tick is drawn, not a font glyph, so it sits dead centre at any size (the ✓ text stays for screen readers) */
+.check{position:relative;display:inline-block;width:1em;height:1em;border-radius:50%;background:var(--rep);color:transparent;overflow:hidden;font-size:.85em;line-height:1;margin-right:5px;vertical-align:-.12em;font-style:normal}
+.check::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.2 8.3l2.6 2.6 5-5.4' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
 .barwrap{display:grid;gap:4px}
 .bar{position:relative;height:15px;display:flex}
 .bar i{display:block;height:100%;transition:width .8s var(--ease)}
@@ -144,7 +146,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand.mid b,.cand.mid span{color:var(--sel)} .tally.pct .cand.mid b::after{content:none}
 #mini .cand.mid{display:none}
 @media (max-width:640px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
-.bar .mark{position:absolute;top:-3px;bottom:-3px;border-left:2px solid var(--fg);transition:left .8s var(--ease)}
+.bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px #fff;transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s;white-space:pre-line}
 .gain.d{left:0;text-align:left;color:var(--dem)} .gain.r{right:0;text-align:right;color:var(--rep)}   /* every line: blue flush left, red flush right */
@@ -510,6 +512,8 @@ const narrow=matchMedia("(max-width:640px)");
 const marginsOn=race=>colorMode==="margins"&&!(race==="senate"&&narrow.matches);
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
 const marginFill=(year,key,w,table=MARGINS)=>{const m=table[year]?.[key]; return !marginsOn()||m==null||!SHADE[w]?PARTY_FILL[w]:shadeOf(w,m)};   // independents and 2026 stay flat
+// Margins on the map (owner, 2026-11-06): a state's name or a Senate tile carries its lead in points
+const marginTag=m=>m==null?"":m>20?">20":m<3?"<3":"+"+Math.round(m);
 const MARGIN_NOTE="Darker shades mean a wider win: full colour is 20 points or more, the lightest is under 4.";
 const GOV_NOTE=" Darker shades mean a wider win in the state's latest election for governor: full colour is 20 points or more, the lightest is under 4.";
 const SEN_NOTE="Darker shades mean a wider win in that seat's latest election: full colour is 20 points or more, the lightest is under 4.";
@@ -732,16 +736,19 @@ const ALT={};
   const g=el("g",{class:"alt-grid","aria-hidden":"true"},usSvg);
   ALT_GRID.forEach(([k,x,y])=>{const cx=x0+(x+.5)*p, cy=y0+(y+.5)*p, fs=`font-size:${fz.toFixed(1)}px`;
     ALT[k]=[0,1].map(j=>{const o={x:j?cx+gap/2:cx-t/2,y:cy-t/2,width:w,height:t,rx:t*.1};
-      return {r:el("rect",o,g),o,t:!j&&Object.assign(el("text",{x:cx-t/2+w/2,y:cy-t/2+fz*.95,style:fs,"text-anchor":"middle"},g),{textContent:k})}})});
+      return {r:el("rect",o,g),o,t:!j&&Object.assign(el("text",{x:cx-t/2+w/2,y:cy-t/2+fz*.95,style:fs,"text-anchor":"middle"},g),{textContent:k}),
+        b:el("text",{x:o.x+w/2,y:cy+t/2-fz*.75,style:`font-size:${(fz*.85).toFixed(1)}px`,"text-anchor":"middle"},g)}})});   // b: the seat's lead, in Margins
 })();
 // Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
 // The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
 const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
 function paintAlt(year){
-  for(const k in ALT) ALT[k].forEach(({r,t},j)=>{const {p,m}=senPairs(year,k)[j]||{};   // every year 2008-2026
+  for(const k in ALT) ALT[k].forEach(({r,t,b},j)=>{const {p,m}=senPairs(year,k)[j]||{};   // every year 2008-2026
     const f=marginsOn("senate")&&m!=null&&/^[dri]$/.test(p)?shadeOf(p==="r"?"r":"d",m):null;   // independents caucus blue, so they shade blue
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
-    if(t) t.setAttribute("class",!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk")});
+    const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
+    if(t) t.setAttribute("class",cls);
+    b.setAttribute("class",cls); b.textContent=f?marginTag(m):""});
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
 // Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
@@ -918,15 +925,22 @@ function packOnce(M,key){
     const cur=k=>B[k].now||B[k].c;   // M.now(k): this year's squares, so a phone name sits on the block as it stands
     const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[]).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));
     const wide=(k,t)=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=t; const w=e.getComputedTextLength(); if(!w) laidOut=false; return w};
-    const opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=cur(k), top=Math.min(...c.map(p=>p[1]));
+    const spare={}, opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=cur(k), top=Math.min(...c.map(p=>p[1]));
       const cols=[...new Set(c.map(p=>p[0]))].sort((p,q)=>p-q).map(x=>[x,Math.min(...c.filter(p=>p[0]===x).map(p=>p[1]))]);
       const spots=[...cols.filter(p=>p[1]===top).slice(0,1),...cols.filter((p,i)=>p[1]!==top||cols.findIndex(q=>q[1]===top)!==i)];
       // a one-column state, or a single square at the name's spot: the code; otherwise the name, with the code as fallback
       const lone=p=>new Set(c.map(q=>q[0])).size===1||!c.some(q=>q[1]===p[1]&&q[0]===p[0]+1);
-      return [k,spots.flatMap(p=>[...new Set(lone(p)?[k]:[nameOf(k),k])].map(t=>{const [X,Y]=put(k,p), w=wide(k,t);
-        return {t,w,x:X,y:Y-g-h/2,q:[X,Y-g-h,X+w,Y-g]}})).filter(o=>o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
+      const tag=M.tag?.(k)||"";   // M.tag(k): the lead that follows the name in Margins
+      const all=spots.flatMap(p=>[...new Set(lone(p)?[k]:[nameOf(k),k])].map(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
+        return {t,w,x:X,y:Y-g-h/2,q:[X,Y-g-h,X+w,Y-g]}})).concat(
+        // last resorts: the code ending over the top row's left square, reaching out to its left; then under the bottom row
+        (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),k+tag),
+        (t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]);
+          return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(k+tag));
+      spare[k]=all.find(o=>o.t===k+tag);   // nothing free at all: the code at the top left anyway
+      return [k,all.filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
     const done=[]; for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){
-      const o=opts[k].find(o=>!done.some(r=>hit(o.q,r))); if(!o) continue;
+      const o=opts[k].find(o=>!done.some(r=>hit(o.q,r)))||spare[k]; if(!o) continue;
       done.push(o.q); lb[k]={x:o.x,y:o.y,w:o.w,t:o.t,seg:[],out:"start",blk:true}}}
   const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=nameOf(k);
     wOut[k]=e.getComputedTextLength(); if(!wOut[k]) laidOut=false});
@@ -968,8 +982,9 @@ function packOnce(M,key){
     const near=r=>Math.hypot((r[1]+r[2])/2-b.m[0],r[0]+.5-b.m[1]);
     const ys=[...new Set(runs.map(r=>r[0]))].sort((p,q)=>p-q), row=M.row[k]!=null&&ys[Math.max(0,Math.min(M.row[k]<0?ys.length+M.row[k]:M.row[k],ys.length-1))];   // row < 0: from the bottom
     const cand=row===false?runs:runs.filter(r=>r[0]===row), fits=w=>cand.filter(r=>(r[2]-r[1])*S*f>=w);
-    let t=nameOf(k), w=width(t), fit=fits(w);
-    if(!fit.length){t=k; w=width(t); fit=fits(w)}
+    const tag=M.tag?.(k)||"";
+    let t=nameOf(k)+tag, w=width(t), fit=fits(w);
+    if(!fit.length){t=k+tag; w=width(t); fit=fits(w)}
     const r=(fit.length?fit:cand).sort((p,q)=>near(p)-near(q)||(q[2]-q[1])-(p[2]-p[1]))[0];
     const half=w/(2*S*f), cx=M.mid===true||M.mid?.includes(k)?(r[1]+r[2])/2:Math.min(Math.max(b.m[0],r[1]+half),r[2]-half);   // M.mid: centred on its row
     const [x,y]=put(k,[fit.length?cx:(r[1]+r[2])/2,r[0]+.5]);
@@ -1021,7 +1036,7 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow
   inside(){return this.race==="president"},
   topLeft(){return this.race!=="president"},
   corner(){return US_OUT||narrow.matches},
-  size(){return narrow.matches?this.fs-2:this.fs},
+  size(){return narrow.matches?this.fs-(this.tag?4:2):this.fs},   // phones: Margins names carry a lead, so a touch smaller
   // phones, every race: names follow the seats, one layout per census (results and margins alike); desktop's stay put
   now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0));
     return this.race==="president"?[...hs,...ESQ[k]]:hs},
@@ -1149,7 +1164,7 @@ function setUS(race,animate,year=usYear(race)){
   else {
     const [gSide,gN]=CH_GAIN[race][year], house=race==="house";
     T={d:house?c.d:c.d+c.i,r:c.r,nd:"Democrats",nr:"Republicans",tot:house?435:100,mark:house?218/435*100:50,
-      need:house?"218":c.d+c.i===c.r?"51<small class=\"wrap\">Tiebreaker by the Democrat Vice President</small>":"51",ctl:CONTROL[race][year],
+      need:house?"218":c.d+c.i===c.r?"50+VP":"51",ctl:CONTROL[race][year],
       ud:gSide==="d"?`+${gN} net gain`:"",ur:gSide==="r"?`+${gN} net gain`:"",
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
@@ -1181,7 +1196,9 @@ function setUS(race,animate,year=usYear(race)){
   // share one set (see PACK_US). Pills read the squares' colours when applied.
   const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:"chamber";
   PACK_US.race=lr; PACK_US.census=censusOf(year);
-  applyPack(PACK_US,packs&&packLayout(PACK_US,PACK_US.corner()?lr+PACK_US.census:lr),GST);
+  const tagged=race==="president"?marginsOn()&&MARGINS[year]:race==="governors"&&marginsOn()&&GOV_MARGINS[year];   // names take the lead in Margins
+  PACK_US.tag=tagged?k=>marginTag(tagged[k]):null;
+  applyPack(PACK_US,packs&&packLayout(PACK_US,PACK_US.corner()?lr+PACK_US.census+(tagged?race+year:""):lr),GST);
   usSvg.classList.toggle("senate",race==="senate");
   document.getElementById("us-bar").classList.toggle("flat",race==="senate"||race==="governors"||race==="house");
   usSvg.classList.toggle("president",race==="president");

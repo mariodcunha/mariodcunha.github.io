@@ -1989,6 +1989,22 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  Halfway number (owner, 2026-11-06, local): .need (270, 218, 51, 272) now has the
      same type as the notes under the bar (.gain: 13px, weight 500, same line height),
      in --fg. Phone and desktop.
+  -  Senate tie note, again (owner, 2026-11-06, local): "50+VP" replaces the 51 in tied years (only 2020).
+  -  Bar divider (owner, 2026-11-06, local): .mark has a 1px white outline (box-shadow),
+     so it stands clear of the bar. USA and India, phone and desktop, compact bar too.
+     It is now a 2px bar with rounded ends (width, background, border-radius 1px).
+  -  Leads on the map (owner, 2026-11-06, local): in Margins, President and Governors
+     names read name + lead: "Penn.+2", "TX>20", "OH<3" (marginTag: rounded points; over
+     20 is >20, under 3 is <3). Layouts then cache per race and year (M.tag). Senate
+     Seats (desktop): each tile's lead sits at the bottom, centred (ALT[k][j].b).
+     Last-resort spot in M.corner: the code ending over the top-left square, reaching
+     left (NY in President Margins 2008-2020, whose lead has no room to the right).
+     Then under the bottom row (phones, where the leads are tight).
+     Phones in Margins: labels fs 16 to fit. Known: ID and UT touch on President
+     2012-2024 at 375px. Nothing free at all: the code at the top left anyway (spare).
+  -  Winner check (owner, 2026-11-06, local): .check draws its tick as an inline SVG on
+     ::after, centred in the circle, .85em; the font's glyph sat off centre and clipped.
+     Same class everywhere: USA, India, compact bar, phone and desktop.
 
 STATUS / NEXT
 -------------
@@ -2017,6 +2033,10 @@ STATUS / NEXT
 - Live also has, pushed 2026-11-06 on the owner's say-so: Play with Pause turning into
   Stop, three-shade margin legends, the halfway number type, and the desktop USA names
   outside TRIAL (US_OUT; may still be reverted). Keep the commit rule.
+- Live also has, pushed 2026-11-06 on the owner's say-so: leads on the map in Margins,
+  Senate 2020 "50+VP", the bar divider's white outline and rounded ends, and the drawn
+  winner check. Known: ID and UT touch on phone President Margins 2012-2024. Keep the
+  commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
