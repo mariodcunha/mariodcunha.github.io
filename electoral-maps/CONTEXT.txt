@@ -11,7 +11,7 @@ Local checkout: ~/Downloads/Claude Code/mariodcunha.github.io/electoral-maps/ind
 Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     India tile map = node 3465:25773 ("Frame 1659")
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
-Last updated: 2026-11-03
+Last updated: 2026-11-05
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -1685,7 +1685,7 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      in the code, unused on screen.
      Refreshed from NYT at 5:00 a.m. ET Nov 4: 228 D called, 139 R called, 28
      D favored, 33 R favored, 5 toss-ups (MI 4, AK, NV 2, NC 5, TN 4), 2 no
-     result (LA 5, LA 6). To refresh: same page, Live forecast table.
+     result (LA 5, LA 6). (Superseded 2026-11-05, see below.)
   -  Governors 2026 results (owner, 2026-11-03, local): GOV_CALL overrides
      projOf for all 36 races, from the owner's NYT table. d/r = called,
      D = leading, v = no votes yet (grey, NV). Check marks plus the owner's
@@ -1724,14 +1724,46 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      another map shows All, so the morph is visible (show(), senPicked). Once
      the viewer clicks any Senate view, that pick stays. The page still opens
      on Senate Seats.
+  -  Alaska back to leaning D (owner, 2026-11-05, local): AK moves from R to D
+     in SEN_CALL; MS was already leaning D. Tally 56 D (54 called, 2 leading) -
+     44 R (44 called). The legend hides "Republicans leading" at zero, and the
+     note drops "Alaska's lean is our own".
+  -  Kansas governor called D (owner, 2026-11-05, local): KS moves from D to d
+     in GOV_CALL, so no governor race is left leading; the legend hides
+     "Democrats leading" at zero, the note drops the light-states sentence
+     while none are light, and it lists Kansas as called.
+  -  House 2026 refreshed (owner, 2026-11-05, local): HOUSE_26 from NYT's
+     page data (results-house.json, the file the results page loads), 8:10
+     p.m. ET Nov 5. 253 D called, 155 R called, matching NYT's headline; its
+     27 undecided = 6 D leading (CO 4, FL 9, MN 1, NC 5 by 99 votes, SC 1,
+     TN 4), 19 R leading, 2 no result (LA 5 runoff, LA 6). NYT stopped its
+     live forecast at 3 a.m. ET Nov 4, so "favored" became "leading" (who
+     leads the count) and toss-up is unused (legend hides it at zero).
+     Same-party seats count as called: CA 4 7 11 14 D, CA 40 R. To refresh:
+     same file; races[].outcome.won, else the top candidate in
+     top_reporting_unit. Skip the "US" race (the national roll-up).
+  -  VT, NH, ME in one row (owner, 2026-11-05, local): PACK_US.above keeps
+     their names outside, above, starting at the left edge of each top row,
+     in every race and year; tweak() pins the three side by side, GAP apart.
+     Maine no longer sits right of Massachusetts. Senate Seats and
+     Representation keep their own layouts.
+  -  Map no longer jumps between years (owner, 2026-11-05, local): layouts
+     cached before Libre Franklin loaded used fallback widths (house2020 came
+     out with another scale and Maine elsewhere). fonts.ready now clears
+     PACK_US.cache and redraws.
+  -  House "Temp" year tried, then removed (owner, 2026-11-05): a scratch
+     House year with each state all one colour, its 2008 presidential winner
+     (297 D, 138 R). Its shapes are in house-temp-svgs/ (one SVG per state,
+     all-states.svg, all-states-squares.svg; not committed). The page has no
+     trace of it.
 
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
   keep this file updated.
-- Live = everything above, pushed 2026-10-16 on the owner's say-so (latest:
-  Senate All / Representation / Seats with shape morphs, representation-share
-  tally, flat 2026 Senate colours, Oregon name fix).
+- Live = everything above, pushed 2026-11-05 on the owner's say-so (latest:
+  AK leaning D, KS governor called D, House refreshed to 253-155, VT / NH / ME
+  row, font-load relayout). The *-svgs/ export folders stay uncommitted.
   Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019

@@ -467,14 +467,15 @@ const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.r
 // No polls and no rating: can't call.
 // Senate results (owner's NYT results table, 2026-11-03), all 35 races, override the above: d / r = called (a check mark
 // on the table, plus ID, MI, MT and NE on the owner's call: full colour, counted as won), D / R = leading but not called
-// (light; MS is D by under 0.01; AK is R on the owner's call, though the table had it D+11 at 22% in)
+// (light; MS is D by under 0.01; AK is D, as the table had it: D+11 at 22% in; owner moved it from R, 2026-11-05)
 const SEN_CALL=Object.fromEntries(Object.entries({
-  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI",D:"MS",
-  r:"FL AL AR KY LA OK SD TN WV WY ID MT NE",R:"AK"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
-// House results (NYT Live forecast table, 5:00 a.m. ET Nov 4, 2026), per state: [D called, D favored, toss-up, R favored,
-// R called]. Called includes same-party races NYT counts as won (CA 4 7 11 14 29 34 D, CA 40 R). The state's other
-// squares have no result: LA 5 (NYT shows "Advanced"), LA 6 (no forecast).
-const HOUSE_26={"AK":[0,0,1,0,0],"AL":[2,0,0,0,5],"AR":[0,0,0,1,3],"AZ":[3,3,0,2,1],"CA":[44,4,0,1,3],"CO":[5,2,0,1,0],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,4,16],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,0,2],"IL":[14,0,0,0,3],"IN":[3,0,0,0,6],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[6,2,1,0,4],"MN":[4,1,0,0,3],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[0,1,0,0,1],"NC":[4,5,1,4,0],"ND":[0,0,0,0,1],"NE":[1,0,0,1,1],"NH":[2,0,0,0,0],"NJ":[10,1,0,0,1],"NM":[3,0,0,0,0],"NV":[3,0,1,0,0],"NY":[17,3,0,3,3],"OH":[7,1,0,0,7],"OK":[0,0,0,1,4],"OR":[5,0,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[1,1,0,1,4],"SD":[0,0,0,0,1],"TN":[0,0,1,2,6],"TX":[13,1,0,6,18],"UT":[1,0,0,2,1],"VA":[7,1,0,1,2],"VT":[1,0,0,0,0],"WA":[7,1,0,2,0],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
+  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI",D:"MS AK",
+  r:"FL AL AR KY LA OK SD TN WV WY ID MT NE"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
+// House results (NYT results page data, 8:08 p.m. ET Nov 5, 2026), per state: [D called, D leading, toss-up, R leading,
+// R called]. NYT turned its live forecast off at 3 a.m. ET Nov 4, so open races go by who leads the count; toss-up stays
+// in the format, unused. Called includes same-party races NYT counts as won (CA 4 7 11 14 D, CA 40 R). The state's other
+// squares have no result: LA 5 (runoff), LA 6 (no one near a majority: 19.4% leads).
+const HOUSE_26={"AK":[0,0,0,1,0],"AL":[2,0,0,0,5],"AR":[0,0,0,0,4],"AZ":[5,0,0,3,1],"CA":[48,0,0,1,3],"CO":[6,1,0,1,0],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,3,17],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,0,2],"IL":[14,0,0,0,3],"IN":[3,0,0,0,6],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[9,0,0,0,4],"MN":[4,1,0,0,3],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[1,0,0,0,1],"NC":[9,1,0,4,0],"ND":[0,0,0,0,1],"NE":[1,0,0,0,2],"NH":[2,0,0,0,0],"NJ":[11,0,0,0,1],"NM":[3,0,0,0,0],"NV":[4,0,0,0,0],"NY":[20,0,0,1,5],"OH":[8,0,0,0,7],"OK":[0,0,0,0,5],"OR":[5,0,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[1,1,0,1,4],"SD":[0,0,0,0,1],"TN":[0,1,0,0,8],"TX":[14,0,0,0,24],"UT":[1,0,0,1,2],"VA":[8,0,0,0,3],"VT":[1,0,0,0,0],"WA":[8,0,0,2,0],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
 // Drawn light before solid, blue to red, like senSeats (owner, 2026-11-03)
 function house26(k,n){const [d,D,T,R,r]=HOUSE_26[k];
   return [["D",D],["d",d],["T",T],["v",n-d-D-T-R-r],["R",R],["r",r]].flatMap(([p,m])=>Array(m).fill(p))}
@@ -487,9 +488,9 @@ function senSeats(year,k){const s=[...(SEN_HIST[year]?.[k]||"")];
   s.sort((a,b)=>SEN_RANK[a]-SEN_RANK[b]);
   return SEN_FLIP.includes(k)&&SEN_RANK[s[0]]<2&&SEN_RANK[s[1]]>2?s.reverse():s}
 // Governor results (owner's NYT results table, 2026-11-03), all 36 races: d / r = called (a check mark on the table, plus
-// AZ, AK, AL, MI, NE, NV and OR on the owner's call: full colour, counted as won), D = leading but not called (light)
+// AZ, AK, AL, KS, MI, NE, NV and OR on the owner's call: full colour, counted as won), D = leading but not called (light)
 const GOV_CALL=Object.fromEntries(Object.entries({
-  d:"AZ CA CO CT HI IL ME MD MA MN NM NY PA RI IA OH WI GA TX AK MI OR NV",D:"KS",
+  d:"AZ CA CO CT HI IL ME MD MA MN NM NY PA RI IA OH WI GA TX AK MI OR NV KS",
   r:"FL NE AL AR ID NH OK SC SD TN VT WY"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
 function projOf(race,k){
   if(race==="senate"&&SEN_CALL[k]) return SEN_CALL[k];
@@ -801,6 +802,7 @@ function packOnce(M,key){
   const anyOut=new Set(), wAll={}, fitsIn=(k,w,real,av)=>runsOf(B[k],real,av).some(r=>(r[2]-r[1])*S*f>=w+8);
   if(M.fitOut){fit(0); for(const k of kAll){if(single.includes(k)) continue; const e=PL[k].t; e.classList.add("in"); e.textContent=M.name(k);
     const w=wAll[k]=e.getComputedTextLength(); if(!w){laidOut=false; continue}
+    if(M.above?.includes(k)){single.push(k); anyOut.add(k); continue}   // M.above: always outside, see cand below
     e.textContent=nameOf(k);
     if(B[k].real.length&&!fitsIn(k,e.getComputedTextLength(),B[k].real,B[k].av)) single.push(k);
     for(const r in B[k].realBy) if(B[k].realBy[r].real.length&&!fitsIn(k,w,B[k].realBy[r].real,B[k].realBy[r].av)) anyOut.add(k)}}
@@ -811,6 +813,10 @@ function packOnce(M,key){
     let all=true;
     const hit=(q,r,d)=>q[0]<r[2]+d&&r[0]<q[2]+d&&q[1]<r[3]+d&&r[1]<q[3]+d, pad=(M.pad||.08)*S*f, h=M.fs*.8;
     const cand=Object.fromEntries(single.map(k=>{const w=wOut[k], g=.15*S*f;
+      // M.above: the name starts at the left edge of the state's top row, so it stays put in every race and year
+      if(M.above?.includes(k)){const c=B[k].c.slice(0,B[k].raw.length), top=Math.min(...c.map(p=>p[1])),
+          [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===top).map(p=>p[0])),top]);
+        return [k,[{o:[X,Y-g-h/2,"start","above"],q:[X,Y-g-h,X+w,Y-g]}]]}
       const rl=[0,1].map(a=>Math.min(...B[k].real.map(p=>p[a]))), rh=[0,1].map(a=>Math.max(...B[k].real.map(p=>p[a]))+1);
       const [x0,y0]=put(k,rl), [x1,y1]=put(k,rh), cx=(x0+x1)/2, cy=(y0+y1)/2;
       const sides=[[x1+g,cy,"start","right"],[x0-g,cy,"end","left"],[cx,y1+g+h/2,"middle","below"],[cx,y0-g-h/2,"middle","above"]];
@@ -853,7 +859,7 @@ function packOnce(M,key){
     lb[k]={x,y,w,t,seg};
   }
   // names that went outside, for the second pass: how many squares their text needs, and the side the Map uses
-  const need={}; for(const k of anyOut) if(!M.out.includes(k)) need[k]={n:Math.ceil((wAll[k]+2*(M.pad||.08)*S*f)/(S*f)),
+  const need={}; for(const k of anyOut) if(!M.out.includes(k)) need[k]=M.above?.includes(k)?{n:1,side:"above"}:{n:Math.ceil((wAll[k]+2*(M.pad||.08)*S*f)/(S*f)),
     side:M.extra?.[k]?.side||(typeof M.side==="function"?M.side(k):M.side?.[k])||"right"};
   const out={st,lb,at,f,lo,laidOut,need}; if(laidOut&&key!=null) M.cache[key]=out;   // a hidden panel can't measure text: try again when shown
   return out;
@@ -883,7 +889,7 @@ function applyPack(M,pk,groups){
 // sit on squares the Senate map hides) and no pill sits on a circle (avoid). race: set by setUS before packing.
 const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
-const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,fitOut:true,pad:.3,race:"president",side:k=>k==="NV"?"below":LBL[k].side,
+const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],above:["VT","NH","ME"],mid:true,fitOut:true,pad:.3,race:"president",side:k=>k==="NV"?"below":LBL[k].side,
   keys:()=>Object.keys(GST),
   // room is reserved for names that go outside in any race and census, so one layout serves them all
   races:["president","house","senate"].flatMap(r=>[2000,2010,2020].map(c=>r+"@"+c)),
@@ -915,6 +921,11 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:12,h:15,out:["AK"],mid:true,f
     if(B.WV&&B.VA) pull("WV","VA");
     // Arizona: a little down and to the right, as far as it fits (up to half a square each way)
     if(B.AZ) for(const d of [.5,.25]){const o=B.AZ.o.slice(); B.AZ.o=[o[0]+d,o[1]+d]; if(!clash("AZ")) break; B.AZ.o=o}
+    // Vermont, New Hampshire, Maine: one row, side by side, GAP apart, names above (M.above), every race and year (owner, 2026-11-05)
+    if(B.VT&&B.NH&&B.ME){const x=box("NH",0)[0]; let y=box("NH",1)[0];
+      const row=()=>{set("NH",x,y); set("VT",x-G-2,y); set("ME",x+2+G,y)};
+      row(); for(let i=0;i<80&&["VT","NH","ME"].some(clash);i++){y-=.25; row()}
+    }
     // Alaska: left-aligned above Washington, GAP clear of it (and of anything else up there)
     if(B.AK&&B.WA){const a=B.AK, w=B.WA;
       a.o=[w.lo[0]+w.o[0]-a.lo[0], w.lo[1]+w.o[1]-G-a.hi[1]];
@@ -1008,10 +1019,10 @@ function setUS(race,animate,year=usYear(race)){
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
   const pctOf=n=>Math.round(n/435*100);
-  // the big numbers are called seats only, as on the NYT's bar; favored seats are noted under it
+  // the big numbers are called seats only, as on the NYT's bar; leading seats are noted under it
   if(y26&&race==="house") T={d:c.d,r:c.r,nd:"Democrats",nr:"Republicans",tot:435,mark:218/435*100,need:"218<small>FOR CONTROL</small>",ctl:c.d>=218?"d":c.r>=218?"r":null,
-    seg:{d:c.d,D:c.D,T:c.T,R:c.R,r:c.r},ud:`${c.D} favored`,ur:`${c.R} favored`,
-    label:`2026 House: ${c.d} Democrats called and ${c.D} favored; ${c.r} Republicans called and ${c.R} favored; ${c.T} toss-ups, ${c.v} with no result`};
+    seg:{d:c.d,D:c.D,T:c.T,R:c.R,r:c.r},ud:`${c.D} leading`,ur:`${c.R} leading`,
+    label:`2026 House: ${c.d} Democrats called and ${c.D} leading; ${c.r} Republicans called and ${c.R} leading; ${c.v} with no result`};
   else if(y26&&race==="senate"){const d=c.d+c.i+c.D, r=c.r+c.R;
     // under the bar: the big number split into called (solid: seats not up plus SEN_CALL d / r) and leading (light)
     const cd=c.d+c.i, cr=c.r;
@@ -1802,14 +1813,14 @@ function moveThumb(tab,animate){
 // Legend for a 2026 map: what the shading means (with counts) and how the calls were made
 function projLegend(race,n){
   const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
-  if(race==="house") return `<span><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats favored (${n.D})`)+sw("hatch-t",`Toss-up (${n.T})`)+
-    `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans favored (${n.R})`)+`<span><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
-    `<span class="txt">The totals count called seats only. Favored and toss-up come from the New York Times live forecast. No result: Louisiana’s 5th and 6th. Results from The New York Times and The Associated Press, as of 5:00 a.m. ET, Nov 4, 2026.</span>`;
-  if(race==="senate") return sw("hatch-d",`Democrats leading, not called (${n.D})`)+sw("hatch-r",`Republicans leading, not called (${n.R})`)+
-    `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Idaho, Michigan, Montana and Nebraska are called here ahead of it, and Alaska’s lean is our own.</span>`;
-  return sw("hatch-d",`Democrats leading, not called (${n.D})`)+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
+  if(race==="house") return `<span><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats leading (${n.D})`)+(n.T?sw("hatch-t",`Toss-up (${n.T})`):"")+
+    `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans leading (${n.R})`)+`<span><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
+    `<span class="txt">The totals count called seats only. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th. Results from The New York Times and The Associated Press, as of 8:10 p.m. ET, Nov 5, 2026.</span>`;
+  if(race==="senate") return sw("hatch-d",`Democrats leading, not called (${n.D})`)+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
+    `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Idaho, Michigan, Montana and Nebraska are called here ahead of it.</span>`;
+  return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
     (n.v?`<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"")+
-    `<span class="txt">Solid states: no race in 2026, or races called. Light states: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Alabama, Alaska, Arizona, Michigan, Nebraska, Nevada and Oregon are called here ahead of it.</span>`;
+    `<span class="txt">Solid states: no race in 2026, or races called.${n.D||n.R?" Light states: races still being counted, shown by who leads, and counted in the totals as leading.":""} Results from The New York Times, Nov 4, 2026; Alabama, Alaska, Arizona, Kansas, Michigan, Nebraska, Nevada and Oregon are called here ahead of it.</span>`;
 }
 
 function show(race,animate){
@@ -1912,7 +1923,9 @@ function stickMini(){
 new MutationObserver(()=>{if(document.body.classList.contains("stuck")) syncMini()})
   .observe(document.querySelector("main"),{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["style","hidden"]});
 addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",stickMini); stickMini();
-document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false)});
+// Layouts cached before Libre Franklin arrived used the fallback font's widths, so they differ from later ones: start again
+document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false);
+  PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 show(location.hash.slice(1),false);
 </script>
 </body>
