@@ -1882,11 +1882,92 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  Senate tie note (owner, 2026-11-06, local): now "Tiebreaker by the Democrat
      Vice President" under the 51.
   -  Bar midpoint labels (owner, 2026-11-06, local): no FOR MAJORITY / FOR CONTROL
-     under the number; it's understood. TO WIN (President) and the 50-50 tie note stay.
+     under the number; it's understood. The 50-50 tie note stays.
   -  Senate 2026 note under the bar is one line: "54 called, 2 leading" (owner,
      2026-11-06, local).
   -  Governors 2026 note under the bar: only "Govern N% of Americans", no called /
      leading line, as in the other years (owner, 2026-11-06, local).
+  -  Phone state labels on tap (owner, 2026-11-06, local): USA only, max-width
+     640px, India untouched. #map-us hides every state label until the map is
+     tapped; a second tap hides them (class .names, listener next to the narrow
+     change listener). The choice carries across races and years. All six US views,
+     Senate Seats and Representation too. Labels are 2 SVG units smaller, about
+     0.65px on a 375px phone: fs 20 / pill 25 (PACK_US), Representation 18, Senate
+     Seats 21. The hover TRIAL block now needs min-width 641px, so a narrow desktop
+     window behaves like a phone.
+  -  President labels outside (owner, 2026-11-06, local): all 51 names on the
+     President map are now plain black (--fg) text outside the block, above its
+     topmost, leftmost square (M.corner), and 2 SVG units smaller: fs 10 desktop,
+     18 phone (M.size; House, Senate, Governors stay 12 / 20). If a neighbour or
+     another name blocks that spot: postal code there, then the next columns
+     along; none free would mean a pill inside, but every state found a spot
+     (OH sits further right). Checked 2008-2024 at 1100px: no name on a square.
+  -  No TO WIN (owner, 2026-11-06, local): the President bar's midpoint is just the
+     black divider and 270, desktop and phone. The 50-50 Senate tie note stays.
+  -  Phone President labels (owner, 2026-11-06, local): colour is --sel, the
+     toggles' gray (desktop stays --fg). They follow the seats: M.now gives that
+     census's squares and packLayout keys on "president"+census, so OH and PA drop
+     onto their block when it shrinks, gliding with the squares (.45s). Results and
+     Margins share the spots. Desktop keeps one fixed spot per state. Checked
+     2008-2024 at 375px: every label on its top row's left square, none overlapping.
+  -  Phone labels, every map race (owner, 2026-11-06, local): House, Senate All
+     and Governors now match President on phones: fs 18, --sel gray, outside at the
+     top left, following the seats (M.corner, M.size, M.now; key = race + census).
+     Checked every year 2008-2026 at 375px: no label on a square or circle, none
+     left inside, none overlapping. Desktop unchanged (12, muted, fixed spots).
+     Senate Seats keeps its codes inside the tiles: rows are ~4px apart, too tight
+     for a label outside, and tiles don't change by year. Representation untouched.
+  -  Senate Seats phone codes (owner, 2026-11-06, local): 2 units smaller, 21 -> 19,
+     still inside the tiles.
+  -  Phone page fills the screen (owner, 2026-11-06, local): USA and India. main is
+     min-height 100dvh, .panel a flex column, .legends margin-top:auto, so the white
+     space after the map stretches and the legend and notes rest 29px above the
+     toggles, growing upward (main padding-bottom 128px). Off legends are display:none
+     on phones, or the tallest would set the height. A tall page simply scrolls.
+     Phones drop the footer line and the sentence: .credit-top in the top bar's left
+     corner reads "Inspired by / @NYTimes". Desktop keeps the footer.
+  -  Concentric corners (owner, 2026-11-06, local): phone and desktop, both countries.
+     Every control is --r-out 11px around --r-in 8px with 3px padding (race toggle,
+     sub-toggles, year stepper, country button; #play matches at 11). Before, both
+     were 8. The country menu was already concentric (12 / 8 with 4px padding).
+  -  Basic USA legends (owner, 2026-11-06, local): President gains Democrat /
+     Republican keys and House gains Democrats / Republicans (#house-keys, hidden in
+     2026, where projLegend has its own). They had none before. Phone and desktop.
+     Phones: stackLegend puts one entry per line (.stack) if the page still fits the
+     screen, else entries run on and wrap. Runs from setUS, reveal and resize. At
+     375x812 every view stacks, 2026 too; at 375x667 the fuller ones wrap.
+  -  Tally centre (owner, 2026-11-06, local): USA only, phone and desktop. #mid-year
+     (the stepper's year) over #mid-label, centred on the page in --sel, set in setUS:
+     President / Governors results or margins, House results, Senate, Senate
+     representation, Senate seats (desktop: Senate seats results / margins; phones
+     have no Senate margins). Phones: label 12.5px, max-width 40%, so it clears the
+     winner's check and wraps on narrower phones. Hidden in #mini. India unchanged.
+  -  India tallies below the bar (owner, 2026-11-06, local): phones only. Lok Sabha,
+     Rajya Sabha and States: the small Congress / allies and BJP / allies lines move
+     under the bar on two lines, --inc left and --bjp right, in the .gain type. Gone on
+     phones: elected / vacant seats and MLAs / assemblies. Chief Minister: no tallies,
+     just "UPA-led govern N% of the population", "NDA-led govern N%...", Others between
+     (INDIA-led from 2024). Set at the end of renderIn. Desktop unchanged.
+  -  India "Allies" (owner, 2026-11-06, local): capital A in every tally, phone and
+     desktop. India legends on phones: always one entry per line, then the notes; no
+     fit check, the map is long and the page scrolls anyway.
+  -  Desktop President labels back inside (owner, 2026-11-06, local): the outside,
+     smaller, black labels are phones only now (gray there). Desktop President is
+     again fs 12 on pills inside the blocks, the same size as House. This replaces
+     the desktop part of "President labels outside" above.
+  -  Play pace (owner, 2026-11-06, local): no slow Senate step (slowmo, playSlow gone).
+     Senate's first year goes All, Representation, Seats at playStep 1500ms, then Seats
+     through the years, then Margins on desktop only, then Governors.
+  -  Play control (owner, 2026-11-06, local): #play is now a group with #play-left and
+     #play-right and a sliding .pthumb. At rest: the triangle. Playing: Pause + 1x, 1x
+     highlighted; the speed steps 1x, 2x, 3x, back to 1x. Pause: highlight moves to it,
+     icon white, the right part becomes the triangle. Press that: playing again, with
+     Stop (square) in Pause's place; Stop ends the tour. Triangle and square have 2px
+     corners. playWait counts tour time (pause, speed). renderPlay draws every state.
+     The speed resets to 1x when the tour ends.
+  -  No Play on India (owner, 2026-11-06, local): #play is hidden there, for now, phone
+     and desktop; the country picker keeps the right edge. Earlier notes saying the
+     tour starts from India no longer apply.
 
 STATUS / NEXT
 -------------
@@ -1908,6 +1989,10 @@ STATUS / NEXT
   phone-width USA map, Senate Seats 2026 margins, the Senate split-state fix
   (margins travel with their seat through senPairs), tally alignment, and the
   bar label changes. Refresh SEN_MARGINS[2026] too when counting ends (AK, MS).
+- Live also has, pushed 2026-11-06 on the owner's say-so: phone labels (gray, outside
+  top left, following the seats; tap to show), the phone page that fills the screen,
+  USA keys, the tally centre, India tallies below the bar on phones, concentric
+  corners, and the Play control (USA only). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
