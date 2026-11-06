@@ -2005,6 +2005,8 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  Winner check (owner, 2026-11-06, local): .check draws its tick as an inline SVG on
      ::after, centred in the circle, .85em; the font's glyph sat off centre and clipped.
      Same class everywhere: USA, India, compact bar, phone and desktop.
+  -  Landing page (owner, 2026-11-06, local): no #hash (or an unknown one) now opens
+     Governors, latest year, instead of Senate Seats. Links with a #hash still work.
 
 STATUS / NEXT
 -------------
@@ -2037,6 +2039,8 @@ STATUS / NEXT
   Senate 2020 "50+VP", the bar divider's white outline and rounded ends, and the drawn
   winner check. Known: ID and UT touch on phone President Margins 2012-2024. Keep the
   commit rule.
+- Live also has, pushed 2026-11-06 on the owner's say-so: Governors as the landing
+  page. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

@@ -1970,7 +1970,7 @@ function projLegend(race,n){
 }
 
 function show(race,animate){
-  if(!countryOf(race)) race="senate";   // no or unknown #hash: the latest election, Senate (Seats view) first
+  if(!countryOf(race)) race="governors";   // no or unknown #hash: the page opens on Governors, latest year (owner, 2026-11-06)
   if(race===current) return;
   if(race==="senate"&&current&&!senPicked) senMode="all";
   setCountryUI(countryOf(race));
