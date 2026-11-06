@@ -151,7 +151,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .under.split{display:flex;justify-content:space-between;gap:12px}
 .under.split .gain{position:static}
 #in-total-oth{text-align:center} #in-total-r{text-align:right}
-.need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:13px;line-height:1.15;transition:left .8s var(--ease)}
+.need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:13px;font-weight:500;color:var(--fg);transition:left .8s var(--ease)}
 .need small{display:block;font-size:9px;font-weight:600;letter-spacing:.06em}
 .need small.wrap{white-space:nowrap;letter-spacing:0}  /* long label (50-50 Senate): one line; two centred lines on phones */
 @media (max-width:640px){.need small.wrap{white-space:normal;width:200px}}
@@ -162,14 +162,17 @@ svg.map{width:100%;min-width:560px;height:auto;display:block}
 #map-india{margin-top:-3%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
-svg.map text.blk{fill:var(--fg)}
-@media (max-width:640px){svg.map text.blk{fill:var(--sel)} #map-us .plabel{transition:transform .45s var(--ease)}}   /* phone USA: the toggles' gray; names travel with the squares */
+svg.map text.blk{fill:var(--sel)}   /* USA names outside the blocks: the toggles' gray */
+#map-us .plabel{transition:transform .45s var(--ease)}   /* names travel with the squares */
 svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend svg{width:14px;height:14px}
 .legends{display:grid}
 .legend .proj{display:contents}
+/* Margins: the party keys give way to three shades each, darkest (the base colour) first */
+.legend .mkey{display:none} .legend.margins .base{display:none} .legend.margins .mkey{display:inline-flex}
+.legend .tri{display:inline-flex;gap:1px}
 .legend .proj:empty{display:none}
 /* Text notes sit below the colour keys, each on its own line */
 .legend .own{order:1;flex-basis:100%}
@@ -373,8 +376,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <div class="mapwrap"><svg class="map" id="map-us" role="img"></svg></div>
     <div class="legends">
       <div class="legend" id="legend-president">
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democrat</span>
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democrat</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican</span>
         <span class="txt">Each square is one electoral vote: a state's House seats plus two for its senators (DC has three). <em id="p-note"></em></span>
       </div>
       <div class="legend" id="legend-house">
@@ -384,16 +387,16 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
       <div class="legend" id="legend-senate">
-        <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
-        <span><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
+        <span class="base"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
+        <span class="base"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5" fill="var(--rep)"/></svg>Republican</span>
         <span class="own"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
         <span class="proj" id="proj-senate"></span>
         <span class="txt" id="sen-power" hidden></span>
         <span class="txt" id="sen-note"></span>
       </div>
       <div class="legend" id="legend-governors">
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
-        <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
         <span id="leg-gov-ind" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--ind)"/></svg><em id="gov-ind-name"></em></span>
         <span class="proj" id="proj-governors"></span>
         <span class="txt">Each state is drawn as its House seats, so its size shows its population.<em id="g-note"></em></span>
@@ -497,6 +500,9 @@ const SEN_MARGINS={2008:{AK:[1.2,3.1],AL:[26.9,35.26],AR:[59.0,11.83],AZ:[9.8,55
   2024:{AK:[12.7,7.4],AL:[20.4,35.7],AR:[33.0,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[9.3,14.6],CT:[18.8,15.0],DE:[17.1,21.5],FL:[12.8,16.4],GA:[1.2,2.8],HI:[32.7,45.2],IA:[6.6,12.2],ID:[29.3,32.0],IL:[16.0,15.3],IN:[19.8,20.7],KS:[11.4,23.0],KY:[19.6,23.6],LA:[40.3,43.7],MA:[19.8,33.2],MD:[11.8,31.6],ME:[17.5,8.6],MI:[0.3,1.7],MN:[15.7,5.3],MO:[13.8,13.2],MS:[26.2,10.0],MT:[7.1,10.0],NC:[1.8,3.2],ND:[33.0,31.4],NE:[6.7,25.2],NH:[15.7,9.2],NJ:[9.6,16.3],NM:[10.2,6.1],NV:[1.7,0.8],NY:[17.5,14.0],OH:[3.6,6.1],OK:[26.6,32.2],OR:[17.6,14.9],PA:[0.2,4.9],RI:[19.8,33.2],SC:[10.3,25.9],SD:[31.4,43.4],TN:[29.6,27.0],TX:[8.5,9.6],UT:[30.8,10.3],VA:[9.0,12.1],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1.0],WV:[41.5,43.3],WY:[51.0,46.2]},
   // 2026: seats up use current counts as of 2026-11-06 (Wikipedia race boxes), NOT final; AK, MS have none yet. Other seats as 2024.
   2026:{AK:[null,7.4],AL:[9.4,35.7],AR:[11.9,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[24.3,14.6],CT:[18.8,15],DE:[17.1,27.2],FL:[12.8,2.9],GA:[18,2.8],HI:[32.7,45.2],IA:[4.1,12.2],ID:[23,32],IL:[23.1,15.3],IN:[19.8,20.7],KS:[4.8,23],KY:[12.1,23.6],LA:[1.8,43.7],MA:[19.8,31],MD:[11.8,31.6],ME:[17.5,6.9],MI:[0.3,7],MN:[15.7,10.1],MO:[13.8,13.2],MS:[26.2,null],MT:[7.1,11.1],NC:[19.6,3.2],ND:[33,31.4],NE:[6.7,6.8],NH:[13.8,9.2],NJ:[9.6,26.8],NM:[10.2,26.4],NV:[1.7,0.8],NY:[17.5,14],OH:[3.6,4.8],OK:[18.1,32.2],OR:[16.1,14.9],PA:[0.2,4.9],RI:[19.8,37.2],SC:[4.4,25.9],SD:[21,43.4],TN:[29.6,12.2],TX:[8.5,12.1],UT:[30.8,10.3],VA:[9,22.4],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1],WV:[41.5,20.4],WY:[51,30.4]}};
+// Margin keys (owner, 2026-11-06): base colour, medium, light; placed in each legend that can show margins
+const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[base,SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw${round?" c":""}" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`;
+["president","governors","senate"].forEach(r=>document.getElementById("legend-"+r).insertAdjacentHTML("afterbegin",marginKey("d","var(--dem)","Democrat",r==="senate")+marginKey("r","var(--rep)","Republican",r==="senate")));   // Senate's keys are circles
 // Results / Margins toggle (owner, 2026-11-06): Results = flat party colours, Margins = the shades. President, Governors and
 // Senate Seats share one setting. Phones: Senate Seats has no toggle and always shows Results.
 let colorMode="results";
@@ -915,7 +921,9 @@ function packOnce(M,key){
     const opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=cur(k), top=Math.min(...c.map(p=>p[1]));
       const cols=[...new Set(c.map(p=>p[0]))].sort((p,q)=>p-q).map(x=>[x,Math.min(...c.filter(p=>p[0]===x).map(p=>p[1]))]);
       const spots=[...cols.filter(p=>p[1]===top).slice(0,1),...cols.filter((p,i)=>p[1]!==top||cols.findIndex(q=>q[1]===top)!==i)];
-      return [k,spots.flatMap(p=>[...new Set([nameOf(k),k])].map(t=>{const [X,Y]=put(k,p), w=wide(k,t);
+      // a one-column state, or a single square at the name's spot: the code; otherwise the name, with the code as fallback
+      const lone=p=>new Set(c.map(q=>q[0])).size===1||!c.some(q=>q[1]===p[1]&&q[0]===p[0]+1);
+      return [k,spots.flatMap(p=>[...new Set(lone(p)?[k]:[nameOf(k),k])].map(t=>{const [X,Y]=put(k,p), w=wide(k,t);
         return {t,w,x:X,y:Y-g-h/2,q:[X,Y-g-h,X+w,Y-g]}})).filter(o=>o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
     const done=[]; for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){
       const o=opts[k].find(o=>!done.some(r=>hit(o.q,r))); if(!o) continue;
@@ -1007,14 +1015,15 @@ function applyPack(M,pk,groups){
 // by their postal code on these maps (M.label; owner, 2026-11-06).
 const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
+const US_OUT=true;   // TRIAL (owner, 2026-11-06, may revert: set false): desktop names outside too, as on phones
 const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow.matches?25:15,out:[],static:true,inset:0,mid:true,fitOut:true,pad:.15,race:"president",row:{},
   keys:()=>Object.keys(GST),
   inside(){return this.race==="president"},
   topLeft(){return this.race!=="president"},
-  corner(){return narrow.matches},
-  size(){return this.corner()?this.fs-2:this.fs},
+  corner(){return US_OUT||narrow.matches},
+  size(){return narrow.matches?this.fs-2:this.fs},
   // phones, every race: names follow the seats, one layout per census (results and margins alike); desktop's stay put
-  now(k){if(!narrow.matches) return null; const hs=(HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0));
+  now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0));
     return this.race==="president"?[...hs,...ESQ[k]]:hs},
   moved:k=>(ESQ_2000[k]||[]).map(m=>m.at),   // the elector squares that step aside in some years
   most:k=>(CH_N[k]||0)+Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
@@ -1172,7 +1181,7 @@ function setUS(race,animate,year=usYear(race)){
   // share one set (see PACK_US). Pills read the squares' colours when applied.
   const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:"chamber";
   PACK_US.race=lr; PACK_US.census=censusOf(year);
-  applyPack(PACK_US,packs&&packLayout(PACK_US,narrow.matches?lr+PACK_US.census:lr),GST);
+  applyPack(PACK_US,packs&&packLayout(PACK_US,PACK_US.corner()?lr+PACK_US.census:lr),GST);
   usSvg.classList.toggle("senate",race==="senate");
   document.getElementById("us-bar").classList.toggle("flat",race==="senate"||race==="governors"||race==="house");
   usSvg.classList.toggle("president",race==="president");
@@ -1213,6 +1222,8 @@ function setUS(race,animate,year=usYear(race)){
   document.getElementById("sen-note").textContent=race==="senate"&&sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]?SEN_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
   // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
   document.getElementById("margin-view").hidden=!(race==="president"||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]&&!narrow.matches);
+  const mOn={president:marginsOn(),governors:marginsOn()&&GOV_MARGINS[year],senate:sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]};
+  for(const r in mOn) document.getElementById("legend-"+r).classList.toggle("margins",!!mOn[r]);
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
@@ -1957,7 +1968,7 @@ function show(race,animate){
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
-  document.getElementById("play").hidden=!us;   // the tour is USA only
+  document.getElementById("play").hidden=!us; if(!us) stopPlay();   // the tour is USA only
   document.getElementById("st-view").hidden=race!=="states";
   document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
@@ -2026,18 +2037,18 @@ addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if
 // President, House, Senate, Governors, first year to last: Results, then back to the first year in Margins (House has no
 // margins). Senate's first year shows All, Representation, then Seats, then Seats runs through the years, all at the same
 // pace. Phones skip Senate Margins (Results only).
-// The tour drives setUS / stepOnPick, never clicks, so ANY click on the bar's buttons means the viewer did it, and stops it
-// where it is. The control (renderPlay): Play extends into Pause + 1x; the speed button steps 1x, 2x, 3x, back to 1x. Pause
-// holds the tour and the speed button turns into Play; after that resume, Stop takes Pause's place and ends the tour.
+// The tour is a list of steps (playSteps) driven through stepOnPick, never clicks, so ANY click on the bar's buttons means the
+// viewer did it, and pauses it. The control (renderPlay): Play extends into Pause + 1x; the speed button steps 1x, 2x, 3x, back
+// to 1x. Pause holds the tour: it turns into Stop and the speed button into Play, which carries on from the view on show if
+// that view is a step of the tour. Stop, or the end of the tour, folds it back to Play, which starts over.
 const playBox=document.getElementById("play"), playLeft=document.getElementById("play-left"), playRight=document.getElementById("play-right");
 const PLAY_ICON={play:'<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 3v8l7-4z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>',
   pause:'<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="8" y="2" width="3" height="10" rx="1" fill="currentColor"/></svg>',
   stop:'<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>'};
-let playing=false, playTimer=null, playStep=1500, playSpeed=1, playPaused=false, playResumed=false;
+let playing=false, playTimer=null, playStep=1500, playSpeed=1, playPaused=false, playList=[], playAt=0;
 function renderPlay(){
-  const stop=playResumed&&!playPaused;
   playBox.classList.toggle("idle",!playing); playBox.classList.toggle("paused",playPaused);
-  playLeft.innerHTML=stop?PLAY_ICON.stop:PLAY_ICON.pause; playLeft.setAttribute("aria-label",stop?"Stop":"Pause");
+  playLeft.innerHTML=playPaused?PLAY_ICON.stop:PLAY_ICON.pause; playLeft.setAttribute("aria-label",playPaused?"Stop":"Pause");
   playLeft.classList.toggle("on",playPaused); playRight.classList.toggle("on",playing&&!playPaused);
   if(!playing||playPaused){playRight.innerHTML=PLAY_ICON.play; playRight.setAttribute("aria-label","Play")}
   else {playRight.textContent=playSpeed+"x"; playRight.setAttribute("aria-label",`Speed ${playSpeed}x`)}
@@ -2045,33 +2056,35 @@ function renderPlay(){
 // counts down in tour time, so a pause holds it and a new speed takes hold at once; a stopped tour just never wakes up
 const playWait=ms=>new Promise(r=>{let last=performance.now();
   const tick=()=>{const t=performance.now(); if(!playPaused) ms-=(t-last)*playSpeed; last=t; if(ms<=0) r(); else playTimer=setTimeout(tick,40)}; tick()});
-function stopPlay(){if(!playing) return; playing=false; playPaused=playResumed=false; playSpeed=1; senMorphMs=800; clearTimeout(playTimer); renderPlay()}
-const playOpen=(race,year)=>{usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)};
-async function playPass(race,mode,years){colorMode=mode; playOpen(race,years[0]); await playWait(playStep);
-  for(const y of years.slice(1)){stepOnPick(y); await playWait(playStep)}}
+function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSpeed=1; senMorphMs=800; clearTimeout(playTimer); renderPlay()}
+function playSteps(){
+  const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
+  pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS);
+  pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power"); pass("senate","results",US_YEARS,"seats");
+  if(!narrow.matches) pass("senate","margins",US_YEARS,"seats");
+  pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
+  return list;
+}
+function playGo({race,mode,year,sen}){colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)}
+// the step that matches the view on show (House has no margins; only Senate Seats does, and not on phones)
+const playHere=()=>playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
+  (s.race==="house"||s.race==="senate"&&(senMode!=="seats"||narrow.matches)||s.mode===colorMode));
 async function startPlay(){
-  playing=true; renderPlay(); senPicked=true; senMode="all";
-  await playPass("president","results",PRES_YEARS);
-  await playPass("president","margins",PRES_YEARS);
-  await playPass("house","results",US_YEARS);
-  colorMode="results"; playOpen("senate",US_YEARS[0]); await playWait(playStep);
-  senMode="power"; setUS("senate",true); await playWait(playStep);
-  senMode="seats"; setUS("senate",true); await playWait(playStep);
-  for(const y of US_YEARS.slice(1)){stepOnPick(y); await playWait(playStep)}
-  if(!narrow.matches) await playPass("senate","margins",US_YEARS);
-  await playPass("governors","results",US_YEARS);
-  await playPass("governors","margins",US_YEARS);
+  playing=true; renderPlay(); senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);
+  for(;;){await playWait(playStep); if(++playAt>=playList.length) break; playGo(playList[playAt])}
   stopPlay();
 }
+function pausePlay(){if(playing&&!playPaused){playPaused=true; renderPlay()}}
 playRight.addEventListener("click",()=>{
   if(!playing) return startPlay();
-  if(playPaused){playPaused=false; playResumed=true}
+  if(playPaused){const i=playHere(); if(i>=0) playAt=i; playPaused=false}
   else {playSpeed=playSpeed%3+1; senMorphMs=800/playSpeed}   // the Seats morph keeps inside a step
   renderPlay()});
-playLeft.addEventListener("click",()=>{if(playPaused) return; if(playResumed) return stopPlay(); playPaused=true; renderPlay()});
+playLeft.addEventListener("click",()=>playPaused?stopPlay():pausePlay());
 renderPlay();
-document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play")) stopPlay()},true);
-document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play")) stopPlay()},true);
+renderPlay();
+document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,.country")) pausePlay()},true);
+document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play,.country")) pausePlay()},true);
 const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)"), topbar=document.querySelector(".topbar");
 function cloneNoIds(n){const c=n.cloneNode(true); if(c.nodeType===1){c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))} return c}
 function patch(dst,src){

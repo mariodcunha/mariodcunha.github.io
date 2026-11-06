@@ -1968,6 +1968,27 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  No Play on India (owner, 2026-11-06, local): #play is hidden there, for now, phone
      and desktop; the country picker keeps the right edge. Earlier notes saying the
      tour starts from India no longer apply.
+  -  Play is pause only (owner, 2026-11-06, local): no Stop. The tour is a step list
+     (playSteps, playGo). Pause holds it; Play carries on from the view on show if it
+     is a step (playHere), else from where it stopped. A click on the bar's other
+     buttons pauses instead of ending it; the country menu doesn't. It ends only at the
+     last step or on going to India, then Play starts over.
+  -  Margin legends (owner, 2026-11-06, local): wherever Margins show, the party keys
+     become three shades each, base colour, SHADE[w][10], SHADE[w][2], "Democrat
+     percentage lead" / "Republican percentage lead" (.margins, .mkey, .base). Senate's
+     are circles, President and Governors squares.
+  -  TRIAL: desktop USA names outside (owner, 2026-11-06, local, may revert): US_OUT in
+     index.html. President, House, Senate All and Governors: every name outside, above
+     the top row's left square, --sel gray, size 12, following each census's seats. A
+     one-column state, or a single square at the name's spot, gets the code (M lone);
+     otherwise the established short name. To revert: US_OUT=false, which restores
+     President inside, House etc. as before. Phones don't depend on it.
+  -  Stop while paused (owner, 2026-11-06, local): the moment Pause is pressed it turns
+     into a highlighted Stop square. Pressing that ends the tour and folds the control
+     back to the single Play, which starts over. Play beside it still resumes.
+  -  Halfway number (owner, 2026-11-06, local): .need (270, 218, 51, 272) now has the
+     same type as the notes under the bar (.gain: 13px, weight 500, same line height),
+     in --fg. Phone and desktop.
 
 STATUS / NEXT
 -------------
@@ -1993,6 +2014,9 @@ STATUS / NEXT
   top left, following the seats; tap to show), the phone page that fills the screen,
   USA keys, the tally centre, India tallies below the bar on phones, concentric
   corners, and the Play control (USA only). Keep the commit rule.
+- Live also has, pushed 2026-11-06 on the owner's say-so: Play with Pause turning into
+  Stop, three-shade margin legends, the halfway number type, and the desktop USA names
+  outside TRIAL (US_OUT; may still be reverted). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
