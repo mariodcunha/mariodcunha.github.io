@@ -1808,6 +1808,56 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      House, Senate All and Governors hide state names until the cursor is on
      the map. Senate Seats, Representation and touch screens always show them.
      One CSS block marked TRIAL under .plabel; delete it to revert.
+  -  Margin shades, President and Governors (owner, 2026-11-06, local): every
+     President year and Governors 2008-2024 use the 40-step scale in Figma
+     ("Color Scale / 40 steps", node 3566:10371). SHADE {d, r}: 20 steps each,
+     lightest to full --dem / --rep; the owner dropped the two palest of each
+     side, so steps 1-3 are all #d9ebfb / #fde1dd (the Figma frame still shows
+     all 40). Step = whole points, rounded down: 20+ is full, 19.x is 19,
+     under 4 is the lightest.
+     MARGINS {year: {state}}: President, percentage-point margin of all votes
+     cast, computed from the vote counts in Wikipedia's "<year> United States
+     presidential election" results-by-state tables and checked against their
+     margin column and PRES winners. ME and NE: House squares use their own
+     district (ME1 ME2 NE1 NE2 NE3), elector squares the statewide margin.
+     GOV_MARGINS {map year: {state}}: the state's latest election for governor
+     up to that November, even if the seat wasn't up that year, top two
+     candidates, from the 1-decimal percentages in Wikipedia's "<year> United
+     States gubernatorial elections" tables (2005-2024; so +/-0.1, a state on a
+     step boundary can be one step off). Includes specials (UT 2010, WV 2011,
+     WI 2012 recall, OR 2016). CA 2021 recall failed, so Newsom keeps 2018.
+     Governors who took over without an election show the last election's
+     margin. WV 2018-: Justice's 2016 margin in red (he switched party).
+     Independents (Chafee, Walker) stay flat --ind.
+     Governors 2026 (owner, 2026-11-06): GOV_MARGINS[2026] = CURRENT COUNTS from
+     Wikipedia on 2026-11-06, not final, refresh when counting ends. Not-voting
+     states keep their last margin (NJ, VA = 2025). Wikipedia has not called AK or
+     KS; the page's calls stand. AK is ranked choice: 49.1 D v 50.9 all Republicans
+     in round one, so AK is entered as 1.8 (lightest), not 19.9 over the next
+     candidate; replace it with the final-round margin.
+     SEN_MARGINS {map year: {state: [seat 0, seat 1]}}: Senate Seats view only
+     (All and Representation circles stay flat), each seat's latest election up
+     to that November, seats in SEN_HIST class order, from the summary tables in
+     Wikipedia's "<year> United States Senate elections" (2004-2024, incl. 2013
+     specials; AL 2017 from its own page). Runoff states use the runoff (GA
+     2008, 2020, 2022, and AK 2022's final instant-runoff round). Unopposed =
+     100. Appointed senators show the last election's margin. Independents shade
+     blue, like SEN_FILL. 2004: exact votes where the page had them, and AR, NC
+     from their own pages (KY stays rounded; lightest either way). 2026 stays flat.
+     marginFill(year, key, w, table) falls back to PARTY_FILL. Names go dark on
+     steps 1-16 if any square under them is that pale (PALE_SHADE). Legend text:
+     MARGIN_NOTE, GOV_NOTE. Tally bars stay full colour.
+  -  Results / Margins toggle (owner, 2026-11-06, local): #margin-view, next to
+     the year. Results (default) = flat party colours, Margins = the shades.
+     One setting (colorMode) shared by President, Governors and Senate Seats.
+     Shown only where there are shades: not 2026, not Senate All / Representation,
+     not House, not India. Phones (max-width 640px, narrow): Senate has no toggle
+     and always shows Results; President and Governors keep it. marginsOn(race)
+     decides; a narrow change re-renders.
+  -  Button bar restyle (owner, 2026-11-06, local): race tabs, year stepper,
+     subtoggles and country button are 8px rounded rectangles, not pills. Selected
+     = --sel #6b6c72 highlight, white text (tab thumb, pressed subtoggle, year
+     window). #margin-view sits after #sen-view: year, graph type, Results / Margins.
 
 STATUS / NEXT
 -------------
@@ -1821,6 +1871,10 @@ STATUS / NEXT
   layout, top-left outside names, postal codes for small states, Senate circles
   on the first two squares, sharp Governors corners, and the hover-names TRIAL
   (may still be reverted).
+- Live also has the 2026-11-06 margin work, pushed on the owner's say-so: margin
+  shades for President, Governors and Senate Seats, the Results / Margins toggle,
+  and the button bar restyle. To do: refresh GOV_MARGINS[2026] when counting ends
+  (AK and KS first). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

@@ -8,7 +8,7 @@
 <style>
 /* Layout: race toggle in the top-left corner, NYT-style tally bar, then the square cartogram. Always on white. */
 :root{
-  --bg:#ffffff; --fg:#121212; --muted:#6b6b6b; --chip:#f2f2f2;
+  --bg:#ffffff; --fg:#121212; --muted:#6b6b6b; --chip:#f2f2f2; --sel:#6b6c72;
   --rep:#e5534b; --dem:#1f93e6;
   --ind:#74bcf0; --house:#e4e4e4; --seat-empty:#d3d3d3;
   --bjp:#f26a1b; --nda:#f7a372; --inc:#1f93e6; --india:#74bcf0; --oth:#3a9d5d;
@@ -23,19 +23,19 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans)}
 main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:grid;gap:22px}
 
 /* Race toggle with a sliding thumb */
-.toggle{position:relative;justify-self:start;display:inline-flex;background:var(--chip);border-radius:999px;padding:3px;gap:2px}
-.toggle .thumb{position:absolute;top:3px;bottom:3px;left:3px;width:0;border-radius:999px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.16);transition:left .38s var(--ease),width .38s var(--ease)}
-.toggle button{position:relative;z-index:1;font:600 13px/1 var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:999px;padding:9px 16px;cursor:pointer;transition:color .25s}
+.toggle{position:relative;justify-self:start;display:inline-flex;background:var(--chip);border-radius:8px;padding:3px;gap:2px}
+.toggle .thumb{position:absolute;top:3px;bottom:3px;left:3px;width:0;border-radius:8px;background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);transition:left .38s var(--ease),width .38s var(--ease)}
+.toggle button{position:relative;z-index:1;font:600 13px/1 var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:8px;padding:9px 16px;cursor:pointer;transition:color .25s}
 .toggle button:hover{color:var(--fg)}
-.toggle button[aria-selected="true"]{color:var(--fg)}
+.toggle button[aria-selected="true"]{color:#fff}
 .toggle button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
 
 /* Top bar: race toggle on the left, country picker on the right */
 .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .country{margin-left:auto}
 .country{position:relative}
-.country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--fg);background:var(--chip);border:0;border-radius:999px;padding:3px;cursor:pointer}
-.country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:999px;height:31px;padding:0 12px 0 10px}
+.country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--fg);background:var(--chip);border:0;border-radius:8px;padding:3px;cursor:pointer}
+.country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:8px;height:31px;padding:0 12px 0 10px}
 .country>button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
 .country .chev{width:10px;height:10px;transition:transform .25s var(--ease)}
 .country>button[aria-expanded="true"] .chev{transform:rotate(180deg)}
@@ -78,22 +78,22 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand.india .check{background:var(--inc)} .cand span em,.legend em{font-style:normal}
 /* Top-bar controls: year stepper (all races with data) + seat share / vote share (Lok Sabha only) */
 .lsctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.subtoggle{display:inline-flex;gap:2px;padding:3px;background:var(--chip);border-radius:999px}
-.subtoggle button{font:600 13px/1 var(--sans);color:var(--muted);background:none;border:0;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+.subtoggle{display:inline-flex;gap:2px;padding:3px;background:var(--chip);border-radius:8px}
+.subtoggle button{font:600 13px/1 var(--sans);color:var(--muted);background:none;border:0;border-radius:8px;padding:9px 11px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
 .subtoggle button:hover{color:var(--fg)}
-.subtoggle button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.16)}
+.subtoggle button[aria-pressed="true"]{background:var(--sel);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.16)}
 .subtoggle button:focus-visible{outline:2px solid var(--inc);outline-offset:2px}
 /* Year stepper: < year >, the year sits on a drum that rolls like a meter when it changes */
-.stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:999px}
-.stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:999px;background:none;color:var(--fg);cursor:pointer;transition:color .2s,background .2s}
+.stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:8px}
+.stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:8px;background:none;color:var(--fg);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
 .stepper button:hover:not(:disabled){background:rgba(0,0,0,.06)}
 .stepper button:disabled{color:#c2c2c2;cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
-.stepper .win{position:relative;width:52px;height:31px;border-radius:999px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
+.stepper .win{position:relative;width:52px;height:31px;border-radius:8px;background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
 .stepper .view{position:absolute;inset:0;perspective:140px;-webkit-mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent);mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent)}
 .stepper .drum{position:absolute;left:0;right:0;top:50%;height:0;transform-style:preserve-3d;transition:transform .6s var(--ease)}
-.stepper .face{position:absolute;left:0;right:0;top:-10px;height:20px;text-align:center;font:600 13px/20px var(--sans);color:var(--fg);font-variant-numeric:tabular-nums;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.stepper .face{position:absolute;left:0;right:0;top:-10px;height:20px;text-align:center;font:600 13px/20px var(--sans);color:#fff;font-variant-numeric:tabular-nums;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* Panels fade between races */
@@ -289,6 +289,10 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-sen="power" aria-pressed="false">Representation</button>
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
+    <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
+      <button type="button" data-margin="results" aria-pressed="true">Results</button>
+      <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
+    </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="seat" aria-pressed="true">Seat share</button>
       <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
@@ -340,13 +344,14 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="own"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
         <span class="proj" id="proj-senate"></span>
         <span class="txt" id="sen-power" hidden></span>
+        <span class="txt" id="sen-note"></span>
       </div>
       <div class="legend" id="legend-governors">
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
         <span id="leg-gov-ind" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--ind)"/></svg><em id="gov-ind-name"></em></span>
         <span class="proj" id="proj-governors"></span>
-        <span class="txt">Each state is drawn as its House seats, so its size shows its population.</span>
+        <span class="txt">Each state is drawn as its House seats, so its size shows its population.<em id="g-note"></em></span>
       </div>
     </div>
   </section>
@@ -413,6 +418,50 @@ const PRES={
   2024:{d:"Harris",r:"Trump",dem:"CA OR WA NM CO MN IL VA MD DE NJ NY CT RI MA VT NH ME HI DC",me2:"r",ne2:"d"},
 };
 const PRES_YEARS=[2008,2012,2016,2020,2024];
+// Winning margin shades (owner, 2026-11-06): 20 steps per side, lightest to the full party colour (Figma "Color Scale / 40 steps").
+// Step = whole points of margin: 20+ is full, 19.x is 19, down to the lightest for anything under 4 (owner, 2026-11-06: steps 1 and 2 use step 3's colour). President, Governors (2026 on current counts) and Senate Seats (not 2026).
+const SHADE={d:["#d9ebfb","#d9ebfb","#d9ebfb","#d0e6fa","#c6e1f9","#bddcf8","#b3d7f7","#aad2f6","#a0cdf5","#96c7f4","#8dc2f3","#83bdf2","#79b8f0","#6eb3ef","#64aeee","#59a8ec","#4da3eb","#409ee9","#3298e8","#1f93e6"],
+  r:["#fde1dd","#fde1dd","#fde1dd","#fdd9d4","#fcd1cb","#fcc9c3","#fbc1ba","#fab9b1","#f9b2a9","#f8aaa0","#f7a298","#f5998f","#f49187","#f2897e","#f08176","#ee786e","#ec6f65","#ea665c","#e75d54","#e5534b"]};
+// Percentage-point margin of all votes cast, by state; ME1 ME2 NE1 NE2 NE3 are the districts (see CONTEXT.txt for the source)
+const MARGINS={2008:{AK:21.54,AL:21.58,AR:19.85,AZ:8.52,CA:24.06,CO:8.95,CT:22.37,DC:85.92,DE:25.0,FL:2.82,GA:5.21,HI:45.26,IA:9.53,ID:25.43,IL:25.14,IN:1.03,KS:14.96,KY:16.23,LA:18.63,MA:25.81,MD:25.44,ME:17.32,ME1:22.82,ME2:11.25,MI:16.47,MN:10.24,MO:0.13,MS:13.17,MT:2.26,NC:0.33,ND:8.63,NE:14.93,NE1:9.77,NE2:1.21,NE3:39.01,NH:9.61,NJ:15.57,NM:15.13,NV:12.49,NY:26.86,OH:4.59,OK:31.29,OR:16.35,PA:10.32,RI:27.81,SC:8.98,SD:8.41,TN:15.07,TX:11.77,UT:28.18,VA:6.3,VT:37.01,WA:17.18,WI:13.9,WV:13.12,WY:32.24},
+  2012:{AK:13.99,AL:22.19,AR:23.69,AZ:9.06,CA:23.12,CO:5.37,CT:17.33,DC:83.63,DE:18.63,FL:0.88,GA:7.82,HI:42.71,IA:5.81,ID:31.69,IL:16.87,IN:10.2,KS:21.72,KY:22.69,LA:17.21,MA:23.14,MD:26.08,ME:15.29,ME1:21.39,ME2:8.56,MI:9.5,MN:7.69,MO:9.38,MS:11.5,MT:13.65,NC:2.04,ND:19.63,NE:21.78,NE1:16.6,NE2:7.16,NE3:42.42,NH:5.58,NJ:17.79,NM:10.15,NV:6.68,NY:28.18,OH:2.98,OK:33.54,OR:12.09,PA:5.39,RI:27.46,SC:10.47,SD:18.02,TN:20.4,TX:15.78,UT:48.04,VA:3.87,VT:35.6,WA:14.87,WI:6.94,WV:26.76,WY:40.82},
+  2016:{AK:14.73,AL:27.73,AR:26.92,AZ:3.55,CA:30.11,CO:4.91,CT:13.64,DC:86.78,DE:11.37,FL:1.2,GA:5.13,HI:32.18,IA:9.41,ID:31.77,IL:17.06,IN:19.17,KS:20.6,KY:29.84,LA:19.64,MA:27.2,MD:26.42,ME:2.96,ME1:14.81,ME2:10.29,MI:0.22,MN:1.52,MO:18.64,MS:17.83,MT:20.42,NC:3.66,ND:35.73,NE:25.05,NE1:20.72,NE2:2.24,NE3:54.21,NH:0.37,NJ:14.1,NM:8.21,NV:2.42,NY:22.49,OH:8.13,OK:36.39,OR:10.98,PA:0.72,RI:15.51,SC:14.27,SD:29.79,TN:26.01,TX:9.0,UT:18.08,VA:5.32,VT:26.41,WA:15.71,WI:0.76,WV:42.07,WY:46.3},
+  2020:{AK:10.06,AL:25.46,AR:27.62,AZ:0.31,CA:29.16,CO:13.5,CT:20.07,DC:86.75,DE:18.97,FL:3.36,GA:0.24,HI:29.46,IA:8.2,ID:30.77,IL:16.99,IN:16.07,KS:14.64,KY:25.94,LA:18.61,MA:33.46,MD:33.21,ME:9.07,ME1:23.09,ME2:7.44,MI:2.78,MN:7.11,MO:15.39,MS:16.55,MT:16.37,NC:1.35,ND:33.34,NE:19.06,NE1:14.92,NE2:6.5,NE3:53.02,NH:7.35,NJ:15.94,NM:10.79,NV:2.39,NY:23.13,OH:8.03,OK:33.09,OR:16.09,PA:1.16,RI:20.77,SC:11.68,SD:26.16,TN:23.21,TX:5.58,UT:20.48,VA:10.11,VT:35.41,WA:19.2,WI:0.63,WV:38.93,WY:43.38},
+  2024:{AK:13.14,AL:30.47,AR:30.64,AZ:5.53,CA:20.13,CO:10.98,CT:14.5,DC:83.81,DE:14.7,FL:13.1,GA:2.19,HI:23.1,IA:13.21,ID:36.49,IL:10.9,IN:18.96,KS:16.12,KY:30.53,LA:22.01,MA:25.2,MD:28.54,ME:6.94,ME1:21.59,ME2:9.05,MI:1.41,MN:4.24,MO:18.41,MS:22.89,MT:19.93,NC:3.21,ND:36.45,NE:20.46,NE1:12.96,NE2:4.59,NE3:53.6,NH:2.78,NJ:5.91,NM:6.0,NV:3.1,NY:12.59,OH:11.21,OK:34.26,OR:14.31,PA:1.7,RI:13.78,SC:17.87,SD:29.19,TN:29.72,TX:13.68,UT:21.58,VA:5.78,VT:31.51,WA:18.22,WI:0.86,WV:41.86,WY:45.76}};
+// Governors, by map year: the margin of each state's latest election for governor up to that November (top two candidates; see CONTEXT.txt).
+const GOV_MARGINS={2008:{AK:7.3,AL:15.9,AR:14.9,AZ:27.2,CA:17.0,CO:16.8,CT:27.7,DE:35.4,FL:7.1,GA:19.8,HI:27.1,IA:9.6,ID:8.6,IL:10.5,IN:17.7,KS:17.5,KY:17.4,LA:36.5,MA:20.3,MD:6.5,ME:7.9,MI:14.1,MN:1.0,MO:18.9,MS:15.8,MT:33.0,NC:3.4,ND:50.9,NE:48.9,NH:42.6,NJ:10.5,NM:37.6,NV:4.0,NY:38.6,OH:23.8,OK:33.0,OR:8.0,PA:20.7,RI:2.0,SC:10.3,SD:25.6,TN:38.9,TX:9.2,UT:57.9,VA:5.7,VT:31.6,WA:6.4,WI:7.4,WV:44.1,WY:40.0},
+  2010:{AK:21.4,AL:15.8,AR:30.8,AZ:11.9,CA:12.9,CO:14.7,CT:0.5,DE:35.4,FL:1.2,GA:10.0,HI:17.0,IA:9.6,ID:26.2,IL:0.9,IN:17.7,KS:31.1,KY:17.4,LA:36.5,MA:6.4,MD:14.4,ME:1.7,MI:18.2,MN:0.4,MO:18.9,MS:15.8,MT:33.0,NC:3.4,ND:50.9,NE:47.8,NH:7.6,NJ:3.6,NM:6.7,NV:11.8,NY:29.6,OH:2.0,OK:21.0,OR:1.5,PA:9.0,RI:2.5,SC:4.5,SD:23.0,TN:31.9,TX:12.7,UT:32.2,VA:17.3,VT:1.7,WA:6.4,WI:5.8,WV:44.1,WY:42.8},
+  2012:{AK:21.4,AL:15.8,AR:30.8,AZ:11.9,CA:12.9,CO:14.7,CT:0.5,DE:40.7,FL:1.2,GA:10.0,HI:17.0,IA:9.6,ID:26.2,IL:0.9,IN:2.9,KS:31.1,KY:20.4,LA:47.9,MA:6.4,MD:14.4,ME:1.7,MI:18.2,MN:0.4,MO:12.3,MS:22.0,MT:1.6,NC:11.4,ND:28.8,NE:47.8,NH:12.1,NJ:3.6,NM:6.7,NV:11.8,NY:29.6,OH:2.0,OK:21.0,OR:1.5,PA:9.0,RI:2.5,SC:4.5,SD:23.0,TN:31.9,TX:12.7,UT:40.8,VA:17.3,VT:20.2,WA:3.0,WI:6.8,WV:4.8,WY:42.8},
+  2014:{AK:2.2,AL:27.4,AR:13.9,AZ:11.8,CA:20.0,CO:3.3,CT:2.5,DE:40.7,FL:1.0,GA:7.8,HI:12.4,IA:21.7,ID:14.9,IL:3.9,IN:2.9,KS:3.7,KY:20.4,LA:47.9,MA:1.9,MD:3.7,ME:4.8,MI:4.0,MN:5.6,MO:12.3,MS:22.0,MT:1.6,NC:11.4,ND:28.8,NE:18.0,NH:5.0,NJ:22.1,NM:14.4,NV:46.7,NY:14.0,OH:30.6,OK:14.8,OR:5.8,PA:9.8,RI:4.5,SC:14.5,SD:45.1,TN:47.5,TX:20.4,UT:40.8,VA:2.6,VT:1.3,WA:3.0,WI:5.7,WV:4.8,WY:32.1},
+  2016:{AK:2.2,AL:27.4,AR:13.9,AZ:11.8,CA:20.0,CO:3.3,CT:2.5,DE:19.1,FL:1.0,GA:7.8,HI:12.4,IA:21.7,ID:14.9,IL:3.9,IN:6.0,KS:3.7,KY:8.7,LA:12.2,MA:1.9,MD:3.7,ME:4.8,MI:4.0,MN:5.6,MO:5.5,MS:34.0,MT:3.9,NC:0.2,ND:57.1,NE:18.0,NH:2.2,NJ:22.1,NM:14.4,NV:46.7,NY:14.0,OH:30.6,OK:14.8,OR:7.0,PA:9.8,RI:4.5,SC:14.5,SD:45.1,TN:47.5,TX:20.4,UT:38.0,VA:2.6,VT:8.7,WA:8.7,WI:5.7,WV:6.8,WY:32.1},
+  2018:{AK:7.0,AL:19.1,AR:33.5,AZ:14.2,CA:23.8,CO:10.6,CT:3.2,DE:19.1,FL:0.4,GA:1.4,HI:29.0,IA:2.8,ID:21.6,IL:15.7,IN:6.0,KS:5.0,KY:8.7,LA:12.2,MA:33.5,MD:11.8,ME:7.7,MI:9.6,MN:11.4,MO:5.5,MS:34.0,MT:3.9,NC:0.2,ND:57.1,NE:18.0,NH:7.1,NJ:14.1,NM:14.4,NV:4.1,NY:23.4,OH:3.7,OK:12.1,OR:6.4,PA:17.1,RI:15.4,SC:8.1,SD:3.4,TN:21.1,TX:13.3,UT:38.0,VA:8.9,VT:15.0,WA:8.7,WI:1.1,WV:6.8,WY:39.6},
+  2020:{AK:7.0,AL:19.1,AR:33.5,AZ:14.2,CA:23.8,CO:10.6,CT:3.2,DE:20.9,FL:0.4,GA:1.4,HI:29.0,IA:2.8,ID:21.6,IL:15.7,IN:24.4,KS:5.0,KY:0.4,LA:2.6,MA:33.5,MD:11.8,ME:7.7,MI:9.6,MN:11.4,MO:16.4,MS:5.1,MT:12.8,NC:4.5,ND:40.4,NE:18.0,NH:31.7,NJ:14.1,NM:14.4,NV:4.1,NY:23.4,OH:3.7,OK:12.1,OR:6.4,PA:17.1,RI:15.4,SC:8.1,SD:3.4,TN:21.1,TX:13.3,UT:32.7,VA:8.9,VT:41.2,WA:13.5,WI:1.1,WV:33.3,WY:39.6},
+  2022:{AK:26.1,AL:37.7,AR:27.8,AZ:0.6,CA:18.4,CO:19.3,CT:12.9,DE:20.9,FL:19.4,GA:7.5,HI:26.4,IA:18.5,ID:40.2,IL:12.5,IN:24.4,KS:2.2,KY:0.4,LA:2.6,MA:29.1,MD:32.4,ME:13.3,MI:10.6,MN:7.7,MO:16.4,MS:5.1,MT:12.8,NC:4.5,ND:40.4,NE:23.4,NH:15.5,NJ:3.2,NM:6.4,NV:1.5,NY:6.4,OH:25.0,OK:13.6,OR:3.4,PA:14.8,RI:19.0,SC:17.4,SD:26.8,TN:32.0,TX:10.9,UT:32.7,VA:2.0,VT:47.0,WA:13.5,WI:3.4,WV:33.3,WY:58.3},
+  2024:{AK:26.1,AL:37.7,AR:27.8,AZ:0.6,CA:18.4,CO:19.3,CT:12.9,DE:12.2,FL:19.4,GA:7.5,HI:26.4,IA:18.5,ID:40.2,IL:12.5,IN:13.3,KS:2.2,KY:5.0,LA:25.7,MA:29.1,MD:32.4,ME:13.3,MI:10.6,MN:7.7,MO:20.5,MS:3.2,MT:20.3,NC:14.8,ND:42.4,NE:23.4,NH:9.3,NJ:3.2,NM:6.4,NV:1.5,NY:6.4,OH:25.0,OK:13.6,OR:3.4,PA:14.8,RI:19.0,SC:17.4,SD:26.8,TN:32.0,TX:10.9,UT:24.4,VA:2.0,VT:51.6,WA:11.4,WI:3.4,WV:30.4,WY:58.3},
+  // 2026: current counts as of 2026-11-06 (Wikipedia), NOT final; update as counting ends. NJ, VA = 2025. AK: see CONTEXT.txt.
+  2026:{AK:1.8,AL:4,AR:15.3,AZ:12.6,CA:29.2,CO:27.3,CT:18.6,DE:12.2,FL:1.3,GA:8.6,HI:45.2,IA:11,ID:24.8,IL:23,IN:13.3,KS:0.6,KY:5,LA:25.7,MA:27.7,MD:29.6,ME:17.1,MI:10.7,MN:12.9,MO:20.5,MS:3.2,MT:20.3,NC:14.8,ND:42.4,NE:8.6,NH:4.3,NJ:14.4,NM:14.6,NV:7.3,NY:19.4,OH:7.9,OK:6,OR:8.1,PA:22.1,RI:29.9,SC:4.5,SD:27,TN:2.5,TX:7.1,UT:24.4,VA:15.4,VT:7,WA:11.4,WI:8,WV:30.4,WY:51.8}};
+// Senate Seats, by map year: per state, each seat's latest election up to that November, in SEN_HIST (class) order; see CONTEXT.txt.
+const SEN_MARGINS={2008:{AK:[1.2,3.1],AL:[26.9,35.26],AR:[59.0,11.83],AZ:[9.8,55.0],CA:[24.2,19.06],CO:[10.3,4.8],CT:[10.0,34.3],DE:[39.7,29.4],FL:[22.2,1.2],GA:[15.0,17.9],HI:[24.6,54.52],IA:[25.4,42.2],ID:[23.6,98.4],IL:[39.3,43.0],IN:[74.7,25.0],KS:[23.6,41.0],KY:[6.0,2.0],LA:[6.4,22.0],MA:[39.0,34.8],MD:[10.0,31.08],ME:[53.9,22.7],MI:[15.6,28.9],MN:[20.2,0.0],MO:[2.3,13.2],MS:[10.0,22.8],MT:[0.9,45.8],NC:[8.5,4.58],ND:[39.3,36.0],NE:[27.8,17.4],NH:[6.5,32.46],NJ:[9.1,14.0],NM:[41.3,22.6],NV:[14.4,26.0],NY:[36.0,47.0],OH:[12.4,27.8],OK:[17.5,11.6],OR:[3.3,31.6],PA:[17.4,10.63],RI:[7.0,46.8],SC:[15.2,9.6],SD:[25.0,1.1],TN:[2.7,33.5],TX:[25.7,12.0],UT:[31.8,40.3],VA:[0.4,31.3],VT:[33.1,46.1],WA:[17.0,12.24],WI:[37.8,11.24],WV:[30.7,27.4],WY:[46.9,51.3]},
+  2010:{AK:[1.2,4.0],AL:[26.9,30.6],AR:[59.0,21.1],AZ:[9.8,24.5],CA:[24.2,9.6],CO:[10.3,1.8],CT:[10.0,11.8],DE:[39.7,16.6],FL:[22.2,19.2],GA:[15.0,18.9],HI:[24.6,53.2],IA:[25.4,31.3],ID:[23.6,46.1],IL:[39.3,1.9],IN:[74.7,14.6],KS:[23.6,44.1],KY:[6.0,11.6],LA:[6.4,18.9],MA:[4.8,34.8],MD:[10.0,25.5],ME:[53.9,22.7],MI:[15.6,28.9],MN:[20.2,0.0],MO:[2.3,13.7],MS:[10.0,22.8],MT:[0.9,45.8],NC:[8.5,12.1],ND:[39.3,54.0],NE:[27.8,17.4],NH:[6.5,23.5],NJ:[9.1,14.0],NM:[41.3,22.6],NV:[14.4,5.6],NY:[26.3,34.1],OH:[12.4,18.3],OK:[17.5,44.4],OR:[3.3,17.8],PA:[17.4,2.0],RI:[7.0,46.8],SC:[15.2,34.2],SD:[25.0,100.0],TN:[2.7,33.5],TX:[25.7,12.0],UT:[31.8,28.8],VA:[0.4,31.3],VT:[33.1,33.5],WA:[17.0,4.8],WI:[37.8,4.9],WV:[10.1,27.4],WY:[46.9,51.3]},
+  2012:{AK:[1.2,4.0],AL:[26.9,30.6],AR:[59.0,21.1],AZ:[3.1,24.5],CA:[25.0,9.6],CO:[10.3,1.8],CT:[11.7,11.8],DE:[37.4,16.6],FL:[13.0,19.2],GA:[15.0,18.9],HI:[25.2,53.2],IA:[25.4,31.3],ID:[23.6,46.1],IL:[39.3,1.9],IN:[5.8,14.6],KS:[23.6,44.1],KY:[6.0,11.6],LA:[6.4,18.9],MA:[7.4,34.8],MD:[29.7,25.5],ME:[22.2,22.7],MI:[20.8,28.9],MN:[34.6,0.0],MO:[15.8,13.7],MS:[16.6,22.8],MT:[3.7,45.8],NC:[8.5,12.1],ND:[0.9,54.0],NE:[15.6,17.4],NH:[6.5,23.5],NJ:[19.5,14.0],NM:[5.7,22.6],NV:[1.2,5.6],NY:[44.6,34.1],OH:[6.0,18.3],OK:[17.5,44.4],OR:[3.3,17.8],PA:[9.1,2.0],RI:[29.8,46.8],SC:[15.2,34.2],SD:[25.0,100.0],TN:[34.5,33.5],TX:[15.8,12.0],UT:[35.3,28.8],VA:[5.9,31.3],VT:[46.1,33.5],WA:[21.0,4.8],WI:[5.5,4.9],WV:[24.1,27.4],WY:[54.0,51.3]},
+  2014:{AK:[2.2,4.0],AL:[97.2,30.6],AR:[17.1,21.1],AZ:[3.1,24.5],CA:[25.0,9.6],CO:[1.9,1.8],CT:[11.7,11.8],DE:[37.4,13.6],FL:[13.0,19.2],GA:[7.7,18.9],HI:[25.2,42.1],IA:[8.3,31.3],ID:[30.6,46.1],IL:[10.8,1.9],IN:[5.8,14.6],KS:[10.6,44.1],KY:[15.4,11.6],LA:[11.8,18.9],MA:[7.4,24.0],MD:[29.7,25.5],ME:[22.2,37.0],MI:[20.8,13.3],MN:[34.6,10.3],MO:[15.8,13.7],MS:[16.6,22.0],MT:[3.7,17.7],NC:[1.5,12.1],ND:[0.9,54.0],NE:[15.6,32.9],NH:[3.3,23.5],NJ:[19.5,13.5],NM:[5.7,11.2],NV:[1.2,5.6],NY:[44.6,34.1],OH:[6.0,18.3],OK:[39.4,38.9],OR:[18.8,17.8],PA:[9.1,2.0],RI:[29.8,41.4],SC:[15.5,24.0],SD:[20.9,100.0],TN:[34.5,30.0],TX:[15.8,27.2],UT:[35.3,28.8],VA:[5.9,0.8],VT:[46.1,33.5],WA:[21.0,4.8],WI:[5.5,4.9],WV:[24.1,27.6],WY:[54.0,53.8]},
+  2016:{AK:[2.2,15.3],AL:[97.2,28.2],AR:[17.1,23.4],AZ:[3.1,12.9],CA:[25.0,23.6],CO:[1.9,5.7],CT:[11.7,28.6],DE:[37.4,13.6],FL:[13.0,7.7],GA:[7.7,13.8],HI:[25.2,51.4],IA:[8.3,24.4],ID:[30.6,38.3],IL:[10.8,15.1],IN:[5.8,9.7],KS:[10.6,29.9],KY:[15.4,14.6],LA:[11.8,21.3],MA:[7.4,24.0],MD:[29.7,25.2],ME:[22.2,37.0],MI:[20.8,13.3],MN:[34.6,10.3],MO:[15.8,3.1],MS:[16.6,22.0],MT:[3.7,17.7],NC:[1.5,5.8],ND:[0.9,61.4],NE:[15.6,32.9],NH:[3.3,0.1],NJ:[19.5,13.5],NM:[5.7,11.2],NV:[1.2,2.4],NY:[44.6,43.0],OH:[6.0,20.9],OK:[39.4,43.2],OR:[18.8,22.8],PA:[9.1,1.7],RI:[29.8,41.4],SC:[15.5,23.5],SD:[20.9,43.6],TN:[34.5,30.0],TX:[15.8,27.2],UT:[35.3,41.0],VA:[5.9,0.8],VT:[46.1,28.3],WA:[21.0,18.0],WI:[5.5,3.3],WV:[24.1,27.6],WY:[54.0,53.8]},
+  2018:{AK:[2.2,15.3],AL:[1.63,28.2],AR:[17.1,23.4],AZ:[2.4,12.9],CA:[8.4,23.6],CO:[1.9,5.7],CT:[20.1,28.6],DE:[22.2,13.6],FL:[0.2,7.7],GA:[7.7,13.8],HI:[42.4,51.4],IA:[8.3,24.4],ID:[30.6,38.3],IL:[10.8,15.1],IN:[5.9,9.7],KS:[10.6,29.9],KY:[15.4,14.6],LA:[11.8,21.3],MA:[24.2,24.0],MD:[34.6,25.2],ME:[19.1,37.0],MI:[6.5,13.3],MN:[24.1,10.6],MO:[5.8,3.1],MS:[19.0,7.2],MT:[3.5,17.7],NC:[1.5,5.8],ND:[11.0,61.4],NE:[19.1,32.9],NH:[3.3,0.1],NJ:[11.2,13.5],NM:[23.6,11.2],NV:[5.0,2.4],NY:[34.0,43.0],OH:[6.8,20.9],OK:[39.4,43.2],OR:[18.8,22.8],PA:[13.1,1.7],RI:[23.2,41.4],SC:[15.5,23.5],SD:[20.9,43.6],TN:[10.8,30.0],TX:[2.6,27.2],UT:[31.7,41.0],VA:[16.0,0.8],VT:[39.9,28.3],WA:[16.8,18.0],WI:[10.8,3.3],WV:[3.3,27.6],WY:[37.0,53.8]},
+  2020:{AK:[12.7,15.3],AL:[20.4,28.2],AR:[33.0,23.4],AZ:[2.4,2.4],CA:[8.4,23.6],CO:[9.3,5.7],CT:[20.1,28.6],DE:[22.2,21.5],FL:[0.2,7.7],GA:[1.2,2.0],HI:[42.4,51.4],IA:[6.6,24.4],ID:[29.3,38.3],IL:[16.0,15.1],IN:[5.9,9.7],KS:[11.4,29.9],KY:[19.6,14.6],LA:[40.3,21.3],MA:[24.2,33.2],MD:[34.6,25.2],ME:[19.1,8.6],MI:[6.5,1.7],MN:[24.1,5.3],MO:[5.8,3.1],MS:[19.0,10.0],MT:[3.5,10.0],NC:[1.8,5.8],ND:[11.0,61.4],NE:[19.1,38.3],NH:[15.7,0.1],NJ:[11.2,16.3],NM:[23.6,6.1],NV:[5.0,2.4],NY:[34.0,43.0],OH:[6.8,20.9],OK:[30.1,43.2],OR:[17.6,22.8],PA:[13.1,1.7],RI:[23.2,33.2],SC:[10.3,23.5],SD:[31.4,43.6],TN:[10.8,27.0],TX:[2.6,9.6],UT:[31.7,41.0],VA:[16.0,12.1],VT:[39.9,28.3],WA:[16.8,18.0],WI:[10.8,3.3],WV:[3.3,43.3],WY:[37.0,46.2]},
+  2022:{AK:[12.7,7.4],AL:[20.4,35.7],AR:[33.0,34.8],AZ:[2.4,4.9],CA:[8.4,22.2],CO:[9.3,14.6],CT:[20.1,15.0],DE:[22.2,21.5],FL:[0.2,16.4],GA:[1.2,2.8],HI:[42.4,45.2],IA:[6.6,12.2],ID:[29.3,32.0],IL:[16.0,15.3],IN:[5.9,20.7],KS:[11.4,23.0],KY:[19.6,23.6],LA:[40.3,43.7],MA:[24.2,33.2],MD:[34.6,31.6],ME:[19.1,8.6],MI:[6.5,1.7],MN:[24.1,5.3],MO:[5.8,13.2],MS:[19.0,10.0],MT:[3.5,10.0],NC:[1.8,3.2],ND:[11.0,31.4],NE:[19.1,38.3],NH:[15.7,9.2],NJ:[11.2,16.3],NM:[23.6,6.1],NV:[5.0,0.8],NY:[34.0,14.0],OH:[6.8,6.1],OK:[26.6,32.2],OR:[17.6,14.9],PA:[13.1,4.9],RI:[23.2,33.2],SC:[10.3,25.9],SD:[31.4,43.4],TN:[10.8,27.0],TX:[2.6,9.6],UT:[31.7,10.3],VA:[16.0,12.1],VT:[39.9,40.4],WA:[16.8,14.5],WI:[10.8,1.0],WV:[3.3,43.3],WY:[37.0,46.2]},
+  2024:{AK:[12.7,7.4],AL:[20.4,35.7],AR:[33.0,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[9.3,14.6],CT:[18.8,15.0],DE:[17.1,21.5],FL:[12.8,16.4],GA:[1.2,2.8],HI:[32.7,45.2],IA:[6.6,12.2],ID:[29.3,32.0],IL:[16.0,15.3],IN:[19.8,20.7],KS:[11.4,23.0],KY:[19.6,23.6],LA:[40.3,43.7],MA:[19.8,33.2],MD:[11.8,31.6],ME:[17.5,8.6],MI:[0.3,1.7],MN:[15.7,5.3],MO:[13.8,13.2],MS:[26.2,10.0],MT:[7.1,10.0],NC:[1.8,3.2],ND:[33.0,31.4],NE:[6.7,25.2],NH:[15.7,9.2],NJ:[9.6,16.3],NM:[10.2,6.1],NV:[1.7,0.8],NY:[17.5,14.0],OH:[3.6,6.1],OK:[26.6,32.2],OR:[17.6,14.9],PA:[0.2,4.9],RI:[19.8,33.2],SC:[10.3,25.9],SD:[31.4,43.4],TN:[29.6,27.0],TX:[8.5,9.6],UT:[30.8,10.3],VA:[9.0,12.1],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1.0],WV:[41.5,43.3],WY:[51.0,46.2]}};
+// Results / Margins toggle (owner, 2026-11-06): Results = flat party colours, Margins = the shades. President, Governors and
+// Senate Seats share one setting. Phones: Senate Seats has no toggle and always shows Results.
+let colorMode="results";
+const narrow=matchMedia("(max-width:640px)");
+const marginsOn=race=>colorMode==="margins"&&!(race==="senate"&&narrow.matches);
+const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
+const marginFill=(year,key,w,table=MARGINS)=>{const m=table[year]?.[key]; return !marginsOn()||m==null||!SHADE[w]?PARTY_FILL[w]:shadeOf(w,m)};   // independents and 2026 stay flat
+const MARGIN_NOTE="Darker shades mean a wider win: full colour is 20 points or more, the lightest is under 4.";
+const GOV_NOTE=" Darker shades mean a wider win in the state's latest election for governor: full colour is 20 points or more, the lightest is under 4.";
+const SEN_NOTE="Darker shades mean a wider win in that seat's latest election: full colour is 20 points or more, the lightest is under 4.";
+const rgbOf=h=>`rgb(${[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(", ")})`;
+const PALE_SHADE=new Set([...SHADE.d.slice(0,16),...SHADE.r.slice(0,16)].map(rgbOf));   // these shades take dark names, like the flat light colours
 // ---------- USA map (all four races), one object per state ----------
 // s: state, c: House squares [x,y,isDem] (2024), x: extra House squares for older censuses,
 // e: the two elector squares added on the President map (House + 2 = electoral votes; DC: 3, no House seat),
@@ -635,8 +684,9 @@ const ALT={};
 const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
 function paintAlt(year){
   for(const k in ALT) ALT[k].forEach(({r,t},j)=>{const p=senSeats(year,k)[j];   // every year 2008-2026
-    r.style.fill=p?SEN_FILL[p]||ALT_PROJ[p]:""; r.classList.toggle("on",!!p);
-    if(t) t.setAttribute("class",!p?"":/^[dri]$/.test(p)?"in":"dk")});
+    const m=SEN_MARGINS[year]?.[k]?.[j], f=marginsOn("senate")&&m!=null&&p?shadeOf(p==="r"?"r":"d",m):null;   // independents caucus blue, so they shade blue
+    r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
+    if(t) t.setAttribute("class",!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk")});
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
 // Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
@@ -872,7 +922,7 @@ function applyPack(M,pk,groups){
     e.g.style.transform=`translate(${L.x.toFixed(2)}px,${L.y.toFixed(2)}px)`; e.t.textContent=L.t;
     e.t.classList.toggle("in",!L.out); e.t.setAttribute("text-anchor",L.out||"middle"); e.r.style.display=L.out?"none":"";
     e.r.setAttribute("x",-L.w/2); e.r.setAttribute("width",L.w);
-    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht|#a8d3f4|#f5aca6|#f2cf4a|rgb\((168, 211, 244|245, 172, 166|242, 207, 74)\)/.test(s.e.style.fill)));
+    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht|#a8d3f4|#f5aca6|#f2cf4a|rgb\((168, 211, 244|245, 172, 166|242, 207, 74)\)/.test(s.e.style.fill))||L.seg.some(s=>PALE_SHADE.has(s.e.style.fill)));
     e.t.classList.toggle("grey",!L.out&&L.seg.every(s=>!s.e.style.fill||/var\(--(house|seat-empty)\)|#hn/.test(s.e.style.fill)));
     const fill=s=>{const f=s.e.style.fill, h=/#h([drtn])/.exec(f); return h?HATCH_SOLID[h[1]]:f||"var(--seat-empty)"}, stops=L.seg.flatMap(s=>[[s.a,fill(s)],[s.b,fill(s)]]);
     while(e.gr.children.length>stops.length) e.gr.lastChild.remove();
@@ -971,15 +1021,15 @@ function setUS(race,animate,year=usYear(race)){
       hs.forEach((e,j)=>{let w=dem.has(k)?"d":"r";
         if(j===1&&k==="ME") w=P.me2;   // Maine's 2nd district
         if(j===1&&k==="NE") w=P.ne2;   // Nebraska's 2nd district
-        paint(e,j<n,PARTY_FILL[w]); if(j<n) c[w]++});
-      ESQ[k].forEach(e=>{const w=dem.has(k)?"d":"r"; paint(e,true,PARTY_FILL[w]); c[w]++});
+        paint(e,j<n,marginFill(year,k==="ME"||k==="NE"?k+(j+1):k,w)); if(j<n) c[w]++});   // ME and NE: each House square is a district
+      ESQ[k].forEach(e=>{const w=dem.has(k)?"d":"r"; paint(e,true,marginFill(year,k,w)); c[w]++});
     } else {
       ESQ[k].forEach(e=>paint(e,false));
       if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});
       if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
-      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=PARTY_FILL[g]||ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
+      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=SHADE[g]?marginFill(year,k,g,GOV_MARGINS):PARTY_FILL[g]||ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
-      else if(race==="governors"&&hs.length){const g=govOf(year,k), f=PARTY_FILL[g];
+      else if(race==="governors"&&hs.length){const g=govOf(year,k), f=marginFill(year,k,g,GOV_MARGINS);
         // borders take the state's own colour, so its squares merge into one shape
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
@@ -1085,7 +1135,12 @@ function setUS(race,animate,year=usYear(race)){
   const applyUnder=()=>{ud.textContent=T.ud||"";ur.textContent=T.ur||"";ud.style.opacity=ur.style.opacity=1;ur.style.color=T.urMuted?"var(--muted)":""};
   if(animate&&!reduce&&(ud.textContent!==(T.ud||"")||ur.textContent!==(T.ur||""))){ud.style.opacity=ur.style.opacity=0;setTimeout(applyUnder,250)} else applyUnder();
   ["president","house","senate","governors"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
-  document.getElementById("p-note").textContent=race==="president"&&P.note||"";
+  document.getElementById("p-note").textContent=race==="president"?[marginsOn()&&MARGIN_NOTE,P.note].filter(Boolean).join(" "):"";
+  document.getElementById("g-note").textContent=race==="governors"&&marginsOn()&&GOV_MARGINS[year]?GOV_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
+  document.getElementById("sen-note").textContent=race==="senate"&&sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]?SEN_NOTE:"";
+  // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
+  document.getElementById("margin-view").hidden=!(race==="president"||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]&&!narrow.matches);
+  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
   document.getElementById("leg-vacant").hidden=!c.v||y26;
   document.getElementById("leg-gov-ind").hidden=!govI;
   if(govI) document.getElementById("gov-ind-name").textContent=GOV_IND[GOV_HIST[year].i];
@@ -1809,6 +1864,7 @@ function show(race,animate){
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
+  document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
   document.getElementById("st-view").hidden=race!=="states";
   document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
@@ -1827,6 +1883,8 @@ function show(race,animate){
   history.replaceState(null,"","#"+race);
 }
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
+document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
+narrow.addEventListener("change",()=>{if(countryOf(current)==="usa") setUS(usRace,false)});   // Senate Seats gains or loses its shades and toggle
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
 tabs.forEach(t=>{
