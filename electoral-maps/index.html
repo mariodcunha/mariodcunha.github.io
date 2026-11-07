@@ -287,8 +287,10 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   body.stuck .country{position:fixed;z-index:31;top:calc(7px + env(safe-area-inset-top));right:16px;animation:mini-in .25s var(--ease)}
   @keyframes mini-in{from{transform:translateY(-150%)}}
   /* both maps fit the phone, no side-scroll; their names grow to stay readable at that size (labels: PACK_US, PACK_IN) */
+  #in-total-oth{white-space:pre}
   #map-us,#map-india{min-width:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-  #map-india{margin-top:-6.3%}
+  /* the blocks reach 20px from each screen edge: 986 of the viewBox's 1045.8 units are blocks, starting 30 in */
+  #map-india{margin-top:-6.3%;width:calc((100vw - 40px)*1.0606);margin-left:calc(4px - (100vw - 40px)*.0304)}
   #map-us .state text{font-size:18px}
   #map-us .alt-grid text{font-size:19px!important}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
@@ -1860,7 +1862,7 @@ function rsPack(pk,active){
 // mark: always the green's start (owner, 2026-11-07).
 function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth"), W=$("in-under").clientWidth;
   const cm=$("in-under").classList.contains("split");
-  o.style.top=""; if(cm&&narrow.matches){o.style.left=""; return}
+  o.style.top=""; o.style.textAlign=""; if(cm&&narrow.matches){o.style.left=""; return}
   if(!W||!o.textContent) return;
   const on=[...document.querySelectorAll("#panel-in .bar i")].filter(e=>parseFloat(e.style.width)>0), gaps=3*(on.length-1);
   // the widths as drawn: a bar over 100% with its gaps shrinks to fit, one under 100% (Chief Minister, states with no one in office) doesn't
@@ -1868,7 +1870,9 @@ function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth")
   let x=0, gL=0, gR=0; for(const e of on){const w=parseFloat(e.style.width)/100*W*k; if(e.id==="in-b-oth"){gL=x; gR=x+w} x+=w+3}
   const pad=8, tw=o.offsetWidth, lo=$("in-total").offsetWidth+pad, hi=W-$("in-total-r").offsetWidth-pad;
   const mark=$("in-need").style.opacity!=="0", c=(mark?.5009:.5)*W, half=mark?$("in-need").offsetWidth/2+pad:0, a=c-half, b=c+half;
-  if(!mark&&inRace==="loksabha"){o.style.left=Math.max(lo,Math.min(gL,hi-tw))+"px"; return}
+  if(!mark&&inRace==="loksabha"){const ph=narrow.matches; o.style.textAlign=ph?"right":"";   // phones: flush with the green's right end (owner, 2026-11-07)
+    o.style.left=Math.max(lo,Math.min(ph?gR-tw:gL,hi-tw))+"px"; return}
+  if(inRace==="rajyasabha"&&narrow.matches){o.style.textAlign="left"; o.style.left=Math.max(lo,Math.min(gL,hi-tw))+"px"; return}   // phones: flush with the green's left end (owner, 2026-11-07)
   const left=[gL,Math.min(gR,a)-tw], right=[gR-tw,Math.max(gL,b)], more=Math.min(gR,a)-gL>=gR-Math.max(gL,b);
   if(inRace==="loksabha"&&inYear===2019) left.reverse();   // the owner's pick: this one reads better at the green's right end
   // Chief Minister: the green's right end, nothing in the middle to dodge
@@ -1905,6 +1909,7 @@ function renderIn(animate,sync){
   if(!cm){const two=id=>{const c=document.getElementById(id).children; return c[0].textContent+(narrow.matches?"\n":" · ")+c[1].lastChild.textContent}, tl=document.getElementById("in-total");
     document.getElementById("in-total-oth").textContent=inOth;
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
+  if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies
   placeOth();
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
   applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha");

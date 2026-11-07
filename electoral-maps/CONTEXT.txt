@@ -2094,6 +2094,13 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      a line further down; a boxed-in name can push one neighbour to another spot.
   -  India top gap (owner, 2026-11-07, local): .mapwrap.in no longer clips (overflow:visible, the
      map fits at every width), so margin-top is -3.7% on web and -6.3% on phones.
+  -  India phone width (owner, 2026-11-07, local): the blocks run to 20px from each screen edge
+     (#map-india width and margin-left in calc, from the blocks' 986 of 1045.8 viewBox units). Names on
+     the right can pass that line by about 9px, still on screen.
+  -  India Others on phones (owner, 2026-11-07, local): under the bar it reads "Oth." with the
+     number on the next line, on every India view (set in renderIn, before placeOth).
+     Lok Sabha Vote share on phones: both lines right-aligned, ending with the green (placeOth).
+     Rajya Sabha on phones: both lines left-aligned, starting with the green (placeOth).
 
 STATUS / NEXT
 -------------
@@ -2139,7 +2146,7 @@ STATUS / NEXT
 - Live also has, pushed 2026-11-07 on the owner's say-so: India names outside the blocks (corner
   system, full / short tiers; the owner kept MP, AP, TN and HP at two letters), the -2% top margin
   sharp Chief Ministers blocks, India names on hover (web) or tap (phones) with the USA's fade, Play on
-  India, the phone-width India map and the tighter top gap. Known: on phones, Rajya Sabha's Trip. touches
+  India, the phone-width India map (20px margins), the tighter top gap, and Oth. on phones. Known: on phones, Rajya Sabha's Trip. touches
   a circle in every year. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
