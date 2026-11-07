@@ -2029,9 +2029,43 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      ends flush with the right edge of the squares under it, not mid-block (M.corner, spots
      after the first; the old left-aligned spot stays as a fallback). Fixed Maryland>20 on
      President Margins. Phone PA and OH sit mid-row in the 2008-2010 census; the owner checked and they are fine.
+  -  India tallies below the bar, web too (owner, 2026-11-07, local): Congress / Allies and
+     BJP / Allies now sit under the bar on every India map, phone and desktop, in the .gain
+     type, --inc left and --bjp right (one line on web, two on phones). .cand small is hidden
+     everywhere and only feeds renderIn. Chief Minister: population line only, no tallies,
+     as on phones.
+  -  Bar gaps (owner, 2026-11-07, local): India's bar has the 3px white gap at every colour
+     division, Congress / allies and allies / BJP too (.gap set at the end of renderIn, by
+     which segments have width). USA already had one everywhere; no change there.
+  -  Others under the bar (owner, 2026-11-07, local): India's centre Others number is gone
+     (.cand.oth hidden; #in-n-oth still counts) on every map, phone and desktop. "Others N" sits
+     on the line under the bar in --oth, placed by placeOth: on the side of the middle with
+     more green, at that side's outer end of the green (left end on the left, right end on the
+     right). If that hits a tally or the 272, the same side's inner end; then the other side;
+     then a second line. Lok Sabha Vote share: always the green's start. One exception, the owner's pick: Lok Sabha
+     2019 seat share sits at the green's right end.
+     Chief Minister on web: "Others N%" at the green's right end (placeOth, absolute under
+     .under.split); phones keep it between the two notes. It reads "Others N (X%)" (N states run by
+     others, X% of population); under 1%: "Others N (<1%)".
+  -  India notes and States share (owner, 2026-11-07, local): "N elected seats" (Rajya Sabha)
+     and "N MLAs in N assemblies" (States) are gone. States "Seats" is now "Seat share": top
+     numbers, tallies and Others read each side's percentage of all MLAs (renderST), like Lok
+     Sabha Vote share. Chief Minister unchanged.
+  -  Govern notes (owner, 2026-11-07, local): Governors and India Chief Minister both read
+     "Govern N% of population" on each side, phone and desktop; Chief Minister's middle stays
+     "Others N%".
+  -  Chief Minister bar (owner, 2026-11-07, local): states with no chief minister (grey on the
+     map) now fill #in-b-vac, grey, so the bar reaches both margins in every year.
   -  Winner check side (owner, 2026-11-07, local): the tally names sit on the page margins
      and the check goes on the inner side: after the name on the left (nameHTML's left
      argument, INDIA / UPA markup), before it on the right. USA and India, phone and desktop.
+  -  India tally centre (owner, 2026-11-07, local): India now has the USA's centre label, phone
+     and desktop: #in-mid-year (the stepper's year) over #in-mid-label in --sel, set in renderIn:
+     Lok Sabha seats, Lok Sabha vote share, Rajya Sabha, State seat share, State CMs. Hidden in
+     #mini, like the USA's. #in-tally carries the relative position.
+  -  India names (owner, 2026-11-07, local): Lok Sabha toggle "Seat share" is now "Seats" (it
+     shows the count, not a percentage); States keeps "Seat share"; "Chief Minister" is now
+     "Chief Ministers". Chief Minister's Others reads "Others N (X%)", or "Others N (<1%)".
 
 STATUS / NEXT
 -------------
@@ -2070,6 +2104,9 @@ STATUS / NEXT
   with the owner's picks and paired Dakotas / Carolinas), right-aligned VT / NH / ME in
   Margins, no dangling names, and the winner check on the name's inner side. Keep the
   commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: India tallies, Others and notes below
+  the bar, bar gaps, Seat share as percentages on States, Govern notes, the grey Chief Ministers
+  bar, the India tally centre, and the India toggle names. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
