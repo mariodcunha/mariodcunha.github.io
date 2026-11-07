@@ -2080,6 +2080,10 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      (overflow-x:auto), and the pull cut the top of Rajya Sabha's J&K name by about 5px.
   -  Chief Ministers corners (owner, 2026-11-07, local): state blocks are sharp again, like US
      Governors: roundFilter and #round-in are gone.
+  -  India hover names (owner, 2026-11-07, local): on web India's names show only while the pointer
+     is on the map, like the USA's; same rule, same fade. Phones: hidden until the map is tapped, a
+     second tap hides them (.names, as on the USA map).
+     The fade is on each text as well as .plabels, as on the USA: .45s in and out, no delay.
 
 STATUS / NEXT
 -------------
@@ -2124,7 +2128,8 @@ STATUS / NEXT
   USA and India). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: India names outside the blocks (corner
   system, full / short tiers; the owner kept MP, AP, TN and HP at two letters), the -2% top margin
-  and sharp Chief Ministers blocks. Keep the commit rule.
+  sharp Chief Ministers blocks, and India names on hover (web) or tap (phones) with the USA's fade.
+  Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

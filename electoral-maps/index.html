@@ -219,7 +219,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .plabel{transition:transform .6s var(--ease)} .plabels stop{transition:stop-color .45s var(--ease)}
 /* TRIAL (owner, 2026-11-06, may revert: delete this block): US state names show only while the cursor is on the map.
    Touch screens can't hover, so they keep the names; so do Senate Seats and Representation (not .packed) */
-@media (hover:hover) and (min-width:641px){#map-us.packed:not(:hover) text,#map-us.packed:not(:hover) .plabels{opacity:0} #map-us.packed:hover .plabels{transition:opacity .15s}}
+@media (hover:hover) and (min-width:641px){#map-us.packed:not(:hover) text,#map-us.packed:not(:hover) .plabels,#map-india.packed:not(:hover) text,#map-india.packed:not(:hover) .plabels{opacity:0} #map-us.packed:hover .plabels,#map-india.packed:hover .plabels{transition:opacity .15s}}
 #pres-view,#ls-view{justify-self:start}
 .bar .mark,.under .need,.under .gain{transition:left .8s var(--ease),opacity .25s}
 .instant,.instant *{transition:none!important;animation:none!important}
@@ -292,8 +292,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #map-us .state text{font-size:18px}
   #map-us .alt-grid text{font-size:19px!important}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
-  #map-us:not(.names) text,#map-us:not(.names) .plabels{opacity:0}
-  #map-us.packed.names .plabels{transition:opacity .15s}
+  #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
+  #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
+  #map-india{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -1992,7 +1993,7 @@ narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shad
   PACK_US.fs=narrow.matches?20:12; PACK_US.h=narrow.matches?25:15; PACK_US.cache={};
   for(const k in PACK_US.PL){const e=PACK_US.PL[k]; e.t.style.fontSize=PACK_US.fs+"px"; e.r.setAttribute("height",PACK_US.h); e.r.setAttribute("y",-PACK_US.h/2)}
   if(countryOf(current)==="usa") setUS(usRace,false); else renderIn(false,true)});
-usSvg.addEventListener("click",()=>{if(narrow.matches) usSvg.classList.toggle("names")});   // phones: tap the map to show or hide the state labels
+[usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));   // phones: tap the map to show or hide the state labels
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
 tabs.forEach(t=>{
