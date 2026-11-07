@@ -46,7 +46,6 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 #play:not(.idle) #play-left{margin-right:2px}
 #play:not(.idle) .pthumb{opacity:1}
 #play.paused .pthumb{transform:translateX(-33px)}
-#play[hidden]+.country{margin-left:auto}   /* India has no Play: the country picker keeps the right edge */
 .country{position:relative}
 .country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--fg);background:var(--chip);border:0;border-radius:var(--r-out);padding:3px;cursor:pointer}
 .country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-in);height:31px;padding:0 12px 0 10px}
@@ -164,7 +163,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
-#map-india{margin-top:-2%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
+#map-india{margin-top:-3.7%} .mapwrap.in{overflow:visible;margin-bottom:-4%}   /* the map fits every width, so the box needn't clip: names can rise into the pull */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
@@ -287,14 +286,14 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #mini .bar .mark{top:-2px;bottom:-2px}
   body.stuck .country{position:fixed;z-index:31;top:calc(7px + env(safe-area-inset-top));right:16px;animation:mini-in .25s var(--ease)}
   @keyframes mini-in{from{transform:translateY(-150%)}}
-  /* the USA map fits the phone, no side-scroll; its names grow to stay readable at that size (labels: PACK_US) */
-  #map-us{min-width:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  /* both maps fit the phone, no side-scroll; their names grow to stay readable at that size (labels: PACK_US, PACK_IN) */
+  #map-us,#map-india{min-width:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  #map-india{margin-top:-6.3%}
   #map-us .state text{font-size:18px}
   #map-us .alt-grid text{font-size:19px!important}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
   #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
   #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
-  #map-india{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -937,15 +936,27 @@ function packOnce(M,key){
         // last resorts: the code ending over the top row's left square, reaching out to its left; then under the bottom row
         (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),code(k)+tag),
         (t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]);
-          return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(code(k)+tag));
+          return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(code(k)+tag),
+        // M.beside: last of all, ending at the bottom row's right edge, then beside a row of the block, top row first (India's tight spots on phones)
+        M.beside?(t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.max(...c.filter(p=>p[1]===bot).map(p=>p[0]))+1,bot+1]);
+          return [{t,w,x:X-w,y:Y+g+h/2,q:[X-w,Y+g,X,Y+g+h]}]})(code(k)+tag):[],
+        M.beside?[...new Set(c.map(p=>p[1]))].sort((a,b)=>a-b).flatMap(y=>{const xs=c.filter(p=>p[1]===y).map(p=>p[0]), t=code(k)+tag, w=wide(k,t),
+          [R0,Y0]=put(k,[Math.max(...xs)+1,y]), L0=put(k,[Math.min(...xs),y])[0], m=Y0+f*S/2; return [R0+g,L0-g-w].map(x=>({t,w,x,y:m,q:[x,m-h/2,x+w,m+h/2]}))}):[],
+        // and under the bottom row, a line further down, below the name that took the spot
+        M.beside?(t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]), T=Y+g+h+pad*2;
+          return [{t,w,x:X,y:T+h/2,q:[X,T,X+w,T+h]}]})(code(k)+tag):[]);
       // M.endAt: with a lead, the name ends at the top row's right edge, so neighbours in a tight row stay apart (first choice)
       if(tag&&M.endAt?.includes(k)){const p=spots[0], [,Y]=put(k,p), R=put(k,[Math.max(...c.filter(q=>q[1]===p[1]).map(q=>q[0]))+1,p[1]])[0], t=code(k)+tag, w=wide(k,t);
         all.unshift({t,w,x:R-w,y:Y-g-h/2,q:[R-w,Y-g-h,R,Y-g]})}
       spare[k]=all.find(o=>o.t===code(k)+tag);   // nothing free at all: the code at the top left anyway
       return [k,all.filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
-    const done=[]; for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){
-      const o=opts[k].find(o=>!done.some(r=>hit(o.q,r)))||spare[k]; if(!o) continue;
-      done.push(o.q); lb[k]={x:o.x,y:o.y,w:o.w,t:o.t,seg:[],out:"start",blk:true}}}
+    const got={}, clear=(q,skip)=>Object.keys(got).every(j=>j===skip||!hit(q,got[j].q));
+    for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){let o=opts[k].find(o=>clear(o.q));
+      // M.beside: boxed in by one name? That name moves to another of its spots, if it has one
+      if(!o&&M.beside) for(const c of opts[k]){const by=Object.keys(got).filter(j=>hit(c.q,got[j].q)), alt=by.length===1&&opts[by[0]].find(a=>clear(a.q,by[0])&&!hit(a.q,c.q));
+        if(alt){got[by[0]]=alt; o=c; break}}
+      o||=spare[k]; if(o) got[k]=o}
+    for(const k in got){const o=got[k]; lb[k]={x:o.x,y:o.y,w:o.w,t:o.t,seg:[],out:"start",blk:true}}}
   const wOut={}; single.forEach(k=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=nameOf(k);
     wOut[k]=e.getComputedTextLength(); if(!wOut[k]) laidOut=false});
   for(let m=M.inset||0;;m+=6){fit(m); if(!single.length) break;
@@ -1484,7 +1495,8 @@ const IN_FULL={WB:"West Bengal",AP:"Andhra Pradesh",JK:"Jammu & Kashmir",HP:"Him
 const inFull=k=>IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
-  name:k=>IN_SHORT[k]||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, inset:30,
+  name:k=>IN_SHORT[k]||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
+ 
   tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
 const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AR:"Arun.",WB:"Bengal",
   MH:"Maha.",RJ:"Raja.",GJ:"Guja.",KA:"Karn.",TS:"Tela.",JH:"Jhar.",CG:"Chha.",HR:"Hrya.",UK:"Uttr.",MN:"Mani.",
@@ -1794,7 +1806,7 @@ function rsCirc(year){
 // rows below; last, under the bottom row. Full name if the row holds it, else IN_SHORT. Fewest free spots go first.
 function rsOut(pk,year){
   if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
-  const circ=rsCirc(year), R=RS_R*S*pk.f, gap=.15*S*pk.f, fs=PACK_IN.fs, h=fs*.8, vb=inSvg.viewBox.baseVal, cand={}, spare={}, OUT={}, done=[];
+  const circ=rsCirc(year), R=RS_R*S*pk.f, gap=.15*S*pk.f, fs=PACK_IN.size(), h=fs*.8, vb=inSvg.viewBox.baseVal, cand={}, spare={}, OUT={};
   const t=el("text",{style:`font-size:${fs}px`},inSvg), wide=n=>{t.textContent=n; return t.getComputedTextLength()};
   const clear=q=>circ.every(([x,y])=>Math.hypot(Math.max(q[0]-x,0,x-q[2]),Math.max(q[1]-y,0,y-q[3]))>=R+1.5);
   for(const k in pk.lb){const own=circ.filter(c=>c[2]===k); if(!own.length) continue;
@@ -1804,10 +1816,17 @@ function rsOut(pk,year){
     const list=rows.flatMap(y=>{const a=Math.min(...row(y))-R, b=Math.max(...row(y))+R, Y=y-R-gap-h/2;
       return (wide(full)<=b-a?[full,short]:[short]).flatMap(n=>[at(n,a,Y),at(n,b-wide(n),Y)])});
     const by=rows[rows.length-1], under=at(short,Math.min(...row(by))-R,by+R+gap+h/2);
-    spare[k]=list.find(o=>o.t===short); cand[k]=[...list,under].filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&clear(o.q))}
+    const beside=rows.flatMap(y=>[at(short,Math.max(...row(y))+R+gap,y),at(short,Math.min(...row(y))-R-gap-wide(short),y)]);
+    // nothing else free: the nearest clear spot around the state's circles
+    const mx=own.reduce((t,c)=>t+c[0],0)/own.length, my=own.reduce((t,c)=>t+c[1],0)/own.length, ring=[];
+    for(let r=2*R;r<8*R;r+=R/2) for(let i=0;i<16;i++) ring.push(at(short,mx+r*Math.cos(i*Math.PI/8)-wide(short)/2,my+r*Math.sin(i*Math.PI/8)));
+    spare[k]=list.find(o=>o.t===short); cand[k]=[...list,under,at(short,Math.max(...row(by))+R-wide(short),by+R+gap+h/2),...beside,at(short,Math.min(...row(by))-R,by+R+gap+h*1.5+5),at(short,Math.max(...row(by))+R-wide(short),by+R+gap+h*1.5+5),...ring].filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&clear(o.q))}
   t.remove();
-  const free=q=>done.every(n=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2);
-  for(const k of Object.keys(cand).sort((p,q)=>cand[p].length-cand[q].length)){const o=cand[k].find(o=>free(o.q))||spare[k]; OUT[k]=o; done.push(o.q)}
+  const apart=(q,n)=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2, free=(q,skip)=>Object.keys(OUT).every(j=>j===skip||apart(q,OUT[j].q));
+  for(const k of Object.keys(cand).sort((p,q)=>cand[p].length-cand[q].length)){let o=cand[k].find(o=>free(o.q));
+    if(!o) for(const c of cand[k]){const by=Object.keys(OUT).filter(j=>!apart(c.q,OUT[j].q)), alt=by.length===1&&cand[by[0]].find(a=>free(a.q,by[0])&&apart(a.q,c.q));
+      if(alt){OUT[by[0]]=alt; o=c; break}}   // boxed in by one name: that name moves
+    OUT[k]=o||spare[k]}
   return RS_OUT_YEAR[year]=OUT;
 }
 // active: Rajya Sabha on show. Its circles always wait at their Compact spots (shrunk when not on show), so they grow
@@ -1968,7 +1987,7 @@ function show(race,animate){
   document.getElementById("ls-share").hidden=race!=="loksabha";
   document.getElementById("sen-view").hidden=race!=="senate";
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
-  document.getElementById("play").hidden=!us; if(!us) stopPlay();   // the tour is USA only
+  if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=race!=="states";
   document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us){const years=race==="president"?PRES_YEARS:US_YEARS;
@@ -1992,6 +2011,7 @@ document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click"
 narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shades and toggle; the map's names change size
   PACK_US.fs=narrow.matches?20:12; PACK_US.h=narrow.matches?25:15; PACK_US.cache={};
   for(const k in PACK_US.PL){const e=PACK_US.PL[k]; e.t.style.fontSize=PACK_US.fs+"px"; e.r.setAttribute("height",PACK_US.h); e.r.setAttribute("y",-PACK_US.h/2)}
+  PACK_IN.cache={}; for(const y in RS_OUT_YEAR) delete RS_OUT_YEAR[y];
   if(countryOf(current)==="usa") setUS(usRace,false); else renderIn(false,true)});
 [usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));   // phones: tap the map to show or hide the state labels
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
@@ -2033,7 +2053,7 @@ addEventListener("resize",()=>{const t=tabs.find(t=>t.dataset.race===current);if
 // tally (main numbers, names, bar; on phones also the country picker). The copy follows the visible panel's tally
 // and bar: same-shaped nodes are patched in place (text, style, class), so bar widths and the majority mark run
 // their CSS transitions in the copy too; anything that changed shape (another panel / race) is re-cloned.
-// ---------- Play (owner, 2026-11-06): one tour of the US maps ----------
+// ---------- Play (owner, 2026-11-06): one tour of each country's maps ----------
 // President, House, Senate, Governors, first year to last: Results, then back to the first year in Margins (House has no
 // margins). Senate's first year shows All, Representation, then Seats, then Seats runs through the years, all at the same
 // pace. Phones skip Senate Margins (Results only).
@@ -2057,7 +2077,12 @@ function renderPlay(){
 const playWait=ms=>new Promise(r=>{let last=performance.now();
   const tick=()=>{const t=performance.now(); if(!playPaused) ms-=(t-last)*playSpeed; last=t; if(ms<=0) r(); else playTimer=setTimeout(tick,40)}; tick()});
 function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSpeed=1; senMorphMs=800; clearTimeout(playTimer); renderPlay()}
+// India (owner, 2026-11-07): Lok Sabha seats, Lok Sabha vote share, Rajya Sabha, State seat share, Chief Ministers, each first year to latest
 function playSteps(){
+  if(countryOf(current)==="india"){const list=[], pass=(race,years,o)=>years.forEach(year=>list.push({race,year,...o}));
+    pass("loksabha",IN_YEARS,{ls:"seat"}); pass("loksabha",IN_YEARS,{ls:"vote"}); pass("rajyasabha",RS_YEARS);
+    pass("states",ST_YEARS,{st:"seats"}); pass("states",ST_YEARS,{st:"cm"});
+    return list}
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
   pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS);
   pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power"); pass("senate","results",US_YEARS,"seats");
@@ -2065,12 +2090,16 @@ function playSteps(){
   pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
   return list;
 }
-function playGo({race,mode,year,sen}){colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)}
+function playGo({race,mode,year,sen,ls,st}){
+  if(countryOf(race)==="india"){const view=st&&st!==stMode;   // a new view morphs at once; a new year wipes down the map
+    if(ls) lsMode=ls; if(st) stMode=st; inYear=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
+  colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)}
 // the step that matches the view on show (House has no margins; only Senate Seats does, and not on phones)
-const playHere=()=>playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
+const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
+  playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
   (s.race==="house"||s.race==="senate"&&(senMode!=="seats"||narrow.matches)||s.mode===colorMode));
 async function startPlay(){
-  playing=true; renderPlay(); senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);
+  playing=true; renderPlay(); if(countryOf(current)==="usa") senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);
   for(;;){await playWait(playStep); if(++playAt>=playList.length) break; playGo(playList[playAt])}
   stopPlay();
 }

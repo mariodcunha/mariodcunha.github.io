@@ -2084,6 +2084,16 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      is on the map, like the USA's; same rule, same fade. Phones: hidden until the map is tapped, a
      second tap hides them (.names, as on the USA map).
      The fade is on each text as well as .plabels, as on the USA: .45s in and out, no delay.
+  -  Play on India (owner, 2026-11-07, local): #play shows on India too, phone and desktop, with the
+     USA's controls and pace. Tour, 61 steps (playSteps), each first year to latest: Lok Sabha
+     seats, Lok Sabha vote share, Rajya Sabha, State seat share, Chief Ministers. Going to the other
+     country ends a tour, either way. Replaces "No Play on India" above.
+  -  India fits the phone (owner, 2026-11-07, local): no side-scroll: #map-india min-width 0, as on
+     the USA. Phone names 18 (PACK_IN.size), about USA's on-screen size. Tight spots (M.beside; rsOut
+     the same): after the usual spots, under ending at the bottom row's right edge, beside a row,
+     a line further down; a boxed-in name can push one neighbour to another spot.
+  -  India top gap (owner, 2026-11-07, local): .mapwrap.in no longer clips (overflow:visible, the
+     map fits at every width), so margin-top is -3.7% on web and -6.3% on phones.
 
 STATUS / NEXT
 -------------
@@ -2128,8 +2138,9 @@ STATUS / NEXT
   USA and India). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: India names outside the blocks (corner
   system, full / short tiers; the owner kept MP, AP, TN and HP at two letters), the -2% top margin
-  sharp Chief Ministers blocks, and India names on hover (web) or tap (phones) with the USA's fade.
-  Keep the commit rule.
+  sharp Chief Ministers blocks, India names on hover (web) or tap (phones) with the USA's fade, Play on
+  India, the phone-width India map and the tighter top gap. Known: on phones, Rajya Sabha's Trip. touches
+  a circle in every year. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
