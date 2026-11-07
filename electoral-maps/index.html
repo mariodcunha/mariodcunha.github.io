@@ -164,7 +164,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
-#map-india{margin-top:-3%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
+#map-india{margin-top:-2%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
@@ -209,8 +209,6 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .6s var(--ease)}
-/* Chief Minister: each state's merged block gets 2px rounded outer corners (roundFilter). US Governors stay sharp */
-#map-india.cm .ls-st{filter:url(#round-in)}
 #map-us.packed .state text,#map-india.packed .names text{opacity:0}
 #map-india .ls-cell,#map-india .rs-cell{transition:transform .6s var(--ease)}
 /* Rajya Sabha Compact: plain names (no pill), the circles laid out around them */
@@ -646,14 +644,6 @@ const SEN_FILL={...PARTY_FILL,i:"var(--dem)"};
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
 // the first n and shrinks the rest away; elector squares (President only); two Senate circles.
 const usSvg=document.getElementById("map-us");
-// Rounds the OUTER corners of a solid block of squares by about 2px on screen: blur the shape, cut the blur at half
-// (straight edges stay put, corners round off with radius ~1.86 x sd), and keep the original (colour, hatching) inside it.
-function roundFilter(defs,id,sd){
-  const f=el("filter",{id,x:"-5%",y:"-5%",width:"110%",height:"110%","color-interpolation-filters":"sRGB"},defs);
-  el("feGaussianBlur",{in:"SourceAlpha",stdDeviation:sd,result:"b"},f);
-  el("feColorMatrix",{in:"b",type:"matrix",values:"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 24 -12",result:"m"},f);
-  el("feComposite",{in:"SourceGraphic",in2:"m",operator:"in"},f);
-}
 // House squares that drop first when a state has fewer seats, first to go first, so a block never splits or has a hole
 // in it (owner, 2026-11-04). Serpentine order already does that everywhere on the Figma layout except Arizona.
 const HSQ_LAST={AZ:"6,15"};
@@ -1470,7 +1460,6 @@ const ST_RECTS=LS_RECTS;
 const ST_DOT=new Map(), LS_GRP={}, LS_CELL=new Map();
 (function(){
   const names=inSvg.lastChild, g=el("g",{},inSvg); inSvg.insertBefore(g,names);
-  roundFilter(el("defs",{},g),"round-in",1.15);
   for(const code in ST_RECTS){const sg=LS_GRP[code]=el("g",{class:"ls-st"},g);
     ST_RECTS[code].forEach(r=>{const w=el("g",{class:"ls-cell"},sg); LS_CELL.set(r,w);
       ST_DOT.set(r,el("rect",{class:"st-dot",x:r.x.baseVal.value+S*.07,y:r.y.baseVal.value+S*.07,
@@ -1877,7 +1866,6 @@ function renderIn(animate,sync){
   if(!animate) panel.classList.add("instant");
   inSvg.classList.toggle("rs",race==="rajyasabha");
   inSvg.classList.toggle("sq",race==="loksabha"||cm);
-  inSvg.classList.toggle("cm",!!cm);
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""});
   // reset what only some views use
   document.getElementById("in-b-vac").style.width="0%";

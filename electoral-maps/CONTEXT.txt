@@ -2076,6 +2076,10 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      names are last: MP, AP, TN and HP stay two letters as their top rows are too narrow.
      Rajya Sabha: the same rule on circles, per year (rsOut). Gone: outNames, stPack, cmPack,
      ST_SPOT, RS_SPOT, CM names inside blocks. Checked every view, RS all years, 375px and desktop.
+  -  India top margin (owner, 2026-11-07, local): #map-india margin-top -3% -> -2%. .mapwrap clips
+     (overflow-x:auto), and the pull cut the top of Rajya Sabha's J&K name by about 5px.
+  -  Chief Ministers corners (owner, 2026-11-07, local): state blocks are sharp again, like US
+     Governors: roundFilter and #round-in are gone.
 
 STATUS / NEXT
 -------------
@@ -2119,7 +2123,8 @@ STATUS / NEXT
   bar, the India tally centre, and the India toggle names; then the lighter tally centre (#A6A6A6,
   USA and India). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: India names outside the blocks (corner
-  system, full / short tiers; the owner kept MP, AP, TN and HP at two letters). Keep the commit rule.
+  system, full / short tiers; the owner kept MP, AP, TN and HP at two letters), the -2% top margin
+  and sharp Chief Ministers blocks. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
