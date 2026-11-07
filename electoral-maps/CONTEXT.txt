@@ -2109,6 +2109,11 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      375px wide stays ending with the green, 3px from the note); within 8px of the right note it starts with the green. Always the same line as the notes.
      Web Chief Ministers Others now reads "Others X% (N)".
 
+  -  Defaults and Governors notes (owner, 2026-11-07): picking a country from the menu always opens its
+     default, not the last view: USA = Governors 2026 in Results, India = Lok Sabha 2024 seats (choose). A
+     #hash link still opens that view. USA Governors on phones: "Govern X% of population" on the blue side
+     only, "Govern X%" on the right (popNote). India phones keep "Govern X%" on both sides.
+
 STATUS / NEXT
 -------------
 - COMMIT RULE: do not commit or push until the owner says so. Edit locally and
@@ -2158,6 +2163,9 @@ STATUS / NEXT
 - Live also has, pushed 2026-11-07 on the owner's say-so: India States labels on phones (Seat share Oth.
   ending with the green; Chief Ministers one line each, Oth. ending with the green, 2px rule against
   the left note). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: country defaults (the menu always opens USA
+  Governors 2026 Results, India Lok Sabha 2024 seats) and the shorter right Governors note on phones.
+  Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

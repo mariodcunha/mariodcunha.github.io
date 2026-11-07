@@ -508,6 +508,7 @@ const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[base,
 // Senate Seats share one setting. Phones: Senate Seats has no toggle and always shows Results.
 let colorMode="results";
 const narrow=matchMedia("(max-width:640px)");
+const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
 const marginsOn=race=>colorMode==="margins"&&!(race==="senate"&&narrow.matches);
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
 const marginFill=(year,key,w,table=MARGINS)=>{const m=table[year]?.[key]; return !marginsOn()||m==null||!SHADE[w]?PARTY_FILL[w]:shadeOf(w,m)};   // independents and 2026 stay flat
@@ -1180,14 +1181,13 @@ function setUS(race,animate,year=usYear(race)){
       seg:{d:c.d+c.i,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},ud:note(cd,c.D),ur:note(cr,c.R),
       label:`2026 Senate: ${d} Democratic seats, ${cd} called and ${c.D} leading; ${r} Republican, ${cr} called and ${c.R} leading`};}
   else if(y26&&race==="governors"){const cd=govD+g26.d, cr=govR+g26.r, d=cd+g26.D, r=cr+g26.R;
-    const note=sq=>`Govern ${pctOf(sq)}% of population`;   // just the share (owner, 2026-11-06)
     T={d,r,nd:"Democrats",nr:"Republicans",tot:435,mark:null,ctl:null,seg:{d:c.d,D:c.D,T:c.T,N:c.N,R:c.R,r:c.r},
-      ud:note(c.d+c.D),ur:note(c.r+c.R),
+      ud:popNote(pctOf(c.d+c.D)),ur:popNote(pctOf(c.r+c.R),true),
       label:`2026 governors: ${d} Democrats, ${cd} called and ${g26.D} leading; ${r} Republicans, ${cr} called and ${g26.R} leading${g26.v?`; ${g26.v} with no result`:""}`};}
   else if(race==="president") T={d:c.d,r:c.r,nd:P.d,nr:P.r,tot:538,mark:270/538*100,need:"270",ctl:c.d>c.r?"d":"r",
     label:`${year} presidential electoral votes, one square per vote: ${P.d} ${c.d}, ${P.r} ${c.r}`};
   else if(race==="governors") T={d:govD,r:govR,nd:"Democrats",nr:"Republicans",seg:{d:c.d,m:c.i,r:c.r},tot:435,mark:null,ctl:null,
-    ud:`Govern ${Math.round(c.d/435*100)}% of population`,ur:`Govern ${Math.round(c.r/435*100)}% of population`,
+    ud:popNote(Math.round(c.d/435*100)),ur:popNote(Math.round(c.r/435*100),true),
     label:`Governors after the ${year} elections: ${govD} Democrats, ${govR} Republicans${govI?`, ${govI} independent`:""}; each state sized by its House seats`};
   else {
     const [gSide,gN]=CH_GAIN[race][year], house=race==="house";
@@ -1961,7 +1961,7 @@ const thumb=document.querySelector('.toggle .thumb');
 const visibleTabs=()=>tabs.filter(t=>!t.hidden);
 const panelOf=r=>document.getElementById(countryOf(r)==="usa"?"panel-us":"panel-in");
 const countryOf=r=>tabs.find(t=>t.dataset.race===r)?.dataset.country;
-let current=null, lastRace={usa:"senate",india:"loksabha"};
+let current=null;
 function moveThumb(tab,animate){
   if(!animate) thumb.style.transition="none";
   thumb.style.left=tab.offsetLeft+"px"; thumb.style.width=tab.offsetWidth+"px";
@@ -1989,7 +1989,6 @@ function show(race,animate){
   moveThumb(tab,animate&&countryOf(current)===countryOf(race));
   const from=current&&panelOf(current), to=panelOf(race);
   const us=countryOf(race)==="usa";
-  lastRace[countryOf(race)]=race;
   // year stepper for every race (Governors: 2024 only for now); seat/vote share only for Lok Sabha
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=race!=="loksabha";
@@ -2044,7 +2043,10 @@ function openMenu(open){
   cMenu.classList.toggle("open",open); cBtn.setAttribute("aria-expanded",open);
   if(open){const sel=opts.find(o=>o.getAttribute("aria-selected")==="true");opts.forEach(o=>o.classList.toggle("active",o===sel));cMenu.focus()}
 }
-function choose(country){openMenu(false);cBtn.focus();show(lastRace[country],true)}
+// Picking a country always opens its default: USA = Governors 2026 in Results, India = Lok Sabha 2024 seats (owner, 2026-11-07)
+function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
+  if(country==="usa"){usYearPick=US_YEARS.at(-1); colorMode="results"} else {inYear=2024; lsMode="seat"}
+  show(country==="usa"?"governors":"loksabha",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
 cMenu.addEventListener("keydown",e=>{
