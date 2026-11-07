@@ -13,7 +13,7 @@ Design source: Figma "Personal" file, key MMuJwVGaparQ5tPaeYHZFa
     https://www.figma.com/design/MMuJwVGaparQ5tPaeYHZFa/Personal?node-id=3465-25773
     US President map = node 3566:9143 ("Frame 1663"), House = node 3566:10367
     ("Frame 1664"), page "Electoral Maps"
-Last updated: 2026-11-06
+Last updated: 2026-11-07
 
 Purpose of this file: a starting brief for a new Claude Code chat, and the
 reference for re-using this code elsewhere. Read it first, then read index.html.
@@ -2010,6 +2010,28 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  Governors 2026 note removed (owner, 2026-11-06, local): no "Solid states..." line
      in projLegend. If counting leaves a race leading again, the legend keys stay but
      nothing explains the light shade.
+  -  USA name tiers (owner, 2026-11-07, local): desktop only, phones unchanged. President,
+     House, Senate All and Governors: the full name (US_FULL) if the state's columns of
+     squares from the name's spot hold it, else the short name (US_SHORT: Neva., Kans.,
+     Oreg.; then the LBL names: Cali., Penn., N-Caro., Missi., Misso.), and 1 or 2 House
+     seats that census (PACK_US.seats) always the postal code, on President too. Margins:
+     full + lead if it fits, short + lead if it fits, else code + lead (PACK_US.tiers).
+     Representation: full name if the circle pair is as wide, else short. Senate Seats
+     tiles stay on postal codes. Checked every race and year at desktop width: no name
+     on a square, on another name, or clipped; no Representation name on a circle.
+  -  Name picks (owner, 2026-11-07, local): Wisc. and NY always (US_FULL holds those), WV
+     instead of W-Virg. (US_SHORT), Mich. with a lead in Margins (PACK_US.tiers). ND / SD and
+     NC / SC always share one format (US_TWIN, M.twin): the pair takes the shorter of the two.
+  -  VT / NH / ME in Margins (owner, 2026-11-07, local): with a lead, these names end at the
+     top row's right edge (PACK_US.endAt), so they stop crowding each other. President and
+     Governors, phone and desktop. Results are unchanged, left-aligned.
+  -  No dangling names (owner, 2026-11-07, local): a name pushed off its top-left spot now
+     ends flush with the right edge of the squares under it, not mid-block (M.corner, spots
+     after the first; the old left-aligned spot stays as a fallback). Fixed Maryland>20 on
+     President Margins. Phone PA and OH sit mid-row in the 2008-2010 census; the owner checked and they are fine.
+  -  Winner check side (owner, 2026-11-07, local): the tally names sit on the page margins
+     and the check goes on the inner side: after the name on the left (nameHTML's left
+     argument, INDIA / UPA markup), before it on the right. USA and India, phone and desktop.
 
 STATUS / NEXT
 -------------
@@ -2044,6 +2066,10 @@ STATUS / NEXT
   commit rule.
 - Live also has, pushed 2026-11-06 on the owner's say-so: Governors as the landing
   page, and no Governors 2026 "Solid states" note. Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: USA name tiers (full, short, code,
+  with the owner's picks and paired Dakotas / Carolinas), right-aligned VT / NH / ME in
+  Margins, no dangling names, and the winner check on the name's inner side. Keep the
+  commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

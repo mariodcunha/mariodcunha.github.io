@@ -121,7 +121,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand b{font-size:clamp(30px,5.5vw,46px);font-weight:800;line-height:1}
 .cand span{font-size:clamp(14px,1.8vw,18px);font-weight:700}
 .cand.d b,.cand.d span{color:var(--dem)} .cand.r b,.cand.r span{color:var(--rep)} .cand.r{text-align:right}
-.cand.d .check{background:var(--dem)}
+.cand.d .check{background:var(--dem)} .cand.d .check,.cand.india .check{margin:0 0 0 5px}
 /* winner badge: the tick is drawn, not a font glyph, so it sits dead centre at any size (the ✓ text stays for screen readers) */
 .check{position:relative;display:inline-block;width:1em;height:1em;border-radius:50%;background:var(--rep);color:transparent;overflow:hidden;font-size:.85em;line-height:1;margin-right:5px;vertical-align:-.12em;font-style:normal}
 .check::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.2 8.3l2.6 2.6 5-5.4' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
@@ -409,7 +409,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   <!-- Lok Sabha, Rajya Sabha and States share this panel so the map morphs between them -->
   <section class="panel" id="panel-in" role="tabpanel" hidden>
     <div class="tally">
-      <div class="cand india"><b id="in-n-india">0</b><span><i class="check" id="in-check-india">✓</i><em id="in-bloc">INDIA</em></span><small id="in-sub-india"></small></div>
+      <div class="cand india"><b id="in-n-india">0</b><span><em id="in-bloc">INDIA</em><i class="check" id="in-check-india">✓</i></span><small id="in-sub-india"></small></div>
       <div class="cand oth"><b id="in-n-oth">0</b><span>Others</span></div>
       <div class="cand nda"><b id="in-n-nda">0</b><span><i class="check" id="in-check-nda">✓</i>NDA</span><small id="in-sub-nda"></small></div>
     </div>
@@ -622,7 +622,8 @@ function label(parent,[t,x,y,a,b],cls=""){
   e.textContent=t; return e;
 }
 
-const nameHTML=(name,won)=>(won?'<i class="check">✓</i>':"")+name;
+// the name sits on the page margin, the check on its inner side: after it on the left, before it on the right (owner, 2026-11-07)
+const nameHTML=(name,won,left)=>{const c=won?'<i class="check">✓</i>':""; return left?name+c:c+name};
 // Governor in office after each November election (January of the next year, so odd-year races in VA, NJ, KY,
 // LA and MS count from the following even year): d = Democrats, i = independents; every other state is Republican.
 const GOV_HIST={
@@ -686,7 +687,8 @@ const HSQ={}, ESQ={}, ESQ_2000={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={
     // name: which side of the state's squares it sits on (judged against all squares any race can show)
     const all=[...st.c,...st.e,...(st.x||[])], bx=[Math.min(...all.map(c=>c[0])),Math.min(...all.map(c=>c[1])),Math.max(...all.map(c=>c[0]))+1,Math.max(...all.map(c=>c[1]))+1];
     const [,hx,hy]=st.h, side=hy<bx[1]?"above":hy>bx[3]?"below":hx>bx[2]?"right":"left";
-    LBL[k]={e:label(g,st.h,k==="DC"?"dc":""),x:hx,y:hy,side,bx};
+    LBL[k]={e:label(g,st.h,k==="DC"?"dc":""),t:st.h[0],x:hx,y:hy,side,bx};
+    LBL[k].a=LBL[k].e.getAttribute("text-anchor");
   });
   // fixed: Senate Seats and Representation are laid out on this box, whatever the squares' positions
   usSvg.setAttribute("viewBox","-16 -23 1062 689");
@@ -931,12 +933,23 @@ function packOnce(M,key){
       // a one-column state, or a single square at the name's spot: the code; otherwise the name, with the code as fallback
       const lone=p=>new Set(c.map(q=>q[0])).size===1||!c.some(q=>q[1]===p[1]&&q[0]===p[0]+1);
       const tag=M.tag?.(k)||"";   // M.tag(k): the lead that follows the name in Margins
-      const all=spots.flatMap(p=>[...new Set(lone(p)?[k]:[nameOf(k),k])].map(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
-        return {t,w,x:X,y:Y-g-h/2,q:[X,Y-g-h,X+w,Y-g]}})).concat(
+      // M.tiers: the names to try at this spot, given the room over the state's own columns of squares from there on
+      const tiers=(j,p)=>{const xs=new Set(cur(j).map(q=>q[0])), tg=M.tag?.(j)||""; let n=1; while(xs.has(p[0]+n)) n++;
+        return M.tiers?.(j,tg,n*S*f,t=>wide(k,t+tg))};
+      // M.twin(k): the state whose name must keep the same format, read at its top left; the shorter list wins
+      const twin=M.twin?.(k), tw=twin&&B[twin]?.real.length&&(q=>tiers(twin,[Math.min(...q.filter(p=>p[1]===Math.min(...q.map(r=>r[1]))).map(p=>p[0])),0]))(cur(twin));
+      const names=p=>{const l=tiers(k,p); return l&&tw?l.slice(-Math.min(l.length,tw.length)):l};
+      // pushed off the top left, a name never dangles mid-block: it ends flush with the right edge of the squares under it (owner, 2026-11-07)
+      const all=spots.flatMap((p,i)=>[...new Set(names(p)||(lone(p)?[k]:[nameOf(k),k]))].flatMap(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
+        const at=L=>({t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}); let e=p[0]; while(c.some(q=>q[1]===p[1]&&q[0]===e+1)) e++;
+        return i?[at(put(k,[e+1,p[1]])[0]-w),at(X)]:[at(X)]})).concat(
         // last resorts: the code ending over the top row's left square, reaching out to its left; then under the bottom row
         (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),k+tag),
         (t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]);
           return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(k+tag));
+      // M.endAt: with a lead, the name ends at the top row's right edge, so neighbours in a tight row stay apart (first choice)
+      if(tag&&M.endAt?.includes(k)){const p=spots[0], [,Y]=put(k,p), R=put(k,[Math.max(...c.filter(q=>q[1]===p[1]).map(q=>q[0]))+1,p[1]])[0], t=k+tag, w=wide(k,t);
+        all.unshift({t,w,x:R-w,y:Y-g-h/2,q:[R-w,Y-g-h,R,Y-g]})}
       spare[k]=all.find(o=>o.t===k+tag);   // nothing free at all: the code at the top left anyway
       return [k,all.filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
     const done=[]; for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){
@@ -1030,6 +1043,13 @@ function applyPack(M,pk,groups){
 // by their postal code on these maps (M.label; owner, 2026-11-06).
 const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
+// Desktop names (owner, 2026-11-07), every map race: the full name if the state's squares can hold it, else the short name
+// (US_SHORT, then LBL), and a state of 1 or 2 House seats always its postal code. In Margins the lead comes first: the short
+// name must fit with it too, else the code (M.tiers). Representation: full if the circle pair is as wide, else the short name.
+const US_FULL={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"NY",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisc.",WY:"Wyoming",DC:"DC"};
+const US_SHORT={NV:"Neva.",KS:"Kans.",OR:"Oreg.",WV:"WV"};   // owner's picks: WI and NY never spell out (US_FULL), nor MI with a lead
+const US_TWIN={ND:"SD",SD:"ND",NC:"SC",SC:"NC"};   // always the same format: the pair takes the shorter of its two
+const usShort=k=>US_SHORT[k]||LBL[k].t;
 const US_OUT=true;   // TRIAL (owner, 2026-11-06, may revert: set false): desktop names outside too, as on phones
 const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow.matches?25:15,out:[],static:true,inset:0,mid:true,fitOut:true,pad:.15,race:"president",row:{},
   keys:()=>Object.keys(GST),
@@ -1038,7 +1058,11 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow
   corner(){return US_OUT||narrow.matches},
   size(){return narrow.matches?this.fs-(this.tag?4:2):this.fs},   // phones: Margins names carry a lead, so a touch smaller
   // phones, every race: names follow the seats, one layout per census (results and margins alike); desktop's stay put
-  now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,(CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0));
+  twin:k=>US_TWIN[k], endAt:["VT","NH","ME"],
+  seats(k){return (CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0)},   // House seats this census
+  tiers(k,tag,room,w){if(narrow.matches) return null; const s=usShort(k);
+    return this.seats(k)<=2?[k]:w(US_FULL[k])<=room&&!(tag&&k==="MI")?[US_FULL[k],s,k]:!tag||w(s)<=room?[s,k]:[k]},
+  now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,this.seats(k));
     return this.race==="president"?[...hs,...ESQ[k]]:hs},
   moved:k=>(ESQ_2000[k]||[]).map(m=>m.at),   // the elector squares that step aside in some years
   most:k=>(CH_N[k]||0)+Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
@@ -1048,7 +1072,7 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow
   // the squares a state has in every year: the only ones a name may rest on
   lcells(k,race){const hs=(HSQ[k]||[]).slice(0,this.least(k)).map(e=>[e,e]); return race==="president"?[...hs,...ESQ[k].map(e=>[e,e])]:hs},
   avoid(k,race){return race==="chamber"?SEAT[k].map(seatCell):[]},
-  name:k=>narrow.matches?k:({VT:"VT",HI:"HI"})[k]||LBL[k].e.textContent,   // phones: postal codes, the only names that fit
+  name:k=>narrow.matches?k:({VT:"VT",HI:"HI"})[k]||LBL[k].t,   // phones: postal codes, the only names that fit
   small(k){const h=(HSQ[k]||[]).slice(0,this.most(k)); return this.least(k)<=2||new Set(h.map(e=>e.x.baseVal.value)).size===1},
   label(k){return this.race!=="president"&&this.small(k)?k:null},
   tweak(){}};
@@ -1181,6 +1205,10 @@ function setUS(race,animate,year=usYear(race)){
   // names follow the squares on show, so they stay next to their state as it grows or shrinks
   const pw=race==="senate"&&sm==="power"&&powerLayout();
   for(const k in LBL){
+    const L0=LBL[k], named=pw&&pw[k]&&!narrow.matches;   // Representation: the name by the width of its circle pair
+    L0.e.setAttribute("text-anchor",named?"middle":L0.a);
+    const fits=j=>{L0.e.textContent=US_FULL[j]; return L0.e.getComputedTextLength()<=4*pw[j].r*S};
+    L0.e.textContent=named?(US_TWIN[k]?fits(US_TWIN[k])&&fits(k):fits(k))?US_FULL[k]:usShort(k):L0.t;
     if(pw&&pw[k]){const o=pw[k], L=LBL[k]; L.e.style.transform=`translate(${(o.x-L.x)*S}px,${(o.y+o.r+.5-L.y)*S}px)`; continue}
     const L=LBL[k], on=[...(HSQ[k]||[]),...ESQ[k]].filter(e=>!e.classList.contains("gone")).map(e=>[e.x.baseVal.value/S,e.y.baseVal.value/S])
       .concat(race==="senate"?SEAT[k].map(e=>[e.cx.baseVal.value/S-.5,e.cy.baseVal.value/S-.5]):[]);
@@ -1210,7 +1238,7 @@ function setUS(race,animate,year=usYear(race)){
   usSvg.setAttribute("aria-label",T.label);
   countTo(document.getElementById("num-d"),T.d,animate);
   countTo(document.getElementById("num-r"),T.r,animate);
-  document.getElementById("name-d").innerHTML=nameHTML(T.nd,T.ctl==="d");
+  document.getElementById("name-d").innerHTML=nameHTML(T.nd,T.ctl==="d",true);
   document.getElementById("name-r").innerHTML=nameHTML(T.nr,T.ctl==="r");
   // bar: held (solid) and leaning (hatched) per side, toss-ups and unpolled races in between; a white gap
   // wherever one group ends and the next begins
