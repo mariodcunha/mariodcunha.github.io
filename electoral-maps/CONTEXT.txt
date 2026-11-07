@@ -2068,6 +2068,14 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      "Chief Ministers". Chief Minister's Others reads "Others N (X%)", or "Others N (<1%)".
   -  Tally centre colour (owner, 2026-11-07, local): the year and label over the bar are now
      #A6A6A6, lighter than --sel, on USA and India.
+  -  India names outside (owner, 2026-11-07, local): every India view, phone and desktop: no name
+     sits in a block any more. Names use USA's corner system (PACK_IN.corner, inset 30), 12px,
+     --sel via .blk: top left, else top right ending with the squares, then the rows below, last
+     under the block. Full name (IN_FULL, then INDIA) if the state's columns hold it, else
+     IN_SHORT (PACK_IN.tiers; M.code is the last resort, USA keeps its postal code). Two-letter
+     names are last: MP, AP, TN and HP stay two letters as their top rows are too narrow.
+     Rajya Sabha: the same rule on circles, per year (rsOut). Gone: outNames, stPack, cmPack,
+     ST_SPOT, RS_SPOT, CM names inside blocks. Checked every view, RS all years, 375px and desktop.
 
 STATUS / NEXT
 -------------
@@ -2110,6 +2118,8 @@ STATUS / NEXT
   the bar, bar gaps, Seat share as percentages on States, Govern notes, the grey Chief Ministers
   bar, the India tally centre, and the India toggle names; then the lighter tally centre (#A6A6A6,
   USA and India). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: India names outside the blocks (corner
+  system, full / short tiers; the owner kept MP, AP, TN and HP at two letters). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

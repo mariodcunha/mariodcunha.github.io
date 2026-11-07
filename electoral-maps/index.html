@@ -167,7 +167,7 @@ svg.map{width:100%;min-width:560px;height:auto;display:block}
 #map-india{margin-top:-3%} .mapwrap.in{margin-bottom:-4%}   /* bottom trim on the box: a map overhanging it made the box scroll */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
-svg.map text.blk{fill:var(--sel)}   /* USA names outside the blocks: the toggles' gray */
+svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
 #map-us .plabel{transition:transform .45s var(--ease)}   /* names travel with the squares */
 svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
@@ -922,6 +922,7 @@ function packOnce(M,key){
   // M.corner(): names in plain black above the state, left-aligned to its topmost, leftmost square. Blocked by a neighbour
   // or another name: the postal code there, then the same over the next columns along. No free spot at all: it stays inside
   if(M.corner?.()){fit(M.inset||0); single.length=0;
+    const code=k=>M.code?.(k)||k;   // M.code(k): the shortest name a map shows (USA: the postal code)
     const g=.15*S*f, h=fs*.8, pad=.1*S*f, hit=(q,r)=>q[0]<r[2]+pad&&r[0]<q[2]+pad&&q[1]<r[3]+pad&&r[1]<q[3]+pad;
     const cur=k=>B[k].now||B[k].c;   // M.now(k): this year's squares, so a phone name sits on the block as it stands
     const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[]).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));
@@ -939,17 +940,17 @@ function packOnce(M,key){
       const twin=M.twin?.(k), tw=twin&&B[twin]?.real.length&&(q=>tiers(twin,[Math.min(...q.filter(p=>p[1]===Math.min(...q.map(r=>r[1]))).map(p=>p[0])),0]))(cur(twin));
       const names=p=>{const l=tiers(k,p); return l&&tw?l.slice(-Math.min(l.length,tw.length)):l};
       // pushed off the top left, a name never dangles mid-block: it ends flush with the right edge of the squares under it (owner, 2026-11-07)
-      const all=spots.flatMap((p,i)=>[...new Set(names(p)||(lone(p)?[k]:[nameOf(k),k]))].flatMap(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
+      const all=spots.flatMap((p,i)=>[...new Set(names(p)||(lone(p)?[code(k)]:[nameOf(k),code(k)]))].flatMap(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
         const at=L=>({t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}); let e=p[0]; while(c.some(q=>q[1]===p[1]&&q[0]===e+1)) e++;
         return i?[at(put(k,[e+1,p[1]])[0]-w),at(X)]:[at(X)]})).concat(
         // last resorts: the code ending over the top row's left square, reaching out to its left; then under the bottom row
-        (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),k+tag),
+        (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),code(k)+tag),
         (t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]);
-          return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(k+tag));
+          return [{t,w,x:X,y:Y+g+h/2,q:[X,Y+g,X+w,Y+g+h]}]})(code(k)+tag));
       // M.endAt: with a lead, the name ends at the top row's right edge, so neighbours in a tight row stay apart (first choice)
-      if(tag&&M.endAt?.includes(k)){const p=spots[0], [,Y]=put(k,p), R=put(k,[Math.max(...c.filter(q=>q[1]===p[1]).map(q=>q[0]))+1,p[1]])[0], t=k+tag, w=wide(k,t);
+      if(tag&&M.endAt?.includes(k)){const p=spots[0], [,Y]=put(k,p), R=put(k,[Math.max(...c.filter(q=>q[1]===p[1]).map(q=>q[0]))+1,p[1]])[0], t=code(k)+tag, w=wide(k,t);
         all.unshift({t,w,x:R-w,y:Y-g-h/2,q:[R-w,Y-g-h,R,Y-g]})}
-      spare[k]=all.find(o=>o.t===k+tag);   // nothing free at all: the code at the top left anyway
+      spare[k]=all.find(o=>o.t===code(k)+tag);   // nothing free at all: the code at the top left anyway
       return [k,all.filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
     const done=[]; for(const k of Object.keys(opts).sort((p,q)=>opts[p].length-opts[q].length)){
       const o=opts[k].find(o=>!done.some(r=>hit(o.q,r)))||spare[k]; if(!o) continue;
@@ -1484,13 +1485,17 @@ const IN_COMPACT={JK:[[9.95,0.04],[10.95,0.04],[11.95,0.04],[10.95,1.04],[11.95,
 let lsView="packed";   // every India view is Compact only (owner, 2026-10-11): no Map / Compact toggle. Lok Sabha and States are always
                        // Compact, with no toggle (owner, 2026-10-11)
 const inView=()=>"packed";   // the Map code stays (Map layouts are where the Compact morphs start from)
-const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:14,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
+// India's names (owner, 2026-11-07), every view: outside the blocks in the toggles' gray, USA President's size and type, as
+// far up and left as they can go, else up and right, ending with the squares (M.corner). The full name if the state's squares
+// can hold it, else IN_SHORT: several words -> capitals (UP, MP, AP, HP, TN, J&K, A&N); longer than 6 letters -> first 4 + ".".
+// Exceptions: Arunachal "Arun." (AP is Andhra), Haryana "Hrya.", Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "D&D".
+const IN_FULL={WB:"West Bengal",AP:"Andhra Pradesh",JK:"Jammu & Kashmir",HP:"Himachal Pradesh",AR:"Arunachal Pradesh",AN:"Andaman & Nicobar",DD:"D&D"};
+// Two-letter names are the last resort: a state tries its full name at every spot first (tiers), so MP can read Madhya Pradesh.
+const inFull=k=>IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
+const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
-  name:k=>IN_SHORT[k]||INDIA.find(s=>s[0]===k)[1], row:{OD:2,WB:-4,MP:-2}, mid:["KL","WB","HR","KA","AP","OD"], side:{DD:"below",CH:"below"}, outside:k=>LS_RECTS[k].length<=2, tweak(){}};
-// Compact names, the US rule (owner, 2026-10-10): several words -> capitals (UP, MP, AP, HP, TN, J&K, A&N); 4-6
-// letters as is; longer -> first 4 letters + "." Exceptions: Arunachal "Arun." (AP is Andhra), Haryana "Hrya.",
-// Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "D&D" (below its squares, as is Chandigarh: PACK_IN.side).
-// States with 1 or 2 seats are named outside. PACK_IN.mid: pill centred on its row.
+  name:k=>IN_SHORT[k]||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, inset:30,
+  tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
 const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AR:"Arun.",WB:"Bengal",
   MH:"Maha.",RJ:"Raja.",GJ:"Guja.",KA:"Karn.",TS:"Tela.",JH:"Jhar.",CG:"Chha.",HR:"Hrya.",UK:"Uttr.",MN:"Mani.",
   ML:"Megh.",TR:"Trip.",MZ:"Mizo.",NL:"Naga.",CH:"Chan.",PY:"Pudu.",LD:"Laks."};
@@ -1795,94 +1800,25 @@ function rsCirc(year){
     if(pts) circ.push(...pts)}
   return circ;
 }
+// Rajya Sabha's names follow the same rule, on circles: over the top row's left circle, else ending at its right one; then the
+// rows below; last, under the bottom row. Full name if the row holds it, else IN_SHORT. Fewest free spots go first.
 function rsOut(pk,year){
   if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
-  const circ=rsCirc(year);
-  const O=outNames(pk,circ,RS_R*S*pk.f,false,RS_SPOT); if(O) RS_OUT_YEAR[year]=O;
-  return O;
-}
-// States, Seats (circles) in Compact: every name sits outside the circles (owner, 2026-10-11). The 1-2 seat states
-// keep their Lok Sabha spot; every other name tries a spot right / left / below / above each of its own circles, the
-// one nearest the state's middle that clears every circle and every other name. No spot: it keeps its pill.
-// Owner's picks (2026-10-11): tr right of the top row, tc above the top row (centred on it), tl left of the block at
-// the top row, b below the bottom row (centred on it); MH right of its top row, one square along; KL higher, clear of Laks.
-const ST_SPOT={HP:"tr",DL:"tr",TN:"tr",AP:"tr",UP:"tr",UK:"tr",BR:"tr",PB:"tc",RJ:"tc",TS:"tc",CG:"tc",AR:"tc",
-  GJ:"tl",AS:"tl",JH:"b",WB:"b",MH:"mh",KL:"kl"};
-// Owner's name picks for Rajya Sabha (else as States): Gujarat, Maharashtra, Bihar top-left; Puducherry right
-const RS_SPOT={...ST_SPOT,GJ:"tl",MH:"tl",BR:"tl",PY:"tr"};
-let ST_OUT={}, stOutFor=null;
-function stOut(pk){
-  if(stOutFor===pk) return ST_OUT;
-  const P=(u,a)=>pk.at[a]+pk.f*(u*S-pk.lo[a]);
-  const circ=[]; for(const k in IN_COMPACT) IN_COMPACT[k].forEach(c=>circ.push([P(c[0]+.5,0),P(c[1]+.5,1),k]));
-  const O=outNames(pk,circ,.43*S*pk.f); if(!O) return null;
-  ST_OUT=O; stOutFor=pk;
-  return ST_OUT;
-}
-// Names outside the circles, circ: [[x, y, state]] in SVG units, R: circle radius. The names the Compact map already
-// puts outside (1-2 seat states, pk.lb .out) keep that spot; the owner's picks (ST_SPOT) go first.
-function outNames(pk,circ,R,keepOut=true,SP=ST_SPOT){   // keepOut false (Rajya Sabha): those names are placed too
-  const f=pk.f, gap=3, h=PACK_IN.fs*.75, vb=inSvg.viewBox.baseVal, OUT={};
-  const names=[], free=q=>names.every(n=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2), cand={};
-  if(keepOut) for(const k in pk.lb){const L=pk.lb[k]; if(L.out){const l=L.out==="start"?L.x:L.out==="end"?L.x-L.w:L.x-L.w/2;
-    names.push([l,L.y-h/2,l+L.w,L.y+h/2])}}
-  const t=el("text",{style:`font-size:${PACK_IN.fs}px`},inSvg);
-  for(const k in pk.lb){if(keepOut&&pk.lb[k].out) continue;
-    t.textContent=PACK_IN.name(k); const w=t.getComputedTextLength(), own=circ.filter(c=>c[2]===k);
-    if(!w){t.remove(); return null}   // hidden panel: try again when shown
-    if(!own.length) continue;   // no circles (Rajya Sabha: no seat that year)
-    const mx=own.reduce((s,c)=>s+c[0],0)/own.length, my=own.reduce((s,c)=>s+c[1],0)/own.length;
-    if(SP[k]){const ys=own.map(c=>c[1]), t0=Math.min(...ys), b0=Math.max(...ys), row=y=>own.filter(c=>Math.abs(c[1]-y)<1),
-        xs=y=>row(y).map(c=>c[0]), mid=y=>(Math.min(...xs(y))+Math.max(...xs(y)))/2, s=SP[k], cell=S*f;
-      const rows=[...new Set(ys.map(y=>Math.round(y*100)/100))].sort((p,q)=>p-q);
-      // tr / tl: the highest row whose spot is clear (TN: under Puducherry; Assam: under Arunachal)
-      const spots=s==="tr"?rows.map(y=>[Math.max(...xs(y))+R+gap,y,"start"]):s==="tl"?rows.map(y=>[Math.min(...xs(y))-R-gap,y,"end"])
-        :[s==="tc"?[mid(t0),t0-R-gap-h/2,"middle"]:s==="b"?[mid(b0),b0+R+gap+h/2,"middle"]
-        :s==="mh"?[Math.max(...xs(t0))+cell+R+gap,t0,"start"]:[Math.min(...xs(rows[Math.min(2,rows.length-1)]))-R-gap,rows[Math.min(2,rows.length-1)],"end"]];   // KL: left of its third row
-      cand[k]=spots.map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],fix:1}})
-        .filter(o=>circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5));
-      if(cand[k].length) continue}   // the pick lands on circles (Rajya Sabha's Maharashtra): search as for the others
-    cand[k]=own.flatMap(([x,y])=>[[x+R+gap,y,"start"],[x-R-gap,y,"end"],[x,y+R+gap+h/2,"middle"],[x,y-R-gap-h/2,"middle"]])
-      .map(([x,y,a])=>{const l=a==="start"?x:a==="end"?x-w:x-w/2; return {x,y,a,q:[l,y-h/2,l+w,y+h/2],d:Math.hypot(l+w/2-mx,y-my)}})
-      .filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&o.q[1]>=vb.y&&o.q[3]<=vb.y+vb.height
-        &&circ.every(([x,y])=>Math.hypot(Math.max(o.q[0]-x,0,x-o.q[2]),Math.max(o.q[1]-y,0,y-o.q[3]))>=R+1.5))
-      .sort((p,q)=>p.d-q.d)}
+  const circ=rsCirc(year), R=RS_R*S*pk.f, gap=.15*S*pk.f, fs=PACK_IN.fs, h=fs*.8, vb=inSvg.viewBox.baseVal, cand={}, spare={}, OUT={}, done=[];
+  const t=el("text",{style:`font-size:${fs}px`},inSvg), wide=n=>{t.textContent=n; return t.getComputedTextLength()};
+  const clear=q=>circ.every(([x,y])=>Math.hypot(Math.max(q[0]-x,0,x-q[2]),Math.max(q[1]-y,0,y-q[3]))>=R+1.5);
+  for(const k in pk.lb){const own=circ.filter(c=>c[2]===k); if(!own.length) continue;
+    const short=PACK_IN.name(k), full=inFull(k); if(!wide(short)){t.remove(); return null}   // hidden panel: try again when shown
+    const rows=[...new Set(own.map(c=>Math.round(c[1]*10)/10))].sort((p,q)=>p-q), row=y=>own.filter(c=>Math.abs(c[1]-y)<1).map(c=>c[0]);
+    const at=(n,l,y)=>({t:n,w:wide(n),x:l,y,q:[l,y-h/2,l+wide(n),y+h/2]});
+    const list=rows.flatMap(y=>{const a=Math.min(...row(y))-R, b=Math.max(...row(y))+R, Y=y-R-gap-h/2;
+      return (wide(full)<=b-a?[full,short]:[short]).flatMap(n=>[at(n,a,Y),at(n,b-wide(n),Y)])});
+    const by=rows[rows.length-1], under=at(short,Math.min(...row(by))-R,by+R+gap+h/2);
+    spare[k]=list.find(o=>o.t===short); cand[k]=[...list,under].filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&clear(o.q))}
   t.remove();
-  for(const k in cand) if(SP[k]&&cand[k][0]?.fix){const o=cand[k].find(o=>free(o.q))||cand[k][0]; if(o){OUT[k]=o; names.push(o.q)}}   // owner's picks first
-  for(const k of Object.keys(cand).filter(k=>!OUT[k]).sort((p,q)=>cand[p].length-cand[q].length)){   // fewest spots first
-    const o=cand[k].find(o=>free(o.q)); if(o){OUT[k]=o; names.push(o.q)}}
-  return OUT;
-}
-// Chief Minister names (owner, 2026-10-11): a name that fits well inside its state's block, centred on the block's
-// centre of gravity (its box, plus CM_PAD px all round, entirely on the state's own squares), sits there in white;
-// every other name is plain text outside the blocks, as on States, Seats (the owner's picks first; the blocks are
-// whole squares, so names keep clear of a square's half-width, not a dot's radius).
-let CM_OUT=null, CM_IN=null, cmOutFor=null; const CM_PAD=3;
-function cmPack(pk){
-  if(!pk||!pk.laidOut) return;
-  if(cmOutFor!==pk){const P=(u,a)=>pk.at[a]+pk.f*(u*S-pk.lo[a]), circ=[];
-    for(const k in IN_COMPACT) IN_COMPACT[k].forEach(c=>circ.push([P(c[0]+.5,0),P(c[1]+.5,1),k]));
-    const O=outNames(pk,circ,.5*S*pk.f+1); if(!O) return;
-    const IN={}, t=el("text",{class:"in",style:`font-size:${PACK_IN.fs}px`},inSvg), h=PACK_IN.fs*.75, hs=pk.f*S/2;
-    for(const k in pk.lb){if(pk.lb[k].out) continue; const rs=LS_RECTS[k]; if(!rs) continue;
-      const c=rs.map((r,i)=>{const m=(pk.st[k][i].match(/-?[\d.]+/g)||[]).map(Number);   // translate(x,y) scale(f)
-        return [m[0]+m[2]*(r.x.baseVal.value+S/2),m[1]+m[2]*(r.y.baseVal.value+S/2)]});
-      const x=c.reduce((a,p)=>a+p[0],0)/c.length, y=c.reduce((a,p)=>a+p[1],0)/c.length;
-      t.textContent=PACK_IN.name(k); const w=t.getComputedTextLength()+2*CM_PAD, hh=h+2*CM_PAD;
-      const on=(u,v)=>c.some(p=>Math.abs(p[0]-u)<=hs+.5&&Math.abs(p[1]-v)<=hs+.5);   // on one of its squares
-      let fits=true;   // every point of the padded box, on a 2px grid
-      for(let u=x-w/2;u<=x+w/2+1e-6&&fits;u+=Math.min(2,w)) for(let v=y-hh/2;v<=y+hh/2+1e-6;v+=Math.min(2,hh)) if(!on(u,v)){fits=false; break}
-      if(fits) IN[k]=[x,y]}
-    t.remove(); CM_OUT=O; CM_IN=IN; cmOutFor=pk}
-  for(const k in PACK_IN.PL){const e=PACK_IN.PL[k], o=CM_IN[k]?{x:CM_IN[k][0],y:CM_IN[k][1],a:"middle"}:CM_OUT[k]; if(!o) continue;
-    e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.toggle("in",!!CM_IN[k]);
-    e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
-}
-function stPack(pk){
-  const O=pk&&pk.laidOut&&stOut(pk); if(!O) return;
-  for(const k in O){const e=PACK_IN.PL[k], o=O[k];
-    e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.classList.remove("in");
-    e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}
+  const free=q=>done.every(n=>q[0]>n[2]+4||n[0]>q[2]+4||q[1]>n[3]+2||n[1]>q[3]+2);
+  for(const k of Object.keys(cand).sort((p,q)=>cand[p].length-cand[q].length)){const o=cand[k].find(o=>free(o.q))||spare[k]; OUT[k]=o; done.push(o.q)}
+  return RS_OUT_YEAR[year]=OUT;
 }
 // active: Rajya Sabha on show. Its circles always wait at their Compact spots (shrunk when not on show), so they grow
 // and shrink in place. Merge / split (owner, 2026-10-11): on Rajya Sabha every square / dot of the other India views
@@ -1904,8 +1840,7 @@ function rsPack(pk,active){
     // no Rajya Sabha seat that year (Ladakh, the UTs; J&K + Ladakh share one region): no name, as on the Map
     const has=!on||(on[k]||k==="TS"&&!("TS" in on)&&on.AP||[]).some(Boolean);   // undivided Andhra covers Telangana
     e.g.style.opacity=has?"":0;
-    if(on&&RS_OUT[k]){const o=RS_OUT[k]; e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`;
-      e.t.classList.remove("in"); e.t.setAttribute("text-anchor",o.a); e.r.style.display="none"}}
+    if(on&&RS_OUT[k]){const o=RS_OUT[k]; e.g.style.transform=`translate(${o.x.toFixed(2)}px,${o.y.toFixed(2)}px)`; e.t.textContent=o.t}}
 }
 
 // ---------- India: one map for Lok Sabha, Rajya Sabha and States ----------
@@ -1964,7 +1899,7 @@ function renderIn(animate,sync){
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
   placeOth();
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
-  applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha"); stPack(race==="states"&&!cm&&pk); cmPack(race==="states"&&cm&&pk);
+  applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha");
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
