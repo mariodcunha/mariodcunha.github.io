@@ -140,10 +140,10 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .bar .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t,#proj-house .hatch-t{background:#f2cf4a}   /* toss-up / undecided: solid yellow on every bar, House too (owner, 2026-10-23) */
 .legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
-/* USA and India: the year and what's on show, centred over the bar's halfway mark, in the selected toggles' gray */
+/* USA and India: the year and what's on show, centred over the bar's halfway mark, in a lighter gray */
 #us-tally,#in-tally{position:relative}
 .cand.mid{position:absolute;left:50%;bottom:0;transform:translateX(-50%);max-width:46%;width:max-content;text-align:center}
-.cand.mid b,.cand.mid span{color:var(--sel)} .tally.pct .cand.mid b::after{content:none}
+.cand.mid b,.cand.mid span{color:#8D9096} .tally.pct .cand.mid b::after{content:none}
 #mini .cand.mid{display:none}
 @media (max-width:640px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
 .bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px #fff;transition:left .8s var(--ease)}

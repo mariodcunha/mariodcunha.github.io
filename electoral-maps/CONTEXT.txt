@@ -2066,6 +2066,8 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  India names (owner, 2026-11-07, local): Lok Sabha toggle "Seat share" is now "Seats" (it
      shows the count, not a percentage); States keeps "Seat share"; "Chief Minister" is now
      "Chief Ministers". Chief Minister's Others reads "Others N (X%)", or "Others N (<1%)".
+  -  Tally centre colour (owner, 2026-11-07, local): the year and label over the bar are now
+     #8D9096, lighter than --sel, on USA and India.
 
 STATUS / NEXT
 -------------
@@ -2106,7 +2108,8 @@ STATUS / NEXT
   commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: India tallies, Others and notes below
   the bar, bar gaps, Seat share as percentages on States, Govern notes, the grey Chief Ministers
-  bar, the India tally centre, and the India toggle names. Keep the commit rule.
+  bar, the India tally centre, and the India toggle names; then the lighter tally centre (#8D9096,
+  USA and India). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
