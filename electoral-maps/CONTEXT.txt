@@ -2045,7 +2045,7 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      then a second line. Lok Sabha Vote share: always the green's start. One exception, the owner's pick: Lok Sabha
      2019 seat share sits at the green's right end.
      Chief Minister on web: "Others N%" at the green's right end (placeOth, absolute under
-     .under.split); phones keep it between the two notes. It reads "Others X% (N)" (X% of population,
+     .under.split); phones too (see India States labels on phones). It reads "Others X% (N)" (X% of population,
      N states run by others); under 1%: "Others <1% (N)".
   -  India notes and States share (owner, 2026-11-07, local): "N elected seats" (Rajya Sabha)
      and "N MLAs in N assemblies" (States) are gone. States "Seats" is now "Seat share": top
@@ -2101,10 +2101,12 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      number on the next line, on every India view (set in renderIn, before placeOth).
      Lok Sabha Vote share on phones: both lines right-aligned, ending with the green (placeOth).
      Rajya Sabha on phones: both lines left-aligned, starting with the green (placeOth).
-  -  India States labels on phones (owner, 2026-11-07, local): Seat share: Oth. starts at the green's
-     left end in every year (placeOth). Where the Congress line reaches within 2px of the green, Oth.
-     drops one line so the two don't touch (at 375px wide: 2014, 2017, 2022, 2026). Chief Ministers:
-     "Govern X%" / "of population" on two lines, and "Oth. X%" / "(N)" between them (renderST, renderIn).
+  -  India States labels on phones (owner, 2026-11-07, local): Seat share: both lines of Oth. are
+     right-aligned, ending with the green in every year (placeOth). If the Congress line comes within
+     2px of Oth., it drops one line so the two don't touch. Chief Ministers: one line each, "Govern X%"
+     and "Oth. X%" (no "of population", no state count); Oth. ends with the green too (placeOth, absolute
+     under .under.split). Within 2px of the left note it starts at the green's right end instead (2017 at
+     375px wide stays ending with the green, 3px from the note); within 8px of the right note it starts with the green. Always the same line as the notes.
      Web Chief Ministers Others now reads "Others X% (N)".
 
 STATUS / NEXT
@@ -2153,6 +2155,9 @@ STATUS / NEXT
   sharp Chief Ministers blocks, India names on hover (web) or tap (phones) with the USA's fade, Play on
   India, the phone-width India map (20px margins), the tighter top gap, and Oth. on phones. Known: on phones, Rajya Sabha's Trip. touches
   a circle in every year. Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: India States labels on phones (Seat share Oth.
+  ending with the green; Chief Ministers one line each, Oth. ending with the green, 2px rule against
+  the left note). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
