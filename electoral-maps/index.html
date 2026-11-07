@@ -1574,12 +1574,12 @@ function renderST(animate){
   document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${f(N[0])}</span><span><i> · </i>Allies ${f(N[1])}</span>`;
   document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(N[4])}</span><span><i> · </i>Allies ${f(N[3])}</span>`;
   // Chief Minister view: population share by side, using Lok Sabha seats as the population measure
-  const pct=v=>Math.round(v/543*100), tl=document.getElementById("in-total");
+  const pct=v=>Math.round(v/543*100), tl=document.getElementById("in-total"), gov=v=>`Govern ${pct(v)}%${narrow.matches?"\n":" "}of population`;   // phones: two lines (owner, 2026-11-07)
   document.getElementById("in-under").classList.toggle("split",cm);
   tl.style.color=cm?"var(--inc)":"var(--muted)";
-  tl.textContent=cm?`Govern ${pct(L[3]+L[4])}% of population`:"";
-  document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${N[2]} (${pct(L[2])||"<1"}%)`:"";   // even a sliver gets its label
-  document.getElementById("in-total-r").textContent=cm?`Govern ${pct(L[0]+L[1])}% of population`:"";
+  tl.textContent=cm?gov(L[3]+L[4]):"";
+  document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
+  document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   document.querySelectorAll("#legend-states svg").forEach(g=>{const f=g.firstElementChild.getAttribute("fill");
     g.innerHTML=cm?`<rect width="14" height="14" fill="${f}"/>`:`<circle cx="7" cy="7" r="6.5" fill="${f}"/>`});
   document.querySelector("#legend-states .geo-note").hidden=cm;
@@ -1872,6 +1872,7 @@ function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth")
   const mark=$("in-need").style.opacity!=="0", c=(mark?.5009:.5)*W, half=mark?$("in-need").offsetWidth/2+pad:0, a=c-half, b=c+half;
   if(!mark&&inRace==="loksabha"){const ph=narrow.matches; o.style.textAlign=ph?"right":"";   // phones: flush with the green's right end (owner, 2026-11-07)
     o.style.left=Math.max(lo,Math.min(ph?gR-tw:gL,hi-tw))+"px"; return}
+  if(inRace==="states"&&narrow.matches){o.style.textAlign="left"; o.style.left=Math.min(gL,hi-tw)+"px"; if(gL<lo-pad+2) o.style.top="17px"; return}   // Seat share on phones: always the green's left end, every year; a line lower when the Congress line reaches past it (owner, 2026-11-07)
   if(inRace==="rajyasabha"&&narrow.matches){o.style.textAlign="left"; o.style.left=Math.max(lo,Math.min(gL,hi-tw))+"px"; return}   // phones: flush with the green's left end (owner, 2026-11-07)
   const left=[gL,Math.min(gR,a)-tw], right=[gR-tw,Math.max(gL,b)], more=Math.min(gR,a)-gL>=gR-Math.max(gL,b);
   if(inRace==="loksabha"&&inYear===2019) left.reverse();   // the owner's pick: this one reads better at the green's right end
@@ -1909,7 +1910,7 @@ function renderIn(animate,sync){
   if(!cm){const two=id=>{const c=document.getElementById(id).children; return c[0].textContent+(narrow.matches?"\n":" · ")+c[1].lastChild.textContent}, tl=document.getElementById("in-total");
     document.getElementById("in-total-oth").textContent=inOth;
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
-  if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies
+  if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(" (","\n("):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies
   placeOth();
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,"all");
   applyPack(PACK_IN,pk,LS_GRP); rsPack(pk,race==="rajyasabha");
