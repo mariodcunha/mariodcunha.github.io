@@ -2141,6 +2141,26 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      No edge contact anywhere. Checked all 30 House / Governors / Senate All race-years plus President at
      desktop and 375px, and Governors Margins: 435 squares, no overlaps, no name on a square / circle /
      name, none clipped; President unchanged; Seats <-> All morph works.
+  -  Senate Seats / Representation <-> other maps by way of Senate All (owner, 2026-11-07, local): setUS is
+     now a wrapper over setUSNow(race, animate, year, mapOnly). Going between Senate Seats or
+     Representation and President, House or Governors (animated), it first renders the race picked in
+     full (tally, legend, buttons change at once), then the map alone to Senate All (mapOnly: stops after
+     the map, leaves the bar's flat class alone): leaving Seats the tiles morph into the circles on each
+     block (senMorph, 800ms), leaving Representation the circles shrink back onto their blocks (450ms).
+     Then, ms+30 later, the race picked again, so the map moves on (usStage cancels a stale step). Coming
+     to Seats / Representation: the same in reverse. Off Senate, House and Governors circles shrink at
+     their tight spot (translate + scale(0)), not at the President map's spot. Checked in the browser:
+     Rep <-> House, Seats <-> President, Seats -> Governors pass through All, final states right, no errors.
+     Representation changed the same day (owner: "something off ... esp with Alaska"): it no longer goes
+     by way of All; only Seats does. repSwap / repMorph: President or House <-> Representation, each
+     state's two seat squares (the square on each Senate All circle's cell, President or tight; else the
+     nearest) morph straight into its two big circles (x / y / size / rx / fill, 800ms, senMorph's
+     easing), the other squares shrinking away as usual; back, the circles turn into those squares.
+     Governors <-> Representation: every square of the block morphs, the left half (sorted by x) into
+     the left circle, the right half into the right; back, the circles break up into the block. Stand-in
+     rects on a top layer (.ghosts); #map-us.rmorph hides the real circles, and on the way back the
+     destination squares get opacity 0, until the stand-ins land (rmClear). setUS clears any morph in
+     progress. Checked all six directions plus an interrupted one: stand-ins removed, nothing left hidden.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2202,6 +2222,8 @@ STATUS / NEXT
   Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: the tight full-width layout (Figma 3570:10495) for
   House, Governors and Senate All in every year, with the older-census seats re-placed. Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: Senate Seats <-> other maps by way of Senate All, and
+  the direct Representation morphs (seat squares / Governors blocks <-> the big circles). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
