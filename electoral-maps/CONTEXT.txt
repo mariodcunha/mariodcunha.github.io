@@ -2233,6 +2233,11 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      NY smallest). Year labels sit 3px above the squares on screen at any scale (was .15 square, which
      touched at small scales). Checked all 50 in Results and Margins: start on the real block, inside the
      map, no overlaps, no label on squares or another label; President re-checked.
+     SWITCHED OFF (owner, 2026-11-07, local): the state click on President and Governors is disabled for now,
+     code kept for later. One switch in index.html: const OVER_ON=false (just above the click listeners, after
+     overExit). With it off no state gets the click listener or the .fclick pointer cursor, so the view can't
+     open; everything else (overEnter / overExit / overPaint, OVER_SHAPE outlines, OVER_NAME, the setUS hook,
+     the .focus / .fk / .over CSS) stays and is inert. To bring it back: set OVER_ON=true (web only, as before).
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2306,6 +2311,8 @@ STATUS / NEXT
   state: its five President years in a row over its grey us-atlas outline, full name in the tally centre). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: the same view on the web Governors map (ten years,
   2008-2026, solid governor blocks). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: the state click switched OFF (OVER_ON=false), code kept
+  for later. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

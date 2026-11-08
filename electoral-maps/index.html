@@ -1285,7 +1285,10 @@ function overExit(animate){
   if(o.back) o.back.style.opacity=0;
   setTimeout(done,620);
 }
-OVER_STATES.forEach(k=>{GST[k].classList.add("fclick");
+// OFF for now (owner, 2026-11-07): the state-over-time view is kept but not reachable; set OVER_ON=true to bring the
+// clicks (and the pointer cursor) back on President and Governors
+const OVER_ON=false;
+if(OVER_ON) OVER_STATES.forEach(k=>{GST[k].classList.add("fclick");
   GST[k].addEventListener("click",e=>{if((usRace==="president"||usRace==="governors")&&!over&&!narrow.matches&&(usRace==="president"||HSQ[k])){e.stopPropagation(); overEnter(k,usRace)}})});   // web only (owner, 2026-11-07)
 usSvg.addEventListener("click",e=>{if(over){e.stopPropagation(); overExit(true)}},true);   // capture: before the phone names toggle
 // Senate Seats works the same way as Representation (owner, 2026-11-07): the seat squares / Governors block halves morph
