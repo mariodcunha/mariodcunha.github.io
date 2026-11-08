@@ -2161,6 +2161,19 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      rects on a top layer (.ghosts); #map-us.rmorph hides the real circles, and on the way back the
      destination squares get opacity 0, until the stand-ins land (rmClear). setUS clears any morph in
      progress. Checked all six directions plus an interrupted one: stand-ins removed, nothing left hidden.
+     Seats the same way (owner, same day): Senate Seats <-> President / House / Governors no longer goes by
+     way of All either. repSwap's shapes() gives Seats' tile halves (ALT[k][j].o, the half's fill, or
+     #efeeea when empty) instead of circles; seat squares / Governors block halves morph straight into the
+     two halves and back. .rmorph hides the tile layer too (no transition); rmClear shows it at once where
+     the stand-ins land (its usual .2s-delayed fade would leave a blank moment). setUS is now just: clear
+     any morph, repSwap for Seats / Representation <-> the three maps, else setUSNow (mapOnly unused).
+     Seats <-> All / Representation inside Senate keep senMorph. Checked all six Seats directions, Seats
+     <-> All, Seats -> Rep, Rep -> Governors: tiles show on landing, nothing left hidden, no errors.
+     Governors grill (owner, same day): the stand-ins' white lines (stroke) had stayed on until they
+     landed on the Governors blocks, which have none, then vanished at once. sqBox marks Governors squares
+     grill:false; repMorph fades stroke-opacity out over the first 40% on the way into Governors and in
+     over the last 40% on the way out, so the two halves blend into one solid block. President / House
+     morphs keep their lines throughout.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2224,6 +2237,8 @@ STATUS / NEXT
   House, Governors and Senate All in every year, with the older-census seats re-placed. Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: Senate Seats <-> other maps by way of Senate All, and
   the direct Representation morphs (seat squares / Governors blocks <-> the big circles). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: Senate Seats morphing straight to / from President, House
+  and Governors (no stop at All), and the Governors grill fading early. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

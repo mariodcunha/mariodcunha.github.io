@@ -204,7 +204,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us .alt-grid text{fill:#a3a19a;font-weight:500;transition:fill .45s var(--ease),opacity .3s}
 /* Seats <-> circles morph (senMorph): the tile halves stay on show and travel; the circles wait hidden, the codes too */
 #map-us.morph .alt-grid{opacity:1;transition:none} #map-us.morph .seat{opacity:0} #map-us.morph .alt-grid text{opacity:0;transition:none}
-#map-us.rmorph .seat{opacity:0} #map-us .ghosts rect{stroke:var(--bg);stroke-width:1;pointer-events:none}   /* Representation morph (repMorph) */
+#map-us.rmorph .seat,#map-us.rmorph .alt-grid{opacity:0;transition:none} #map-us .ghosts rect{stroke:var(--bg);stroke-width:1;pointer-events:none}   /* Representation morph (repMorph) */
 #map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
@@ -1165,7 +1165,7 @@ const cssFill=v=>{const h=/#h([drtn])/.exec(v||""); if(h) v=HATCH_SOLID[h[1]]; c
   return m?getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim():v||getComputedStyle(document.documentElement).getPropertyValue("--house").trim()};
 const sqXY=e=>{const t=/scale\(0\)/.test(e.style.transform)?new DOMMatrix():new DOMMatrix(e.style.transform||"none"); return [e.x.baseVal.value+t.e,e.y.baseVal.value+t.f]};
 function sqBox(e,k){const g=new DOMMatrix(GST[k].style.transform||"none"), [x,y]=sqXY(e), p=g.transformPoint({x,y}), s=Math.hypot(g.a,g.b);
-  return {x:p.x,y:p.y,width:S*s,height:S*s,rx:0,fill:cssFill(e.style.fill),e}}
+  return {x:p.x,y:p.y,width:S*s,height:S*s,rx:0,fill:cssFill(e.style.fill),e,grill:!usSvg.classList.contains("governors")}}   // Governors blocks show no white lines
 // the squares that become state k's circles in this race: [{j, box}] (one-square states: that square, twice)
 function repSquares(k,race){
   const sq=[...(HSQ[k]||[]),...ESQ[k]].filter(e=>!e.classList.contains("gone"));
@@ -1176,42 +1176,45 @@ function repSquares(k,race){
     return {j,...sqBox(sq.reduce((a,b)=>d(b)<d(a)?b:a),k)}});   // the square on the circle's cell, else the nearest
 }
 let rmRun=0, rmGhosts=[], rmHidden=[];
-function rmClear(){rmGhosts.forEach(g=>g.remove()); rmGhosts=[]; rmHidden.forEach(e=>e.style.opacity=""); rmHidden=[]; usSvg.classList.remove("rmorph")}
+function rmClear(){rmGhosts.forEach(g=>g.remove()); rmGhosts=[]; rmHidden.forEach(e=>e.style.opacity=""); rmHidden=[];
+  // Seats' tiles come back at once where the stand-ins land (their usual fade-in would leave a blank moment)
+  const grid=usSvg.querySelector(".alt-grid"); if(grid&&usSvg.classList.contains("rmorph")){grid.style.transition="none";
+    usSvg.classList.remove("rmorph"); grid.getBoundingClientRect(); grid.style.transition=""} else usSvg.classList.remove("rmorph")}
 function repMorph(pairs){
   const run=++rmRun, layer=usSvg.querySelector(".ghosts")||el("g",{class:"ghosts","aria-hidden":"true"},usSvg); usSvg.appendChild(layer);
   const px=g=>({x:g.x+"px",y:g.y+"px",width:g.width+"px",height:g.height+"px",rx:g.rx+"px",ry:g.rx+"px",fill:g.fill});
   const opt={duration:senMorphMs,easing:"cubic-bezier(.65,0,.35,1)",fill:"forwards"};
   usSvg.classList.add("rmorph");
-  const anims=pairs.map(({from,to})=>{const r=el("rect",{},layer); rmGhosts.push(r); return r.animate([px(from),px(to)],opt)});
+  // white lines between squares: a Governors block has none, so they fade out over the first 40% on the way in and come in
+  // over the last 40% on the way out (owner, 2026-11-07), and the two halves blend into one solid block
+  const anims=pairs.map(({from,to})=>{const r=el("rect",{},layer); rmGhosts.push(r);
+    const a=from.grill===false?0:1, b=to.grill===false?0:1;
+    return r.animate(a===b?[{...px(from),strokeOpacity:a},{...px(to),strokeOpacity:b}]
+      :[{...px(from),strokeOpacity:a},{strokeOpacity:a,offset:a?0:.6},{strokeOpacity:b,offset:a?.4:1},{...px(to),strokeOpacity:b}],opt)});
   Promise.all(anims.map(a=>a.finished)).then(()=>{if(run===rmRun) rmClear()}).catch(()=>{});
 }
 function repSwap(race,year){
-  const toRep=race==="senate", base=toRep?usRace:race;
-  const circles=k=>[0,1].map(j=>({...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)}));
-  const keys=Object.keys(SEAT).filter(k=>SEAT[k].length);
-  if(toRep){const src=Object.fromEntries(keys.map(k=>[k,repSquares(k,base)]));
+  const toSen=race==="senate", base=toSen?usRace:race, mode=toSen?senMode:senPrev;
+  // the Senate shapes: Representation's circles, or Seats' tile halves (ALT, not on: the empty tile colour)
+  const shapes=k=>[0,1].map(j=>mode==="seats"?{...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill):"#efeeea"}
+    :{...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)});
+  const keys=Object.keys(SEAT).filter(k=>SEAT[k].length&&ALT[k]);
+  if(toSen){const src=Object.fromEntries(keys.map(k=>[k,repSquares(k,base)]));
     setUSNow(race,true,year);
-    repMorph(keys.flatMap(k=>{const c=circles(k); return src[k].map(s=>({from:s,to:c[s.j]}))}))}
-  else{const c0=Object.fromEntries(keys.map(k=>[k,circles(k)]));
+    repMorph(keys.flatMap(k=>{const c=shapes(k); return src[k].map(s=>({from:s,to:c[s.j]}))}))}
+  else{const c0=Object.fromEntries(keys.map(k=>[k,shapes(k)]));
     setUSNow(race,true,year);
     const pairs=keys.flatMap(k=>repSquares(k,base).map(d=>{d.e.style.opacity=0; rmHidden.push(d.e); return {from:c0[k][d.j],to:d}}));
     repMorph(pairs)}
 }
-// Senate Seats <-> President, House, Governors (owner, 2026-11-07): the map goes by way of Senate All. Leaving: the tiles
-// turn into the circles on each block (senMorph); then the map moves on to the race picked. Arriving: the same, the other
-// way round. The tally, legend and buttons show the race picked from the start; only the map takes the two steps
-// (setUSNow's mapOnly).
+// Senate Seats works the same way as Representation (owner, 2026-11-07): the seat squares / Governors block halves morph
+// straight into the state's two tile halves and back. (Senate All in between was tried first and dropped.) The tally,
+// legend and buttons show the race picked from the start. setUSNow's mapOnly is unused now.
 let usStage=0;
 function setUS(race,animate,year=usYear(race)){
-  const run=++usStage, base=r=>["president","house","governors"].includes(r); rmClear(); rmRun++;
-  if(animate&&!reduce&&(usRace==="senate"&&senPrev==="power"&&base(race)||race==="senate"&&senMode==="power"&&base(usRace))) return repSwap(race,year);
-  const fromSen=usRace==="senate"&&race!=="senate"&&senPrev==="seats", toSen=race==="senate"&&usRace&&usRace!=="senate"&&senMode==="seats";
-  if(!animate||reduce||!(fromSen||toSen)) return setUSNow(race,animate,year);
-  const prev=senPrev, sm=senMode, ms=senMorphMs;
-  setUSNow(race,true,year);                       // everything for the race picked
-  senPrev=fromSen?prev:null; senMode="all";       // then the map alone to Senate All (leaving Seats: the tiles morph)
-  setUSNow("senate",true,year,true); senMode=sm;
-  setTimeout(()=>{if(run===usStage) setUSNow(race,true,year)},ms+30);   // and on to the race picked
+  ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
+  if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
+  return setUSNow(race,animate,year);
 }
 function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   const panel=document.getElementById("panel-us"), diff=CENSUS_DIFF[censusOf(year)];
