@@ -2200,7 +2200,9 @@ function playSteps(){
 function playGo({race,mode,year,sen,ls,st}){
   if(countryOf(race)==="india"){const view=st&&st!==stMode;   // a new view morphs at once; a new year wipes down the map
     if(ls) lsMode=ls; if(st) stMode=st; inYear=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
-  colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)}
+  // a new race: show() alone draws it in that year (and moves the stepper). Calling stepOnPick too re-rendered the map
+  // straight away, which cut off the Senate Seats / Representation morphs mid-way (owner, 2026-11-07)
+  colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); else stepOnPick(year)}
 // the step that matches the view on show (House has no margins; of the Senate views only Seats does)
 const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
   playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&

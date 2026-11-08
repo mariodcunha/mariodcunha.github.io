@@ -2185,6 +2185,10 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
   -  Phone Senate Seats text (owner, 2026-11-07, local): tile codes and leads 19 -> 17.75 SVG units, about
      6.1px -> 5.7px on a 375px phone. Every lead still fits its half. Desktop unchanged.
      Phone tile leads drop the "+" (paintAlt): "18", ">20", "<3". Desktop and the President / Governors name leads keep it.
+  -  Play and the Senate morphs (owner, 2026-11-07, local): on a new race playGo called show() and then
+     stepOnPick(year), a second render that cleared repMorph's stand-ins at once, so House <-> Senate Seats
+     etc. jumped in the tour (clicking a tab was fine). Now a new race is show() alone (usYearPick is set
+     first, and show() moves the stepper); stepOnPick only for a new year in the same race.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2252,6 +2256,8 @@ STATUS / NEXT
   and Governors (no stop at All), and the Governors grill fading early. Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: phone Senate = Seats with Results / Margins (no view
   toggle; "Senate results" / "Senate margins"), tile text 5.7px, phone tile leads without "+". Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: Play keeps the Senate Seats / Representation morphs
+  (one render per race change). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
