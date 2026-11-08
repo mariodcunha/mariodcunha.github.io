@@ -2189,6 +2189,41 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      stepOnPick(year), a second render that cleared repMorph's stand-ins at once, so House <-> Senate Seats
      etc. jumped in the tour (clicking a tab was fine). Now a new race is show() alone (usYearPick is set
      first, and show() moves the stepper); stepOnPick only for a new year in the same race.
+  -  A state over time, California (owner, 2026-11-07, local): on President, any year, click / tap California
+     (OVER_STATES = ["CA"]; others later). .focus shrinks every state away (.sq scale(0)) and hides the names;
+     .fk hides CA's own squares at once. A layer .over draws CA's block for each PRES_YEARS year (overCells:
+     that census's House squares + electors, ESQ_2000 spots, colours by marginFill, so Results or Margins),
+     all at the map's scale, in one row centred in the viewBox, oldest left, 2 squares apart (union bbox of
+     all years). The clicked year's block starts exactly on the real CA and slides to its slot; earlier
+     years slide in from the left, later from the right (35% of the map's width, fading in), .6s. Each block's
+     label = the year where the state name goes (top-left square, outside), name type: --sel, 12 desktop /
+     18 phone (16 with a lead), "2024>20" in Margins (marginTag). Labels always show (no hover / tap rule).
+     Leaving: click / tap the map again (capture listener, so the phone names toggle doesn't fire), or any
+     other race / year change, plays it backwards and restores the map (.6s). Results / Margins recolours
+     the blocks in place (setUS -> overPaint). CA was blue every year, so Results is all one blue. Checked
+     2008 / 2016 / 2024, both modes, desktop and 375px: start matches the real CA square for square, no
+     overlap, nothing else visible, clean exit, no errors.
+     Web only (owner, same day): on phones (narrow) the click does nothing and California shows no pointer;
+     going narrow while it is open takes the map back (the narrow listener re-renders).
+     Then (owner, same day): the row sits at the top of the map (24 units below the viewBox top, room for the
+     year labels), not centred. Behind it, centred on the map, a grey (--chip, the inactive toggle's grey)
+     outline of the state (OVER_SHAPE: a simplified CA outline typed as [lon, lat] pairs, equirectangular,
+     x squeezed by cos of the mid latitude; overShape), 1.25x the blocks' height, kept inside the map; it fades
+     in and out with the view. The tally's centre year reads the state's full name ("California") while the
+     view is open (overTitle); the label under it still follows the toggles; the year comes back on exit.
+     Adjusted (owner, same day, screenshot): the row is centred in the map again (was too high), and the outline
+     is 3/4 of the map's height, centred on the map, behind the row.
+     Every state (owner, same day), web only: OVER_STATES = all 51 (DC too). Outlines now come from us-atlas
+     3.0.1 states-albers-10m.json (US Census boundaries, Albers USA; fetched from jsdelivr, processed in a
+     scratch script, not committed): outer rings only, pieces under 2% of the largest dropped (HI keeps 6
+     islands, MI both peninsulas), each state scaled so its longer side is 1000, Douglas-Peucker at 6 units,
+     embedded as OVER_SHAPE (~24 KB; "x y ..." rings split by "|"). The hand-typed CA outline is gone.
+     overShape fits each outline in 3/4 of the map's height and 90% of its width. A row too wide for the map
+     is drawn smaller (a = min(map scale, fit)); only NY (0.97) and FL (0.82) shrink; the clicked block still
+     starts at the map's scale and resizes as it slides. Centre title: OVER_NAME (US_FULL, but New York,
+     Wisconsin, District of Columbia). Checked all 51 in Results and Margins at 1100px: blocks and outline
+     inside the map, no overlapping blocks, no label on squares or another label, title clear of the
+     tallies. Known: the palest margin shades are low-contrast on the grey outline.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2258,6 +2293,8 @@ STATUS / NEXT
   toggle; "Senate results" / "Senate margins"), tile text 5.7px, phone tile leads without "+". Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: Play keeps the Senate Seats / Representation morphs
   (one render per race change). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: a state over time on the web President map (click any
+  state: its five President years in a row over its grey us-atlas outline, full name in the tally centre). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
