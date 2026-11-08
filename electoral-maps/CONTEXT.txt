@@ -2174,6 +2174,17 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      grill:false; repMorph fades stroke-opacity out over the first 40% on the way into Governors and in
      over the last 40% on the way out, so the two halves blend into one solid block. President / House
      morphs keep their lines throughout.
+  -  Phone Senate = Seats with Results / Margins (owner, 2026-11-07, local): on phones (narrow) Senate is
+     always Seats (setUS sets senMode "seats"), #sen-view (All / Representation / Seats) is hidden, and
+     #margin-view shows instead. marginsOn no longer excludes Senate on phones, so tiles take the margin
+     shades and each half's lead (they fit at 375px), with the margin legend and note. Centre label on
+     phones: "Senate results" / "Senate margins" (desktop keeps "Senate seats results / margins"). The
+     phone tour's Senate is Seats results then Seats margins, every year (no All / Representation).
+     Replaces the earlier "Phones: Senate has no toggle and always shows Results" and "Phones skip Senate
+     Margins". Desktop unchanged.
+  -  Phone Senate Seats text (owner, 2026-11-07, local): tile codes and leads 19 -> 17.75 SVG units, about
+     6.1px -> 5.7px on a 375px phone. Every lead still fits its half. Desktop unchanged.
+     Phone tile leads drop the "+" (paintAlt): "18", ">20", "<3". Desktop and the President / Governors name leads keep it.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2239,6 +2250,8 @@ STATUS / NEXT
   the direct Representation morphs (seat squares / Governors blocks <-> the big circles). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: Senate Seats morphing straight to / from President, House
   and Governors (no stop at All), and the Governors grill fading early. Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: phone Senate = Seats with Results / Margins (no view
+  toggle; "Senate results" / "Senate margins"), tile text 5.7px, phone tile leads without "+". Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

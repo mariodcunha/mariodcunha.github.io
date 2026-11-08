@@ -293,7 +293,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   /* the blocks reach 20px from each screen edge: 986 of the viewBox's 1045.8 units are blocks, starting 30 in */
   #map-india{margin-top:-6.3%;width:calc((100vw - 40px)*1.0606);margin-left:calc(4px - (100vw - 40px)*.0304)}
   #map-us .state text{font-size:18px}
-  #map-us .alt-grid text{font-size:19px!important}
+  #map-us .alt-grid text{font-size:17.75px!important}   /* about 5.7px on a 375px phone (owner, 2026-11-07; was 19) */
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
   #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
   #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
@@ -510,7 +510,7 @@ const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[base,
 let colorMode="results";
 const narrow=matchMedia("(max-width:640px)");
 const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
-const marginsOn=race=>colorMode==="margins"&&!(race==="senate"&&narrow.matches);
+const marginsOn=race=>colorMode==="margins";   // phones too, Senate included (owner, 2026-11-07)
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
 const marginFill=(year,key,w,table=MARGINS)=>{const m=table[year]?.[key]; return !marginsOn()||m==null||!SHADE[w]?PARTY_FILL[w]:shadeOf(w,m)};   // independents and 2026 stay flat
 // Margins on the map (owner, 2026-11-06): a state's name or a Senate tile carries its lead in points
@@ -743,7 +743,7 @@ function paintAlt(year){
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
     const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
     if(t) t.setAttribute("class",cls);
-    b.setAttribute("class",cls); b.textContent=f?marginTag(m):""});
+    b.setAttribute("class",cls); b.textContent=f?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
 // Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
@@ -1212,6 +1212,7 @@ function repSwap(race,year){
 // legend and buttons show the race picked from the start. setUSNow's mapOnly is unused now.
 let usStage=0;
 function setUS(race,animate,year=usYear(race)){
+  if(narrow.matches) senMode="seats";   // phones (owner, 2026-11-07): Senate is Seats only, with Results / Margins
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
   if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
   return setUSNow(race,animate,year);
@@ -1367,14 +1368,14 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.getElementById("g-note").textContent=race==="governors"&&marginsOn()&&GOV_MARGINS[year]?GOV_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
   document.getElementById("sen-note").textContent=race==="senate"&&sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]?SEN_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
   // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
-  document.getElementById("margin-view").hidden=!(race==="president"||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]&&!narrow.matches);
+  document.getElementById("margin-view").hidden=!(race==="president"||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]);
   const mOn={president:marginsOn(),governors:marginsOn()&&GOV_MARGINS[year],senate:sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]};
   for(const r in mOn) document.getElementById("legend-"+r).classList.toggle("margins",!!mOn[r]);
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
   document.getElementById("mid-label").textContent=race==="president"?"President "+rm(marginsOn()):race==="house"?"House results":
-    race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate seats":"Senate seats "+rm(marginsOn("senate")&&SEN_MARGINS[year])):"Senate representation";
+    race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
   document.getElementById("leg-vacant").hidden=!c.v||y26;
   document.getElementById("house-keys").hidden=y26;   // 2026: projLegend's called / leading keys instead
@@ -1388,7 +1389,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
   document.getElementById("pres-view").hidden=true;   // USA: Compact only
   // 2026: legend for the races on the ballot
-  document.getElementById("sen-view").hidden=race!=="senate";
+  document.getElementById("sen-view").hidden=race!=="senate"||narrow.matches;   // phones: Seats only, no view toggle
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):""});
     panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
@@ -2088,7 +2089,7 @@ function show(race,animate){
   // year stepper for every race (Governors: 2024 only for now); seat/vote share only for Lok Sabha
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=race!=="loksabha";
-  document.getElementById("sen-view").hidden=race!=="senate";
+  document.getElementById("sen-view").hidden=race!=="senate"||narrow.matches;
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=race!=="states";
@@ -2191,8 +2192,8 @@ function playSteps(){
     return list}
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
   pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS);
-  pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power"); pass("senate","results",US_YEARS,"seats");
-  if(!narrow.matches) pass("senate","margins",US_YEARS,"seats");
+  if(!narrow.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
+  pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
   pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
   return list;
 }
@@ -2200,10 +2201,10 @@ function playGo({race,mode,year,sen,ls,st}){
   if(countryOf(race)==="india"){const view=st&&st!==stMode;   // a new view morphs at once; a new year wipes down the map
     if(ls) lsMode=ls; if(st) stMode=st; inYear=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
   colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); stepOnPick(year)}
-// the step that matches the view on show (House has no margins; only Senate Seats does, and not on phones)
+// the step that matches the view on show (House has no margins; of the Senate views only Seats does)
 const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
   playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
-  (s.race==="house"||s.race==="senate"&&(senMode!=="seats"||narrow.matches)||s.mode===colorMode));
+  (s.race==="house"||s.race==="senate"&&senMode!=="seats"||s.mode===colorMode));
 async function startPlay(){
   playing=true; renderPlay(); if(countryOf(current)==="usa") senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);
   for(;;){await playWait(playStep); if(++playAt>=playList.length) break; playGo(playList[playAt])}
