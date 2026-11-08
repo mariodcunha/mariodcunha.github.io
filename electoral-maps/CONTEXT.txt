@@ -2224,6 +2224,15 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      Wisconsin, District of Columbia). Checked all 51 in Results and Margins at 1100px: blocks and outline
      inside the map, no overlapping blocks, no label on squares or another label, title clear of the
      tallies. Known: the palest margin shades are low-contrast on the grey outline.
+     Governors too (owner, same day), web only: click a state on Governors for its ten years, 2008-2026
+     (overYears: US_YEARS; President keeps PRES_YEARS). overCells(k, y, race): Governors = that census's House
+     squares at their tight cells (TIGHT_POS), coloured as setUSNow paints them (marginFill with GOV_MARGINS;
+     2026 races up: the call via projOf), borders taking the fill (overFill, r._gov) so each block is one
+     shape; labels read GOV_MARGINS in Margins. over.race decides the toggles' recolour (setUS hook). DC has
+     no Governors block, so it does nothing there. With ten in a row most rows shrink (0.44-1.13; FL, CA,
+     NY smallest). Year labels sit 3px above the squares on screen at any scale (was .15 square, which
+     touched at small scales). Checked all 50 in Results and Margins: start on the real block, inside the
+     map, no overlaps, no label on squares or another label; President re-checked.
      H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
      kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
      PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
@@ -2295,6 +2304,8 @@ STATUS / NEXT
   (one render per race change). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: a state over time on the web President map (click any
   state: its five President years in a row over its grey us-atlas outline, full name in the tally centre). Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: the same view on the web Governors map (ten years,
+  2008-2026, solid governor blocks). Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

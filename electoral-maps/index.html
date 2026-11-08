@@ -209,7 +209,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
    clicked state's own squares (its stand-in takes over); .over holds one block per year, with year labels always shown */
 #map-us.focus .state .sq{transform:scale(0)!important} #map-us.focus .plabels{opacity:0!important}
 #map-us .state.fk .sq{opacity:0;transition:none!important}
-@media (min-width:641px){#map-us.president .state.fclick .sq{cursor:pointer}} #map-us.focus{cursor:pointer}
+@media (min-width:641px){#map-us.president .state.fclick .sq,#map-us.governors .state.fclick .sq{cursor:pointer}} #map-us.focus{cursor:pointer}
 #map-us .over g{transition:transform .6s var(--ease),opacity .45s var(--ease)}
 #map-us .over rect{stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
 #map-us .over text{opacity:1!important} #map-us .over .over-back{fill:var(--chip);stroke:none;transition:opacity .45s var(--ease)} #map-us .ghosts rect{stroke:var(--bg);stroke-width:1;pointer-events:none}   /* Representation morph (repMorph) */
@@ -1233,35 +1233,45 @@ function overShape(k,cx,cy,maxH,maxW){   // the outline as an SVG path, as big a
   const lo=[0,1].map(i=>Math.min(...all.map(p=>p[i]))), hi=[0,1].map(i=>Math.max(...all.map(p=>p[i]))), f=Math.min(maxH/(hi[1]-lo[1]),maxW/(hi[0]-lo[0]));
   return rings.map(r=>"M"+r.map(([x,y])=>[(cx+(x-(lo[0]+hi[0])/2)*f).toFixed(1),(cy+(y-(lo[1]+hi[1])/2)*f).toFixed(1)].join(" ")).join("L")+"Z").join("")}
 let over=null;
-function overCells(k,y){   // [cell, fill] for state k's President squares in year y
-  const P=PRES[y], w=P.dem.split(" ").includes(k)?"d":"r", n=(CH_N[k]||0)+(CENSUS_DIFF[censusOf(y)][k]||0);
+// Governors too (owner, 2026-11-07, web only): every year 2008-2026, the House squares on the tight layout, coloured by the
+// governor (Results) or the governor's margin (Margins; 2026 = the calls), one solid shape per block as on that map
+const overYears=race=>race==="governors"?US_YEARS:PRES_YEARS;
+function overCells(k,y,race){   // [cell, fill] for state k's squares in year y on this race's map
+  const n=(CH_N[k]||0)+(CENSUS_DIFF[censusOf(y)][k]||0), at=e=>[e.x.baseVal.value/S,e.y.baseVal.value/S];
+  if(race==="governors"){let f;
+    if(y===2026&&GOV_UP.includes(k)){const g=projOf("governors",k); f=SHADE[g]?marginFill(y,k,g,GOV_MARGINS):PARTY_FILL[g]||ALT_PROJ[g]}
+    else f=marginFill(y,k,govOf(y,k),GOV_MARGINS);
+    return (HSQ[k]||[]).slice(0,n).map(e=>[TIGHT_POS.get(e),f])}
+  const P=PRES[y], w=P.dem.split(" ").includes(k)?"d":"r";
   const hs=(HSQ[k]||[]).slice(0,n).map((e,j)=>{const v=j===1&&k==="ME"?P.me2:j===1&&k==="NE"?P.ne2:w;
-    return [[e.x.baseVal.value/S,e.y.baseVal.value/S],marginFill(y,k==="ME"||k==="NE"?k+(j+1):k,v)]});
-  const es=ESQ[k].map(e=>{const m=(ESQ_2000[k]||[]).find(m=>m.e===e); return [m?(censusOf(y)===2000?m.at:m.home):[e.x.baseVal.value/S,e.y.baseVal.value/S],marginFill(y,k,w)]});
+    return [at(e),marginFill(y,k==="ME"||k==="NE"?k+(j+1):k,v)]});
+  const es=ESQ[k].map(e=>{const m=(ESQ_2000[k]||[]).find(m=>m.e===e); return [m?(censusOf(y)===2000?m.at:m.home):at(e),marginFill(y,k,w)]});
   return [...hs,...es];
 }
-function overLabel(b,k=over.k,a=over.a){const cs=b.cells.map(c=>c[0]), top=Math.min(...cs.map(c=>c[1])), x=Math.min(...cs.filter(c=>c[1]===top).map(c=>c[0]));
-  const tag=marginsOn()?marginTag(MARGINS[b.y]?.[k]):"", fs=narrow.matches?(tag?16:18):12;
+const overFill=(r,f)=>{r.style.fill=f; if(r._gov) r.style.stroke=f};   // Governors: borders take the fill, one shape (as setUSNow paints them)
+function overLabel(b,k=over.k,a=over.a,race=over.race){const cs=b.cells.map(c=>c[0]), top=Math.min(...cs.map(c=>c[1])), x=Math.min(...cs.filter(c=>c[1]===top).map(c=>c[0]));
+  const tab=race==="governors"?GOV_MARGINS:MARGINS, tag=marginsOn()?marginTag(tab[b.y]?.[k]):"", fs=narrow.matches?(tag?16:18):12;
   b.t.textContent=b.y+tag; b.t.style.fontSize=(fs/a).toFixed(2)+"px";
-  b.t.setAttribute("x",x*S); b.t.setAttribute("y",top*S-.15*S-fs*.4/a)}
+  b.t.setAttribute("x",x*S); b.t.setAttribute("y",top*S-(3+fs*.4)/a)}   // 3px above the squares on screen, whatever the row's scale
 // the tally's centre names the state instead of the year (owner, 2026-11-07); the label under it still follows the toggles
 const overTitle=()=>{if(over) document.getElementById("mid-year").textContent=OVER_NAME(over.k)};
-function overPaint(){if(!over) return; over.blocks.forEach(b=>{b.cells=overCells(over.k,b.y); b.r.forEach((r,i)=>r.style.fill=b.cells[i][1]); overLabel(b)}); overTitle()}
-function overEnter(k){
-  const year=usYear("president"), m=new DOMMatrix(GST[k].style.transform||"none"), a0=Math.hypot(m.a,m.b), vb=usSvg.viewBox.baseVal;
-  const all=PRES_YEARS.flatMap(y=>overCells(k,y).map(c=>c[0])), lo=[0,1].map(i=>Math.min(...all.map(c=>c[i]))), hi=[0,1].map(i=>Math.max(...all.map(c=>c[i]))+1);
-  const W=hi[0]-lo[0], H=hi[1]-lo[1], gap=2, n=PRES_YEARS.length, tot=n*W+(n-1)*gap;
-  const a=Math.min(a0,(vb.width-32)/(tot*S));   // a wide state's row is drawn smaller so all five fit (home keeps the map's scale)
+function overPaint(){if(!over) return; over.blocks.forEach(b=>{b.cells=overCells(over.k,b.y,over.race); b.r.forEach((r,i)=>overFill(r,b.cells[i][1])); overLabel(b)}); overTitle()}
+function overEnter(k,race){
+  const years=overYears(race), year=usYear(race), m=new DOMMatrix(GST[k].style.transform||"none"), a0=Math.hypot(m.a,m.b), vb=usSvg.viewBox.baseVal;
+  const all=years.flatMap(y=>overCells(k,y,race).map(c=>c[0])); if(!all.length) return;   // DC has no Governors block
+  const lo=[0,1].map(i=>Math.min(...all.map(c=>c[i]))), hi=[0,1].map(i=>Math.max(...all.map(c=>c[i]))+1);
+  const W=hi[0]-lo[0], H=hi[1]-lo[1], gap=2, n=years.length, tot=n*W+(n-1)*gap;
+  const a=Math.min(a0,(vb.width-32)/(tot*S));   // a wide state's row is drawn smaller so every year fits (home keeps the map's scale)
   const x0=vb.x+(vb.width-tot*S*a)/2, ty=vb.y+(vb.height-H*S*a)/2-lo[1]*S*a;   // the row centred in the map, over the outline (owner, 2026-11-07)
   const slot=i=>`translate(${(x0+(i*(W+gap)-lo[0])*S*a).toFixed(2)}px,${ty.toFixed(2)}px) scale(${a.toFixed(4)})`, D=vb.width*.35;
-  const home=`translate(${m.e.toFixed(2)}px,${m.f.toFixed(2)}px) scale(${a0.toFixed(4)})`, si=PRES_YEARS.indexOf(year);
+  const home=`translate(${m.e.toFixed(2)}px,${m.f.toFixed(2)}px) scale(${a0.toFixed(4)})`, si=years.indexOf(year);
   const off=i=>`translate(${(x0+(i*(W+gap)-lo[0])*S*a+(i<si?-D:D)).toFixed(2)}px,${ty.toFixed(2)}px) scale(${a.toFixed(4)})`;
   const layer=el("g",{class:"over","aria-hidden":"true"},usSvg);
   const bh=vb.height*.75, back=OVER_SHAPE[k]&&el("path",{class:"over-back",d:overShape(k,vb.x+vb.width/2,vb.y+vb.height/2,bh,vb.width*.9)},layer);   // behind the blocks: 3/4 of the map's height, centred
   if(back){back.style.transition="none"; back.style.opacity=0}
-  over={k,year,a,layer,back,home,slot,off,si,blocks:PRES_YEARS.map((y,i)=>{const g=el("g",{},layer), cells=overCells(k,y);
-    const b={y,i,g,cells,r:cells.map(([c,f])=>Object.assign(el("rect",{x:c[0]*S,y:c[1]*S,width:S,height:S},g),{style:`fill:${f}`})),t:el("text",{class:"blk","text-anchor":"start"},g)};
-    overLabel(b,k,a); g.style.transition="none"; g.style.transform=i===si?home:off(i); g.style.opacity=i===si?1:0; return b})};
+  over={k,race,year,a,layer,back,home,slot,off,si,blocks:years.map((y,i)=>{const g=el("g",{},layer), cells=overCells(k,y,race);
+    const b={y,i,g,cells,r:cells.map(([c,f])=>{const r=el("rect",{x:c[0]*S,y:c[1]*S,width:S,height:S},g); r._gov=race==="governors"; overFill(r,f); return r}),t:el("text",{class:"blk","text-anchor":"start"},g)};
+    overLabel(b,k,a,race); g.style.transition="none"; g.style.transform=i===si?home:off(i); g.style.opacity=i===si?1:0; return b})};
   GST[k].classList.add("fk"); usSvg.classList.add("focus"); overTitle();
   layer.getBoundingClientRect();
   over.blocks.forEach(b=>{b.g.style.transition=""; b.g.style.transform=slot(b.i); b.g.style.opacity=1});
@@ -1276,7 +1286,7 @@ function overExit(animate){
   setTimeout(done,620);
 }
 OVER_STATES.forEach(k=>{GST[k].classList.add("fclick");
-  GST[k].addEventListener("click",e=>{if(usRace==="president"&&!over&&!narrow.matches){e.stopPropagation(); overEnter(k)}})});   // web only (owner, 2026-11-07)
+  GST[k].addEventListener("click",e=>{if((usRace==="president"||usRace==="governors")&&!over&&!narrow.matches&&(usRace==="president"||HSQ[k])){e.stopPropagation(); overEnter(k,usRace)}})});   // web only (owner, 2026-11-07)
 usSvg.addEventListener("click",e=>{if(over){e.stopPropagation(); overExit(true)}},true);   // capture: before the phone names toggle
 // Senate Seats works the same way as Representation (owner, 2026-11-07): the seat squares / Governors block halves morph
 // straight into the state's two tile halves and back. (Senate All in between was tried first and dropped.) The tally,
@@ -1284,7 +1294,7 @@ usSvg.addEventListener("click",e=>{if(over){e.stopPropagation(); overExit(true)}
 let usStage=0;
 function setUS(race,animate,year=usYear(race)){
   // a state over time on show: the Results / Margins toggle recolours it; anything else takes the map back first
-  if(over){if(animate&&race==="president"&&year===over.year){setUSNow(race,animate,year); overPaint(); return} overExit(animate)}
+  if(over){if(animate&&race===over.race&&year===over.year){setUSNow(race,animate,year); overPaint(); return} overExit(animate)}
   if(narrow.matches) senMode="seats";   // phones (owner, 2026-11-07): Senate is Seats only, with Results / Margins
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
   if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
