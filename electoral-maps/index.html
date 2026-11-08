@@ -207,7 +207,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
-#map-us .state{transition:transform .6s var(--ease)}
+#map-us .state{transition:transform .45s var(--ease)}   /* .45s like the squares: House 2024 scales up as they slide */
 #map-us.packed .state text,#map-india.packed .names text{opacity:0}
 #map-india .ls-cell,#map-india .rs-cell{transition:transform .6s var(--ease)}
 /* Rajya Sabha Compact: plain names (no pill), the circles laid out around them */
@@ -918,7 +918,8 @@ function packOnce(M,key){
     const code=k=>M.code?.(k)||k;   // M.code(k): the shortest name a map shows (USA: the postal code)
     const g=.15*S*f, h=fs*.8, pad=.1*S*f, hit=(q,r)=>q[0]<r[2]+pad&&r[0]<q[2]+pad&&q[1]<r[3]+pad&&r[1]<q[3]+pad;
     const cur=k=>B[k].now||B[k].c;   // M.now(k): this year's squares, so a phone name sits on the block as it stands
-    const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[]).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));
+    // names keep clear of the squares and of M.avoid's cells (USA: the Senate circles; VT's sits off its square)
+    const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[],[...B[j].av].map(s=>s.split(",").map(Number))).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));
     const wide=(k,t)=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=t; const w=e.getComputedTextLength(); if(!w) laidOut=false; return w};
     const spare={}, opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=cur(k), top=Math.min(...c.map(p=>p[1]));
       const cols=[...new Set(c.map(p=>p[0]))].sort((p,q)=>p-q).map(x=>[x,Math.min(...c.filter(p=>p[0]===x).map(p=>p[1]))]);
@@ -1056,6 +1057,26 @@ const US_SHORT={NV:"Neva.",KS:"Kans.",OR:"Oreg.",WV:"WV"};   // owner's picks: W
 const US_TWIN={ND:"SD",SD:"ND",NC:"SC",SC:"NC"};   // always the same format: the pair takes the shorter of its two
 const usShort=k=>US_SHORT[k]||LBL[k].t;
 const US_OUT=true;   // TRIAL (owner, 2026-11-06, may revert: set false): desktop names outside too, as on phones
+// Tight layout (owner, 2026-11-07): House, Senate All and Governors, every year, from Figma node 3570:10495 (drawn for
+// House 2024). With no elector squares the blocks close up: each state slides by [dx, dy] squares (its shape unchanged;
+// Maryland's one square at 39,14 moves to 32,13 so its block reads as a row of six), older-census seats and Senate
+// circles with it. At least one square of white between states. President keeps CHAMBER's cells, and so do Senate
+// Seats / Representation (their squares are hidden). Squares and circles slide via a CSS transform (.45s, with the
+// colours), and the names are laid out on the shifted cells (TIGHT_POS, PACK_US.at, PACK_US.avoid).
+const TIGHT_SHIFT=Object.fromEntries(`NH -3 0|ME -3 0|VT -3 0|NY -2 0|WA 0 0|MA -2 0|MT -1 1|ND -1 0|MN -2 1|MI -3 0|WI -3 0|CT -2 0|
+RI -2 0|ID -1 1|OR 0 0|WY -1 2|SD -1 0|PA -2 0|CA 0 0|NV 0 -1|CO 0 1|NE -1 0|IL -2 -1|OH -1 -1|UT 0 0|IA -2 1|IN -2 0|NJ -3 0|
+MD -3 0|KS -1 0|AZ -1 -1|NM -1 1|MO -1 -1|WV -3 1|VA -2 0|DE -4 0|KY -2 -1|OK -1 0|TX 0 0|TN -2 -1|GA -2 -1|NC -3 0|AR -1 -1|
+AL -2 -1|MS -2 -1|SC -3 0|LA -1 -2|FL -3 -1|AK 0 0|HI 0 0`.split("|").map(t=>t.trim().split(" ")).map(([k,x,y])=>[k,[+x,+y]]));
+// squares placed on their own (CHAMBER cell -> tight cell): Maryland's, and seats from older censuses whose President-map
+// notch would touch a neighbour here. WV's third seat (2008-2020) still meets Virginia at one corner, IA's fifth
+// (2008-2010) Nebraska and Kansas at one corner each, and PA's 19th (2008-2010) New York at one: those blocks are boxed in.
+const TIGHT_CELL={MD:{"39,14":[32,13]},CA:{"4,15":[3,13]},PA:{"33,9":[32,8],"34,8":[37,9]},IL:{"21,16":[20,15],"21,17":[20,16]},
+  MO:{"19,16":[15,15]},IA:{"18,12":[15,11]},WV:{"34,15":[32,15]}};
+const TIGHT_SEAT={VT:[[41,0]]};   // Senate circles placed on their own: VT's left one would touch NY, so it sits above
+const tightSeat=(k,j,e)=>TIGHT_SEAT[k]?.[j]||(([x,y],[dx,dy])=>[x+dx,y+dy])(seatCell(e),TIGHT_SHIFT[k]||[0,0]);
+const TIGHT_POS=new Map();   // House square -> its House 2024 cell
+for(const k in HSQ) HSQ[k].forEach(e=>{const x=e.x.baseVal.value/S, y=e.y.baseVal.value/S, [dx,dy]=TIGHT_SHIFT[k]||[0,0];
+  TIGHT_POS.set(e,TIGHT_CELL[k]?.[x+","+y]||[x+dx,y+dy])});
 const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow.matches?25:15,out:[],static:true,inset:0,mid:true,fitOut:true,pad:.15,race:"president",row:{},
   keys:()=>Object.keys(GST),
   inside(){return this.race==="president"},
@@ -1067,18 +1088,23 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow
   seats(k){return (CH_N[k]||0)+(CENSUS_DIFF[this.census]?.[k]||0)},   // House seats this census
   tiers(k,tag,room,w){if(narrow.matches) return null; const s=usShort(k);
     return this.seats(k)<=2?[k]:w(US_FULL[k])<=room&&!(tag&&k==="MI")?[US_FULL[k],s,k]:!tag||w(s)<=room?[s,k]:[k]},
-  now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,this.seats(k));
+  // tight: the tight layout is on (every race but President); at(e) is where square e sits then (an object with e's x / y shape)
+  tight:false,
+  at(e){const p=this.tight&&TIGHT_POS.get(e); return p?{x:{baseVal:{value:p[0]*S}},y:{baseVal:{value:p[1]*S}}}:e},
+  now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,this.seats(k)).map(e=>this.at(e));
     return this.race==="president"?[...hs,...ESQ[k]]:hs},
   moved:k=>(ESQ_2000[k]||[]).map(m=>m.at),   // the elector squares that step aside in some years
   most:k=>(CH_N[k]||0)+Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
   least:k=>(CH_N[k]||0)+Math.min(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
-  // the map's extent: each state's largest President block over the three censuses
-  cells(k){return [...(HSQ[k]||[]).slice(0,this.most(k)),...ESQ[k]].map(e=>[e,e])},
+  // the map's extent: each state's largest President block over the three censuses. Tight (owner, 2026-11-07): its
+  // largest House block, shifted, so the tighter map is scaled up to fill the width end to end, at one scale every year
+  cells(k){if(this.tight) return (HSQ[k]||[]).slice(0,this.most(k)).map(e=>[this.at(e),e]);
+    return [...(HSQ[k]||[]).slice(0,this.most(k)),...ESQ[k]].map(e=>[this.at(e),e])},
   // the squares a state has in every year: the only ones a name may rest on
-  lcells(k,race){const hs=(HSQ[k]||[]).slice(0,this.least(k)).map(e=>[e,e]); return race==="president"?[...hs,...ESQ[k].map(e=>[e,e])]:hs},
-  avoid(k,race){return race==="chamber"?SEAT[k].map(seatCell):[]},
+  lcells(k,race){const hs=(HSQ[k]||[]).slice(0,this.least(k)).map(e=>[this.at(e),e]); return race==="president"?[...hs,...ESQ[k].map(e=>[e,e])]:hs},
+  avoid(k,race){return race==="chamber"?SEAT[k].map((e,j)=>this.tight?tightSeat(k,j,e):seatCell(e)):[]},
   name:k=>narrow.matches?k:({VT:"VT",HI:"HI"})[k]||LBL[k].t,   // phones: postal codes, the only names that fit
-  small(k){const h=(HSQ[k]||[]).slice(0,this.most(k)); return this.least(k)<=2||new Set(h.map(e=>e.x.baseVal.value)).size===1},
+  small(k){const h=(HSQ[k]||[]).slice(0,this.most(k)); return this.least(k)<=2||new Set(h.map(e=>this.at(e).x.baseVal.value)).size===1},
   label(k){return this.race!=="president"&&this.small(k)?k:null},
   tweak(){}};
 let presMode="packed";   // USA is always Compact (owner, 2026-10-11): no Map / Compact toggle; the Map code stays
@@ -1138,7 +1164,7 @@ function setUS(race,animate,year=usYear(race)){
   const c={d:0,r:0,i:0,v:0,D:0,R:0,T:0,N:0}; let govD=0,govR=0,govI=0;
   const y26=year===2026&&race!=="president", g26={d:0,r:0,v:0,D:0,R:0,T:0,N:0};
   const rw={d:0,r:0,i:0,D:0,R:0,T:0,N:0};   // Senate Representation: each senator weighted 1 / the state's grey squares
-  const sm=senMode;
+  const sm=senMode, tight=race!=="president";   // House, Senate, Governors: the tight Figma layout (TIGHT_SHIFT)
   const paint=(e,show,fill,stroke)=>{e.classList.toggle("gone",!show); if(show){e.style.fill=fill; e.style.stroke=stroke||"var(--bg)"}};
   for(const k in ESQ_2000) ESQ_2000[k].forEach(({e,at,home})=>{const [x,y]=censusOf(year)===2000?at:home; e.setAttribute("x",x*S); e.setAttribute("y",y*S)});
   for(const k in ESQ){
@@ -1159,12 +1185,18 @@ function setUS(race,animate,year=usYear(race)){
         // borders take the state's own colour, so its squares merge into one shape
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g==="d"?govD++:g==="r"?govR++:govI++}
     }
+    // tight layout: each square slides to its TIGHT_POS cell (a hidden one stays shrunk); President, home
+    hs.forEach(e=>{const p=tight&&TIGHT_POS.get(e), g=e.classList.contains("gone")?" scale(0)":"";
+      e.style.transform=p?`translate(${p[0]*S-e.x.baseVal.value}px,${p[1]*S-e.y.baseVal.value}px)${g}`:""});
     SEAT[k].forEach((e,j)=>{const p=senSeats(year,k)[j];
       if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}}
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
       const o=race==="senate"&&sm==="power"&&powerLayout()[k];
-      e.style.transform=race==="senate"&&sm==="seats"?"scale(0)":o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`:""});
+      // Senate All: the circles move with their state's squares
+      const [tx,ty]=race==="senate"&&sm==="all"?(([x,y],[cx,cy])=>[x-cx,y-cy])(tightSeat(k,j,e),seatCell(e)):[0,0];
+      e.style.transform=race==="senate"&&sm==="seats"?"scale(0)":o?`translate(${((o.x+(j?1:-1)*(o.r+.025)-e.cx.baseVal.value/S)*S).toFixed(2)}px,${((o.y-e.cy.baseVal.value/S)*S).toFixed(2)}px) scale(${(o.r/.43).toFixed(4)})`
+        :tx||ty?`translate(${tx*S}px,${ty*S}px)`:""});
   }
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
@@ -1229,8 +1261,8 @@ function setUS(race,animate,year=usYear(race)){
   const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:"chamber";
   PACK_US.race=lr; PACK_US.census=censusOf(year);
   const tagged=race==="president"?marginsOn()&&MARGINS[year]:race==="governors"&&marginsOn()&&GOV_MARGINS[year];   // names take the lead in Margins
-  PACK_US.tag=tagged?k=>marginTag(tagged[k]):null;
-  applyPack(PACK_US,packs&&packLayout(PACK_US,PACK_US.corner()?lr+PACK_US.census+(tagged?race+year:""):lr),GST);
+  PACK_US.tag=tagged?k=>marginTag(tagged[k]):null; PACK_US.tight=tight;
+  applyPack(PACK_US,packs&&packLayout(PACK_US,(PACK_US.corner()?lr+PACK_US.census+(tagged?race+year:""):lr)+(tight?"t":"")),GST);
   usSvg.classList.toggle("senate",race==="senate");
   document.getElementById("us-bar").classList.toggle("flat",race==="senate"||race==="governors"||race==="house");
   usSvg.classList.toggle("president",race==="president");

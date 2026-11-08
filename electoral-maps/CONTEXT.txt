@@ -2113,6 +2113,40 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      default, not the last view: USA = Governors 2026 in Results, India = Lok Sabha 2024 seats (choose). A
      #hash link still opens that view. USA Governors on phones: "Govern X% of population" on the blue side
      only, "Govern X%" on the right (popNote). India phones keep "Govern X%" on both sides.
+  -  House 2024 tighter layout (owner, 2026-11-07, local): House 2024 ONLY uses Figma node 3570:10495
+     ("Frame 1665"; its layer data is unreliable, so cells were read from the rendered image, 21.78px grid,
+     Figma row = CHAMBER row + 1; the owner later removed the inner frame, so the image is offset 120,122).
+     Without elector squares the blocks close up: each state slides by
+     H24_SHIFT [dx, dy] squares, shape unchanged, except Maryland (H24_CELL: its square at 39,14 goes to
+     32,13, a row of six). Figma again had DE with 2 squares and a DC square; both dropped as before.
+     Second version (owner, same day): KS and OK had touched, so the owner re-spaced the frame; every
+     state now has at least one square of white around it. That version drew NJ with 11 squares (its
+     top-left one, CHAMBER 39,11 after the shift, missing); kept at 12 there (owner confirmed).
+     Bigger squares (owner, same day): House 2024's extent is its own 2024 squares (PACK_US.cells when
+     h24), so fit() scales it to fill the width end to end like President: scale 1.13 vs 1.04, about
+     8.5% bigger squares. The svg and legends don't move. #map-us .state now transitions .45s (was .6),
+     so the scale-up runs with the squares' slide. Checked desktop and 375px: edges match the bar, no
+     name on a square or another name, none clipped.
+     Every year, Senate All and Governors (owner, same day): the tight layout ("tight", was "h24"; tables
+     TIGHT_SHIFT / TIGHT_CELL / TIGHT_POS / TIGHT_SEAT) is on for every race but President: House and
+     Governors 2008-2026 and Senate All (Seats / Representation hide the squares and keep their own
+     layouts). Extent = each state's largest House block over the three censuses, shifted, so ONE scale
+     (1.13) for all of them; no zoom between years. Senate All circles move with their state (inline
+     translate, tightSeat) and so grow with the squares; avoid() and the name boxes use the moved circles.
+     Older-census seats placed on their own where the President-map notch would touch (TIGHT_CELL): CA
+     4,15 -> 3,13; PA 33,9 -> 32,8 and 34,8 -> 37,9; IL 21,16 / 21,17 -> 20,15 / 20,16; MO 19,16 -> 15,15;
+     IA 18,12 -> 15,11; WV 34,15 -> 32,15. VT's left Senate circle sits above its square (41,0): beside
+     it, it touched NY. Name boxes now include M.avoid cells, so VT's name keeps off that circle.
+     Corner contacts left (boxed-in blocks, no free cell): VA-WV 2008-2020; NY-PA, IA-NE, IA-KS 2008-2010.
+     No edge contact anywhere. Checked all 30 House / Governors / Senate All race-years plus President at
+     desktop and 375px, and Governors Margins: 435 squares, no overlaps, no name on a square / circle /
+     name, none clipped; President unchanged; Seats <-> All morph works.
+     H24_POS maps each House rect to its 2024 cell; setUS sets an inline translate on each rect (scale(0)
+     kept for hidden ones) so squares slide with the .45s colour morph, President <-> House or 2022 <-> 2024.
+     PACK_US.h24 / at(e) give the name layout the shifted cells; its cache key ends "h24". (Scale: see
+     "Bigger squares" below.) No two states
+     touch. Every other race and year unchanged. Checked desktop and 375px: 435
+     squares, no overlaps, no name on a square or another name, nothing clipped.
 
 STATUS / NEXT
 -------------
@@ -2166,6 +2200,8 @@ STATUS / NEXT
 - Live also has, pushed 2026-11-07 on the owner's say-so: country defaults (the menu always opens USA
   Governors 2026 Results, India Lok Sabha 2024 seats) and the shorter right Governors note on phones.
   Keep the commit rule.
+- Live also has, pushed 2026-11-07 on the owner's say-so: the tight full-width layout (Figma 3570:10495) for
+  House, Governors and Senate All in every year, with the older-census seats re-placed. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
