@@ -2459,6 +2459,10 @@ STATUS / NEXT
 - Live, pushed 2026-11-09: the pinned top bar (body.stuck, with the mini tally) now kicks in as soon as the
   tally's main labels (.tally .cand>span: Democrats / House results / Republicans) are under the top bar, not when the
   colour bar reaches it (stickMini). Checked desktop USA and India (exact at the labels' bottom edge) and phone India.
+- Live, pushed 2026-11-09: Senate Seats, Margins, web: the postal codes always show; each seat's lead
+  (+13, >20, <3) shows, all states at once, while the pointer is over the map (owner: not per state). Each state's tile is now its own <g class="alt-st">;
+  the leads carry class "lead"; CSS under @media (hover:hover) and (min-width:641px). Phones unchanged (their tile
+  text was already hidden there before this change, live site too).
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

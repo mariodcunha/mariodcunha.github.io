@@ -215,6 +215,11 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us .over rect{stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
 #map-us .over text{opacity:1!important} #map-us .over .over-back{fill:var(--chip);stroke:none;transition:opacity .45s var(--ease)} #map-us .ghosts rect{stroke:var(--bg);stroke-width:1;pointer-events:none}   /* Representation morph (repMorph) */
 #map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
+/* Senate Seats, Margins, web (owner, 2026-11-09): the postal codes always show; every seat's lead (+13, >20) shows at
+   once while the pointer is anywhere over the map. Phones (no hover) unchanged. */
+@media (hover:hover) and (min-width:641px){
+  #map-us .alt-grid text.lead{opacity:0} #map-us:hover .alt-grid text.lead{opacity:1}
+}
 #map-us:not(.president) text.dc{opacity:0}
 /* "Compact" (President, House, Lok Sabha): states slide together (packLayout), names fade out, pills fade in */
 #map-us .state{transition:transform .45s var(--ease)}   /* .45s like the squares: House 2024 scales up as they slide */
@@ -749,10 +754,10 @@ const ALT={};
   const vb=usSvg.viewBox.baseVal, cols=12, rows=8, p=Math.min(vb.width/cols,vb.height/rows), t=p*.88;
   const x0=vb.x+(vb.width-p*cols)/2, y0=vb.y+(vb.height-p*rows)/2, gap=t*.05, w=(t-gap)/2, fz=t*.19;
   const g=el("g",{class:"alt-grid","aria-hidden":"true"},usSvg);
-  ALT_GRID.forEach(([k,x,y])=>{const cx=x0+(x+.5)*p, cy=y0+(y+.5)*p, fs=`font-size:${fz.toFixed(1)}px`;
+  ALT_GRID.forEach(([k,x,y])=>{const cx=x0+(x+.5)*p, cy=y0+(y+.5)*p, fs=`font-size:${fz.toFixed(1)}px`, sg=el("g",{class:"alt-st"},g);   // one group per state: hover shows its leads
     ALT[k]=[0,1].map(j=>{const o={x:j?cx+gap/2:cx-t/2,y:cy-t/2,width:w,height:t,rx:t*.1};
-      return {r:el("rect",o,g),o,t:!j&&Object.assign(el("text",{x:cx-t/2+w/2,y:cy-t/2+fz*.95,style:fs,"text-anchor":"middle"},g),{textContent:k}),
-        b:el("text",{x:o.x+w/2,y:cy+t/2-fz*.75,style:`font-size:${(fz*.85).toFixed(1)}px`,"text-anchor":"middle"},g)}})});   // b: the seat's lead, in Margins
+      return {r:el("rect",o,sg),o,t:!j&&Object.assign(el("text",{x:cx-t/2+w/2,y:cy-t/2+fz*.95,style:fs,"text-anchor":"middle"},sg),{textContent:k}),
+        b:el("text",{x:o.x+w/2,y:cy+t/2-fz*.75,style:`font-size:${(fz*.85).toFixed(1)}px`,"text-anchor":"middle"},sg)}})});   // b: the seat's lead, in Margins
 })();
 // Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
 // The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
@@ -763,7 +768,7 @@ function paintAlt(year){
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
     const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
     if(t) t.setAttribute("class",cls);
-    b.setAttribute("class",cls); b.textContent=f?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
+    b.setAttribute("class",(cls+" lead").trim()); b.textContent=f?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
 // Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
