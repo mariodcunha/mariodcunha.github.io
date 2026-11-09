@@ -2445,6 +2445,10 @@ STATUS / NEXT
   years keep circles. (First try, same day, spread one square per seat with pale gaps: owner preferred filled.)
   REVERTED same day (owner): Rajya Sabha 2004 is back to the 2009 style (circles); RS_TILES is empty, the code
   stays for later. Rajya Sabha legend back to circles to match (was r2 ahead of the planned tiles).
+- Live, pushed 2026-11-09: idle Play icon is the same dark grey as the playing thumb (--sel #6b6c72;
+  was --fg, near black); hover still darkens it to --fg.
+- Live, pushed 2026-11-09: country button text and arrow in the toggle labels' grey (--muted #6b6b6b; was --fg), --fg on hover.
+- Live, pushed 2026-11-09: year stepper arrows grey (--muted) too, --fg on hover; disabled stays #c2c2c2.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

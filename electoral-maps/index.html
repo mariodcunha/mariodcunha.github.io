@@ -41,15 +41,15 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 #play button svg{width:14px;height:14px}
 #play button:hover{color:var(--fg)} #play button.on,#play button.on:hover{color:#fff}
 #play button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
-#play.idle #play-right{color:var(--fg)}
+#play.idle #play-right{color:var(--sel)} #play.idle #play-right:hover{color:var(--fg)}   /* idle: the same dark grey as the playing thumb (owner, 2026-11-09) */
 #play.idle #play-left{width:0;opacity:0;visibility:hidden}
 #play:not(.idle) #play-left{margin-right:2px}
 #play:not(.idle) .pthumb{opacity:1}
 #play.paused .pthumb{transform:translateX(-33px)}
 .country{position:relative}
-.country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--fg);background:var(--chip);border:0;border-radius:var(--r-out);padding:3px;cursor:pointer}
+.country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--muted);background:var(--chip);border:0;border-radius:var(--r-out);padding:3px;cursor:pointer}
 .country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-in);height:31px;padding:0 12px 0 10px}
-.country>button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+.country>button:focus-visible{outline:2px solid var(--dem);outline-offset:2px} .country>button:hover{color:var(--fg)}   /* text and arrow in the toggle labels' grey, darker on hover like them (owner, 2026-11-09) */
 .country .chev{width:10px;height:10px;transition:transform .25s var(--ease)}
 .country>button[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .flag{display:block;width:21px;height:14px;flex:none;box-shadow:0 0 0 .5px rgba(0,0,0,.25)}
@@ -99,9 +99,9 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .subtoggle button:focus-visible{outline:2px solid var(--inc);outline-offset:2px}
 /* Year stepper: < year >, the year sits on a drum that rolls like a meter when it changes */
 .stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
-.stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--fg);cursor:pointer;transition:color .2s,background .2s}
+.stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
-.stepper button:hover:not(:disabled){background:rgba(0,0,0,.06)}
+.stepper button:hover:not(:disabled){background:rgba(0,0,0,.06);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
 .stepper button:disabled{color:#c2c2c2;cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
 .stepper .win{position:relative;width:52px;height:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
