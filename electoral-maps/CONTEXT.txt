@@ -2425,6 +2425,26 @@ STATUS / NEXT
   (owner asked for it ahead of the planned Rajya Sabha tiles; the map still draws circles for now).
   Senate's grey House-district key keeps its square (data-keep). Pending owner choices: Rajya Sabha tile
   style (fill the block vs one square per seat); Senate Seats note still says "circles".
+- Live, pushed 2026-11-09 on the owner's say-so: names at the top left of their blocks (owner).
+  USA: House and Governors now lay names out on the squares alone (PACK_US.race "hg"); only Senate ("chamber")
+  keeps clear of the Senate circles, and there a state's own circles count as its block (blockOf), so VT sits
+  above its upper circle. Fixed VT below its square and MA pushed 23-27px right in House / Governors / Senate,
+  every year. A name grazed on its left by a neighbour's corner slides right just clear (<= .6 square; Iowa
+  2008/2010). M.endAt (VT, NH, ME in Margins) is now the SECOND choice after the top left. Checked every
+  year: President, House, Governors, Senate All all top left; in Margins only ME / RI (Governors, the map's
+  right edge: the wider name ends at the block's edge) and NY / MD (President, a neighbour's name) differ.
+  India: the grey filler is an obstacle for names and counts as J&K's (x <= 13) / Ladakh's (x >= 15) block
+  (PACK_IN.padOf), so both names sit above the grey; .mapwrap.in.tight gets padding-top 18px so they clear
+  the tally line (10px web, 17px phone).
+- Live, pushed 2026-11-09 (as reverted, i.e. circles in every year): Rajya Sabha 2004 ONLY as squares (owner): RS_TILES = {2004}. Like States
+  Seat share: every Lok Sabha square of that year's Chief Ministers block shapes (IN_TIGHT_AP1, joined Andhra)
+  is filled, as a 2px-rounded square (.rs4), coloured in proportion to the region's elected Rajya Sabha seats
+  (stSquares; e.g. UP 8 BJP / 22 Oth / 1 INC -> 21 / 57 / 2 of its 80 squares). Regions with no seat (DD, CH,
+  AN, LD) stay pale (--rs-empty). The tally counts real seats (UPA 93, NDA 83, Others 57). No circles, no
+  merge animation; normal block names; grey filler as on Lok Sabha. Legend text (rs-how) switches. Other RS
+  years keep circles. (First try, same day, spread one square per seat with pale gaps: owner preferred filled.)
+  REVERTED same day (owner): Rajya Sabha 2004 is back to the 2009 style (circles); RS_TILES is empty, the code
+  stays for later. Rajya Sabha legend back to circles to match (was r2 ahead of the planned tiles).
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

@@ -12,7 +12,7 @@
   --r-in:8px; --r-out:11px;
   --bg:#ffffff; --fg:#121212; --muted:#6b6b6b; --chip:#f2f2f2; --sel:#6b6c72;
   --rep:#e5534b; --dem:#1f93e6;
-  --ind:#74bcf0; --house:#e4e4e4; --seat-empty:#d3d3d3;
+  --ind:#74bcf0; --house:#e4e4e4; --seat-empty:#d3d3d3; --rs-empty:#f1f1f1;
   --bjp:#f26a1b; --nda:#f7a372; --inc:#1f93e6; --india:#74bcf0; --oth:#3a9d5d;
   --sans:"Libre Franklin",Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.65,0,.35,1);
@@ -70,7 +70,8 @@ svg.india text{font-size:14px}
    their own colour, so each state reads as one solid block. Rajya Sabha: they shrink away and its circles grow. */
 #map-india .st-dot{fill:var(--seat-empty);stroke:var(--bg);stroke-width:0;transform-box:fill-box;transform-origin:center;transition:fill .45s var(--ease),stroke .45s var(--ease),stroke-width .45s var(--ease),rx .45s var(--ease),ry .45s var(--ease),transform .45s var(--ease)}
 #map-india.sq .st-dot{rx:0;ry:0;transform:scale(1.1628);stroke-width:.86}
-#map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}   /* flies into its Rajya Sabha circle (rsPack) */
+#map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}
+#map-india.rs4 .st-dot{rx:2px;ry:2px} #map-india.rs4 .st-dot.rs-off{fill:var(--rs-empty)}   /* Rajya Sabha 2004 trial: one 2px-rounded square per seat in the CM block; the block's other squares pale */   /* flies into its Rajya Sabha circle (rsPack) */
 #map-india.rs.sync .rs-seat.on{transition-delay:.2s!important}   /* the circles grow as the dots arrive */
 #map-india:not(.rs) .rs-seat{transform:scale(0)}
 #map-india.sync .st-dot,#map-india.sync .rs-seat{transition-delay:0s!important}
@@ -163,7 +164,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
-#map-india{margin-top:-3.7%} .mapwrap.in{overflow:visible;margin-bottom:-4%;transition:margin-bottom .6s var(--ease)} .mapwrap.in.tight{margin-bottom:calc(-4% + 28px)}   /* the map fits every width, so the box needn't clip: names can rise into the pull */
+#map-india{margin-top:-3.7%} .mapwrap.in{overflow:visible;margin-bottom:-4%;transition:margin-bottom .6s var(--ease)} .mapwrap.in.tight{margin-bottom:calc(-4% + 28px)} .mapwrap.in.tight{padding-top:18px}   /* J&K and Ladakh names sit above the grey filler: room under the tally line (owner, 2026-11-09) */   /* the map fits every width, so the box needn't clip: names can rise into the pull */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
@@ -450,7 +451,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--house)"/></svg>Vacant</span>
-        <span class="txt">One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.</span>
+        <span class="txt" id="rs-how">One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.</span>
         <span class="txt" id="rs-note"></span>
         <span class="txt geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
@@ -525,7 +526,7 @@ function legShape(id,shape){const L=document.getElementById("legend-"+id), g=LEG
   L.querySelectorAll("svg rect:not([data-keep])").forEach(r=>{for(const k in g) r.setAttribute(k,g[k])});
   L.querySelectorAll(".sw").forEach(e=>{e.classList.remove("c"); e.style.borderRadius=shape==="c"?"50%":/2$/.test(shape)?"2px":"0";
     e.style.width=shape==="t2"?"8px":""; e.style.margin=shape==="t2"?"0 3px":""})}
-legShape("rajyasabha","r2");
+legShape("rajyasabha","c");   // Rajya Sabha draws circles in every year again
 let colorMode="results";
 const narrow=matchMedia("(max-width:640px)");
 const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
@@ -941,9 +942,13 @@ function packOnce(M,key){
     const g=.15*S*f, h=fs*.8, pad=.1*S*f, hit=(q,r)=>q[0]<r[2]+pad&&r[0]<q[2]+pad&&q[1]<r[3]+pad&&r[1]<q[3]+pad;
     const cur=k=>B[k].now||B[k].c;   // M.now(k): this year's squares, so a phone name sits on the block as it stands
     // names keep clear of the squares and of M.avoid's cells (USA: the Senate circles; VT's sits off its square)
-    const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[],[...B[j].av].map(s=>s.split(",").map(Number))).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));
+    const boxes=kAll.flatMap(j=>cur(j).concat(!B[j].now&&M.moved?.(j).map(p=>p.map((v,a)=>v-B[j].f0[a]))||[],[...B[j].av].map(s=>s.split(",").map(Number))).map(p=>{const a=put(j,p); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}))
+      .concat(PADC.map(p=>{const a=[0,1].map(i=>at[i]+f*(p[i]*S-lo[i])); return [a[0],a[1],a[0]+f*S,a[1]+f*S]}));   // grey filler: no name inside it
+    // the block a name sits on: the state's squares, plus its own Senate circles (USA) and its grey filler (India: J&K, Ladakh)
+    const blockOf=k=>{const q=cur(k), has=p=>q.some(r=>r[0]===p[0]&&r[1]===p[1]);
+      return q.concat([...B[k].av].map(s=>s.split(",").map(Number)).filter(p=>!has(p)),(M.padOf?.(k)||[]).filter(p=>!has(p)))};
     const wide=(k,t)=>{const e=PL[k].t; e.classList.remove("in"); e.textContent=t; const w=e.getComputedTextLength(); if(!w) laidOut=false; return w};
-    const spare={}, opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=cur(k), top=Math.min(...c.map(p=>p[1]));
+    const spare={}, opts=Object.fromEntries(kAll.filter(k=>B[k].real.length).map(k=>{const c=blockOf(k), top=Math.min(...c.map(p=>p[1]));
       const cols=[...new Set(c.map(p=>p[0]))].sort((p,q)=>p-q).map(x=>[x,Math.min(...c.filter(p=>p[0]===x).map(p=>p[1]))]);
       const spots=[...cols.filter(p=>p[1]===top).slice(0,1),...cols.filter((p,i)=>p[1]!==top||cols.findIndex(q=>q[1]===top)!==i)];
       // a one-column state, or a single square at the name's spot: the code; otherwise the name, with the code as fallback
@@ -958,7 +963,9 @@ function packOnce(M,key){
       // pushed off the top left, a name never dangles mid-block: it ends flush with the right edge of the squares under it (owner, 2026-11-07)
       const all=spots.flatMap((p,i)=>[...new Set(names(p)||(lone(p)?[code(k)]:[nameOf(k),code(k)]))].flatMap(n=>{const [X,Y]=put(k,p), t=n+tag, w=wide(k,t);
         const at=L=>({t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}); let e=p[0]; while(c.some(q=>q[1]===p[1]&&q[0]===e+1)) e++;
-        return i?[at(put(k,[e+1,p[1]])[0]-w),at(X)]:[at(X)]})).concat(
+        // top left grazed by a neighbour's corner: the name slides right just clear of it, at most just over half a square
+        const nudge=o=>{const by=boxes.filter(r=>hit(o.q,r)); if(!by.length||by.some(r=>r[0]>=X)) return []; const L=Math.max(...by.map(r=>r[2]))+pad+.5; return L>X&&L-X<=f*S*.6?[at(L)]:[]};
+        return i?[at(put(k,[e+1,p[1]])[0]-w),at(X)]:[at(X),...nudge(at(X))]})).concat(
         // last resorts: the code ending over the top row's left square, reaching out to its left; then under the bottom row
         (([X,Y],t)=>{const w=wide(k,t), L=X+f*S-w; return [{t,w,x:L,y:Y-g-h/2,q:[L,Y-g-h,L+w,Y-g]}]})(put(k,spots[0]),code(k)+tag),
         (t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]);
@@ -971,9 +978,9 @@ function packOnce(M,key){
         // and under the bottom row, a line further down, below the name that took the spot
         M.beside?(t=>{const w=wide(k,t), bot=Math.max(...c.map(p=>p[1])), [X,Y]=put(k,[Math.min(...c.filter(p=>p[1]===bot).map(p=>p[0])),bot+1]), T=Y+g+h+pad*2;
           return [{t,w,x:X,y:T+h/2,q:[X,T,X+w,T+h]}]})(code(k)+tag):[]);
-      // M.endAt: with a lead, the name ends at the top row's right edge, so neighbours in a tight row stay apart (first choice)
+      // M.endAt: with a lead, the name may end at the top row's right edge, so neighbours in a tight row stay apart (after the top left)
       if(tag&&M.endAt?.includes(k)){const p=spots[0], [,Y]=put(k,p), R=put(k,[Math.max(...c.filter(q=>q[1]===p[1]).map(q=>q[0]))+1,p[1]])[0], t=code(k)+tag, w=wide(k,t);
-        all.unshift({t,w,x:R-w,y:Y-g-h/2,q:[R-w,Y-g-h,R,Y-g]})}
+        all.splice(1,0,{t,w,x:R-w,y:Y-g-h/2,q:[R-w,Y-g-h,R,Y-g]})}   // second choice now: the top left comes first (owner, 2026-11-09)
       spare[k]=all.find(o=>o.t===code(k)+tag);   // nothing free at all: the code at the top left anyway
       return [k,all.filter(o=>o.q[0]>=vb.x&&o.q[2]<=vb.x+vb.width&&!boxes.some(r=>hit(o.q,r)))]}));
     const got={}, clear=(q,skip)=>Object.keys(got).every(j=>j===skip||!hit(q,got[j].q));
@@ -1422,7 +1429,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   }
   // Every race but Senate Seats and Representation sits on the Figma layout; President has its own names, the rest
   // share one set (see PACK_US). Pills read the squares' colours when applied.
-  const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:"chamber";
+  const packs=presMode==="packed"&&!(race==="senate"&&sm!=="all"), lr=race==="president"?race:race==="senate"?"chamber":"hg";   // House / Governors: names on the squares alone (owner, 2026-11-09); Senate keeps clear of its circles
   PACK_US.race=lr; PACK_US.census=censusOf(year);
   const tagged=race==="president"?marginsOn()&&MARGINS[year]:race==="governors"&&marginsOn()&&GOV_MARGINS[year];   // names take the lead in Margins
   PACK_US.tag=tagged?k=>marginTag(tagged[k]):null; PACK_US.tight=tight;
@@ -1727,6 +1734,7 @@ const inFull=k=>k==="TS"&&AP_ONE?inFull("AP"):IN_FULL[k]||INDIA.find(s=>s[0]===k
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
   padCells:()=>PACK_IN.fixed===IN_TIGHT||PACK_IN.fixed===IN_TIGHT_AP1?IN_TIGHT_PAD:[],
+  padOf(k){return k==="JK"?this.padCells().filter(p=>p[0]<=13):k==="LA"?this.padCells().filter(p=>p[0]>=15):[]},   // names go above the grey, not inside it
   name:k=>(k==="TS"&&AP_ONE?IN_SHORT.AP:IN_SHORT[k])||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
  
   tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
@@ -1965,9 +1973,21 @@ function rsNamePlaces(year){
   const x1=Math.max(vb[0]+vb[2],Math.max(...xs)+6), y1=Math.max(vb[1]+vb[3],Math.max(...ys)+6);
   svg.setAttribute("viewBox",`${x0} ${y0} ${x1-x0} ${y1-y0}`);
 })();
+// Rajya Sabha years drawn as squares in the Chief Ministers blocks (owner, 2026-11-09: 2004 only, other years keep circles).
+// Each region's block is filled like States Seat share: its Lok Sabha squares, as 2px-rounded squares, coloured in
+// proportion to its elected Rajya Sabha seats (stSquares); regions with no seat stay pale (rs-off).
+const RS_TILES=new Set();   // empty: every year uses circles again (owner reverted 2004, 2026-11-09); add a year to bring the squares back
 function renderRS(animate){
   const year=inYear, N=[0,0,0,0,0,0], data=RS[year], on=new Set();
-  for(const code in data){
+  if(RS_TILES.has(year)){
+    // like States Seat share: every square of the block is filled, the region's Rajya Sabha seats shared out over them
+    ST_DOT.forEach(d=>d.classList.add("rs-off"));
+    for(const code in data){const rects=regionRects(ST_RECTS,code,data), q=stSquares(data[code],rects.length); let k=0;
+      data[code].forEach((v,i)=>{N[i]+=v; for(let j=0;j<q[i];j++){const d=ST_DOT.get(rects[k++]);
+        d.classList.remove("rs-off"); d.style.fill=i===5?"var(--house)":LS_FILL[LS_GROUPS[i]]}})}
+    document.getElementById("rs-how").textContent="Each state is its block from the Chief Ministers map, its rounded squares coloured in proportion to its elected Rajya Sabha seats (the tally counts the seats). States with no Rajya Sabha seat are pale. The 12 nominated members are not shown.";
+  }else document.getElementById("rs-how").textContent="One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.";
+  for(const code in data){if(RS_TILES.has(year)) break;
     const circles=rsCircles(code,data,data[code].reduce((a,b)=>a+b,0)); let k=0;
     data[code].forEach((n,i)=>{N[i]+=n;for(let j=0;j<n;j++){const c=circles[k++];on.add(c);
       c.classList.toggle("vac",i===5); c.style.fill=i===5?"":LS_FILL[LS_GROUPS[i]]}});
@@ -2120,8 +2140,10 @@ function renderIn(animate,sync){
   if(animate&&sync){inSvg.classList.add("sync"); clearTimeout(inSvg._sync); inSvg._sync=setTimeout(()=>inSvg.classList.remove("sync"),500)}
   const panel=document.getElementById("panel-in");
   if(!animate) panel.classList.add("instant");
-  inSvg.classList.toggle("rs",race==="rajyasabha");
-  inSvg.classList.toggle("sq",race==="loksabha"||cm);
+  const rsTiles=race==="rajyasabha"&&RS_TILES.has(inYear);   // Rajya Sabha as squares in the Chief Ministers blocks (2004 only for now)
+  inSvg.classList.toggle("rs",race==="rajyasabha"&&!rsTiles); inSvg.classList.toggle("rs4",rsTiles);
+  inSvg.classList.toggle("sq",race==="loksabha"||cm||rsTiles);
+  ST_DOT.forEach(d=>d.classList.remove("rs-off"));
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""});
   // reset what only some views use
   document.getElementById("in-b-vac").style.width="0%";
@@ -2144,10 +2166,10 @@ function renderIn(animate,sync){
   if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(/ \(.*/,""):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies; Chief Minister one, like its notes
   placeOth();
   const apData=race==="loksabha"?(LS_HIST[inYear]||LS):race==="rajyasabha"?RS[inYear]:(cm?CM:ST)[inYear]; AP_ONE=!!apData&&!("TS" in apData);
-  const tight=true, ap1=race!=="rajyasabha"&&AP_ONE; PACK_IN.fixed=ap1?IN_TIGHT_AP1:tight?IN_TIGHT:IN_COMPACT;   // before the split (Lok Sabha 2004-2009, States to 2013): one Andhra block   // tight layout: every India view and year (owner, 2026-11-09); IN_COMPACT kept for reference
+  const tight=true, ap1=AP_ONE&&(race!=="rajyasabha"||rsTiles); PACK_IN.fixed=ap1?IN_TIGHT_AP1:tight?IN_TIGHT:IN_COMPACT;   // before the split (Lok Sabha 2004-2009, States to 2013): one Andhra block   // tight layout: every India view and year (owner, 2026-11-09); IN_COMPACT kept for reference
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(ap1?"-ap1":""));
   applyPack(PACK_IN,pk,LS_GRP); if(pk&&ap1) PACK_IN.PL.TS.g.style.visibility="hidden";   // one name for the one block
-  rsPack(pk,race==="rajyasabha"); inPad(race==="rajyasabha"?null:pk,cm,race!=="loksabha"&&!cm);   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
+  rsPack(pk,race==="rajyasabha"&&!rsTiles); inPad(race==="rajyasabha"&&!rsTiles?null:pk,cm,race!=="loksabha"&&!cm&&!rsTiles);   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
   inSvg.parentNode.classList.toggle("tight",!!(pk&&tight));   // the tight layout reaches lower: breathing room above the legend (owner, 2026-11-09)
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
   document.getElementById("in-bloc").textContent=blocOf(inYear);
