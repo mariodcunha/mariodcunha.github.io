@@ -2412,6 +2412,11 @@ STATUS / NEXT
   marked LOCAL above (stepper every third year, the tight layout and all of 2026-11-09). The SVG export
   folders (loksabha-2004/2009-svgs, governors-2008-svgs, house-temp-svgs, president-2024-svgs) stay
   local and uncommitted. Keep the commit rule.
+  HOTFIX pushed 2026-11-09: the grey-pad hook was named M.pad, but PACK_US already has pad:.15 (a
+  number), so packOnce threw on every USA map ("M.pad is not a function") and the USA view broke live.
+  Renamed to M.padCells. Then checked every country / race / view / year on desktop and phone: no
+  errors, India 543 squares in distinct cells everywhere, no side-scroll. Lesson: grep a map option
+  name across PACK_US and PACK_IN before adding one.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

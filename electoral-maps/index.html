@@ -894,7 +894,7 @@ function packOnce(M,key){
   M.tweak(B,{clash,pull,G});
   // scale and centre the packed map in the viewBox (inset by m on every side)
   const vb=M.svg.viewBox.baseVal, lo=[0,1].map(a=>span(a,Math.min,kAll)*S), hi=[0,1].map(a=>span(a,Math.max,kAll)*S);
-  const PADC=M.pad?.()||[];   // grey filler squares (India tight: around J&K and Ladakh) count toward the map's size
+  const PADC=M.padCells?.()||[];   // grey filler squares (India tight: around J&K and Ladakh) count toward the map's size
   PADC.forEach(p=>[0,1].forEach(a=>{lo[a]=Math.min(lo[a],p[a]*S); hi[a]=Math.max(hi[a],(p[a]+1)*S)}));
   let f, at;
   const fit=m=>{f=Math.min((vb.width-2*m)/(hi[0]-lo[0]),(vb.height-2*m)/(hi[1]-lo[1]));
@@ -1716,7 +1716,7 @@ let AP_ONE=false;
 const inFull=k=>k==="TS"&&AP_ONE?inFull("AP"):IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
-  pad:()=>PACK_IN.fixed===IN_TIGHT||PACK_IN.fixed===IN_TIGHT_AP1?IN_TIGHT_PAD:[],
+  padCells:()=>PACK_IN.fixed===IN_TIGHT||PACK_IN.fixed===IN_TIGHT_AP1?IN_TIGHT_PAD:[],
   name:k=>(k==="TS"&&AP_ONE?IN_SHORT.AP:IN_SHORT[k])||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
  
   tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
