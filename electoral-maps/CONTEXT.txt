@@ -2449,6 +2449,16 @@ STATUS / NEXT
   was --fg, near black); hover still darkens it to --fg.
 - Live, pushed 2026-11-09: country button text and arrow in the toggle labels' grey (--muted #6b6b6b; was --fg), --fg on hover.
 - Live, pushed 2026-11-09: year stepper arrows grey (--muted) too, --fg on hover; disabled stays #c2c2c2.
+- Tried and REVERTED 2026-11-09 (owner): a two-flag toggle in place of the country dropdown. The dropdown stays.
+- Live, pushed 2026-11-09: AP and Telangana keep their OWN blocks in every India view and year (owner:
+  no joined block; IN_TIGHT_AP1 kept in the code, unused). Only the names change: AP_ONE = year <= 2014, so in
+  2014 and before Telangana's block is named AP too (Lok Sabha 2004-2014, Rajya Sabha 2004-2014, States
+  2004-2013 on the stepper); later years read Telangana. Colours still follow each year's data (undivided AP
+  region spans both blocks where the data has no TS). Pack cache key "tight" / "tight-ap" (fixes a stale-name
+  cache when only the label rule differed).
+- Live, pushed 2026-11-09: the pinned top bar (body.stuck, with the mini tally) now kicks in as soon as the
+  tally's main labels (.tally .cand>span: Democrats / House results / Republicans) are under the top bar, not when the
+  colour bar reaches it (stickMini). Checked desktop USA and India (exact at the labels' bottom edge) and phone India.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

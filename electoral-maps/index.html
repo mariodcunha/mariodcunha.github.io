@@ -1727,8 +1727,8 @@ const inView=()=>"packed";   // the Map code stays (Map layouts are where the Co
 // Exceptions: Arunachal "Arun." (AP is Andhra), Haryana "Hrya.", Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "D&D".
 const IN_FULL={WB:"West Bengal",AP:"Andhra Pradesh",JK:"Jammu & Kashmir",HP:"Himachal Pradesh",AR:"Arunachal Pradesh",AN:"Andaman & Nicobar",DD:"D&D"};
 // Two-letter names are the last resort: a state tries its full name at every spot first (tiers), so MP can read Madhya Pradesh.
-// AP_ONE: the year on show has undivided Andhra Pradesh (no Telangana in its data: Lok Sabha to 2009, Rajya Sabha and
-// States to 2013), so Telangana's block is named Andhra Pradesh / AP too (owner, 2026-11-09). Set in renderIn.
+// AP_ONE: the year on show is 2014 or earlier, so Telangana's block is named Andhra Pradesh / AP too, on its own block
+// (owner, 2026-11-09; the colours still follow each year's data). Set in renderIn.
 let AP_ONE=false;
 const inFull=k=>k==="TS"&&AP_ONE?inFull("AP"):IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
@@ -2165,10 +2165,11 @@ function renderIn(animate,sync){
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
   if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(/ \(.*/,""):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies; Chief Minister one, like its notes
   placeOth();
-  const apData=race==="loksabha"?(LS_HIST[inYear]||LS):race==="rajyasabha"?RS[inYear]:(cm?CM:ST)[inYear]; AP_ONE=!!apData&&!("TS" in apData);
-  const tight=true, ap1=AP_ONE&&(race!=="rajyasabha"||rsTiles); PACK_IN.fixed=ap1?IN_TIGHT_AP1:tight?IN_TIGHT:IN_COMPACT;   // before the split (Lok Sabha 2004-2009, States to 2013): one Andhra block   // tight layout: every India view and year (owner, 2026-11-09); IN_COMPACT kept for reference
-  const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(ap1?"-ap1":""));
-  applyPack(PACK_IN,pk,LS_GRP); if(pk&&ap1) PACK_IN.PL.TS.g.style.visibility="hidden";   // one name for the one block
+  AP_ONE=inYear<=2014;   // names only: 2014 and before, Telangana's block is called AP too (owner, 2026-11-09)
+  // AP and Telangana always keep their own blocks (owner, 2026-11-09: no joined block); IN_TIGHT_AP1 kept, unused
+  const tight=true; PACK_IN.fixed=tight?IN_TIGHT:IN_COMPACT;   // tight layout: every India view and year
+  const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(AP_ONE?"-ap":""));   // the names differ, so does the cache
+  applyPack(PACK_IN,pk,LS_GRP);
   rsPack(pk,race==="rajyasabha"&&!rsTiles); inPad(race==="rajyasabha"&&!rsTiles?null:pk,cm,race!=="loksabha"&&!cm&&!rsTiles);   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
   inSvg.parentNode.classList.toggle("tight",!!(pk&&tight));   // the tight layout reaches lower: breathing room above the legend (owner, 2026-11-09)
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
@@ -2402,7 +2403,10 @@ function stickMini(){
   const p=[...document.querySelectorAll(".panel")].find(p=>!p.hidden);
   const top=phone.matches?56:topbar.getBoundingClientRect().bottom;
   if(!phone.matches) document.body.style.setProperty("--top-h",top+"px");
-  const stuck=!!p&&p.querySelector(".bar").getBoundingClientRect().top<top;
+  // pinned as soon as the tally's main labels (Democrats / House results / Republicans) have gone under the top bar,
+  // not only once the colour bar gets there (owner, 2026-11-09)
+  const labs=p?[...p.querySelectorAll(".tally .cand>span")].filter(e=>e.offsetParent):[];
+  const stuck=!!p&&(labs.length?Math.max(...labs.map(e=>e.getBoundingClientRect().bottom)):p.querySelector(".bar").getBoundingClientRect().top)<top;
   if(stuck&&!document.body.classList.contains("stuck")) syncMini();
   document.body.classList.toggle("stuck",stuck);
 }
