@@ -49,8 +49,8 @@ square cartograms, NYT-style: one square per electoral vote / seat.
           (2004, 2009, 2014, 2019, 2024) and Seat share / Vote share (all four
           years). See LOK SABHA 2024 RESULTS and EARLIER ELECTIONS.
         - States: each state's ASSEMBLY seats drawn on its Lok Sabha squares,
-          every third year 2004-2025. See STATES VIEW.
-        - Rajya Sabha: grey Lok Sabha map + one circle per elected RS seat
+          2004-2026: the Lok Sabha years and midpoints (2006, 2011...). See STATES VIEW.
+        - Rajya Sabha: one rounded square per elected RS seat, every year (was circles)
           (like the Senate view), 2004-2024. See RAJYA SABHA VIEW.
 
 UI: ONE top bar row: race toggle (pill tabs with a sliding thumb), then
@@ -2112,7 +2112,7 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      Web Chief Ministers Others now reads "Others X% (N)".
 
   -  Defaults and Governors notes (owner, 2026-11-07): picking a country from the menu always opens its
-     default, not the last view: USA = Governors 2026 in Results, India = Lok Sabha 2024 seats (choose). A
+     default, not the last view: USA = Governors 2026 in Results, India = State CMs 2026 (choose; was Lok Sabha 2024). A
      #hash link still opens that view. USA Governors on phones: "Govern X% of population" on the blue side
      only, "Govern X%" on the right (popNote). India phones keep "Govern X%" on both sides.
   -  House 2024 tighter layout (owner, 2026-11-07, local): House 2024 ONLY uses Figma node 3570:10495
@@ -2463,6 +2463,136 @@ STATUS / NEXT
   (+13, >20, <3) shows, all states at once, while the pointer is over the map (owner: not per state). Each state's tile is now its own <g class="alt-st">;
   the leads carry class "lead"; CSS under @media (hover:hover) and (min-width:641px). Phones unchanged (their tile
   text was already hidden there before this change, live site too).
+- LOCAL, NOT COMMITTED (2026-11-09): Rajya Sabha 2004 DRAFT, step 1 (owner, 2004 only): RS_TILES = {2004} again, new
+  look. The 2004 Chief Ministers map (IN_TIGHT, CM block shapes, solid blocks: outline = fill) with every block one
+  light grey (--rs-block #e6e6e6), grey filler solid; RS_LS_STATES = ["MH"]: Maharashtra drawn exactly as Lok Sabha
+  2004 (lsSeats / lsRegionRects colours, white seat edges: BJP 13, NDA allies 12, UPA allies 10, INC 13). No circles;
+  the tally still counts the Rajya Sabha seats; legend line says "2004 draft". Next (owner): add Maharashtra's
+  Rajya Sabha seats into its block. Other RS years keep circles.
+  Step 2 (same day, owner): Maharashtra shows its 19 Rajya Sabha 2004 seats instead of its 48 Lok Sabha squares:
+  RS_BIG.MH = 19 top-left positions (IN_TIGHT units) fitted offline to MH's block (rows 4, 6, 4, 3, 2), each square
+  2.5x the area of a Lok Sabha square (48/19; side 1.59x), 2px corners (rx = 2 / screen scale), the seats' white gap
+  (.14), coloured in group order from RS[2004].MH (BJP 4, NDA 4, Oth 1, UPA allies 5, INC 5). Drawn in #map-india
+  .in-big (inBig); MH's own squares hidden (opacity 0, reset each render). Some squares stick out of the block
+  edge by up to ~1/3 square (worst fit 69% inside).
+  Step 3 (same day, owner): the same for Goa (1), Karnataka (12), Kerala (9), Tamil Nadu (18), Andhra Pradesh (11) and
+  Telangana (7), Rajya Sabha 2004 only. Positions fitted offline (scratch fit.py: pitch = sqrt(LS squares / seats),
+  best regular grid; worst fit 63-75% inside the block; nearest neighbour 0.42 square clear, no overlaps). Undivided
+  Andhra's 18 seats (RS 2004 has no TS) are drawn as 7 in Telangana's block then 11 in Andhra's, colours in group
+  order across both (TDP 9 -> TS 7 + AP 2, Oth 1, INC 8). inBig works region by region.
+  Step 4 (same day, owner): even spacing. All seven states re-fitted together (scratch space.py: per-state regular
+  grids, chosen jointly) so neighbouring coloured states sit about half a Rajya Sabha square apart, like Lok Sabha's
+  one-square gaps scaled: on screen 0.46-0.53 of the visible square (MH-Goa 0.59; was 0.42-1.66 in squares before).
+  Each square still >= 61% inside its block; grey neighbours >= 0.53 square clear.
+  Step 5 (same day, owner): EVERY state with a Rajya Sabha seat, 233 squares (RS 2004 only). RS_BIG for 31 states /
+  UTs; square area = Lok Sabha squares / seats (so 1-seat 1-square states - Sikkim, Nagaland, Mizoram, Puducherry - get
+  a Lok Sabha-sized square, smaller than the rest); J&K's 4 in J&K's block. Grey blocks left: Ladakh, Chandigarh,
+  DNH-DD, A&N, Lakshadweep (no seat). Fitted with scratch all4.py (per-state regular grids, joint choice, random
+  restarts): true neighbours (one Lok Sabha square apart) aim at half a square: 45 of 57 pairs 0.4-0.6 of a square,
+  extremes 0.33 (AS-MN) and 0.94 (AS-MZ) in the North East; non-neighbours only kept from getting closer. Worst fit
+  50% inside (BR, MH, MP, WB). Checked on screen: 233 squares, colours = the 2004 totals, no overlaps, no errors.
+  Step 6 (same day, owner): ONE size for every square (RS_P = 1.5 Lok Sabha squares wide, RS_SQ_GAP .14; was area =
+  LS squares / seats). The seatless UTs (Ladakh, Chandigarh, DNH-DD, A&N, Lakshadweep) are one grey rounded square each
+  (--rs-block); no grey filler on Rajya Sabha (J&K's squares are full size). Re-fitted with scratch all5.py (uniform
+  pitch, 238 squares): 57 of 67 neighbouring pairs 0.4-0.6 of a square apart. Names: rsTileNames() places each above
+  its state's top-left square, left-aligned (full name if the top row is as wide, else short; fallbacks: ending at the
+  top row's right edge, under the bottom row, beside), with a tighter clearance (g .06, pad .03 of a square) since
+  the gaps are half a square. Desktop: all 36 names at the top left, none overlapping. Phones: names are 18px against
+  ~5px gaps, so 18 of 36 fall back to a nearby spot (none overlap) - open.
+  Step 7 (same day, owner): circles instead of rounded squares, same spots and size (RS_ROUND = true: rx = half the
+  width; false brings the 2px squares back). Legend text says circles; seatless UTs are grey circles. Phones: later.
+  Then switched BACK (owner): RS_ROUND = false, 2px-rounded squares again; legend text says squares.
+  Step 8 (same day, owner): a WHOLE Rajya Sabha square between states (was half). Re-fitted (scratch all6.py, target
+  gap = 1 square, squares may sit outside their block): 57 of 67 neighbouring pairs 0.7-1.1 of a square, closest 0.61
+  (the Lok Sabha block layout underneath limits it). No overlaps, names all top left on desktop, map inside the SVG.
+  Sizes (desktop, 1383px window): Lok Sabha square = 1 grid unit, 19.1px pitch, ~18.2px coloured (white edge ~1px);
+  Rajya Sabha square = 1.5 units pitch (28.7px), 1.36 units drawn (26.0px), 2.7px gap inside a state.
+  >>> PARKED / REVERTED 2026-11-09 (owner: "not bad... we will come back to the rounded rectangles map for Rajya Sabha
+  2004, so remember this"). RS_TILES is now EMPTY, so Rajya Sabha 2004 shows circles like 2009-2024. ALL the code and
+  data stay in index.html, inactive: RS_BIG (238 positions, the step-8 whole-square-gap layout), RS_P 1.5, RS_SQ_GAP .14,
+  RS_ROUND false, rsSq / inBig / rsTileNames, the rs4 class, --rs-block, the rs-how legend text switch. TO BRING IT
+  BACK: RS_TILES = new Set([2004]). Owner's spec, in order: (1) 2004 Chief Ministers map, every block solid light grey;
+  (2) each state's Rajya Sabha seats as squares in its block, 2px corners, the seats' white gap; (3) one size for every
+  square (1.5 Lok Sabha squares); (4) seatless UTs one grey square each; no grey filler (J&K full size, Ladakh one grey
+  square); (5) names at each state's top-left square; (6) a whole Rajya Sabha square between neighbouring states
+  (was half; circles tried and rejected). Undivided Andhra's 18 = 7 in Telangana's block + 11 in Andhra's. Fitting
+  scripts + saved layouts (local, not committed): electoral-maps/rs2004-squares/ (all5.py = half-square gap,
+  big_all5.json; all6.py = whole-square gap, big_all6.json; run from electoral-maps/ as
+  `python3 rs2004-squares/all6.py 16 1.5 1.0 > out.json`). Open when it returns: phone names (18 of 36 fall back on
+  phones: 18px names vs ~5px gaps).
+- LOCAL, NOT COMMITTED (2026-11-09): Rajya Sabha 2004 DRAFT again, a new start (owner): RS_DRAFT = {2004}. The 2004
+  Chief Ministers map, every block solid light grey (--rs-block), grey filler solid; RS_LS_STATES = ["MH"]: Maharashtra
+  drawn exactly as Lok Sabha 2004 (BJP 13, NDA allies 12, UPA allies 10, INC 13; white seat edges). Normal block names;
+  tally still counts the Rajya Sabha seats; legend line "2004 draft". Separate from the parked squares (RS_TILES empty).
+  Other RS years keep circles. Owner: "just keep it at that for now".
+  Then (same day, owner trial): Maharashtra's Rajya Sabha seats as TALL rectangles: one seat = 2.5 Lok Sabha squares
+  stacked vertically (1 wide x 2.5 tall). RS_TALL.MH = 19 spots: per column of MH's block, its share of 19 by height
+  (largest remainder: columns of 0,2,3,4,3,2,1,1,1,1,1), each column's stack centred on the column (the 9-square column
+  holds 4 = 10 squares, overflowing half a square each end). Lok Sabha look: sharp corners, white edge (RS_TALL_GAP .07);
+  coloured column by column in group order (BJP 4, NDA 4, Oth 1, UPA allies 5, INC 5). inTall(); MH's own squares
+  hidden; RS_LS_STATES now empty. On screen ~17.8 x 46.5px vs Lok Sabha 19.1px squares.
+  Then (owner): 4px corners (RS_TALL_R), and the same tall seats for Telangana (7: the first 7 of undivided Andhra's 18
+  in 2004 = TDP), Karnataka (12) and Goa (1, one 2.5-tall seat). Layout re-done for all four (scratch): each column's
+  share by height, then seats moved between columns / stacks slid so neighbours keep clear: worst 0.375 square (two
+  stacks), the rest >= 0.75. Maharashtra's columns changed a little (one seat now in its one-square west column).
+  Andhra Pradesh's own block stays grey for now.
+  Then (owner): seats 2 Lok Sabha squares long instead of 2.5 (RS_TALL_H = 2). Re-laid: every stack fits inside its
+  column, a whole Lok Sabha square from every neighbour, no seats moved between columns (MH columns 2,3,3,3,2,2,1,1,1,1).
+  Then (owner): tall seats for EVERY state with a seat (233). RS_TALL for 31 states (undivided Andhra's 18 = TS 7 then
+  AP 11, inTall works region by region; J&K's 4 in J&K's block); seatless UTs (DD, LA, CH, AN, LD) stay grey blocks.
+  Layout: scratch tallall2.py (kept in electoral-maps/rs2004-squares/ with tallall2.json): column shares by height,
+  seats moved between columns or to a spare column beside a small block (HP, DL...), stacks slid; 25 of 31 states a
+  whole square clear of neighbours, 4 at 0.75, tightest 0.5 (Assam, Mizoram). Checked: 233 bars, colours = 2004 totals,
+  no overlaps, inside the map. Legend text: "One rounded bar per elected Rajya Sabha seat...". Open: J&K's bars sit
+  over the solid grey filler (the filler is still on in this draft).
+  Then (owner): grey bars, same size, instead of grey blocks / filler (RS_TALL_GREY, drawn by inTall in --rs-block): the
+  filler = a row of 4 over J&K's seats (J&K moved one square left and down: seats at x 9-12, y 2; filler x 9-12, y 0),
+  Ladakh = 2 bars (its square + the filler beside it, x 15-16, y 1), DNH-DD, Chandigarh, Lakshadweep, A&N one bar each,
+  each a whole square clear of other states. No solid filler in the draft (inPad off). 243 bars (233 + 10 grey), no
+  overlaps, no Lok Sabha squares showing. Open: names still follow the hidden Lok Sabha squares, so 17 of them sit on
+  bars (UP, Bengal, Gujarat, Kerala...) - needs a top-left placement on the bars, like rsTileNames for the squares.
+  >>> Then (owner): switched BACK to the rounded-squares map. RS_TILES = {2004} (on: the parked squares, step-8 layout,
+  whole-square gaps, names at the top left); RS_DRAFT = {} (the tall-bar draft above is PARKED: all code and data stay -
+  RS_TALL, RS_TALL_GREY, inTall, tallall2.py in rs2004-squares/ - put 2004 in RS_DRAFT and take it out of RS_TILES to
+  bring it back; its names were still to fix).
+- LOCAL, NOT COMMITTED (2026-11-09): Rajya Sabha 2004 squares became an EDITOR (owner): names and the hover effect off
+  on RS 2004 (rsTileNames kept, not called); every square draggable (pointer events on #map-india .in-big rects; snaps to
+  quarter squares; raise then capture). Rule (owner: "most importantly"): a square never closer than one Rajya Sabha
+  square's width (1.36 units) to another state's squares, own state's squares no closer than the usual gap: closer
+  shows a red outline and drops back; squares already too close show orange (rsMark). Starting layout re-done so the
+  rule holds everywhere: whole states pushed apart (scratch relax.json, kept in rs2004-squares/), worst gap 1.38, the
+  map frame grows to hold them (PACK_IN.rsExtent -> padCells, cache key "-rs"). Moves persist in the browser
+  (localStorage "rs2004-layout-v2"); legend line under the map: "Copy layout" (puts `const RS_BIG={...};` on the
+  clipboard to paste back) and "Reset layout". Checked: drag into space sticks and saves; drag next to Gujarat drops back.
+  Then (owner): STICKY GRID. Every square sits on one grid (RS_GRID origin [0.75, 0], cells RS_P = 1.5 apart); dragging
+  snaps to cells only. Starting layout re-placed on the grid (scratch grid.json, kept in rs2004-squares/): states placed
+  largest first at the nearest spot where no two states touch, diagonals included (so the one-square rule = an empty
+  cell between states); small NE states moved most (<= 3.5 Lok Sabha squares). The grid is drawn ultra faint
+  (#map-india .in-grid slots, #f7f7f7, 2px corners) over the squares' area plus a cell, only on RS 2004; the frame
+  grows to hold it. localStorage key now "rs2004-layout-v3". Checked: 238 squares on cells, 1326 slots, no warnings,
+  a drag snaps to a cell and saves, Reset restores.
+  >>> Then (owner): the EDITOR IS GONE and the owner's dragged layout is the Rajya Sabha 2004 map. RS_BIG = the layout the
+  owner built by hand in the editor (pasted from Copy layout). Removed: dragging (pointer handlers, rsOk/rsMark, red/orange
+  outlines), localStorage "rs2004-layout-v3", the Copy/Reset legend line (#rs-tools) and the faint grid (IN_GRID). Names
+  back: rsTileNames at each state's top-left square, shown on hover like the other packed maps. Only 2004; other RS years
+  keep circles. Then a second pasted layout (J&K and Ladakh one square left, three UP squares moved). Then (owner trial): circles in the same spots (RS_ROUND = true) - owner went back to squares (RS_ROUND = false). 
+  >>> Then (owner): the squares map for EVERY Rajya Sabha year, same positions (RS_TILES = all RS years; every year's
+  seat counts fit RS_BIG exactly; 2014+ fill Telangana and Andhra separately, the 11 + 7 note only before 2014). The
+  old circles code (rsPack, rsCircles...) stays, unused. Legend swatches 2px-rounded squares like Senate Seats
+  (legShape "r2"); legend and aria text say squares. Names sit as far from the squares as Lok Sabha's (rsTileNames g
+  .15, pad .1; were .06, .03). MORPH (owner: "lsabha squares need to grow or disappear"): every Rajya Sabha square IS one
+  of its state's squares on Lok Sabha / States / Chief Ministers (same cells; lsCell picks them in reading order, every
+  state has enough). Arriving: the RS square starts exactly over its square (spot, size, colour, square or circle), that
+  square hides at once, then it moves, grows and recolours (.6s); the state's other squares shrink to nothing. Leaving:
+  the reverse (RS squares shrink onto their squares, take their colour/shape, hand over at .62s; the others grow from
+  nothing). Code: inBig, lsSpot, rsPairs, jump(); renderRS no longer greys/hides the dots. Checked: no stuck squares after
+  rapid switching; Lok Sabha/States/CM end with 543 squares, Rajya Sabha 238. 
+- LOCAL, NOT COMMITTED (2026-11-09): States / Chief Ministers years = the Lok Sabha years and the midpoints: 2004, 2006,
+  2009, 2011, 2014, 2016, 2019, 2021, 2024, 2026 (ST_YEARS; was every third year 2004-2025). ST / CM already held every
+  year 2004-2026, so no data changed. Each India view keeps its own year (IN_PICK, defaults IN_DEFAULT: Lok Sabha 2024,
+  Rajya Sabha 2024, States 2026); the play tour sets it too. States opens on Chief Ministers (stMode "cm"). Picking India
+  in the country menu opens State Chief Ministers 2026 (was Lok Sabha 2024 seats), all India years back on defaults.
+  The page with no #hash still opens on USA Governors. Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
