@@ -2417,6 +2417,14 @@ STATUS / NEXT
   Renamed to M.padCells. Then checked every country / race / view / year on desktop and phone: no
   errors, India 543 squares in distinct cells everywhere, no side-scroll. Lesson: grep a map option
   name across PACK_US and PACK_IN before adding one.
+- Live, pushed 2026-11-09 on the owner's say-so: legend markers take the map's shape (owner). legShape(id, shape) with
+  LEG_SHAPE: sq (sharp square), c (circle, rect rx 6.5), r2 (2px-rounded square), t2 (2px-rounded tall 8x14
+  rectangle, like Senate Seats' tiles); margin swatches (.sw) follow. All legend circles are now rects.
+  President, House, Governors, Lok Sabha, Chief Ministers: squares. Senate All / Representation, States
+  Seat share: circles. Senate Seats: r2, a full square (owner: not half width, just rounded corners; re-applied after the projected keys are rebuilt; t2 left unused). Rajya Sabha: r2
+  (owner asked for it ahead of the planned Rajya Sabha tiles; the map still draws circles for now).
+  Senate's grey House-district key keeps its square (data-keep). Pending owner choices: Rajya Sabha tile
+  style (fill the block vs one square per seat); Senate Seats note still says "circles".
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
