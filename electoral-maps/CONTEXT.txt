@@ -49,7 +49,7 @@ square cartograms, NYT-style: one square per electoral vote / seat.
           (2004, 2009, 2014, 2019, 2024) and Seat share / Vote share (all four
           years). See LOK SABHA 2024 RESULTS and EARLIER ELECTIONS.
         - States: each state's ASSEMBLY seats drawn on its Lok Sabha squares,
-          2004-2024. See STATES VIEW.
+          every third year 2004-2025. See STATES VIEW.
         - Rajya Sabha: grey Lok Sabha map + one circle per elected RS seat
           (like the Senate view), 2004-2024. See RAJYA SABHA VIEW.
 
@@ -545,7 +545,9 @@ UI (panel-states): tally = MLAs (NDA / Others / INDIA, with BJP/allies and
   Congress/allies sub-lines), five-part bar, "4,123 MLAs in 31 assemblies",
   map #map-states, legend. No majority marker. Year stepper shows 2024 only
   for now (arrows disabled); no seat/vote share toggle. (Since 2026-10-23:
-  2004-2026 with 2025 and 2026; see HISTORY.)
+  2004-2026 with 2025 and 2026; since 2026-11-07 the stepper shows every
+  third year only: 2004, 2007, 2010, 2013, 2016, 2019, 2022, 2025 (ST_YEARS);
+  ST / CM data for the other years is kept. See HISTORY.)
 2024 groups per state (sum = assembly size; checked):
   AP 8/156/11/0/0 (TDP 135, JSP 21; YSRCP 11)   AR 46/8/5/0/1
   AS 60/15/21/1/29   BR 74/48/7/95/19   CG 54/0/1/0/35   GA 20/2/4/3/11
@@ -2313,6 +2315,103 @@ STATUS / NEXT
   2008-2026, solid governor blocks). Keep the commit rule.
 - Live also has, pushed 2026-11-07 on the owner's say-so: the state click switched OFF (OVER_ON=false), code kept
   for later. Keep the commit rule.
+- LOCAL, NOT COMMITTED (2026-11-07): States / Chief Ministers stepper now every
+  third year 2004-2025 (ST_YEARS = 2004, 2007 ... 2025; was every year 2004-2026).
+- LOCAL, NOT COMMITTED (2026-11-07): Lok Sabha TIGHT TRIAL, 2004 only (both Seats and
+  Vote share). IN_TIGHT {code: [[x,y],...]}: the states interlock like a jigsaw with one
+  square of white between neighbours (like the US tight layout), all on ONE integer grid.
+  renderIn sets PACK_IN.fixed = IN_TIGHT and packs with cache key "tight" for loksabha+2004,
+  else IN_COMPACT / "all"; switching year slides the squares between the two.
+  Third pass (same day; the owner's second pass was too short and wide, they circled IN_COMPACT
+  and asked for that India shape): drawn BY HAND inside IN_COMPACT's own outline, closed and
+  scaled 0.88 across / 0.96 down so 543 squares with one-square gaps fill it (44 x 46 squares).
+  Keeps the J&K knob, the narrow Punjab / HP / Delhi / UK neck, Rajasthan's and Gujarat's bulges
+  west (Gujarat's mouth: Kutch, the gulf, Saurashtra), a straight west coast (MH, Goa, KA, KL),
+  the east coast slanting down AP to TN's tip (TN southernmost), Bengal and the North East as
+  lobes. Fits: TS in AP's cup (AP's arm up TS's east, its body below), CG beside MP, OD between
+  CG and JH (as on IN_COMPACT), JH under BR, BR inside WB's curve, KL down the coast beside TN.
+  UK and DL swapped vs IN_COMPACT (UK at the top of the neck, DL beside Haryana). Small UTs and
+  the North East placed roughly, left for later. The KA / AP hole is gone.
+  Checked: 543 squares, counts match, every state in one piece, no two states closer than one
+  square, the page puts every square on its cell, all names place, phone width no side-scroll.
+  OWNER VERDICT (2026-11-07, third pass): "actually not bad" - the shape is approved as the
+  base. Keep this third-pass IN_TIGHT; still needs FINE TUNING before it is final. Not to be
+  committed yet (owner will say when).
+  Next: fine-tune (the NE and small UTs first, then whatever the owner flags), then roll out
+  to other years / views (owner: NOT yet - 2004 Lok Sabha only).
+- LOCAL, NOT COMMITTED (2026-11-08): Lok Sabha state blocks exported as SVGs, each state ONE
+  colour: loksabha-2004-svgs/ (IN_TIGHT layout) and loksabha-2009-svgs/ (IN_COMPACT, as the
+  page draws 2009). One SVG per state (outline path, 20 units a square), all-states.svg,
+  all-states-squares.svg. Colour = the alliance with the most seats in the state's LS_HIST
+  region: orange #f26a1b NDA (BJP + allies), blue #1f93e6 UPA (INC + allies), green #3a9d5d
+  Others. JK+LA and AP+TS share their undivided region; DD = DM + DN. Seat ties go to the
+  bloc ahead in LS_VOTE_HIST squares: 2004 JK/LA UPA, GA NDA, MN Others, ML UPA; 2009 GA NDA.
+  2004 DD (1 Others, 1 UPA) is tied on votes too: blue (UPA), the owner's pick (2026-11-08).
+  Built by a scratch Python script reading index.html (not committed).
+- LOCAL, NOT COMMITTED (2026-11-09): Lok Sabha 2004 TIGHT, FOURTH PASS from the owner's Figma
+  "Personal" node 3583:14734 (drawn on the third pass, 20px a square). IN_TIGHT replaced cell for cell
+  (read off the frame's screenshot on its 20px grid, blocks matched to states by seat count and place;
+  the frame's colours were not the page's, so only positions were used). Every state count matches,
+  one square of white between all neighbours. Note: the 7-square block right under HP is Delhi and
+  the 5-square one above UP is Uttarakhand (counts decide). NEW: IN_TIGHT_PAD, 9 grey filler squares
+  around J&K and Ladakh (not seats; owner: "retain that for balance to the geo map"), drawn in
+  #map-india .in-pad (var(--house), the seats' white edge), counted in the map's size by packOnce
+  (M.pad), fading out in every other year. Seats keep their per-square white stroke (owner: the
+  Figma is solid, the page is not). Checked: 543 squares, phone width no side-scroll, pad off in 2009.
+  Same day: the legend sat ~2px under Tamil Nadu (the new shape reaches lower): .mapwrap.in.tight
+  (toggled in renderIn while the 2004 tight layout shows) adds 28px to the -4% pull. Gap now 30px web,
+  42px phone; other years unchanged (2009: 23px).
+  Same day, owner: "extend the map structure to all years in LSabha". renderIn: tight = race ===
+  "loksabha" (any year, Seats and Vote share); Rajya Sabha and States keep IN_COMPACT (the squares
+  slide between the two when switching race; pad and legend room only on Lok Sabha). Checked: every
+  year 2004-2024 and Vote share put 543 squares on the same cells, legend gap 30px web.
+  Same day: owner re-drew Bengal's nook in the same Figma frame; IN_TIGHT re-read from it. Only WB
+  changed (one square on its neck: the stem now widens to two a row earlier). 543 squares, no touching.
+  Same day, owner: "update all the chief ministers maps using the updated LS map and positions".
+  renderIn: tight = race === "loksabha" || cm, so States > Chief Ministers (every year 2004-2025) uses
+  IN_TIGHT with the grey pad and the legend room; Rajya Sabha and States > Seat share keep IN_COMPACT.
+  Checked: every CM year puts the 543 squares exactly where Lok Sabha does. Open question for the
+  owner: on CM the pad's light grey sits beside the "No state assembly" grey (pad is lighter, drawn
+  as separate squares).
+  Answered same day: on Chief Ministers the pad is SOLID light grey (.in-pad.solid: stroke = var(--house),
+  like the state blocks); Lok Sabha keeps per-square white edges. inPad(pk, cm) toggles it.
+  Same day, owner: "update the states seats accordingly to the updated chief ministers" (seat share
+  percentage, the circles fitted into the CM state blocks). renderIn: tight = race !== "rajyasabha",
+  so States > Seat share, every year 2004-2025, puts its circles on the same IN_TIGHT cells as the
+  CM blocks (still the state's assembly seat share, as before). The pad there is grey dots the size of
+  the seat dots (inPad(pk, solid, round)). Only Rajya Sabha keeps IN_COMPACT. Checked: all eight
+  Seat share years match Lok Sabha / CM cell for cell.
+  Same day, owner: "do the same thing for Rajya Sabha all years". renderIn: tight = true (every India
+  view); rsCompact centres each Rajya Sabha block of circles on its IN_TIGHT shape (was IN_COMPACT),
+  then pushes blocks apart as before (RS_NUDGE kept). Checked: 233 circles every year 2004-2024, no
+  overlaps, 31 names. The grey pad fades on Rajya Sabha (its bigger circles reach into it; the space
+  stays). IN_COMPACT is no longer used by any view (kept in the code).
+  Same day, owner: before the split, Telangana's block is labelled Andhra Pradesh / AP too. AP_ONE
+  (set in renderIn from the year's data: no TS key = undivided) makes inFull / PACK_IN.name give TS
+  AP's name; pack cache key gets "-ap1". Undivided: Lok Sabha 2004-2014 (the April 2014 election),
+  Rajya Sabha 2004-2009, States 2004-2013; Telangana from LS 2019, RS 2014, States 2016 on the stepper.
+  Same day, owner: pre-split format for AP / Telangana / Tamil Nadu, Lok Sabha only (Figma node
+  3583:16403). IN_TIGHT_AP1 = IN_TIGHT with AP + TS as ONE 42-square block (TS = its top 17 squares,
+  TS's name hidden so the block reads AP once), TN re-drawn below it, PY one square east. Used when
+  race is loksabha and AP_ONE (2004, 2009, 2014; pack cache key "tight-ls1"). The frame had 40 squares
+  for TN (544 in all): the east end of TN's sixth row was dropped - ASK the owner if that's the right
+  square. Rajya Sabha and States keep IN_TIGHT. Checked: 543 squares, tallies right, no states touching.
+  Same day, owner: "split it at 2014 too. 2013 and before should be together". LS_HIST 2014 now has AP 25
+  [BJP 2, TDP 15, Oth 8 (YSRCP)] and TS 17 [BJP 1, TDP 1, Oth 13 (TRS 11, YSRCP 1, AIMIM 1), INC 2] (was one
+  AP 42 [3,16,21,0,2]); LS_VOTE_HIST 2014 AP [2,10,12,0,1] + TS [2,2,9,0,4] (was AP [4,12,21,0,5]; split
+  from approximate 2014 vote shares typed from memory - least certain). So AP_ONE / IN_TIGHT_AP1 now
+  apply to Lok Sabha 2004 and 2009 only; 2014 uses IN_TIGHT with Telangana named. National tallies
+  unchanged. Tamil Nadu checked every LS year: 39 squares in both layouts, map = data in Seats and
+  Vote share; note the Left in TN is Others in 2004/2009/2019 but INDIA allies in 2024.
+  Same day, owner: the same AP / Telangana split on States (Seat share and Chief Ministers). ap1 =
+  race !== "rajyasabha" && AP_ONE, so States 2004-2013 (undivided assembly, INC CM) use IN_TIGHT_AP1's
+  one Andhra block, named AP once; 2014 on (2016 on the stepper) use IN_TIGHT with the split results
+  already in ST / CM (e.g. 2014 AP TDP 102 + BJP 4, YSRCP & others 69; TS TRS & others 78, INC 21,
+  TDP 15, BJP 5). Rajya Sabha keeps IN_TIGHT with the AP labels only. Checked every States year.
+  COMMITTED AND PUSHED 2026-11-09 on the owner's say-so: index.html and CONTEXT.txt, i.e. everything
+  marked LOCAL above (stepper every third year, the tight layout and all of 2026-11-09). The SVG export
+  folders (loksabha-2004/2009-svgs, governors-2008-svgs, house-temp-svgs, president-2024-svgs) stay
+  local and uncommitted. Keep the commit rule.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
