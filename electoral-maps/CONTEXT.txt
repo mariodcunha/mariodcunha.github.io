@@ -2757,13 +2757,16 @@ STATUS / NEXT
   in lsRegionRects order = LS_GEO order) from ls-constituency/ lsgeo.json + 2014-2024/lsgeo2.json, spellings tidied
   ("Bhandara-Gondiya", "Mumbai North", "North East Delhi", "Andaman & Nicobar Islands"). Undivided AP years read "AP";
   J&K years without Ladakh read "Ladakh, JK". seatHover() next to distHover().
-- LOCAL, NOT COMMITTED (2026-11-10): India names on desktop: the full name where the state's squares hold it, else the
+- Live, pushed 2026-11-10: India names on desktop: the full name where the state's squares hold it, else the
   phone codes (inThree: UP MP AP HP TN J&K A&N D&D, or first three letters + ".": MAH. KAR. HAR. BEN. ASM.); the 4-letter
   forms (IN_SHORT: Maha. Karn. Hrya. Uttr. ...) are gone. PACK_IN.name = inThree. Checked Lok Sabha, Rajya Sabha, States:
   no 4-letter names, no overlaps (Lok Sabha 2024 at 1169px).
-- LOCAL, NOT COMMITTED (2026-11-10): Lok Sabha hover label's state = the map's short code, in capitals (owner):
+- Live, pushed 2026-11-10: Lok Sabha hover label's state = the map's short code, in capitals (owner):
   "Bidar, KAR.", "Kairana, UP", "Nizamabad, TEL.", "Baramulla, J&K", "Mangaldoi, ASM."; DNH and Daman & Diu read D&D.
   inThree(code).toUpperCase() in seatHover (undivided-AP years give AP).
+- LOCAL, NOT COMMITTED (2026-11-10): Play tour (USA) adds House margins after House results, 2008-2026 (owner):
+  President results, margins; House results, margins; Senate ...; Governors results, margins. playHere now matches House
+  steps by colorMode too.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

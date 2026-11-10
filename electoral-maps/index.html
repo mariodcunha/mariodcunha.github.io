@@ -2606,7 +2606,7 @@ function playSteps(){
     pass("states",ST_YEARS,{st:"seats"}); pass("states",ST_YEARS,{st:"cm"});
     return list}
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
-  pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS);
+  pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS); pass("house","margins",US_YEARS);   // House margins after results (owner, 2026-11-10)
   if(!senSeatsOnly.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
   pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
   pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
@@ -2618,10 +2618,10 @@ function playGo({race,mode,year,sen,ls,st}){
   // a new race: show() alone draws it in that year (and moves the stepper). Calling stepOnPick too re-rendered the map
   // straight away, which cut off the Senate Seats / Representation morphs mid-way (owner, 2026-11-07)
   colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race!==current) show(race,true); else stepOnPick(year)}
-// the step that matches the view on show (House has no margins; of the Senate views only Seats does)
+// the step that matches the view on show (of the Senate views only Seats has margins)
 const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
   playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
-  (s.race==="house"||s.race==="senate"&&senMode!=="seats"||s.mode===colorMode));
+  (s.race==="senate"&&senMode!=="seats"||s.mode===colorMode));
 async function startPlay(){
   playing=true; renderPlay(); if(countryOf(current)==="usa") senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);
   for(;;){await playWait(playStep); if(++playAt>=playList.length) break; playGo(playList[playAt])}
