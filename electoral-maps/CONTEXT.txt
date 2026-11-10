@@ -2612,6 +2612,22 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): TOGGLES SAY "%" (owner): Lok Sabha Results / Seat % / Vote %, States Seat % / Chief
+  Ministers. Only the toggle buttons: labels, legends and sentences keep "seat share" / "vote share" (e.g. "Lok Sabha vote
+  share", "State seat share", "Squares split each state by vote share").
+- COMMITTED (2026-11-09): NEVER A TWO-LINE TOP BAR (owner). If the desktop top bar still wraps with short labels
+  (Play or the country picker pushed to a second line), the page switches to the phone layout instead. The phone breakpoint
+  is now BP (starts 775px, only ever raised): fit() calls raiseBP(innerWidth) when the short bar still wraps (not while
+  fonts are loading), which rewrites every @media rule written for 775 / 776px (BP_RULES) and fires the change listeners.
+  narrow, phone and senSeatsOnly are mq() stand-ins for matchMedia ({matches, addEventListener("change")}, checked on
+  resize). #play's class is watched too (it widens while the tour runs). With today's labels nothing wraps above 775 in
+  any view, playing included (checked 778 / 790); the fallback was tested by forcing the country button to 220px at 778:
+  phone layout, and back to desktop at 1000.
+- COMMITTED (2026-11-09): SENATE SEATS ONLY BELOW 908px (owner). senSeatsOnly = matchMedia max-width 907px
+  (the width where the full Senate top bar starts to need short labels). There, as on phones, the All / Representation
+  toggle (#sen-view) is hidden and the Senate shows Seats with Results / Margins; crossing 907px re-renders (Seats is kept
+  going up, the toggle comes back). The play tour skips All / Representation there too. narrow (775px) still drives the
+  phone-only Senate details (shades, names). Checked 850 (Seats only, full labels fit) and 950 (toggle back).
 - COMMITTED (2026-11-09): SHORT TOP-BAR LABELS + MOBILE BREAKPOINT 640 -> 775 (owner). When the desktop top bar
   would wrap, .topbar gets class "short": every button NOT selected shows a short label (.lbl-s; full name kept in .lbl-f and
   aria-label): President P, House H, Senate S, Governors G, Lok Sabha LS, Rajya Sabha RS (States stays States); Results R,

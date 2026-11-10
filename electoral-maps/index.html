@@ -380,11 +380,11 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="geo" aria-pressed="true">Results</button>
-      <button type="button" data-ls="seat" aria-pressed="false">Seat share</button>
-      <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
+      <button type="button" data-ls="seat" aria-pressed="false">Seat %</button>
+      <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
     </div>
     <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
-      <button type="button" data-st="seats" aria-pressed="true">Seat share</button>
+      <button type="button" data-st="seats" aria-pressed="true">Seat %</button>
       <button type="button" data-st="cm" aria-pressed="false">Chief Ministers</button>
     </div>
   </div>
@@ -559,7 +559,22 @@ function legShape(id,shape){const L=document.getElementById("legend-"+id), g=LEG
     e.style.width=shape==="t2"?"8px":""; e.style.margin=shape==="t2"?"0 3px":""})}
 legShape("rajyasabha","r2");   // Rajya Sabha draws 2px-rounded squares in every year, like Senate Seats' legend (owner, 2026-11-09)
 let colorMode="results";
-const narrow=matchMedia("(max-width:775px)");
+// Phone layout breakpoint (owner, 2026-11-09): 775px, raised at run time (never lowered) to the current width whenever the
+// desktop top bar would still wrap with short labels, so Play or the country picker never drop to a second line: the page
+// goes to the phone layout instead. BP_RULES = the stylesheet's @media rules written for 775 / 776px, rewritten to BP.
+// narrow / phone / senSeatsOnly are small stand-ins for matchMedia lists ({matches, addEventListener("change")}).
+let BP=775; const MQS=[];
+function mq(test){const o={get matches(){return test()},fs:[],addEventListener(t,f){o.fs.push(f)}}; o.last=test(); MQS.push(o); return o}
+function mqCheck(){MQS.forEach(o=>{const m=o.matches; if(m!==o.last){o.last=m; o.fs.forEach(f=>f())}})}
+addEventListener("resize",mqCheck);
+const BP_RULES=[]; {const walk=rules=>{for(const r of rules){if(r.media&&/77[56]px/.test(r.media.mediaText)){r._t=r.media.mediaText; BP_RULES.push(r)} if(r.cssRules) walk(r.cssRules)}};
+  for(const sh of document.styleSheets){try{walk(sh.cssRules)}catch(e){}}}   // the Google Fonts sheet is cross-origin: skipped
+function raiseBP(px){if(px<=BP) return; BP=px;
+  for(const r of BP_RULES) r.media.mediaText=r._t.replace(/775px/g,BP+"px").replace(/776px/g,BP+1+"px"); mqCheck()}
+const narrow=mq(()=>innerWidth<=BP);
+// Senate is Seats only (no All / Representation toggle) on phones and wherever the full Senate top bar would not fit on one
+// line, i.e. the short-label widths just above the phone layout (owner, 2026-11-09)
+const senSeatsOnly=mq(()=>innerWidth<=Math.max(907,BP));
 const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
 const marginsOn=race=>colorMode==="margins";   // phones too, Senate included (owner, 2026-11-07)
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
@@ -1350,7 +1365,7 @@ let usStage=0;
 function setUS(race,animate,year=usYear(race)){
   // a state over time on show: the Results / Margins toggle recolours it; anything else takes the map back first
   if(over){if(animate&&race===over.race&&year===over.year){setUSNow(race,animate,year); overPaint(); return} overExit(animate)}
-  if(narrow.matches) senMode="seats";   // phones (owner, 2026-11-07): Senate is Seats only, with Results / Margins
+  if(senSeatsOnly.matches) senMode="seats";   // phones and short-label widths (owner, 2026-11-07 / 11-09): Senate is Seats only, with Results / Margins
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
   if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
   return setUSNow(race,animate,year);
@@ -1528,7 +1543,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
   document.getElementById("pres-view").hidden=true;   // USA: Compact only
   // 2026: legend for the races on the ballot
-  document.getElementById("sen-view").hidden=race!=="senate"||narrow.matches;   // phones: Seats only, no view toggle
+  document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches;   // phones / short labels: Seats only, no view toggle
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):""});
   if(race==="senate") legShape("senate",senMode==="seats"?"r2":"c");   // the projected keys just written take the shape too
     panel.setAttribute("aria-labelledby","tab-"+race);
@@ -2427,7 +2442,7 @@ function show(race,animate){
   // year stepper for every race (Governors: 2024 only for now); seat/vote share only for Lok Sabha
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=race!=="loksabha";
-  document.getElementById("sen-view").hidden=race!=="senate"||narrow.matches;
+  document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches;
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=race!=="states";
@@ -2455,6 +2470,7 @@ narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shad
   for(const k in PACK_US.PL){const e=PACK_US.PL[k]; e.t.style.fontSize=PACK_US.fs+"px"; e.r.setAttribute("height",PACK_US.h); e.r.setAttribute("y",-PACK_US.h/2)}
   PACK_IN.cache={}; for(const y in RS_OUT_YEAR) delete RS_OUT_YEAR[y];
   if(countryOf(current)==="usa") setUS(usRace,false); else renderIn(false,true)});
+senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(current)==="usa") setUS("senate",false)});   // crossing 907px: Senate to Seats only, or its toggle back
 [usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));   // phones: tap the map to show or hide the state labels
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
@@ -2531,7 +2547,7 @@ function playSteps(){
     return list}
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
   pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS);
-  if(!narrow.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
+  if(!senSeatsOnly.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
   pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
   pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
   return list;
@@ -2562,7 +2578,7 @@ renderPlay();
 renderPlay();
 document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,.country")) pausePlay()},true);
 document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play,.country")) pausePlay()},true);
-const mini=document.getElementById("mini"), phone=matchMedia("(max-width:775px)"), topbar=document.querySelector(".topbar");
+const mini=document.getElementById("mini"), phone=narrow, topbar=document.querySelector(".topbar");
 function cloneNoIds(n){const c=n.cloneNode(true); if(c.nodeType===1){c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))} return c}
 function patch(dst,src){
   if(dst.nodeType!==src.nodeType||dst.nodeName!==src.nodeName||dst.childNodes.length!==src.childNodes.length){dst.replaceWith(cloneNoIds(src));return}
@@ -2610,9 +2626,12 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
  let busy=false;
  const fit=()=>{if(busy) return; busy=true; const was=bar.classList.contains("short");
    bar.classList.remove("short"); if(!narrow.matches&&wraps()) bar.classList.add("short");
+   // still two lines with short labels (Play or the country picker pushed down): phone layout from this width up
+   if(bar.classList.contains("short")&&wraps()&&document.fonts?.status!=="loading"){bar.classList.remove("short"); raiseBP(innerWidth)}
    const t=tabs.find(t=>t.getAttribute("aria-selected")==="true"); if(t) moveThumb(t,was===bar.classList.contains("short"));
    busy=false};
  new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
+ new MutationObserver(fit).observe(document.getElementById("play"),{attributes:true,attributeFilter:["class"]});   // Play widens while the tour runs
  addEventListener("resize",fit); document.fonts?.ready.then(fit); fit()}
 show(location.hash.slice(1),false);
 // Loader: off once the page (fonts included) has loaded and the first map has painted; never longer than 10 s
