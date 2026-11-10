@@ -2592,7 +2592,9 @@ STATUS / NEXT
   year 2004-2026, so no data changed. Each India view keeps its own year (IN_PICK, defaults IN_DEFAULT: Lok Sabha 2024,
   Rajya Sabha 2024, States 2026); the play tour sets it too. States opens on Chief Ministers (stMode "cm"). Picking India
   in the country menu opens State Chief Ministers 2026 (was Lok Sabha 2024 seats), all India years back on defaults.
-  The page with no #hash still opens on USA Governors. Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+  The page with no #hash still opens on USA Governors. 
+- LOCAL, NOT COMMITTED (2026-11-09): fixed a black square at the map's top-left on India views before Rajya Sabha was
+  first opened: inBig made the 238 Rajya Sabha rects with no fill or opacity; they are now born at opacity 0. Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).

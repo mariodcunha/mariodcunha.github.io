@@ -1733,7 +1733,7 @@ function inBig(pk,on,year){
   const data=on&&pk&&RS[year], done=new Set(), was=IN_BIG.on, from=IN_BIG.last, fromSq=IN_BIG.sq; if(pk) IN_BIG.pk=pk;
   IN_BIG.on=!!data; IN_BIG.last=pk; IN_BIG.sq=inSvg.classList.contains("sq");
   const W=(RS_P-RS_SQ_GAP)*S;
-  for(const k in RS_BIG) IN_BIG_R[k]??=RS_BIG[k].map((_,i)=>Object.assign(el("rect",{width:W,height:W},IN_BIG),{_k:k,_i:i}));
+  for(const k in RS_BIG) IN_BIG_R[k]??=RS_BIG[k].map((_,i)=>Object.assign(el("rect",{width:W,height:W,style:"opacity:0"},IN_BIG),{_k:k,_i:i}));   // born hidden: drawn before Rajya Sabha is ever shown, they sat black at the corner
   const rects=Object.values(IN_BIG_R).flat();
   const dots=Object.keys(RS_BIG).flatMap(k=>LS_RECTS[k].map(r=>ST_DOT.get(r)));
   // leaving
