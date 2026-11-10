@@ -2764,9 +2764,11 @@ STATUS / NEXT
 - Live, pushed 2026-11-10: Lok Sabha hover label's state = the map's short code, in capitals (owner):
   "Bidar, KAR.", "Kairana, UP", "Nizamabad, TEL.", "Baramulla, J&K", "Mangaldoi, ASM."; DNH and Daman & Diu read D&D.
   inThree(code).toUpperCase() in seatHover (undivided-AP years give AP).
-- LOCAL, NOT COMMITTED (2026-11-10): Play tour (USA) adds House margins after House results, 2008-2026 (owner):
+- Live, pushed 2026-11-10: Play tour (USA) adds House margins after House results, 2008-2026 (owner):
   President results, margins; House results, margins; Senate ...; Governors results, margins. playHere now matches House
   steps by colorMode too.
+- LOCAL, NOT COMMITTED (2026-11-10): Uttar Pradesh reads "UP" everywhere (owner): INDIA's name for UP is "UP" and
+  IN_FULL.UP = "UP", so no view prints the full name (Lok Sabha, Rajya Sabha, States, Chief Ministers; hover already UP).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
