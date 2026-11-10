@@ -381,7 +381,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
-      <button type="button" data-ls="geo" aria-pressed="true">Results</button>
+      <button type="button" data-ls="geo" aria-pressed="true">Seats</button>
       <button type="button" data-ls="seat" aria-pressed="false">Seat %</button>
       <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
     </div>
@@ -2621,7 +2621,7 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 // Short labels: P / H / S / G, LS / RS, R / M ... for the buttons not selected, only when the full top bar would wrap
 {const SHORT={president:"P",house:"H",senate:"S",governors:"G",loksabha:"LS",rajyasabha:"RS",
-   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:geo":"R","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"CMs"};
+   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"CMs"};
  const bar=document.querySelector(".topbar");
  bar.querySelectorAll(".toggle button,.subtoggle button").forEach(b=>{
    const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];

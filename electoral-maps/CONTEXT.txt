@@ -2612,6 +2612,8 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): Lok Sabha's first toggle "Results" renamed "Seats" (owner); data-ls / lsMode stay "geo".
+  No short form (Seats is short already): the toggle reads Seats / Seat % / Vote % at every width.
 - COMMITTED (2026-11-09): INDIA PHONE NAMES = THREE LETTERS (owner), like the USA's two-letter codes on phones.
   inThree(k): acronyms kept (UP MP AP HP TN, J&K A&N D&D), Goa, Assam "Asm.", West Bengal "Ben.", every other state its
   first three letters + "." (KAR. MAH. GUJ. TEL. LAD. ...). On phones PACK_IN.name and inFull both return it, so no full
