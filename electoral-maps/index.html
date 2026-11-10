@@ -20,7 +20,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{background:#fff}
+html,body{background:#fff} html{overflow-x:clip}   /* the edge-to-edge India map's frame runs past the screen: no side-scroll */
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans)}
 main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:grid;gap:22px}
 
@@ -62,7 +62,7 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 .menu li[aria-selected="true"]::after{content:"✓";margin-left:auto;padding-left:12px;color:var(--fg)}
 .cand.n b,.cand.n span{color:var(--fg)}
 svg.india .seat-sq{fill:var(--seat-empty);stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
-svg.india{max-width:940px;margin:0 auto}
+svg.india{max-width:940px;margin:0 auto} #panel-in,.mapwrap.in{min-width:0}   /* fitIndia's wider svg must not widen the page */
 svg.india text{font-size:14px}
 #map-india rect.seat-sq{display:none}
 /* India: one rounded rect per Lok Sabha square for every view, so switching views morphs the map (like the US).
@@ -2629,11 +2629,27 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
    // still two lines with short labels (Play or the country picker pushed down): phone layout from this width up
    if(bar.classList.contains("short")&&wraps()&&document.fonts?.status!=="loading"){bar.classList.remove("short"); raiseBP(innerWidth)}
    const t=tabs.find(t=>t.getAttribute("aria-selected")==="true"); if(t) moveThumb(t,was===bar.classList.contains("short"));
-   busy=false};
+   fitIndia(); busy=false};
  new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
  new MutationObserver(fit).observe(document.getElementById("play"),{attributes:true,attributeFilter:["class"]});   // Play widens while the tour runs
  addEventListener("resize",fit); document.fonts?.ready.then(fit); fit()}
-show(location.hash.slice(1),false);
+// India map edge to edge (owner, 2026-11-09): only while the top bar shows its short labels (.topbar.short) and on phones, the map is sized so
+// its outermost squares (Lok Sabha / States layout, the same for every India view) line up with the top bar's edges, as
+// the USA map does. Wider screens keep the map as it was (max 940px, centred), so the squares don't get too big.
+function fitIndia(){
+  const svg=inSvg, on=narrow.matches||document.querySelector(".topbar").classList.contains("short");
+  if(!on){svg.style.width=svg.style.maxWidth=svg.style.marginLeft=""; return}
+  let lo=1e9, hi=-1e9;
+  for(const d of ST_DOT.values()){const m=new DOMMatrix(d.parentNode.style.transform||"none"), x=+d.getAttribute("x"), w=+d.getAttribute("width"), pad=(20-w)/2;
+    lo=Math.min(lo,m.a*(x-pad)+m.e); hi=Math.max(hi,m.a*(x+w+pad)+m.e)}
+  const vb=svg.viewBox.baseVal, main=document.querySelector("main"), ms=getComputedStyle(main),
+    cw=main.clientWidth-parseFloat(ms.paddingLeft)-parseFloat(ms.paddingRight), x0=main.getBoundingClientRect().left+parseFloat(ms.paddingLeft),
+    left=svg.parentNode.getBoundingClientRect().left-x0;   // the map's box may start a little inside the content edge
+  if(!cw||!(hi>lo)) return;
+  const k=cw/(hi-lo); svg.style.maxWidth="none"; svg.style.width=vb.width*k+"px"; svg.style.marginLeft=-(lo-vb.x)*k-left+"px";
+}
+addEventListener("resize",fitIndia); narrow.addEventListener("change",()=>requestAnimationFrame(fitIndia)); document.fonts?.ready.then(fitIndia);
+show(location.hash.slice(1),false); fitIndia();
 // Loader: off once the page (fonts included) has loaded and the first map has painted; never longer than 10 s
 {const L=document.getElementById("loader"), off=()=>{if(!L.isConnected||L.classList.contains("out")) return;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{L.classList.add("out"); setTimeout(()=>L.remove(),400)}))};

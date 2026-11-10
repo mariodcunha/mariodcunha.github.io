@@ -2612,6 +2612,12 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): INDIA MAP EDGE TO EDGE WHEN NARROW (owner). Only while the top bar shows short labels
+  (.topbar.short, so it depends on the view: Rajya Sabha shortens only far narrower) and on phones, fitIndia() sizes #map-india inline (width, margin-left, max-width none) so the outermost Lok Sabha / States
+  squares (ST_DOT cells, through their group transforms) sit exactly on the content edges, like the USA map: checked 16-834
+  at 850px and 16-359 on a 375px phone. Full labels: unchanged (max 940px, centred), so squares don't get too big. Runs on
+  resize, fonts ready, phone switch and start. #panel-in / .mapwrap.in min-width:0 and html overflow-x:clip stop the wider
+  frame from widening or side-scrolling the page. Rajya Sabha uses the same scale (its seats sit a little inside).
 - COMMITTED (2026-11-09): TOGGLES SAY "%" (owner): Lok Sabha Results / Seat % / Vote %, States Seat % / Chief
   Ministers. Only the toggle buttons: labels, legends and sentences keep "seat share" / "vote share" (e.g. "Lok Sabha vote
   share", "State seat share", "Squares split each state by vote share").
