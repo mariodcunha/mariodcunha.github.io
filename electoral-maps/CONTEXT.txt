@@ -23,11 +23,6 @@ Update HISTORY and STATUS whenever work lands.
 TO DO (for later; owner's list, started 2026-11-09)
 -----
 Tick off or delete an item when it lands, and log it in HISTORY.
-[ ] House: real district placement, every year 2008-2026. Today no year is geographic: 2024 squares come
-    from CHAMBER isDem, 2008-2022 chain back from 2024 (fewest changes), 2026 is sorted by colour
-    (house26). Assign each state's squares to its districts by each district's centre, for every map in
-    use: the 2000, 2010 and 2020 census maps plus the mid-decade redraws (2026: TX, CA, NC, MO, OH, UT and
-    others). Needs district centroid data per map; check no state's look breaks.
 [ ] 2026 counts: replace the AK and MS Senate "<3" placeholders (SEN_MARGINS[2026], entered as 2) with
     real margins; refresh SEN_MARGINS, GOV_MARGINS and HOUSE_26 when counting ends; LA 5 and LA 6 runoffs.
 
@@ -2697,10 +2692,24 @@ STATUS / NEXT
   leading (NC 3, FL 27, FL 7, NC 7, SC 2, NC 10, ME 2, CA 23, AK 1), 2 no result (LA 5, LA 6 runoffs). Since Nov 5:
   one SC seat called D; 10 called R (AZ x3 incl. AZ 2, WA x2 incl. WA 5, FL 26, and one each in CO, NC, NY, UT). Big numbers now include leading seats, like
   the Senate (259 - 174); under the bar "254 called, 5 leading" / "165 called, 9 leading". Legend note updated.
-- LOCAL, NOT COMMITTED (2026-11-09): Lok Sabha Seat % tally in percent (owner): big numbers and the lines under
+- Live, pushed 2026-11-09 (b6abc87): Lok Sabha Seat % tally in percent (owner): big numbers and the lines under
   the bar are shares of the 543 seats (NDA 54.0%, INDIA 43.1%, Others 2.9% in 2024; renderLS pct / P). Seats keeps
   counts (the map shows them by constituency), Vote % unchanged; the 272 mark stays. The 136.7% / 167.0% seen earlier
   on Vote % was not a bug: a screenshot mid count-down from seat counts (293 -> 43.8%).
+- LOCAL, NOT COMMITTED (2026-11-10): HOUSE BY DISTRICT, every year 2008-2026 (owner; was the to-do). Each House square
+  is one real district, placed roughly where it lies in its state; map shapes and square positions unchanged, only colours.
+  Page data: HOUSE_MAPS[map][state] = district number per square (HSQ order), HOUSE_MAP_OF[year] = map used, HOUSE_WIN[year]
+  [state] = winner by district (d / r; 2026 also D / R leading, v = no result; 2018 NC 9 v). drawUS builds HOUSE_COL from
+  them (the old chain-back from 2024 and house26() are gone; HOUSE_26 / HOUSE_HIST stay as reference). Maps: Census
+  Gazetteer district interior points, 111th (2008, 2010), 113th (2012), 114th (2014), 115th (2016), 116th (2018), 117 =
+  116th + NC 2020 hand-set centres (HB 1029; no Census file), 118th (2022), 119th (2024), 120th (2026: new AL CA FL LA NC
+  OH TN TX UT). Winners: Wikipedia "<year> United States House of Representatives elections" (raw wikitext, the check
+  mark row), NYT results-house.json for 2026 (won, else leader; CA 4 / 7 Dem-only counted won). Square centres read off
+  the page per census layout (squares.txt), matched per state by min total squared distance after scaling both to a unit
+  box (Hungarian, as ls-constituency). Checked: every state, every year, equals HOUSE_HIST / CHAMBER 2024 / HOUSE_26;
+  tallies unchanged (2008 257-178 ... 2024 215-220, 2026 259-174). Spot checks: TX 16 (El Paso) far west, NY 1 far right.
+  Scripts + data: electoral-maps/house-district/ (winners.py, assign.py, build.py; raw/), not committed. Ready for district
+  details later (square -> district number).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
