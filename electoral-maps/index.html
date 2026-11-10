@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="caps">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -170,6 +170,8 @@ svg.map{width:100%;min-width:560px;height:auto;display:block}
 #map-india{margin-top:-3.7%} .mapwrap.in{overflow:visible;margin-bottom:-4%;transition:margin-bottom .6s var(--ease)} .mapwrap.in.tight{margin-bottom:calc(-4% + 28px)} .mapwrap.in.tight{padding-top:18px}   /* J&K and Ladakh names sit above the grey filler: room under the tally line (owner, 2026-11-09) */   /* the map fits every width, so the box needn't clip: names can rise into the pull */
 /* every state name, inside or outside its block, in every race and year: one weight, no bold (owner, 2026-10-16) */
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
+/* TRIAL (owner, 2026-11-09, may be reverted): every state name in capitals, USA and India. Revert: drop class="caps" from <html> */
+html.caps svg.map text{text-transform:uppercase}
 svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
 #map-us .plabel{transition:transform .45s var(--ease)}   /* names travel with the squares */
 svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */

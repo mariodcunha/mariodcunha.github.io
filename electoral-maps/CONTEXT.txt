@@ -2612,6 +2612,10 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): TRIAL, MAY BE REVERTED - STATE NAMES IN CAPITALS (owner). <html class="caps"> +
+  html.caps svg.map text{text-transform:uppercase}: every map name, USA and India, in capitals. Name fitting measures the
+  rendered text, so names that no longer fit their block fall back to the short form (MINN., ARIZ., HRYA. ...).
+  To revert: remove class="caps" from <html> (the CSS rule can stay or go).
 - COMMITTED (2026-11-09): INDIA MAP EDGE TO EDGE WHEN NARROW (owner). Only while the top bar shows short labels
   (.topbar.short, so it depends on the view: Rajya Sabha shortens only far narrower) and on phones, fitIndia() sizes #map-india inline (width, margin-left, max-width none) so the outermost Lok Sabha / States
   squares (ST_DOT cells, through their group transforms) sit exactly on the content edges, like the USA map: checked 16-834
