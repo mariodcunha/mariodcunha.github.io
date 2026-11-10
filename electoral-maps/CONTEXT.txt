@@ -2612,6 +2612,11 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): LOADER (owner). A white sheet (#loader, first thing in <body>, CSS in the head so it
+  paints before any text) with four House squares 22px, gap 3px: light red #f5aca6 top left, blue --dem top right, light
+  blue #a8d3f4 bottom right, red --rep bottom left. Every 0.6s they all step one place clockwise (TL->TR->BR->BL->TL; one
+  keyframe lq-cw, phase-shifted by negative delays). It fades out (.35s) once window load + document.fonts.ready have
+  fired and two frames have painted after the first show(); 10s cap. Hides the unstyled / fallback-font flash on first load.
 - COMMITTED (2026-11-09): LOK SABHA HAS THREE TABS (owner): Results | Seat share | Vote share (#ls-share,
   data-ls geo / seat / vote; lsMode, default "geo", also after a country switch). Results = one square per real constituency
   (LS_GEO) for EVERY year 2004-2024; Seat share = the old Seats view (each state filled by group in order, no constituency

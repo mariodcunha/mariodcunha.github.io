@@ -322,12 +322,26 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation:none!important}
 }
+/* Loader (owner, 2026-11-09): four House squares (light red, blue / red, light blue) chase each other clockwise, one
+   step at a time, over a white sheet until the page, its font and the first map are ready; then the sheet fades away */
+#loader{position:fixed;inset:0;z-index:1000;background:var(--bg);display:grid;place-items:center;transition:opacity .35s var(--ease)}
+#loader.out{opacity:0;pointer-events:none}
+#loader .lq{position:relative;width:47px;height:47px}
+#loader .lq i{position:absolute;left:0;top:0;width:22px;height:22px;animation:lq-cw 2.4s var(--ease) infinite}
+#loader .lq i:nth-child(1){background:#f5aca6;animation-delay:0s}      /* starts top left */
+#loader .lq i:nth-child(2){background:var(--dem);animation-delay:-.6s}  /* top right */
+#loader .lq i:nth-child(3){background:#a8d3f4;animation-delay:-1.2s}    /* bottom right */
+#loader .lq i:nth-child(4){background:var(--rep);animation-delay:-1.8s} /* bottom left */
+@keyframes lq-cw{0%,10%{transform:translate(0,0)}25%,35%{transform:translate(25px,0)}50%,60%{transform:translate(25px,25px)}
+  75%,85%{transform:translate(0,25px)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion:reduce){#loader .lq i{animation-duration:6s}}
 </style>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
+<div id="loader" role="status" aria-label="Loading"><div class="lq"><i></i><i></i><i></i><i></i></div></div>
 <div id="mini" aria-hidden="true"></div>
 <main>
   <div class="topbar">
@@ -2575,6 +2589,11 @@ addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",s
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false);
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 show(location.hash.slice(1),false);
+// Loader: off once the page (fonts included) has loaded and the first map has painted; never longer than 10 s
+{const L=document.getElementById("loader"), off=()=>{if(!L.isConnected||L.classList.contains("out")) return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{L.classList.add("out"); setTimeout(()=>L.remove(),400)}))};
+ const loaded=document.readyState==="complete"?Promise.resolve():new Promise(r=>addEventListener("load",r,{once:true}));
+ Promise.all([loaded,document.fonts?.ready]).then(off); setTimeout(off,10000)}
 </script>
 </body>
 </html>
