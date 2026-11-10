@@ -2742,7 +2742,7 @@ STATUS / NEXT
   district parsed all nine years. Spot checks: IA 2 2020 0.0 (6 votes), NY 22 2020 0.0, CO 3 2022 0.2, CA 13 2024 0.1;
   ME 2 2018 = first round (1.2). Toggle now on House every year; note adds "The vacant seat stays grey." (NC 9 2018) and
   the 2026 counts caveat only in 2026. #house-keys swatches are .base, so Margins shows the shaded keys instead.
-- LOCAL, NOT COMMITTED (2026-11-10): House hover label = "<place>, <ST> <n>" (owner), e.g. "El Paso, TX 16"; one-seat
+- Live, pushed 2026-11-10: House hover label = "<place>, <ST> <n>" (owner), e.g. "El Paso, TX 16"; one-seat
   states "Wyoming, WY at-large". HOUSE_PLACES (526 names) + HOUSE_PLACE[map][state] (index per district number), from
   house-district/scripts/names.py. 2024 / 2026: NYT seat_description, shortened (bracketed place wins: "Central Valley
   (Stockton area)" -> "Stockton"; "Parts of" dropped; at-large and blanks = state name; NYT nicknames dropped; hand
@@ -2750,6 +2750,13 @@ STATUS / NEXT
   years): each district borrows the name of the nearest 2024 district in its state by Census interior point (one-to-one
   where counts allow) - APPROXIMATE for older maps. Checked: every district every year has a name; CA 12 = San Mateo
   (2008), San Francisco (2016), Oakland/Berkeley (2024).
+- LOCAL, NOT COMMITTED (2026-11-10): Lok Sabha seat names on hover, web (owner), like the House: "Varanasi, UP" (seat
+  name, region code) centred above the map (#seat-name, shared .hover-name style: 500 13px --muted), and the hovered square
+  gets a white inner border (#map-india.sq .st-dot.hov, stroke 4.5 clipped to the square; transition-delay 0 overrides the
+  squares' inline stagger delay). Seats view only, all years 2004-2024. LS_NAMES + LS_NAME[year][region] (index per square
+  in lsRegionRects order = LS_GEO order) from ls-constituency/ lsgeo.json + 2014-2024/lsgeo2.json, spellings tidied
+  ("Bhandara-Gondiya", "Mumbai North", "North East Delhi", "Andaman & Nicobar Islands"). Undivided AP years read "AP";
+  J&K years without Ladakh read "Ladakh, JK". seatHover() next to distHover().
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
