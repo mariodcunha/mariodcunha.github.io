@@ -164,6 +164,11 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .need small.wrap{white-space:nowrap;letter-spacing:0}  /* long label (50-50 Senate): one line; two centred lines on phones */
 @media (max-width:775px){.need small.wrap{white-space:normal;width:200px}}
 .mapwrap{overflow-x:auto}
+/* House, web (owner, 2026-11-10): the district under the pointer, named above the map, centred, in the state names' type
+   (same face, weight, grey and on-screen size; sentence case, never capitals) */
+.mapwrap.us{position:relative}
+#dist-name{position:absolute;left:0;right:0;top:0;z-index:2;text-align:center;font-weight:500;color:var(--muted);line-height:1.2;pointer-events:none;opacity:0;transition:opacity .15s}
+#dist-name.on{opacity:1}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
    legend up under it); % of the width, so it scales with the map (owner, 2026-10-11) */
@@ -421,7 +426,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-pres="map" aria-pressed="false">Map</button>
       <button type="button" data-pres="packed" aria-pressed="true">Compact</button>
     </div>
-    <div class="mapwrap"><svg class="map" id="map-us" role="img"></svg></div>
+    <div class="mapwrap us"><div id="dist-name" aria-live="polite"></div><svg class="map" id="map-us" role="img"></svg></div>
     <div class="legends">
       <div class="legend" id="legend-president">
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democrat</span>
@@ -2474,7 +2479,23 @@ narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shad
   PACK_IN.cache={}; for(const y in RS_OUT_YEAR) delete RS_OUT_YEAR[y];
   if(countryOf(current)==="usa") setUS(usRace,false); else renderIn(false,true)});
 senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(current)==="usa") setUS("senate",false)});   // crossing 907px: Senate to Seats only, or its toggle back
-[usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));   // phones: tap the map to show or hide the state labels
+[usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));
+// House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "Texas’s 16th district"
+(function distHover(){
+  const box=document.getElementById("dist-name"), own=new Map(), hover=matchMedia("(hover:hover)");
+  for(const k in HSQ) HSQ[k].forEach((e,j)=>own.set(e,[k,j]));
+  const NAME={...US_FULL,NY:"New York",WI:"Wisconsin"};
+  const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
+  const off=()=>box.classList.remove("on");
+  usSvg.addEventListener("pointerover",ev=>{
+    const o=own.get(ev.target); if(!o||current!=="house"||!hover.matches||narrow.matches) return off();
+    const [k,j]=o, y=usYear("house"), ds=HOUSE_MAPS[HOUSE_MAP_OF[y]]?.[k]?.split(","); if(!ds||j>=ds.length) return off();
+    const lab=GST[k].querySelector("text")||usSvg.querySelector(".state text");
+    box.style.fontSize=(parseFloat(getComputedStyle(lab).fontSize)*usSvg.getScreenCTM().a).toFixed(1)+"px";
+    box.textContent=ds.length===1?`${NAME[k]} at-large district`:`${NAME[k]}\u2019s ${ord(+ds[j])} district`;
+    box.classList.add("on")});
+  usSvg.addEventListener("pointerleave",off);
+})();   // phones: tap the map to show or hide the state labels
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
 tabs.forEach(t=>{

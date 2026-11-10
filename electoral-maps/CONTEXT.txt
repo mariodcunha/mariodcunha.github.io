@@ -2696,7 +2696,7 @@ STATUS / NEXT
   the bar are shares of the 543 seats (NDA 54.0%, INDIA 43.1%, Others 2.9% in 2024; renderLS pct / P). Seats keeps
   counts (the map shows them by constituency), Vote % unchanged; the 272 mark stays. The 136.7% / 167.0% seen earlier
   on Vote % was not a bug: a screenshot mid count-down from seat counts (293 -> 43.8%).
-- LOCAL, NOT COMMITTED (2026-11-10): HOUSE BY DISTRICT, every year 2008-2026 (owner; was the to-do). Each House square
+- Live, pushed 2026-11-10 (a5f9174): HOUSE BY DISTRICT, every year 2008-2026 (owner; was the to-do). Each House square
   is one real district, placed roughly where it lies in its state; map shapes and square positions unchanged, only colours.
   Page data: HOUSE_MAPS[map][state] = district number per square (HSQ order), HOUSE_MAP_OF[year] = map used, HOUSE_WIN[year]
   [state] = winner by district (d / r; 2026 also D / R leading, v = no result; 2018 NC 9 v). drawUS builds HOUSE_COL from
@@ -2710,6 +2710,11 @@ STATUS / NEXT
   tallies unchanged (2008 257-178 ... 2024 215-220, 2026 259-174). Spot checks: TX 16 (El Paso) far west, NY 1 far right.
   Scripts + data: electoral-maps/house-district/ (winners.py, assign.py, build.py; raw/), not committed. Ready for district
   details later (square -> district number).
+- LOCAL, NOT COMMITTED (2026-11-10): House district names on hover, web only (owner). #dist-name sits at the top of
+  .mapwrap.us (absolute, centred, no layout shift); pointerover on a House square shows "Texas’s 16th district" /
+  "Alaska at-large district" from HOUSE_MAPS (number on that square, that year's map); off on leaving the map. Same type
+  as the state names: Libre Franklin 500, --muted, the labels' on-screen size (their font-size x the map's scale);
+  sentence case (not affected by html.caps). Phones / no-hover: nothing. Code: distHover() next to the phone names toggle.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
