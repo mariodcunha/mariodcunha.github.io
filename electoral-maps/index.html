@@ -357,7 +357,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
-      <button type="button" data-ls="seat" aria-pressed="true">Seats</button>
+      <button type="button" data-ls="geo" aria-pressed="true">Results</button>
+      <button type="button" data-ls="seat" aria-pressed="false">Seat share</button>
       <button type="button" data-ls="vote" aria-pressed="false">Vote share</button>
     </div>
     <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
@@ -450,7 +451,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
         <span class="txt" id="ls-note">Each square is one seat</span>
-        <span class="txt geo-note">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
+        <span class="txt geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
       <div class="legend" id="legend-rajyasabha">
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--inc)"/></svg>Congress</span>
@@ -1600,14 +1601,23 @@ function lsRegionRects(code,regions){
   if(code==="DN") return [LS_RECTS.DD[1]];
   return serp(parts.filter(c=>LS_RECTS[c]).flatMap(c=>LS_RECTS[c]));
 }
-let lsMode="seat";
+// Results view (owner, 2026-11-09): every year colours each square by one real constituency, placed where it lies in its
+// state: each seat's location (2009-2019: its boundary's centre, 2008 delimitation; 2004's old seats: the 2009 seat of the
+// same name, else its main town on Wikipedia; 2024's redrawn Assam and J&K seats: their main town, set by hand) is matched to
+// the state's squares so the pattern fits best (north-west seats in the north-west squares...). One digit per square, in
+// lsRegionRects order: 0 BJP, 1 NDA allies, 2 not aligned, 3 UPA / INDIA allies, 4 INC. Totals match LS_HIST / LS exactly.
+// Built by ls-constituency/ (local scripts; winners 2004-2009 datameet parliament.csv, 2014-2024 Wikipedia "Results of the
+// <year> Indian general election" constituency tables). Seat share ignores this and fills each state by group, in order.
+const LS_GEO={2004:{AN:"4",AP:"343423443341434424144414444444144444444414",AR:"00",AS:"04242404244444",BR:"1333033343333313330033133133133033331044",CH:"4",CG:"00000004000",DN:"2",DM:"4",GA:"04",GJ:"04044400400400040440040404",HR:"4404444444",HP:"4440",JK:"222344",JH:"04334323344434",KA:"0440040400000040000020404024",KL:"22222232212222222222",LD:"1",MP:"04004000000000400000000004000",MH:"400101000443411130400013011444443100331443343113",MN:"24",ML:"14",MZ:"1",NL:"1",DL:"4444440",OD:"301100101111110411400",PY:"3",PB:"0014011114111",RJ:"0044000004040000000000000",SK:"2",TN:"333333333344244333433334333332444332432",TR:"22",UP:"22222202222220142002222240400222222222022022222422424224222242202222222222224222",UK:"02004",WB:"222244244244222222222222222222122222222222"},2009:{AN:"0",AP:"244441444442444134444444444444424244444224",AR:"44",AS:"01444404220404",BR:"1004011001012211110001112211011210011241",CH:"4",CG:"40000000000",DN:"0",DM:"0",GA:"04",GJ:"04400040000444440040004004",HR:"4444424444",HP:"0400",JK:"332344",JH:"20030003200402",KA:"4040004400000000000220002044",KL:"24444233244444344424",LD:"4",MP:"00004020000444440404040044040",MH:"404441100024310011034410113444310344331444342412",MN:"44",ML:"34",MZ:"4",NL:"2",DL:"4444444",OD:"242224442222222222244",PY:"4",PB:"4444011444411",RJ:"4444040444244444444404404",SK:"2",TN:"332332343333223424233222323342443342433",TR:"22",UP:"22224044121012044444222222022142244242024022220122444200222444424222222202222222",UK:"44444",WB:"223204244444233333223222333323332222233333"},2014:{AN:"0",TS:"22222222012242224",AP:"1101211111112211022211212",AR:"04",AS:"00000402220442",BR:"0004340001000101132330010000021310011000",CH:"0",CG:"00000040000",DN:"0",DM:"0",DL:"0000000",GA:"00",GJ:"00000000000000000000000000",HR:"0000224000",HP:"0000",JK:"220200",JH:"00330000000000",KA:"0444004400000044000240002004",KL:"24244233222424344324",LD:"3",MP:"00004000000000000000000004000",MH:"000101100000110014000410111010010100331110301113",MN:"44",ML:"14",MZ:"4",NL:"1",OD:"222220222222222222222",PY:"1",PB:"0014412422211",RJ:"0000000000000000000000000",SK:"2",TN:"222222222122222222222222222222222222220",TR:"22",UP:"00000000000000000000000020000000000000000002220000004020000014000000000000001000",UK:"00000",WB:"222202224444222222222022222222222222222222"},2019:{AN:"4",AP:"2222222222222222222222222",AR:"00",AS:"00000444220000",BR:"1004011001011101111110010000011111111000",CH:"0",CG:"40000000400",DN:"2",DM:"0",DL:"0000000",GA:"04",GJ:"00000000000000000000000000",HR:"0000000000",HP:"0000",JK:"330300",JH:"00300100000004",KA:"0000000000000000000340002000",KL:"44444433444444324344",LD:"3",MP:"00000000000000000000000004000",MH:"000102100010120011400010111010030100031110301131",MN:"10",ML:"14",MZ:"2",NL:"1",OD:"002220002220220222402",PY:"4",PB:"0044444444211",RJ:"0000000000000010000000000",SK:"2",TN:"334333343343233333333323342344312343334",TS:"00222022044242222",TR:"00",UP:"02220002200022000200000000000000000000000000200000000220022004000000200200001010",UK:"00000",WB:"000002002404220020202002222222222000022222"},2024:{AP:"1110210111111111011211212",AR:"00",AS:"00040041410000",BR:"1014011001011101112410010033011110133343",CG:"40000000000",GA:"04",GJ:"04000000000000000000000000",HR:"4040444000",HP:"0000",JK:"23300",JH:"00330100044003",KA:"4444040140000000400400001004",KL:"44444433340444344344",MP:"00000000000000000000000000000",MH:"400434104303314033444433311014333344331330021014",MN:"44",ML:"42",MZ:"2",NL:"4",OD:"000000000000000000400",PB:"4334422444324",RJ:"4404440300444030000000003",SK:"1",TN:"334333333343333433433333333344333343434",TS:"00444004004442004",TR:"00",UP:"34233003131003330300040330000000040300033033330003004330333334030333333300301334",WB:"030003003304333033333303333333333303333300",UK:"00000",AN:"0",CH:"4",DM:"2",DN:"0",DL:"0000000",LD:"4",PY:"4",LA:"2"}};
+let lsMode="geo";   // "geo" Results (one square per constituency), "seat" Seat share (counts only), "vote" Vote share
 let inOth="";   // this view's "Others N", for the line under the bar
 function renderLS(animate){
   const year=inYear, vote=lsMode==="vote";
   const regions=!vote?lsSeats(year):year===2024?Object.fromEntries(Object.entries(LS).map(([k,v])=>[k,v.q])):LS_VOTE_HIST[year];
   const N=[0,0,0,0,0];
   for(const code in regions){
-    let i=0; const rects=lsRegionRects(code,regions);
+    let i=0; const rects=lsRegionRects(code,regions), geo=lsMode==="geo"&&LS_GEO[year]?.[code];
+    if(geo){regions[code].forEach((n,g)=>N[g]+=n); rects.forEach((r,k)=>ST_DOT.get(r).style.fill=LS_FILL[LS_GROUPS[+geo[k]]]); continue}   // each square its own constituency
     regions[code].forEach((n,g)=>{N[g]+=n;for(let k=0;k<n;k++) ST_DOT.get(rects[i++]).style.fill=LS_FILL[LS_GROUPS[g]]});
   }
   const shares=vote?LS_VOTE_NAT[year]:N, tot=shares.reduce((a,b)=>a+b,0);
@@ -1628,6 +1638,8 @@ function renderLS(animate){
   inSvg.setAttribute("aria-label",vote
     ?`Lok Sabha ${year} vote share by state and alliance, drawn on the seat squares`
     :`Lok Sabha ${year} seats by state and alliance, one square per seat`);
+  const geoNote=document.getElementById("ls-geo"); geoNote.dataset.text??=geoNote.textContent;
+  geoNote.textContent=lsMode==="geo"&&LS_GEO[year]?`Each square is one constituency, placed roughly where it lies within its state${year===2004?" (2004 used the constituencies from before the 2008 redrawing; their positions are approximate)":""}.`:geoNote.dataset.text;
   document.querySelectorAll("[data-ls]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ls===lsMode));
 }
 function setLokSabha(mode,animate){if(mode===lsMode) return; lsMode=mode; if(inRace==="loksabha") renderIn(animate,false)}
@@ -2320,7 +2332,7 @@ function renderIn(animate,sync){
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":"Lok Sabha seats"):race==="rajyasabha"?"Rajya Sabha":cm?"State CMs":"State seat share";
+  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?"Rajya Sabha":cm?"State CMs":"State seat share";
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear;
@@ -2447,7 +2459,7 @@ function openMenu(open){
 // Picking a country always opens its default: USA = Governors 2026 in Results, India = State Chief Ministers 2026 (owner,
 // 2026-11-09; was Lok Sabha 2024 seats), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
-  if(country==="usa"){usYearPick=US_YEARS.at(-1); colorMode="results"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="seat"; stMode="cm"}
+  if(country==="usa"){usYearPick=US_YEARS.at(-1); colorMode="results"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; stMode="cm"}
   show(country==="usa"?"governors":"states",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
@@ -2492,7 +2504,7 @@ function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSp
 // India (owner, 2026-11-07): Lok Sabha seats, Lok Sabha vote share, Rajya Sabha, State seat share, Chief Ministers, each first year to latest
 function playSteps(){
   if(countryOf(current)==="india"){const list=[], pass=(race,years,o)=>years.forEach(year=>list.push({race,year,...o}));
-    pass("loksabha",IN_YEARS,{ls:"seat"}); pass("loksabha",IN_YEARS,{ls:"vote"}); pass("rajyasabha",RS_YEARS);
+    pass("loksabha",IN_YEARS,{ls:"geo"}); pass("loksabha",IN_YEARS,{ls:"seat"}); pass("loksabha",IN_YEARS,{ls:"vote"}); pass("rajyasabha",RS_YEARS);
     pass("states",ST_YEARS,{st:"seats"}); pass("states",ST_YEARS,{st:"cm"});
     return list}
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));

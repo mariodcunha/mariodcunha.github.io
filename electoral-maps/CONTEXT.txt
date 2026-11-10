@@ -2594,7 +2594,37 @@ STATUS / NEXT
   in the country menu opens State Chief Ministers 2026 (was Lok Sabha 2024 seats), all India years back on defaults.
   The page with no #hash still opens on USA Governors. 
 - LOCAL, NOT COMMITTED (2026-11-09): fixed a black square at the map's top-left on India views before Rajya Sabha was
-  first opened: inBig made the 238 Rajya Sabha rects with no fill or opacity; they are now born at opacity 0. Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+  first opened: inBig made the 238 Rajya Sabha rects with no fill or opacity; they are now born at opacity 0. 
+- COMMITTED (2026-11-09): LOK SABHA BY CONSTITUENCY, 2004 and 2009, Seats view only (owner). Each square is one
+  real constituency, coloured by its winner's group and placed roughly where it lies in its state. LS_GEO {year: {region:
+  "digits"}} (one digit per square in lsRegionRects order: 0 BJP 1 NDA 2 oth 3 UPA 4 INC); renderLS uses it when present,
+  else the old group-order fill. Totals match LS_HIST exactly (checked every region both years). Legend note #ls-geo says
+  so (2004 adds that its pre-2008 constituencies are placed approximately).
+  How it was built (local scripts + data in electoral-maps/ls-constituency/, not committed):
+   1. winners.py: winners = top vote per PC in datameet india-election-data parliament.csv; parties grouped with the
+      alliance lists above (2004 / 2009 NDA / UPA allies; MUL = IUML).
+   2. geo.py + match09.py: 2009 locations = centres of datameet maps india_pc_2019_simplified.geojson (2008 delimitation,
+      same as 2009); names matched by hand where they differ (Malda = Maldaha Dakshin, Burdwan = Bardhaman-Durgapur, the
+      boundary file's two "Mumbai South" = South / South Central, ...).
+   3. geocode04.py: 2004 seats with a 2009 namesake use its centre; the other 116 (pre-2008 seats) use their main town's
+      coordinates from Wikipedia (overrides in Q, e.g. Madras South = Mylapore; Jalesar, Bhadrachalam, Calcutta North East
+      set by hand).
+   4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
+      scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
+      square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): LOK SABHA HAS THREE TABS (owner): Results | Seat share | Vote share (#ls-share,
+  data-ls geo / seat / vote; lsMode, default "geo", also after a country switch). Results = one square per real constituency
+  (LS_GEO) for EVERY year 2004-2024; Seat share = the old Seats view (each state filled by group in order, no constituency
+  mapping, the "not where" #ls-geo note); Vote share unchanged. Mid label: Results "Lok Sabha seats", Seat share "Lok Sabha
+  seat share". Play tour runs Results, then Seat share, then Vote share, each 2004-2024.
+  2014 / 2019 / 2024 data (local, electoral-maps/ls-constituency/2014-2024/): tables.py + ext.py read the 543-row
+  "Results by constituency" table of Wikipedia "Results of the <year> Indian general election" (raw.json); grp.py groups
+  winners (2014 NDA SHS TDP LJP SAD RLSP AD SWP NPP NPF AINRC PMK, UPA NCP RJD JMM IUML KEC(M) RSP JKN; 2019 NDA + NPF NPP
+  AIADMK AJSU NDPP RLTP, UPA DMK NCP JKN IUML KEC(M) RSP JMM VCK JD(S), Left = not aligned; 2024 INDIA incl. SP AITC AAP
+  Left, NDA incl. SKM) and checks every region against LS_HIST / LS: 0 mismatches all three years. 2014's undivided AP is
+  split into today's AP / TS by seat. assign2.py: locations = 2008-delimitation boundary centres (pc2019); 2024's redrawn
+  Assam (14) and J&K (5) seats use hand-set town coordinates (NEW24), Ladakh its own square; compact cells for AP, TS,
+  J&K-alone and Ladakh read off the page; Hungarian fit as before -> lsgeo2.json (names in square order kept for a hover).
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
