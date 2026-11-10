@@ -2612,6 +2612,10 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): INDIA PHONE NAMES = THREE LETTERS (owner), like the USA's two-letter codes on phones.
+  inThree(k): acronyms kept (UP MP AP HP TN, J&K A&N D&D), Goa, Assam "Asm.", West Bengal "Ben.", every other state its
+  first three letters + "." (KAR. MAH. GUJ. TEL. LAD. ...). On phones PACK_IN.name and inFull both return it, so no full
+  names there (Lok Sabha, Rajya Sabha, States). Desktop names unchanged. Telangana in AP_ONE years still reads AP.
 - COMMITTED (2026-11-09): TRIAL, MAY BE REVERTED - STATE NAMES IN CAPITALS (owner). <html class="caps"> +
   html.caps svg.map text{text-transform:uppercase}: every map name, USA and India, in capitals. Name fitting measures the
   rendered text, so names that no longer fit their block fall back to the short form (MINN., ARIZ., HRYA. ...).

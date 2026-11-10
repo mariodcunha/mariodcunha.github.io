@@ -1899,12 +1899,17 @@ const IN_FULL={WB:"West Bengal",AP:"Andhra Pradesh",JK:"Jammu & Kashmir",HP:"Him
 // AP_ONE: the year on show is 2014 or earlier, so Telangana's block is named Andhra Pradesh / AP too, on its own block
 // (owner, 2026-11-09; the colours still follow each year's data). Set in renderIn.
 let AP_ONE=false;
-const inFull=k=>k==="TS"&&AP_ONE?inFull("AP"):IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
+// Phones (owner, 2026-11-09): every India name is a fixed short code, like the USA's two-letter codes: the acronyms stay
+// (UP MP AP HP TN, J&K A&N D&D), every other state is its first three letters + "." (Karnataka KAR.); Assam is "Asm.".
+// Shown in capitals by html.caps. No full names on phones: inFull returns the code too.
+const IN_THREE={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AS:"Asm.",GA:"Goa",WB:"Ben."};
+const inThree=k=>k==="TS"&&AP_ONE?"AP":IN_THREE[k]||INDIA.find(s=>s[0]===k)[1].replace(/[^A-Za-z]/g,"").slice(0,3)+".";
+const inFull=k=>narrow.matches?inThree(k):k==="TS"&&AP_ONE?inFull("AP"):IN_FULL[k]||INDIA.find(s=>s[0]===k)[1];
 const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPACT,wrap:r=>LS_CELL.get(r),
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
   padCells:()=>(PACK_IN.fixed===IN_TIGHT||PACK_IN.fixed===IN_TIGHT_AP1?IN_TIGHT_PAD:[]).concat(PACK_IN.rsExtent||[]),   // rsExtent: the Rajya Sabha 2004 squares' corners, so the map's frame holds them
   padOf(k){return k==="JK"?this.padCells().filter(p=>p[0]<=13):k==="LA"?this.padCells().filter(p=>p[0]>=15):[]},   // names go above the grey, not inside it
-  name:k=>(k==="TS"&&AP_ONE?IN_SHORT.AP:IN_SHORT[k])||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
+  name:k=>narrow.matches?inThree(k):(k==="TS"&&AP_ONE?IN_SHORT.AP:IN_SHORT[k])||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
  
   tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
 const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AR:"Arun.",WB:"Bengal",
