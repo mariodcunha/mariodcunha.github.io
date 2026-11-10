@@ -24,7 +24,7 @@ TO DO (for later; owner's list, started 2026-11-09)
 -----
 Tick off or delete an item when it lands, and log it in HISTORY.
 [ ] 2026 counts: replace the AK and MS Senate "<3" placeholders (SEN_MARGINS[2026], entered as 2) with
-    real margins; refresh SEN_MARGINS, GOV_MARGINS and HOUSE_26 when counting ends; LA 5 and LA 6 runoffs.
+    real margins; refresh SEN_MARGINS, GOV_MARGINS and HOUSE_WIN[2026] / HOUSE_MARGINS[2026] when counting ends; LA 5 and LA 6 runoffs.
 
 
 WHAT IT IS
@@ -2721,14 +2721,27 @@ STATUS / NEXT
 - Live, pushed 2026-11-10: Washington 2026 House squares in reading order (owner): districts 1-10 left to right,
   top to bottom (rows 1 2 / 3 4 5 6 / 7 8 9 10), not by location. build.py READING = {'120': ['WA']} (add map: [states]
   for more); colours follow (WA 4 and 5 red). Other states and years stay geographic.
-- LOCAL, NOT COMMITTED (2026-11-10): HOUSE SQUARES IN DISTRICT ORDER, every state and year (owner; extends the WA 2026
+- Live, pushed 2026-11-10: HOUSE SQUARES IN DISTRICT ORDER, every state and year (owner; extends the WA 2026
   change). Each state's squares read 1, 2, 3... left to right, top to bottom (rows of the drawn squares), so the placement
   by location (HOUSE BY DISTRICT above) no longer decides the order; it stays in house-district/maps.json if wanted back
   (build.py READING = every map; set it to {} to return to location). Winners and colours still by district. Checked all
   ten years: every state in order, tallies unchanged (2008 257-178 ... 2026 259-174).
-- LOCAL, NOT COMMITTED (2026-11-10): hover district name restyled (owner): the type of the notes under the tally bar
+- Live, pushed 2026-11-10: hover district name restyled (owner): the type of the notes under the tally bar
   ("254 called, 5 leading": Libre Franklin 500 13px), fixed size (no longer scaled to the state names), in the toggle
   buttons' grey --muted #6b6b6b. Replaces the "same type as the state names" sizing above.
+- LOCAL, NOT COMMITTED (2026-11-10): HOUSE 2026 MARGINS + Results / Margins toggle (owner). HOUSE_MARGINS[2026][state] =
+  margin by district number, (top - second) / all votes counted, NYT results-house.json (house-district/scripts/
+  margins26.py); CURRENT COUNTS, refresh when counting ends; one candidate 100, LA 5 / 6 null. HOUSE_DIST[year][state]
+  (district per square) built in drawUS. Margins: called seats take the 40-step shades (shadeOf), leading / no-result seats
+  stay flat as in Results (like Senate Seats). Toggle (#margin-view) shows on House only where HOUSE_MARGINS[year] exists
+  (2026); shared colorMode; mid label "House margins"; legend: margin keys (marginKey now also in legend-house), called
+  swatches hidden (.base), note #h-note. Other years: no toggle, Results. Phones too.
+- LOCAL, NOT COMMITTED (2026-11-10): HOUSE MARGINS FOR EVERY YEAR 2008-2026 (owner; extends the 2026 entry above).
+  HOUSE_MARGINS[year] for 2008-2024 = winner's % minus runner-up's % from Wikipedia's district tables (house-district/
+  scripts/margins_hist.py: candidates one per "*" line or per <br />; "Unopposed" = 100; one candidate = their %). Every
+  district parsed all nine years. Spot checks: IA 2 2020 0.0 (6 votes), NY 22 2020 0.0, CO 3 2022 0.2, CA 13 2024 0.1;
+  ME 2 2018 = first round (1.2). Toggle now on House every year; note adds "The vacant seat stays grey." (NC 9 2018) and
+  the 2026 counts caveat only in 2026. #house-keys swatches are .base, so Margins shows the shaded keys instead.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
