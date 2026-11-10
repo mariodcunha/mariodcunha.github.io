@@ -2612,6 +2612,15 @@ STATUS / NEXT
    4. assign.py: per region, seat locations and the region's squares (as drawn on the compact map, cells.json) are both
       scaled to a unit box and matched by minimum total squared distance (Hungarian). Writes lsgeo.json (+ seat names in
       square order, unused so far: ready for a hover later). Open: the owner asked earlier about adding grey squares somewhere near the top (J&K area?) - not done yet.
+- COMMITTED (2026-11-09): SHORT TOP-BAR LABELS + MOBILE BREAKPOINT 640 -> 775 (owner). When the desktop top bar
+  would wrap, .topbar gets class "short": every button NOT selected shows a short label (.lbl-s; full name kept in .lbl-f and
+  aria-label): President P, House H, Senate S, Governors G, Lok Sabha LS, Rajya Sabha RS (States stays States); Results R,
+  Margins M; Senate All / Rep. / Seats; Lok Sabha Results R, Seat share "Seat %", Vote share "Vote %"; States Seat share
+  "Seat %", Chief Ministers "CMs". Year stepper unchanged. Short mode also tightens gaps (6px) and padding. fit() re-measures
+  on resize, fonts ready and any aria-selected / aria-pressed / hidden change (MutationObserver), then re-places the thumb.
+  Measured narrowest one-line widths with short labels: Lok Sabha 776, Senate / States CMs ~708, the rest <= 676. So the
+  phone layout (toggles at the bottom, full labels) now starts at max-width 775px instead of 640 (every @media and the
+  narrow / phone matchMedia moved: 640 -> 775, 641 -> 776). Checked 780 (all views one line) and 760 (phone layout).
 - COMMITTED (2026-11-09): LOADER (owner). A white sheet (#loader, first thing in <body>, CSS in the head so it
   paints before any text) with four House squares 22px, gap 3px: light red #f5aca6 top left, blue --dem top right, light
   blue #a8d3f4 bottom right, red --rep bottom left. Every 0.6s they all step one place clockwise (TL->TR->BR->BL->TL; one

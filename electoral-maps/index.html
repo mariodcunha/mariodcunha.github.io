@@ -148,7 +148,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand.mid{position:absolute;left:50%;bottom:0;transform:translateX(-50%);max-width:46%;width:max-content;text-align:center}
 .cand.mid b,.cand.mid span{color:#A6A6A6} .tally.pct .cand.mid b::after{content:none}
 #mini .cand.mid{display:none}
-@media (max-width:640px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
+@media (max-width:775px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
 .bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px #fff;transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s;white-space:pre-line}
@@ -162,7 +162,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:13px;font-weight:500;color:var(--fg);transition:left .8s var(--ease)}
 .need small{display:block;font-size:9px;font-weight:600;letter-spacing:.06em}
 .need small.wrap{white-space:nowrap;letter-spacing:0}  /* long label (50-50 Senate): one line; two centred lines on phones */
-@media (max-width:640px){.need small.wrap{white-space:normal;width:200px}}
+@media (max-width:775px){.need small.wrap{white-space:normal;width:200px}}
 .mapwrap{overflow-x:auto}
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
@@ -213,14 +213,14 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
    clicked state's own squares (its stand-in takes over); .over holds one block per year, with year labels always shown */
 #map-us.focus .state .sq{transform:scale(0)!important} #map-us.focus .plabels{opacity:0!important}
 #map-us .state.fk .sq{opacity:0;transition:none!important}
-@media (min-width:641px){#map-us.president .state.fclick .sq,#map-us.governors .state.fclick .sq{cursor:pointer}} #map-us.focus{cursor:pointer}
+@media (min-width:776px){#map-us.president .state.fclick .sq,#map-us.governors .state.fclick .sq{cursor:pointer}} #map-us.focus{cursor:pointer}
 #map-us .over g{transition:transform .6s var(--ease),opacity .45s var(--ease)}
 #map-us .over rect{stroke:var(--bg);stroke-width:1;transition:fill .45s var(--ease)}
 #map-us .over text{opacity:1!important} #map-us .over .over-back{fill:var(--chip);stroke:none;transition:opacity .45s var(--ease)} #map-us .ghosts rect{stroke:var(--bg);stroke-width:1;pointer-events:none}   /* Representation morph (repMorph) */
 #map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
 /* Senate Seats, Margins, web (owner, 2026-11-09): the postal codes always show; every seat's lead (+13, >20) shows at
    once while the pointer is anywhere over the map. Phones (no hover) unchanged. */
-@media (hover:hover) and (min-width:641px){
+@media (hover:hover) and (min-width:776px){
   #map-us .alt-grid text.lead{opacity:0} #map-us:hover .alt-grid text.lead{opacity:1}
 }
 #map-us:not(.president) text.dc{opacity:0}
@@ -239,7 +239,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .plabel{transition:transform .6s var(--ease)} .plabels stop{transition:stop-color .45s var(--ease)}
 /* TRIAL (owner, 2026-11-06, may revert: delete this block): US state names show only while the cursor is on the map.
    Touch screens can't hover, so they keep the names; so do Senate Seats and Representation (not .packed) */
-@media (hover:hover) and (min-width:641px){#map-us.packed:not(:hover) text,#map-us.packed:not(:hover) .plabels,#map-india.packed:not(:hover) text,#map-india.packed:not(:hover) .plabels{opacity:0} #map-us.packed:hover .plabels,#map-india.packed:hover .plabels{transition:opacity .15s}}
+@media (hover:hover) and (min-width:776px){#map-us.packed:not(:hover) text,#map-us.packed:not(:hover) .plabels,#map-india.packed:not(:hover) text,#map-india.packed:not(:hover) .plabels{opacity:0} #map-us.packed:hover .plabels,#map-india.packed:hover .plabels{transition:opacity .15s}}
 #pres-view,#ls-view{justify-self:start}
 .bar .mark,.under .need,.under .gain{transition:left .8s var(--ease),opacity .25s}
 .instant,.instant *{transition:none!important;animation:none!important}
@@ -252,7 +252,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 /* Desktop: the top bar (race toggle, year, sub-toggles, country) stays pinned to the top; once the tally bar scrolls
    under it, a compact tally (#mini) slides out just below it: main numbers + names and the bar, plus the smaller
    details (allies, Others, net gain, majority line) only when the window is wide enough to keep them on one line. */
-@media (min-width:641px){
+@media (min-width:776px){
   .topbar{position:sticky;top:0;z-index:30;background:var(--bg);margin:-10px -16px;padding:10px 16px}
   .topbar::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg)}
   body{overflow-x:clip}
@@ -275,7 +275,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #mini .need{font-size:12px;line-height:15px;white-space:nowrap}
   #mini .need small{display:inline;margin-left:4px}
 }
-@media (max-width:640px){
+@media (max-width:775px){
   /* the page fills the screen: the white space after the map stretches, and the legend and notes rest a fixed distance
      above the toggles, growing upward. The credit moves to the top left of the top bar */
   main{padding-bottom:calc(128px + env(safe-area-inset-bottom));min-height:100vh;min-height:100dvh;grid-template-rows:auto 1fr}
@@ -336,6 +336,13 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 @keyframes lq-cw{0%,10%{transform:translate(0,0)}25%,35%{transform:translate(25px,0)}50%,60%{transform:translate(25px,25px)}
   75%,85%{transform:translate(0,25px)}100%{transform:translate(0,0)}}
 @media (prefers-reduced-motion:reduce){#loader .lq i{animation-duration:6s}}
+/* Short labels (owner, 2026-11-09): when the top bar no longer fits on one line (desktop/tablet widths), the buttons that
+   are not selected shrink to a short form (P H S G, LS RS, R M, Rep., Seat %, CMs) instead of the bar wrapping */
+.lbl-s{display:none}
+.topbar.short button:not([aria-selected="true"]):not([aria-pressed="true"]) .lbl-f{display:none}
+.topbar.short button:not([aria-selected="true"]):not([aria-pressed="true"]) .lbl-s{display:inline}
+/* and the gaps and side padding tighten a little, so the short bar stays on one line down to the phone layout */
+.topbar.short,.topbar.short .lsctl{gap:6px} .topbar.short .toggle button{padding-inline:12px} .topbar.short .subtoggle button{padding-inline:8px}
 </style>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.png" type="image/png">
@@ -552,7 +559,7 @@ function legShape(id,shape){const L=document.getElementById("legend-"+id), g=LEG
     e.style.width=shape==="t2"?"8px":""; e.style.margin=shape==="t2"?"0 3px":""})}
 legShape("rajyasabha","r2");   // Rajya Sabha draws 2px-rounded squares in every year, like Senate Seats' legend (owner, 2026-11-09)
 let colorMode="results";
-const narrow=matchMedia("(max-width:640px)");
+const narrow=matchMedia("(max-width:775px)");
 const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
 const marginsOn=race=>colorMode==="margins";   // phones too, Senate included (owner, 2026-11-07)
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
@@ -2555,7 +2562,7 @@ renderPlay();
 renderPlay();
 document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,.country")) pausePlay()},true);
 document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play,.country")) pausePlay()},true);
-const mini=document.getElementById("mini"), phone=matchMedia("(max-width:640px)"), topbar=document.querySelector(".topbar");
+const mini=document.getElementById("mini"), phone=matchMedia("(max-width:775px)"), topbar=document.querySelector(".topbar");
 function cloneNoIds(n){const c=n.cloneNode(true); if(c.nodeType===1){c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))} return c}
 function patch(dst,src){
   if(dst.nodeType!==src.nodeType||dst.nodeName!==src.nodeName||dst.childNodes.length!==src.childNodes.length){dst.replaceWith(cloneNoIds(src));return}
@@ -2589,6 +2596,24 @@ addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",s
 // Layouts cached before Libre Franklin arrived used the fallback font's widths, so they differ from later ones: start again
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false);
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
+// Short labels: P / H / S / G, LS / RS, R / M ... for the buttons not selected, only when the full top bar would wrap
+{const SHORT={president:"P",house:"H",senate:"S",governors:"G",loksabha:"LS",rajyasabha:"RS",
+   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:geo":"R","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"CMs"};
+ const bar=document.querySelector(".topbar");
+ bar.querySelectorAll(".toggle button,.subtoggle button").forEach(b=>{
+   const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];
+   if(!sh) return; const full=b.textContent; b.setAttribute("aria-label",full);
+   b.innerHTML=`<span class="lbl-f">${full}</span><span class="lbl-s" aria-hidden="true">${sh}</span>`});
+ const shown=e=>e.offsetParent!==null&&getComputedStyle(e).display!=="none";
+ const wraps=()=>{const items=[...bar.children,...bar.querySelector(".lsctl").children].filter(shown);
+   const tops=items.map(e=>e.getBoundingClientRect().top); return Math.max(...tops)-Math.min(...tops)>4};
+ let busy=false;
+ const fit=()=>{if(busy) return; busy=true; const was=bar.classList.contains("short");
+   bar.classList.remove("short"); if(!narrow.matches&&wraps()) bar.classList.add("short");
+   const t=tabs.find(t=>t.getAttribute("aria-selected")==="true"); if(t) moveThumb(t,was===bar.classList.contains("short"));
+   busy=false};
+ new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
+ addEventListener("resize",fit); document.fonts?.ready.then(fit); fit()}
 show(location.hash.slice(1),false);
 // Loader: off once the page (fonts included) has loaded and the first map has painted; never longer than 10 s
 {const L=document.getElementById("loader"), off=()=>{if(!L.isConnected||L.classList.contains("out")) return;
