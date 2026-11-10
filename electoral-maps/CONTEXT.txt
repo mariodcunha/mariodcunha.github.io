@@ -20,6 +20,18 @@ reference for re-using this code elsewhere. Read it first, then read index.html.
 Update HISTORY and STATUS whenever work lands.
 
 
+TO DO (for later; owner's list, started 2026-11-09)
+-----
+Tick off or delete an item when it lands, and log it in HISTORY.
+[ ] House: real district placement, every year 2008-2026. Today no year is geographic: 2024 squares come
+    from CHAMBER isDem, 2008-2022 chain back from 2024 (fewest changes), 2026 is sorted by colour
+    (house26). Assign each state's squares to its districts by each district's centre, for every map in
+    use: the 2000, 2010 and 2020 census maps plus the mid-decade redraws (2026: TX, CA, NC, MO, OH, UT and
+    others). Needs district centroid data per map; check no state's look breaks.
+[ ] 2026 counts: replace the AK and MS Senate "<3" placeholders (SEN_MARGINS[2026], entered as 2) with
+    real margins; refresh SEN_MARGINS, GOV_MARGINS and HOUSE_26 when counting ends; LA 5 and LA 6 runoffs.
+
+
 WHAT IT IS
 ----------
 A single self-contained HTML page (index.html: inline CSS + JS, no build step, no
@@ -2676,15 +2688,19 @@ STATUS / NEXT
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
-- LOCAL, NOT COMMITTED (2026-11-09): Senate Seats labels (owner): postal codes always show, phone and web.
+- Live, pushed 2026-11-09 (c69daff): Senate Seats labels (owner): postal codes always show, phone and web.
   Leads (Margins) show only on hover over the map (web, already in place) or after a tap on phones (.names; a
   second tap hides them). Phone CSS in the max-width:775px block: #map-us.seats:not(.names) keeps codes, hides
   text.lead. Other US views keep tap-to-show names on phones. Checked at 375px and desktop.
-- LOCAL, NOT COMMITTED (2026-11-09): House 2026 refreshed from the owner's NYT screenshots (map + "Track the
+- Live, pushed 2026-11-09 (c69daff): House 2026 refreshed from the owner's NYT screenshots (map + "Track the
   remaining House races" table): 254 D called, 165 R called, 5 D leading (CO 4, FL 9, TN 4, MN 1, NC 5), 9 R
   leading (NC 3, FL 27, FL 7, NC 7, SC 2, NC 10, ME 2, CA 23, AK 1), 2 no result (LA 5, LA 6 runoffs). Since Nov 5:
   one SC seat called D; 10 called R (AZ x3 incl. AZ 2, WA x2 incl. WA 5, FL 26, and one each in CO, NC, NY, UT). Big numbers now include leading seats, like
   the Senate (259 - 174); under the bar "254 called, 5 leading" / "165 called, 9 leading". Legend note updated.
+- LOCAL, NOT COMMITTED (2026-11-09): Lok Sabha Seat % tally in percent (owner): big numbers and the lines under
+  the bar are shares of the 543 seats (NDA 54.0%, INDIA 43.1%, Others 2.9% in 2024; renderLS pct / P). Seats keeps
+  counts (the map shows them by constituency), Vote % unchanged; the 272 mark stays. The 136.7% / 167.0% seen earlier
+  on Vote % was not a bug: a screenshot mid count-down from seat counts (293 -> 43.8%).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

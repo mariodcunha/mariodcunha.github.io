@@ -1664,9 +1664,10 @@ function renderLS(animate){
   }
   const shares=vote?LS_VOTE_NAT[year]:N, tot=shares.reduce((a,b)=>a+b,0);
   LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=shares[i]/tot*100+"%");
-  const put=(id,v)=>{const n=document.getElementById(id); vote?countToPct(n,v,animate):countTo(n,Math.round(v),animate)};
+  const pct=lsMode==="seat", P=v=>pct?v/tot*100:v;   // Seat %: the bar's numbers as a share of the 543 seats (owner, 2026-11-09)
+  const put=(id,v)=>{const n=document.getElementById(id); vote||pct?countToPct(n,P(v),animate):countTo(n,Math.round(v),animate)};
   put("in-n-nda",shares[0]+shares[1]); put("in-n-india",shares[3]+shares[4]); put("in-n-oth",shares[2]);
-  const f=v=>vote?v.toFixed(1)+"%":v, bloc=LS_META[year].bloc;
+  const f=v=>vote||pct?P(v).toFixed(1)+"%":v, bloc=LS_META[year].bloc;
   inOth=shares[2]?`Others ${f(shares[2])}`:"";
   document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${f(shares[0])}</span><span><i> · </i>Allies ${f(shares[1])}</span>`;
   document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(shares[4])}</span><span><i> · </i>Allies ${f(shares[3])}</span>`;
