@@ -2715,12 +2715,20 @@ STATUS / NEXT
   "Alaska at-large district" from HOUSE_MAPS (number on that square, that year's map); off on leaving the map. Same type
   as the state names: Libre Franklin 500, --muted, the labels' on-screen size (their font-size x the map's scale);
   sentence case (not affected by html.caps). Phones / no-hover: nothing. Code: distHover() next to the phone names toggle.
-- LOCAL, NOT COMMITTED (2026-11-10): hovered House square highlight, web (owner). distHover adds .hov to the square under
+- Live, pushed 2026-11-10: hovered House square highlight, web (owner). distHover adds .hov to the square under
   the pointer (off when the pointer leaves the map): white stroke 7 SVG units clipped to the square (clip-path inset(0)
   fill-box), so a ~3.5-unit white inner border makes it read as shrinking a little; stroke-width eases .15s.
-- LOCAL, NOT COMMITTED (2026-11-10): Washington 2026 House squares in reading order (owner): districts 1-10 left to right,
+- Live, pushed 2026-11-10: Washington 2026 House squares in reading order (owner): districts 1-10 left to right,
   top to bottom (rows 1 2 / 3 4 5 6 / 7 8 9 10), not by location. build.py READING = {'120': ['WA']} (add map: [states]
   for more); colours follow (WA 4 and 5 red). Other states and years stay geographic.
+- LOCAL, NOT COMMITTED (2026-11-10): HOUSE SQUARES IN DISTRICT ORDER, every state and year (owner; extends the WA 2026
+  change). Each state's squares read 1, 2, 3... left to right, top to bottom (rows of the drawn squares), so the placement
+  by location (HOUSE BY DISTRICT above) no longer decides the order; it stays in house-district/maps.json if wanted back
+  (build.py READING = every map; set it to {} to return to location). Winners and colours still by district. Checked all
+  ten years: every state in order, tallies unchanged (2008 257-178 ... 2026 259-174).
+- LOCAL, NOT COMMITTED (2026-11-10): hover district name restyled (owner): the type of the notes under the tally bar
+  ("254 called, 5 leading": Libre Franklin 500 13px), fixed size (no longer scaled to the state names), in the toggle
+  buttons' grey --muted #6b6b6b. Replaces the "same type as the state names" sizing above.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
