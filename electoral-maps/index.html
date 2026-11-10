@@ -326,7 +326,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
    step at a time, over a white sheet until the page, its font and the first map are ready; then the sheet fades away */
 #loader{position:fixed;inset:0;z-index:1000;background:var(--bg);display:grid;place-items:center;transition:opacity .35s var(--ease)}
 #loader.out{opacity:0;pointer-events:none}
-#loader .lq{position:relative;width:47px;height:47px}
+/* always the middle of the visible screen, any device: dvh follows phone toolbars as they show and hide */
+#loader .lq{position:fixed;left:50%;top:50%;top:50dvh;width:47px;height:47px;margin:-23.5px 0 0 -23.5px}
 #loader .lq i{position:absolute;left:0;top:0;width:22px;height:22px;animation:lq-cw 2.4s var(--ease) infinite}
 #loader .lq i:nth-child(1){background:#f5aca6;animation-delay:0s}      /* starts top left */
 #loader .lq i:nth-child(2){background:var(--dem);animation-delay:-.6s}  /* top right */

@@ -2617,6 +2617,7 @@ STATUS / NEXT
   blue #a8d3f4 bottom right, red --rep bottom left. Every 0.6s they all step one place clockwise (TL->TR->BR->BL->TL; one
   keyframe lq-cw, phase-shifted by negative delays). It fades out (.35s) once window load + document.fonts.ready have
   fired and two frames have painted after the first show(); 10s cap. Hides the unstyled / fallback-font flash on first load.
+  The squares are fixed at the centre of the visible screen (top 50dvh), checked on phone and tablet sizes.
 - COMMITTED (2026-11-09): LOK SABHA HAS THREE TABS (owner): Results | Seat share | Vote share (#ls-share,
   data-ls geo / seat / vote; lsMode, default "geo", also after a country switch). Results = one square per real constituency
   (LS_GEO) for EVERY year 2004-2024; Seat share = the old Seats view (each state filled by group in order, no constituency
