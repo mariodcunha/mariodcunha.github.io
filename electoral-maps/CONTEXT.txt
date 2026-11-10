@@ -1847,8 +1847,9 @@ Result: Governors 24 D - 20 R, 5 toss-ups, 1 can't call.
      blue, like SEN_FILL. 2004: exact votes where the page had them, and AR, NC
      from their own pages (KY stays rounded; lightest either way). 2026 (owner, 2026-11-06):
      seats up use CURRENT COUNTS from Wikipedia's race boxes on 2026-11-06, not
-     final, refresh when counting ends; the rest as 2024. AK and MS have no count
-     yet (null), so they stay on the flat leading colour until called.
+     final, refresh when counting ends; the rest as 2024. AK and MS (owner, 2026-11-09):
+     no count yet, entered as 2 (reads "<3"; replace with the real margin). Still uncalled, so they keep
+     the flat leading colour (D, #a8d3f4); paintAlt now shows the lead on uncalled D / R seats that have one.
      marginFill(year, key, w, table) falls back to PARTY_FILL. Names go dark on
      steps 1-16 if any square under them is that pale (PALE_SHADE). Legend text:
      MARGIN_NOTE, GOV_NOTE. Tally bars stay full colour.
@@ -2675,6 +2676,15 @@ STATUS / NEXT
 - Rajya Sabha and States: all five years. Data least certain for Rajya
   Sabha (see RAJYA SABHA VIEW caveat) and for assembly results 2014-2019
   (typed from memory, sums checked).
+- LOCAL, NOT COMMITTED (2026-11-09): Senate Seats labels (owner): postal codes always show, phone and web.
+  Leads (Margins) show only on hover over the map (web, already in place) or after a tap on phones (.names; a
+  second tap hides them). Phone CSS in the max-width:775px block: #map-us.seats:not(.names) keeps codes, hides
+  text.lead. Other US views keep tap-to-show names on phones. Checked at 375px and desktop.
+- LOCAL, NOT COMMITTED (2026-11-09): House 2026 refreshed from the owner's NYT screenshots (map + "Track the
+  remaining House races" table): 254 D called, 165 R called, 5 D leading (CO 4, FL 9, TN 4, MN 1, NC 5), 9 R
+  leading (NC 3, FL 27, FL 7, NC 7, SC 2, NC 10, ME 2, CA 23, AK 1), 2 no result (LA 5, LA 6 runoffs). Since Nov 5:
+  one SC seat called D; 10 called R (AZ x3 incl. AZ 2, WA x2 incl. WA 5, FL 26, and one each in CO, NC, NY, UT). Big numbers now include leading seats, like
+  the Senate (259 - 174); under the bar "254 called, 5 leading" / "165 called, 9 leading". Legend note updated.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

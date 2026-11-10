@@ -319,6 +319,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
   #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
   #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
+  /* Senate Seats (owner, 2026-11-09): the postal codes always show; a tap shows every seat's lead, a second tap hides them */
+  #map-us.seats:not(.names):not(.morph) .alt-grid text{opacity:1} #map-us.seats:not(.names) .alt-grid text.lead{opacity:0}
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -546,7 +548,7 @@ const SEN_MARGINS={2008:{AK:[1.2,3.1],AL:[26.9,35.26],AR:[59.0,11.83],AZ:[9.8,55
   2022:{AK:[12.7,7.4],AL:[20.4,35.7],AR:[33.0,34.8],AZ:[2.4,4.9],CA:[8.4,22.2],CO:[9.3,14.6],CT:[20.1,15.0],DE:[22.2,21.5],FL:[0.2,16.4],GA:[1.2,2.8],HI:[42.4,45.2],IA:[6.6,12.2],ID:[29.3,32.0],IL:[16.0,15.3],IN:[5.9,20.7],KS:[11.4,23.0],KY:[19.6,23.6],LA:[40.3,43.7],MA:[24.2,33.2],MD:[34.6,31.6],ME:[19.1,8.6],MI:[6.5,1.7],MN:[24.1,5.3],MO:[5.8,13.2],MS:[19.0,10.0],MT:[3.5,10.0],NC:[1.8,3.2],ND:[11.0,31.4],NE:[19.1,38.3],NH:[15.7,9.2],NJ:[11.2,16.3],NM:[23.6,6.1],NV:[5.0,0.8],NY:[34.0,14.0],OH:[6.8,6.1],OK:[26.6,32.2],OR:[17.6,14.9],PA:[13.1,4.9],RI:[23.2,33.2],SC:[10.3,25.9],SD:[31.4,43.4],TN:[10.8,27.0],TX:[2.6,9.6],UT:[31.7,10.3],VA:[16.0,12.1],VT:[39.9,40.4],WA:[16.8,14.5],WI:[10.8,1.0],WV:[3.3,43.3],WY:[37.0,46.2]},
   2024:{AK:[12.7,7.4],AL:[20.4,35.7],AR:[33.0,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[9.3,14.6],CT:[18.8,15.0],DE:[17.1,21.5],FL:[12.8,16.4],GA:[1.2,2.8],HI:[32.7,45.2],IA:[6.6,12.2],ID:[29.3,32.0],IL:[16.0,15.3],IN:[19.8,20.7],KS:[11.4,23.0],KY:[19.6,23.6],LA:[40.3,43.7],MA:[19.8,33.2],MD:[11.8,31.6],ME:[17.5,8.6],MI:[0.3,1.7],MN:[15.7,5.3],MO:[13.8,13.2],MS:[26.2,10.0],MT:[7.1,10.0],NC:[1.8,3.2],ND:[33.0,31.4],NE:[6.7,25.2],NH:[15.7,9.2],NJ:[9.6,16.3],NM:[10.2,6.1],NV:[1.7,0.8],NY:[17.5,14.0],OH:[3.6,6.1],OK:[26.6,32.2],OR:[17.6,14.9],PA:[0.2,4.9],RI:[19.8,33.2],SC:[10.3,25.9],SD:[31.4,43.4],TN:[29.6,27.0],TX:[8.5,9.6],UT:[30.8,10.3],VA:[9.0,12.1],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1.0],WV:[41.5,43.3],WY:[51.0,46.2]},
   // 2026: seats up use current counts as of 2026-11-06 (Wikipedia race boxes), NOT final; AK, MS have none yet. Other seats as 2024.
-  2026:{AK:[null,7.4],AL:[9.4,35.7],AR:[11.9,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[24.3,14.6],CT:[18.8,15],DE:[17.1,27.2],FL:[12.8,2.9],GA:[18,2.8],HI:[32.7,45.2],IA:[4.1,12.2],ID:[23,32],IL:[23.1,15.3],IN:[19.8,20.7],KS:[4.8,23],KY:[12.1,23.6],LA:[1.8,43.7],MA:[19.8,31],MD:[11.8,31.6],ME:[17.5,6.9],MI:[0.3,7],MN:[15.7,10.1],MO:[13.8,13.2],MS:[26.2,null],MT:[7.1,11.1],NC:[19.6,3.2],ND:[33,31.4],NE:[6.7,6.8],NH:[13.8,9.2],NJ:[9.6,26.8],NM:[10.2,26.4],NV:[1.7,0.8],NY:[17.5,14],OH:[3.6,4.8],OK:[18.1,32.2],OR:[16.1,14.9],PA:[0.2,4.9],RI:[19.8,37.2],SC:[4.4,25.9],SD:[21,43.4],TN:[29.6,12.2],TX:[8.5,12.1],UT:[30.8,10.3],VA:[9,22.4],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1],WV:[41.5,20.4],WY:[51,30.4]}};
+  2026:{AK:[2,7.4],AL:[9.4,35.7],AR:[11.9,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[24.3,14.6],CT:[18.8,15],DE:[17.1,27.2],FL:[12.8,2.9],GA:[18,2.8],HI:[32.7,45.2],IA:[4.1,12.2],ID:[23,32],IL:[23.1,15.3],IN:[19.8,20.7],KS:[4.8,23],KY:[12.1,23.6],LA:[1.8,43.7],MA:[19.8,31],MD:[11.8,31.6],ME:[17.5,6.9],MI:[0.3,7],MN:[15.7,10.1],MO:[13.8,13.2],MS:[26.2,2],MT:[7.1,11.1],NC:[19.6,3.2],ND:[33,31.4],NE:[6.7,6.8],NH:[13.8,9.2],NJ:[9.6,26.8],NM:[10.2,26.4],NV:[1.7,0.8],NY:[17.5,14],OH:[3.6,4.8],OK:[18.1,32.2],OR:[16.1,14.9],PA:[0.2,4.9],RI:[19.8,37.2],SC:[4.4,25.9],SD:[21,43.4],TN:[29.6,12.2],TX:[8.5,12.1],UT:[30.8,10.3],VA:[9,22.4],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1],WV:[41.5,20.4],WY:[51,30.4]}};
 // Margin keys (owner, 2026-11-06): base colour, medium, light; placed in each legend that can show margins
 const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[base,SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw${round?" c":""}" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`;
 ["president","governors","senate"].forEach(r=>document.getElementById("legend-"+r).insertAdjacentHTML("afterbegin",marginKey("d","var(--dem)","Democrat",r==="senate")+marginKey("r","var(--rep)","Republican",r==="senate")));   // Senate's keys are circles
@@ -649,11 +651,11 @@ const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.r
 const SEN_CALL=Object.fromEntries(Object.entries({
   d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI",D:"MS AK",
   r:"FL AL AR KY LA OK SD TN WV WY ID MT NE"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
-// House results (NYT results page data, 8:08 p.m. ET Nov 5, 2026), per state: [D called, D leading, toss-up, R leading,
+// House results (NYT results page, Nov 9, 2026; was 8:08 p.m. ET Nov 5), per state: [D called, D leading, toss-up, R leading,
 // R called]. NYT turned its live forecast off at 3 a.m. ET Nov 4, so open races go by who leads the count; toss-up stays
 // in the format, unused. Called includes same-party races NYT counts as won (CA 4 7 11 14 D, CA 40 R). The state's other
 // squares have no result: LA 5 (runoff), LA 6 (no one near a majority: 19.4% leads).
-const HOUSE_26={"AK":[0,0,0,1,0],"AL":[2,0,0,0,5],"AR":[0,0,0,0,4],"AZ":[5,0,0,3,1],"CA":[48,0,0,1,3],"CO":[6,1,0,1,0],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,3,17],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,0,2],"IL":[14,0,0,0,3],"IN":[3,0,0,0,6],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[9,0,0,0,4],"MN":[4,1,0,0,3],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[1,0,0,0,1],"NC":[9,1,0,4,0],"ND":[0,0,0,0,1],"NE":[1,0,0,0,2],"NH":[2,0,0,0,0],"NJ":[11,0,0,0,1],"NM":[3,0,0,0,0],"NV":[4,0,0,0,0],"NY":[20,0,0,1,5],"OH":[8,0,0,0,7],"OK":[0,0,0,0,5],"OR":[5,0,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[1,1,0,1,4],"SD":[0,0,0,0,1],"TN":[0,1,0,0,8],"TX":[14,0,0,0,24],"UT":[1,0,0,1,2],"VA":[8,0,0,0,3],"VT":[1,0,0,0,0],"WA":[8,0,0,2,0],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
+const HOUSE_26={"AK":[0,0,0,1,0],"AL":[2,0,0,0,5],"AR":[0,0,0,0,4],"AZ":[5,0,0,0,4],"CA":[48,0,0,1,3],"CO":[6,1,0,0,1],"CT":[5,0,0,0,0],"DE":[1,0,0,0,0],"FL":[7,1,0,2,18],"GA":[5,0,0,0,9],"HI":[2,0,0,0,0],"IA":[3,0,0,0,1],"ID":[0,0,0,0,2],"IL":[14,0,0,0,3],"IN":[3,0,0,0,6],"KS":[1,0,0,0,3],"KY":[2,0,0,0,4],"LA":[1,0,0,0,3],"MA":[9,0,0,0,0],"MD":[7,0,0,0,1],"ME":[1,0,0,1,0],"MI":[9,0,0,0,4],"MN":[4,1,0,0,3],"MO":[3,0,0,0,5],"MS":[1,0,0,0,3],"MT":[1,0,0,0,1],"NC":[9,1,0,3,1],"ND":[0,0,0,0,1],"NE":[1,0,0,0,2],"NH":[2,0,0,0,0],"NJ":[11,0,0,0,1],"NM":[3,0,0,0,0],"NV":[4,0,0,0,0],"NY":[20,0,0,0,6],"OH":[8,0,0,0,7],"OK":[0,0,0,0,5],"OR":[5,0,0,0,1],"PA":[11,0,0,0,6],"RI":[2,0,0,0,0],"SC":[2,0,0,1,4],"SD":[0,0,0,0,1],"TN":[0,1,0,0,8],"TX":[14,0,0,0,24],"UT":[1,0,0,0,3],"VA":[8,0,0,0,3],"VT":[1,0,0,0,0],"WA":[8,0,0,0,2],"WI":[4,0,0,0,4],"WV":[0,0,0,0,2],"WY":[0,0,0,0,1]};
 // Drawn light before solid, blue to red, like senSeats (owner, 2026-11-03)
 function house26(k,n){const [d,D,T,R,r]=HOUSE_26[k];
   return [["D",D],["d",d],["T",T],["v",n-d-D-T-R-r],["R",R],["r",r]].flatMap(([p,m])=>Array(m).fill(p))}
@@ -811,7 +813,8 @@ function paintAlt(year){
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
     const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
     if(t) t.setAttribute("class",cls);
-    b.setAttribute("class",(cls+" lead").trim()); b.textContent=f?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
+    b.setAttribute("class",(cls+" lead").trim()); const lead=f||marginsOn("senate")&&m!=null&&/^[DR]$/.test(p);   // uncalled seats keep the leading fill but show the lead (AK, MS 2026)
+    b.textContent=lead?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
 // Each senator's tile half turns into that senator's circle, or back: it slides to the circle's spot while it grows or
@@ -1420,10 +1423,10 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // tally: [D count, R count, D name, R name, bar total, majority mark %, mark label, notes under the bar, control]
   let T;
   const pctOf=n=>Math.round(n/435*100);
-  // the big numbers are called seats only, as on the NYT's bar; leading seats are noted under it
-  if(y26&&race==="house") T={d:c.d,r:c.r,nd:"Democrats",nr:"Republicans",tot:435,mark:218/435*100,need:"218",ctl:c.d>=218?"d":c.r>=218?"r":null,
-    seg:{d:c.d,D:c.D,T:c.T,R:c.R,r:c.r},ud:`${c.D} leading`,ur:`${c.R} leading`,
-    label:`2026 House: ${c.d} Democrats called and ${c.D} leading; ${c.r} Republicans called and ${c.R} leading; ${c.v} with no result`};
+  // the big numbers are called + leading, like the Senate's; under the bar: called, leading (owner, 2026-11-09)
+  if(y26&&race==="house") T={d:c.d+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:435,mark:218/435*100,need:"218",ctl:c.d>=218?"d":c.r>=218?"r":null,
+    seg:{d:c.d,D:c.D,T:c.T,R:c.R,r:c.r},ud:[c.d&&`${c.d} called`,c.D&&`${c.D} leading`].filter(Boolean).join(", "),ur:[c.r&&`${c.r} called`,c.R&&`${c.R} leading`].filter(Boolean).join(", "),
+    label:`2026 House: ${c.d+c.D} Democrats, ${c.d} called and ${c.D} leading; ${c.r+c.R} Republicans, ${c.r} called and ${c.R} leading; ${c.v} with no result`};
   else if(y26&&race==="senate"){const d=c.d+c.i+c.D, r=c.r+c.R;
     // under the bar: the big number split into called (solid: seats not up plus SEN_CALL d / r) and leading (light)
     const cd=c.d+c.i, cr=c.r;
@@ -2429,7 +2432,7 @@ function projLegend(race,n){
   const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   if(race==="house") return `<span><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats leading (${n.D})`)+(n.T?sw("hatch-t",`Toss-up (${n.T})`):"")+
     `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans leading (${n.R})`)+`<span><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
-    `<span class="txt">The totals count called seats only. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th. Results from The New York Times and The Associated Press, as of 8:10 p.m. ET, Nov 5, 2026.</span>`;
+    `<span class="txt">The totals count called and leading seats. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th, headed to runoffs. Results from The New York Times and The Associated Press, as of Nov 9, 2026.</span>`;
   if(race==="senate") return sw("hatch-d",`Democrats leading, not called (${n.D})`)+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
     `<span class="txt">Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. Results from The New York Times, Nov 4, 2026; Idaho, Michigan, Montana and Nebraska are called here ahead of it.</span>`;
   return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
