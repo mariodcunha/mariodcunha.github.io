@@ -1916,8 +1916,8 @@ let lsView="packed";   // every India view is Compact only (owner, 2026-10-11): 
 const inView=()=>"packed";   // the Map code stays (Map layouts are where the Compact morphs start from)
 // India's names (owner, 2026-11-07), every view: outside the blocks in the toggles' gray, USA President's size and type, as
 // far up and left as they can go, else up and right, ending with the squares (M.corner). The full name if the state's squares
-// can hold it, else IN_SHORT: several words -> capitals (UP, MP, AP, HP, TN, J&K, A&N); longer than 6 letters -> first 4 + ".".
-// Exceptions: Arunachal "Arun." (AP is Andhra), Haryana "Hrya.", Uttarakhand "Uttr.", West Bengal "Bengal", DNH-DD "D&D".
+// can hold it, else the short code (owner, 2026-11-10: no more 4-letter forms): the 2-letter acronyms (UP, MP, AP, HP, TN,
+// J&K, A&N, D&D) or the first three letters + "." (KAR., MAH.), the same codes as phones (inThree).
 const IN_FULL={WB:"West Bengal",AP:"Andhra Pradesh",JK:"Jammu & Kashmir",HP:"Himachal Pradesh",AR:"Arunachal Pradesh",AN:"Andaman & Nicobar",DD:"D&D"};
 // Two-letter names are the last resort: a state tries its full name at every spot first (tiers), so MP can read Madhya Pradesh.
 // AP_ONE: the year on show is 2014 or earlier, so Telangana's block is named Andhra Pradesh / AP too, on its own block
@@ -1933,12 +1933,9 @@ const PACK_IN={id:"in",svg:inSvg,cache:{},PL:{},fs:12,h:18,out:[],fixed:IN_COMPA
   keys:()=>Object.keys(LS_RECTS), cells:k=>LS_RECTS[k].map(r=>[r,ST_DOT.get(r)]),
   padCells:()=>(PACK_IN.fixed===IN_TIGHT||PACK_IN.fixed===IN_TIGHT_AP1?IN_TIGHT_PAD:[]).concat(PACK_IN.rsExtent||[]),   // rsExtent: the Rajya Sabha 2004 squares' corners, so the map's frame holds them
   padOf(k){return k==="JK"?this.padCells().filter(p=>p[0]<=13):k==="LA"?this.padCells().filter(p=>p[0]>=15):[]},   // names go above the grey, not inside it
-  name:k=>narrow.matches?inThree(k):(k==="TS"&&AP_ONE?IN_SHORT.AP:IN_SHORT[k])||inFull(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
+  name:k=>inThree(k), code(k){return this.name(k)}, row:{}, corner:()=>true, beside:true, inset:30, size:()=>narrow.matches?18:12,   // phones: USA President's size
  
   tiers(k,tag,room,w){const s=this.name(k); return s.length>2?(w(inFull(k))<=room?[inFull(k),s]:[s]):w(inFull(k))<=room?[inFull(k)]:[]}, tweak(){}};
-const IN_SHORT={UP:"UP",MP:"MP",AP:"AP",HP:"HP",TN:"TN",JK:"J&K",AN:"A&N",DD:"D&D",AR:"Arun.",WB:"Bengal",
-  MH:"Maha.",RJ:"Raja.",GJ:"Guja.",KA:"Karn.",TS:"Tela.",JH:"Jhar.",CG:"Chha.",HR:"Hrya.",UK:"Uttr.",MN:"Mani.",
-  ML:"Megh.",TR:"Trip.",MZ:"Mizo.",NL:"Naga.",CH:"Chan.",PY:"Pudu.",LD:"Laks."};
 // Split n squares by shares (largest remainder)
 function stSquares(shares,n){
   const t=shares.reduce((a,b)=>a+b,0), raw=shares.map(v=>v/t*n), q=raw.map(Math.floor);
@@ -2274,7 +2271,7 @@ function rsCirc(year){
   return circ;
 }
 // Rajya Sabha's names follow the same rule, on circles: over the top row's left circle, else ending at its right one; then the
-// rows below; last, under the bottom row. Full name if the row holds it, else IN_SHORT. Fewest free spots go first.
+// rows below; last, under the bottom row. Full name if the row holds it, else the short code (inThree). Fewest free spots go first.
 function rsOut(pk,year){
   if(RS_OUT_YEAR[year]) return RS_OUT_YEAR[year];
   const circ=rsCirc(year), R=RS_R*S*pk.f, gap=.15*S*pk.f, fs=PACK_IN.size(), h=fs*.8, vb=inSvg.viewBox.baseVal, cand={}, spare={}, OUT={};
@@ -2503,7 +2500,7 @@ narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shad
   if(countryOf(current)==="usa") setUS(usRace,false); else renderIn(false,true)});
 senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(current)==="usa") setUS("senate",false)});   // crossing 907px: Senate to Seats only, or its toggle back
 [usSvg,inSvg].forEach(m=>m.addEventListener("click",()=>{if(narrow.matches) m.classList.toggle("names")}));
-// Lok Sabha Seats, web (owner, 2026-11-10): hovering a square names its constituency above the map, "Varanasi, UP", with the
+// Lok Sabha Seats, web (owner, 2026-11-10): hovering a square names its constituency above the map, "Bangalore South, KAR.", with the
 // same white inner border as the House map. Only in Seats (each square one real seat); Seat % / Vote % squares are not seats.
 (function seatHover(){
   const box=document.getElementById("seat-name"), hover=matchMedia("(hover:hover)"); let hov=null, own=null, ownKey="";
@@ -2515,7 +2512,8 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     if(inRace!=="loksabha"||lsMode!=="geo"||!LS_NAME[inYear]||!hover.matches||narrow.matches) return off();
     const o=index().get(ev.target); if(!o) return off();
     const [code,k]=o, i=LS_NAME[inYear][code]?.split(",")[k]; if(i==null) return off();
-    box.textContent=`${LS_NAMES[+i]}, ${code}`; box.classList.add("on"); lit(ev.target)});
+    const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
+    box.textContent=`${LS_NAMES[+i]}, ${st}`; box.classList.add("on"); lit(ev.target)});
   inSvg.addEventListener("pointerleave",off);
 })();
 // House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "El Paso, TX 16"
