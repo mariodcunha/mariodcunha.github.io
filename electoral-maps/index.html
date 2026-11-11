@@ -2704,8 +2704,8 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   let hov=null; const lit=e=>{if(hov===e) return; hov?.classList.remove("hov"); hov=e; e?.classList.add("hov")};
   const off=()=>{box.classList.remove("on"); lit(null)};
   // Units (owner, 2026-11-11): the governor / Senate / House bar under the pointer, or a Trifecta's whole square, named the
-  // same way: "Texas, Governor", "Texas, Senate", "Texas, House", "California, Trifecta (Gov, Senate, House)"
-  const legOwn=new Map(), PART=["Governor","Senate","House","Trifecta (Gov, Senate, House)"];
+  // same way: "Texas, Governor", "Texas, Senate", "Texas, House", "California, Trifecta (Governor, Senate, House)"
+  const legOwn=new Map(), PART=["Governor","Senate","House","Trifecta (Governor, Senate, House)"];
   usSvg.addEventListener("pointerover",ev=>{
     if(usSvg.classList.contains("leg")&&legOn()&&hover.matches&&!narrow.matches){
       if(!legOwn.size) for(const k in LEG) LEG[k].p.forEach((e,i)=>legOwn.set(e,[k,i]));
