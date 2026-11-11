@@ -907,12 +907,13 @@ function paintLeg(year){
     tt.setAttribute("class","in")}   // always white, purple and grey too (owner, 2026-11-10)
   legLegend(year);
 }
-// the tally: chambers held (99: 49 states x 2 + Nebraska's one); under the bar, trifectas (governor and both chambers)
+// the tally: governors and chambers held together (149: 50 governors + 99 chambers, Nebraska's one); under the bar, Trifectas
 function legTally(year){let d=0,r=0,o=0,td=0,tr=0; const data=LEG_DATA[year];
   for(const k in data){const L=data[k], g=govPartyOf(year,k).toLowerCase(), ch=k==="NE"?[L[0]]:[...L];
-    ch.forEach(x=>x==="d"?d++:x==="r"?r++:o++); if(L==="dd"&&g==="d") td++; if(L==="rr"&&g==="r") tr++}
+    ch.forEach(x=>x==="d"?d++:x==="r"?r++:o++); g==="d"?d++:g==="r"?r++:o++;   // + the governor (owner, 2026-11-11)
+    if(L==="dd"&&g==="d") td++; if(L==="rr"&&g==="r") tr++}
   return {d,r,nd:"Democrats",nr:"Republicans",tot:d+r+o,mark:null,ctl:null,seg:{d,r},ud:`${td} Trifectas`,ur:`${tr} Trifectas`,
-    label:`${year} state legislatures: Democrats control ${d} chambers and ${td} trifectas, Republicans ${r} chambers and ${tr} trifectas; ${o} chambers tied, coalition or nonpartisan`}}
+    label:`${year} state governments: Democrats hold ${d} governorships and legislative chambers and ${td} trifectas, Republicans ${r} and ${tr} trifectas; ${o} independent, tied or coalition`}}
 function legLegend(year){
   const sw=(c,txt,cls="")=>`<span class="${cls}"><svg viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="${c}"/></svg>${txt}</span>`;   // 2px-rounded squares, like Senate Seats' legend (owner, 2026-11-11)   // long rounded keys (owner, 2026-11-10)
   const src=year===2026?"Results are unofficial, from Wikipedia and NCSL as of Nov 6, 2026. Chambers with no 2026 election keep their control."
@@ -923,7 +924,7 @@ function legLegend(year){
   const mnote=mOn?" Darker shades mean a bigger lead: governors by their latest election's margin, chambers by the size of the majority (the majority's seats minus the other party's, as points of the chamber); full colour is 20 points or more, the lightest is under 4. In Margins every state shows its three bars, Trifectas too."+(year===2026?" 2026 margins use current counts and may change.":""):"";
   L.innerHTML=mk("d","var(--dem)","Democrat")+mk("r","var(--rep)","Republican")+sw("var(--dem)","Democrats","base")+sw("var(--rep)","Republicans","base")+
     (purple?sw(LEG_FILL.c,purple[0].toUpperCase()+purple.slice(1)):"")+(vals.includes("n")?sw(LEG_FILL.n,"Nonpartisan"):"")+
-    `<span class="txt">Each square is a state: top, the governor; middle, the state Senate; bottom, the state House; in Results, one whole square where one party holds all three (a Trifecta). The totals count legislative chambers (Nebraska's officially nonpartisan one-house legislature counts as Republican, its majority); Trifectas are states where one party holds the governor and both chambers. ${src}${mnote}</span>`}
+    `<span class="txt">Each square is a state: governor on top, state Senate in the middle, state House below. A solid square is a Trifecta, one party holding all three. Totals count governors and legislative chambers together; Nebraska's nonpartisan one-house legislature counts as Republican. ${src}${mnote}</span>`}
 // Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
 // The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
 const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
@@ -2778,9 +2779,8 @@ function playSteps(){
   pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS); pass("house","margins",US_YEARS);   // House margins after results (owner, 2026-11-10)
   if(!senSeatsOnly.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
   pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
-  // States (owner, 2026-11-11): State units results every year, then its margins for the latest year, then Governors results
-  // and margins every year
-  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); list.push({race:"governors",mode:"margins",year:US_YEARS.at(-1),gov:"leg"});
+  // States (owner, 2026-11-11): Units results every year, then Units margins every year, then Governors results and margins
+  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); US_YEARS.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
   US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); US_YEARS.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
   return list;
 }
