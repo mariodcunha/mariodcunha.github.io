@@ -398,8 +398,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
     <div class="subtoggle" id="gov-view" role="group" aria-label="State offices" hidden>
-      <button type="button" data-gov="leg" aria-pressed="false">Units</button>
-      <button type="button" data-gov="gov" aria-pressed="true">Governors</button>
+      <button type="button" data-gov="leg" aria-pressed="true">Units</button>
+      <button type="button" data-gov="gov" aria-pressed="false">Governors</button>
     </div>
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
       <button type="button" data-margin="results" aria-pressed="true">Results</button>
@@ -818,7 +818,7 @@ let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
 // States tab (owner, 2026-11-10; the tab was "Governors", its race id stays "governors"): Governors | Legislatures. Legislatures
 // is a PLACEHOLDER for now: 2024 and 2026 only, drawn as Senate Seats results. While it shows, senMode is "seats" (the Senate
 // tab's own view is kept in senKeep and put back on leaving) and colorMode reads "results".
-let govMode="gov", statesTab=false, senKeep=null;
+let govMode="leg", statesTab=false, senKeep=null;   // States opens on Units (owner, 2026-11-11)
 const LEG_YEARS=US_YEARS, legOn=()=>statesTab&&govMode==="leg";
 const usYearsOf=race=>race==="president"?PRES_YEARS:race==="governors"&&govMode==="leg"?LEG_YEARS:US_YEARS;
 // Arriving on Senate from another map shows All, so the map visibly morphs, until the viewer picks a Senate view

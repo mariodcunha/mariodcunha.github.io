@@ -2909,6 +2909,8 @@ STATUS / NEXT
   Trifecta's whole square in Results "California, Trifecta (Gov, Senate, House)"; white inner border (.hov, stroke 9 clipped).
   Bars take pointer events only while Units shows and no morph runs; the hidden Trifecta square never does (Margins).
 - Live, pushed 2026-11-11: Units hover on a Trifecta reads "<State>, Trifecta (Governor, Senate, House)" (owner; was "Gov").
+- Live, pushed 2026-11-11: States opens on UNITS by default (owner): govMode starts "leg". The page with no #hash (and
+  #governors) therefore lands on Units 2026; within a visit the last picked view is kept. Play tour sets its own.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
