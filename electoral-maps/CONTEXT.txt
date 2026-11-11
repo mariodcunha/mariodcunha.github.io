@@ -24,7 +24,7 @@ TO DO (for later; owner's list, started 2026-11-09)
 -----
 Tick off or delete an item when it lands, and log it in HISTORY.
 [ ] State legislatures: refresh 2026 (LEG26) when results are official; Legislatures has no years before 2024 yet.
-[ ] 2026 counts: replace the AK and MS Senate "<3" placeholders (SEN_MARGINS[2026], entered as 2) with
+[ ] 2026 counts: replace the AK and MS Senate "<3" placeholders (MS now called D) (SEN_MARGINS[2026], entered as 2) with
     real margins; refresh SEN_MARGINS, GOV_MARGINS and HOUSE_WIN[2026] / HOUSE_MARGINS[2026] when counting ends; LA 5 and LA 6 runoffs.
 
 
@@ -2891,6 +2891,8 @@ STATUS / NEXT
   99); independent governors go in the purple middle with ties / coalitions. Trifectas under the bar unchanged. Legend says so.
 - Live, pushed 2026-11-11: play tour, States part: Units results 2008-2026, Units margins 2008-2026 (was the latest
   year only), then Governors results and margins 2008-2026.
+- Live, pushed 2026-11-11: Mississippi Senate 2026 CALLED for the Democrat (owner): SEN_CALL MS D -> d. Senate tally
+  56 D (55 called, 1 leading: AK) - 44 R. MS margin still the 2-point placeholder ("<3"), now shaded as a called seat.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

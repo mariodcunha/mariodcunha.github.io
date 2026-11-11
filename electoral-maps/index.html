@@ -668,9 +668,10 @@ const GENERIC=(()=>{const g=AGG_POLLS.generic, n=g.length, avg=i=>Math.round(g.r
 // No polls and no rating: can't call.
 // Senate results (owner's NYT results table, 2026-11-03), all 35 races, override the above: d / r = called (a check mark
 // on the table, plus ID, MI, MT and NE on the owner's call: full colour, counted as won), D / R = leading but not called
-// (light; MS is D by under 0.01; AK is D, as the table had it: D+11 at 22% in; owner moved it from R, 2026-11-05)
+// (light; AK is D, as the table had it: D+11 at 22% in; owner moved it from R, 2026-11-05). MS called D on the owner's word
+// (2026-11-11); its margin is still the 2-point placeholder in SEN_MARGINS[2026] (reads "<3") until the final count.
 const SEN_CALL=Object.fromEntries(Object.entries({
-  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI",D:"MS AK",
+  d:"CO DE IL MA NJ NM OR RI VA GA MN NH NC IA KS ME OH TX SC MI MS",D:"AK",
   r:"FL AL AR KY LA OK SD TN WV WY ID MT NE"}).flatMap(([p,v])=>v.split(" ").map(k=>[k,p])));
 // House results per state, kept for reference (the map now reads HOUSE_WIN[2026] by district; totals agree)
 // House results (NYT results page, Nov 9, 2026; was 8:08 p.m. ET Nov 5), per state: [D called, D leading, toss-up, R leading,
