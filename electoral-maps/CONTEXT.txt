@@ -2898,6 +2898,12 @@ STATUS / NEXT
   ESQ_SHIFT[census][state][elector] (computed in drawUS), escAt(k, j, census). FL 2000 (38,29)->(35,29), FL 2010 ->(37,29),
   WA 2000 (3,2)->(2,2), GA 2000 (31,23)->(30,23). House / Senate / Governors have no electors and already packed left.
   Checked 2008, 2012, 2024: no state has a gap in any row.
+- Live, pushed 2026-11-11: CORRECTION of the President row-gap fix (owner: keep the diagonal, align RIGHT). The
+  elector shift (ESQ_SHIFT) is undone; instead FL and GA drop their bottom row's LEFT squares first: HSQ_LAST FL "32,29 33,29
+  34,29", GA "28,23" (first listed drops first), so the bottom row stays flush right under the row above and against the
+  electors in every census and race (President, House, Senate All squares, Governors, Units' tiles unaffected). (WA had no
+  real gap.) HOUSE_MAPS FL and GA re-done in reading order from the page for every map (the drop order changes HSQ order);
+  every other state matched the old data exactly. Note: house-district/squares.txt and build.py predate this for FL / GA.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
