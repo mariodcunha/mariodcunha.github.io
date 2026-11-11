@@ -232,7 +232,11 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us .alt-grid text.in{fill:#fff;font-weight:500} #map-us .alt-grid text.dk{fill:var(--fg)}
 /* State legislatures 2026 (owner, 2026-11-10): three triangles per state over the Senate Seats tiles, which step aside */
 #map-us .leg-grid{opacity:0;pointer-events:none;transition:opacity .35s var(--ease)} #map-us.leg .leg-grid{opacity:1;transition-delay:.25s}
-#map-us.leg .alt-grid{opacity:0!important} #map-us .leg-grid path{stroke:var(--bg);stroke-width:3.5;stroke-linejoin:round;transition:fill .45s var(--ease),opacity .45s var(--ease)}
+/* Units hover (owner, 2026-11-11): the bars answer the pointer while Units shows; the hovered one gets the House squares' white
+   inner border (a wider white stroke clipped to the bar) */
+@media (hover:hover){#map-us.leg:not(.rmorph) .leg-grid path{pointer-events:auto}}
+#map-us .leg-grid path.hov{stroke-width:9;clip-path:inset(0) fill-box}
+#map-us.leg .alt-grid{opacity:0!important} #map-us .leg-grid path{stroke:var(--bg);stroke-width:3.5;stroke-linejoin:round;transition:fill .45s var(--ease),opacity .45s var(--ease),stroke-width .15s var(--ease)}
 #map-us .leg-grid text{font-weight:500;dominant-baseline:central;pointer-events:none} #map-us .leg-grid text.in{fill:#fff} #map-us .leg-grid text.dk{fill:var(--fg)}
 .legend svg.legbar{width:28px;height:14px;flex:none}
 /* Senate Seats, Margins, web (owner, 2026-11-09): the postal codes always show; every seat's lead (+13, >20) shows at
@@ -906,7 +910,7 @@ function paintLeg(year){
     const tri=(L==="dd"&&g==="d")||(L==="rr"&&g==="r"), wp=LEG[k].p[3];
     LEG[k].p.forEach(e=>{e.style.transition=""; e.style.strokeWidth=""});   // undo the merge beat of a Senate switch
     shapes.forEach((sh,i)=>{LEG[k].p[i].setAttribute("d",roundPoly(sh,r)); LEG[k].p[i].style.fill=fills[i]});
-    wp.setAttribute("d",roundPoly([A,B,C,D],r)); wp.style.opacity=tri&&!mOn?1:0;   // Margins (owner, 2026-11-11): never merged, each bar its own shade
+    wp.setAttribute("d",roundPoly([A,B,C,D],r)); wp.style.opacity=tri&&!mOn?1:0; wp.style.pointerEvents=tri&&!mOn?"":"none";   // hidden: not hoverable   // Margins (owner, 2026-11-11): never merged, each bar its own shade
     if(tri){const ms3=[mg,mh,ms].filter(v=>v!=null); wp.style.fill=shade(g,ms3.length?Math.min(...ms3):null,govFill(g))}
     const tt=LEG[k].t; tt.setAttribute("x",tx); tt.setAttribute("y",ty); tt.style.fontSize=(s*.19-2*px).toFixed(1)+"px";   // 2px smaller than Senate Seats (owner), centred on the middle bar
     tt.setAttribute("class","in")}   // always white, purple and grey too (owner, 2026-11-10)
@@ -2699,7 +2703,14 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
   let hov=null; const lit=e=>{if(hov===e) return; hov?.classList.remove("hov"); hov=e; e?.classList.add("hov")};
   const off=()=>{box.classList.remove("on"); lit(null)};
+  // Units (owner, 2026-11-11): the governor / Senate / House bar under the pointer, or a Trifecta's whole square, named the
+  // same way: "Texas, Governor", "Texas, Senate", "Texas, House", "California, Trifecta (Gov, Senate, House)"
+  const legOwn=new Map(), PART=["Governor","Senate","House","Trifecta (Gov, Senate, House)"];
   usSvg.addEventListener("pointerover",ev=>{
+    if(usSvg.classList.contains("leg")&&legOn()&&hover.matches&&!narrow.matches){
+      if(!legOwn.size) for(const k in LEG) LEG[k].p.forEach((e,i)=>legOwn.set(e,[k,i]));
+      const lo=legOwn.get(ev.target); if(!lo) return off();
+      box.textContent=`${NAME[lo[0]]}, ${PART[lo[1]]}`; box.classList.add("on"); lit(ev.target); return}
     const o=own.get(ev.target); if(!o||current!=="house"||!hover.matches||narrow.matches) return off();
     const [k,j]=o, y=usYear("house"), ds=HOUSE_MAPS[HOUSE_MAP_OF[y]]?.[k]?.split(","); if(!ds||j>=ds.length) return off();
     const m=HOUSE_MAP_OF[y], d=+ds[j], place=HOUSE_PLACES[+HOUSE_PLACE[m]?.[k]?.split(",")[d-1]]??NAME[k];

@@ -2904,6 +2904,10 @@ STATUS / NEXT
   electors in every census and race (President, House, Senate All squares, Governors, Units' tiles unaffected). (WA had no
   real gap.) HOUSE_MAPS FL and GA re-done in reading order from the page for every map (the drop order changes HSQ order);
   every other state matched the old data exactly. Note: house-district/squares.txt and build.py predate this for FL / GA.
+- Live, pushed 2026-11-11: Units hover, web only (owner), Results and Margins: the bar under the pointer is named above
+  the map like House districts (#dist-name): "Texas, Governor" / "Texas, Senate" / "Texas, House" (top / middle / bottom), and a
+  Trifecta's whole square in Results "California, Trifecta (Gov, Senate, House)"; white inner border (.hov, stroke 9 clipped).
+  Bars take pointer events only while Units shows and no morph runs; the hidden Trifecta square never does (Margins).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
