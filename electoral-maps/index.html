@@ -398,8 +398,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
     <div class="subtoggle" id="gov-view" role="group" aria-label="State offices" hidden>
-      <button type="button" data-gov="gov" aria-pressed="true">Governors</button>
       <button type="button" data-gov="leg" aria-pressed="false">State units</button>
+      <button type="button" data-gov="gov" aria-pressed="true">Governors</button>
     </div>
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
       <button type="button" data-margin="results" aria-pressed="true">Results</button>
@@ -903,6 +903,7 @@ function paintLeg(year){
     // Smooth year changes (owner): the three bars always stay; the whole square (4th path) lies over them and fades in / out
     // (.45s, like the fills), so a state turning into or out of a Trifecta cross-fades instead of jumping.
     const tri=(L==="dd"&&g==="d")||(L==="rr"&&g==="r"), wp=LEG[k].p[3];
+    LEG[k].p.forEach(e=>{e.style.transition=""; e.style.strokeWidth=""});   // undo the merge beat of a Senate switch
     shapes.forEach((sh,i)=>{LEG[k].p[i].setAttribute("d",roundPoly(sh,r)); LEG[k].p[i].style.fill=fills[i]});
     wp.setAttribute("d",roundPoly([A,B,C,D],r)); wp.style.opacity=tri&&!mOn?1:0;   // Margins (owner, 2026-11-11): never merged, each bar its own shade
     if(tri){const ms3=[mg,mh,ms].filter(v=>v!=null); wp.style.fill=shade(g,ms3.length?Math.min(...ms3):null,govFill(g))}
@@ -1399,8 +1400,10 @@ function repMorph(pairs){
   usSvg.classList.add("rmorph");
   // white lines between squares: a Governors block has none, so they fade out over the first 40% on the way in and come in
   // over the last 40% on the way out (owner, 2026-11-07), and the two halves blend into one solid block
-  const anims=pairs.map(({from,to})=>{const r=el("rect",{},layer); rmGhosts.push(r);
+  const anims=pairs.map(({from,to,merge})=>{const r=el("rect",{},layer); rmGhosts.push(r);
     const a=from.grill===false?0:1, b=to.grill===false?0:1;
+    // merge (owner, 2026-11-11): State units -> Senate: the square fades in over the bars as they blend (first 30%), then splits
+    if(merge) return r.animate([{...px(from),opacity:0,strokeOpacity:0},{...px(from),opacity:1,strokeOpacity:0,offset:.3},{...px(to),opacity:1,strokeOpacity:b}],opt);
     return r.animate(a===b?[{...px(from),strokeOpacity:a},{...px(to),strokeOpacity:b}]
       :[{...px(from),strokeOpacity:a},{strokeOpacity:a,offset:a?0:.6},{strokeOpacity:b,offset:a?.4:1},{...px(to),strokeOpacity:b}],opt)});
   Promise.all(anims.map(a=>a.finished)).then(()=>{if(run===rmRun) rmClear()}).catch(()=>{});
@@ -1409,6 +1412,8 @@ function repMorph(pairs){
 function legSquare(k){const o=ALT[k][0].o, p=LEG[k]?.p, rr=8/(usSvg.getScreenCTM()?.a||1);
   return {x:o.x,y:o.y,width:o.height,height:o.height,rx:rr,fill:cssFill(p?(p[3].style.opacity==="1"?p[3].style.fill:p[0].style.fill):""),grill:false}}
 const senCircles=k=>[0,1].map(j=>({...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)}));
+const senHalves=k=>[0,1].map(j=>({...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill):"#efeeea"}));   // Senate Seats' tile halves
+const senShapes=(k,mode)=>mode==="seats"?senHalves(k):senCircles(k);
 const senKeys=()=>Object.keys(SEAT).filter(k=>SEAT[k].length&&ALT[k]);
 function repSwap(race,year){
   const toSen=race==="senate", base=toSen?usRace:race, mode=toSen?senMode:senPrev;
@@ -1511,19 +1516,24 @@ function setUS(race,animate,year=usYear(race)){
   if(legOn()&&(race==="governors"||race==="senate")){   // Legislatures: the Senate Seats map, Results only (placeholder)
     if(senKeep==null) senKeep=senMode; senMode="seats"; race="senate";
     if(!LEG_YEARS.includes(year)) year=usYearPick=LEG_YEARS.includes(usYearPick)?usYearPick:LEG_YEARS.at(-1);
-    // Senate All / Representation -> State units (owner, 2026-11-11): each senator's circle glides into its state's square
-    if(legReal(year)&&animate&&!reduce&&usRace==="senate"&&senPrev&&senPrev!=="seats"&&!usSvg.classList.contains("leg")){
-      const keys=senKeys(), c0=Object.fromEntries(keys.map(k=>[k,senCircles(k)])); ++usStage; rmClear(); rmRun++;
+    // Senate (All / Representation / Seats) -> State units (owner, 2026-11-11): each senator's circle or tile half glides into
+    // its state's square
+    if(legReal(year)&&animate&&!reduce&&usRace==="senate"&&senPrev&&!usSvg.classList.contains("leg")){
+      const keys=senKeys(), from=senPrev, c0=Object.fromEntries(keys.map(k=>[k,senShapes(k,from)])); ++usStage; rmClear(); rmRun++;
       senPrev="seats"; setUSNow(race,true,year);   // no Seats tile morph on the way
       repMorph(keys.flatMap(k=>[0,1].map(j=>({from:c0[k][j],to:legSquare(k)})))); return}
     if(legReal(year)) return setUSRoute(race,animate,year);   // State units: Results / Margins of its own (owner, 2026-11-11)
     const keep=colorMode; colorMode="results"; try{return setUSRoute(race,animate,year)} finally{colorMode=keep}}
   if(senKeep!=null&&!legOn()){senMode=senKeep; senKeep=null}
-  // State units -> Senate All / Representation (owner, 2026-11-11): each square splits into the state's two circles
-  if(animate&&!reduce&&race==="senate"&&senMode!=="seats"&&usSvg.classList.contains("leg")&&!senSeatsOnly.matches){
+  // State units -> Senate All / Representation / Seats (owner, 2026-11-11): each square splits into the state's two circles or
+  // tile halves
+  if(animate&&!reduce&&race==="senate"&&usSvg.classList.contains("leg")){
     const keys=senKeys(), c0=Object.fromEntries(keys.map(k=>[k,legSquare(k)])); ++usStage; rmClear(); rmRun++;
+    // beat 1 (owner, 2026-11-11): each state's three bars blend into its square's colour and their white gaps close, quickly
+    keys.forEach(k=>LEG[k]?.p.forEach(e=>{e.style.transition="fill .24s ease-out,stroke-width .24s ease-out,opacity .35s .1s"; e.style.fill=c0[k].fill; e.style.strokeWidth="0"}));
     senPrev=senMode; setUSNow(race,true,year);   // no Seats tile morph on the way
-    repMorph(keys.flatMap(k=>senCircles(k).map(c=>({from:c0[k],to:c})))); return}
+    // beat 2: the square splits into the two senators' shapes, recolouring as it goes (same total time, senMorphMs)
+    repMorph(keys.flatMap(k=>senShapes(k,senMode).map(c=>({from:c0[k],to:c,merge:true})))); return}
   return setUSRoute(race,animate,year);
 }
 function setUSRoute(race,animate,year){
@@ -2772,20 +2782,23 @@ function playSteps(){
   pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS); pass("house","margins",US_YEARS);   // House margins after results (owner, 2026-11-10)
   if(!senSeatsOnly.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
   pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
-  pass("governors","results",US_YEARS); pass("governors","margins",US_YEARS);
+  // States (owner, 2026-11-11): State units results every year, then its margins for the latest year, then Governors results
+  // and margins every year
+  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); list.push({race:"governors",mode:"margins",year:US_YEARS.at(-1),gov:"leg"});
+  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); US_YEARS.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
   return list;
 }
-function playGo({race,mode,year,sen,ls,st}){
+function playGo({race,mode,year,sen,ls,st,gov}){
   if(countryOf(race)==="india"){const view=st&&st!==stMode;   // a new view morphs at once; a new year wipes down the map
     if(ls) lsMode=ls; if(st) stMode=st; inYear=IN_PICK[race]=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
   // a new race: show() alone draws it in that year (and moves the stepper). Calling stepOnPick too re-rendered the map
   // straight away, which cut off the Senate Seats / Representation morphs mid-way (owner, 2026-11-07)
   colorMode=mode; if(sen) senMode=sen; usYearPick=year;
-  if(race==="governors"&&govMode!=="gov"){govMode="gov"; if(race===current){usStep(race); setUS(race,true,year); return}}   // the tour shows Governors, not Legislatures
+  if(race==="governors"&&govMode!==(gov||"gov")){govMode=gov||"gov"; if(race===current){usStep(race); setUS(race,true,year); return}}   // State units or Governors, as the step says
   if(race!==current) show(race,true); else stepOnPick(year)}
 // the step that matches the view on show (of the Senate views only Seats has margins)
 const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
-  playList.findIndex(s=>s.race===usRace&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&
+  playList.findIndex(s=>s.race===(statesTab?"governors":usRace)&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&(s.race!=="governors"||(s.gov||"gov")===govMode)&&
   (s.race==="senate"&&senMode!=="seats"||s.mode===colorMode));
 async function startPlay(){
   playing=true; renderPlay(); if(countryOf(current)==="usa") senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);

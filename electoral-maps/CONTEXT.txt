@@ -2775,7 +2775,7 @@ STATUS / NEXT
   "results", then setUSNow after 120ms, so the morph starts while the fade finishes (was 450ms, owner: snappier; usStage
   guards a quick second click). paintAlt shades only while senMode is
   "seats", so the morph keeps the Results colours. colorMode stays: back on Seats it is Margins again.
-- LOCAL, NOT COMMITTED (2026-11-10): DUMMY TRIANGLES PAGE (owner, a sketch, not a map). #tri-btn, an icon-only button (square
+- Live, pushed 2026-11-11: DUMMY TRIANGLES PAGE (owner, a sketch, not a map). #tri-btn, an icon-only button (square
   cut by two lines) just left of Play (takes Play's auto margin), opens #panel-tri in place of the map panel: 8 ways to cut a
   square into three triangles (peak on the top edge at 1/2, 1/3, .12; fan from a corner to the far side's 1/2, 2/3; diagonal
   then a cut to it at 1/2, 1/3; peak on the left edge), blue / red / purple (--tri-b/-r/-p, purple #8a4fbf), each triangle's
@@ -2783,7 +2783,7 @@ STATUS / NEXT
   or any other bar button, puts the map back. triPage() before seatHover(). Phone and desktop checked.
   Triangle corners rounded 8px on screen (owner; was 4px): rounded() cuts back along both edges and curves through each corner (Q),
   cut-back capped at 45% of the shorter edge for slivers; radius = 8 x 102 / drawn width, redrawn on resize (ResizeObserver).
-- LOCAL, NOT COMMITTED (2026-11-10): STATES TAB (owner). The "Governors" race tab now reads "States" (race id, #hash
+- Live, pushed 2026-11-11: STATES TAB (owner). The "Governors" race tab now reads "States" (race id, #hash
   and play tour still "governors"; short label "St"). On it, a sub-toggle #gov-view after the year, before Results / Margins:
   Governors (today's Governors map, unchanged) | Legislatures. Legislatures is a PLACEHOLDER: 2024 and 2026 only (LEG_YEARS;
   stepper shows just those; other years jump to 2026), drawn as Senate Seats results (setUS routes to "senate" with senMode
@@ -2792,7 +2792,7 @@ STATUS / NEXT
   Legislatures morphs like Governors <-> Senate Seats. Play tour always shows Governors. Phones: with #gov-view on, the
   unselected buttons of it and Results / Margins use short labels (Leg. / Gov., R / M). Replace the placeholder with real
   state legislature data later (TO DO).
-- LOCAL, NOT COMMITTED (2026-11-10): STATE LEGISLATURES 2026, real data (owner). States > Legislatures > 2026: one square per
+- Live, pushed 2026-11-11: STATE LEGISLATURES 2026, real data (owner). States > Legislatures > 2026: one square per
   state on the Senate Seats tile spots, cut into three triangles, peak in the middle (the triangles page's first layout):
   left = state House, middle = governor (same colour as the Governors 2026 map: govParty26), right = state Senate; corners
   rounded 4px on screen (roundPoly, radius 4 / CTM). LEG26 {state: lower+upper}: d / r, c = bipartisan coalition (AK both,
@@ -2802,7 +2802,7 @@ STATUS / NEXT
   51 D, 45 R, 3 other (purple middle of the bar), no majority mark; under the bar 22 / 17 trifectas. Own legend
   (#legend-legis, key square + swatches + note). .leg on #map-us fades the triangles in over the tiles (paintLeg). 2024 is
   still the Senate Seats placeholder. Checked desktop 1280 and phone 375.
-- LOCAL, NOT COMMITTED (2026-11-10): STATE LEGISLATURES 2024 as three horizontal bars (owner). Each state square split into
+- Live, pushed 2026-11-11: STATE LEGISLATURES 2024 as three horizontal bars (owner). Each state square split into
   three equal bars, top to bottom: governor, state Senate, state House (same white gaps, 4px rounded corners). Colouring rule,
   both years: each part takes the party that holds it (governor's party; chamber majority); tied (t) and coalition (c) purple;
   Nebraska's nonpartisan chamber / no governor grey. LEG24 = control after the Nov 2024 elections (2025 sessions): MI House R /
@@ -2810,17 +2810,17 @@ STATUS / NEXT
   the 2024 results, not re-fetched). Tally 2024: 39 D, 56 R, 4 other chambers; trifectas 15 D, 22 R (23 R if Nebraska counted
   R). Code: LEG_DATA {2024, 2026}, legReal(year), paintLeg(year) (bars for 2024, triangles for 2026), legTally(year),
   legLegend(year) writes #legend-legis per year. Phones: bars are only a few px tall, so the 4px rounding makes them pill-like.
-- LOCAL, NOT COMMITTED (2026-11-10): Legislatures restyled (owner): 2026 is now three equal VERTICAL bars, left to right
+- Live, pushed 2026-11-11: Legislatures restyled (owner): 2026 is now three equal VERTICAL bars, left to right
   governor | state House | state Senate (the triangles are gone); 2024 keeps horizontal bars governor / Senate / House. Both:
   corners rounded 8px on screen (was 4), white gaps wider (stroke 3.5 SVG units, was 1.5). Legend keys follow. Known: in 2026
   the state code sits across the bars' gaps.
-- LOCAL, NOT COMMITTED (2026-11-10): "Legislatures" renamed "State units" (toggle, short "Units", mid label) (owner). One
+- Live, pushed 2026-11-11: "Legislatures" renamed "State units" (toggle, short "Units", mid label) (owner). One
   format for every year: three horizontal bars, governor / state Senate / state House (2026's vertical bars dropped; any year
   added later uses it too). State codes always white, purple and grey included. Under the bar "22 Trifectas" (capital T).
   Legend: long rounded keys (28 x 14, rx 4), no grey key square; the "Each square is a state: top, the governor..." sentence
   now opens the note after the keys. DUMMY TRIANGLES PAGE REMOVED (button, panel, CSS, JS; never committed). Also: a
   slicing slip removed paintAlt / ALT_PROJ for a moment; restored from HEAD, and every function / const name in HEAD is present.
-- LOCAL, NOT COMMITTED (2026-11-10): STATE UNITS FOR EVERY YEAR 2008-2026 (owner asked "until 2004"; the USA maps start at
+- Live, pushed 2026-11-11: STATE UNITS FOR EVERY YEAR 2008-2026 (owner asked "until 2004"; the USA maps start at
   2008, so 2004 / 2006 would need governors and layouts first). LEG_OLD {2008..2022}: control at the start of the next year's
   sessions, from Wikipedia "<year> United States state legislative elections" + per-chamber / party-strength pages (eight
   fetches); chambers not up keep prior control (AL MD NJ LA MS VA, MI / KS / NM / SC Senates, WI / WY 2022 from standing
@@ -2829,18 +2829,18 @@ STATUS / NEXT
   (paintLeg: shape 0 = the square, the other two paths empty). Trifectas check against published counts: 2008 17 D / 8 R, 2010
   11 / 20, 2024 15 / 22; 2012 has 12 D because RI's governor (Chafee) was independent. Legend: purple key only when that year has
   a tie / coalition; source line per year; note mentions the whole-square Trifecta.
-- LOCAL, NOT COMMITTED (2026-11-11): State units back to the PEAK-IN-THE-MIDDLE TRIANGLES, every year 2008-2026 (owner):
+- Live, pushed 2026-11-11: State units back to the PEAK-IN-THE-MIDDLE TRIANGLES, every year 2008-2026 (owner):
   left = state House, the middle peak = governor, right = state Senate; trifectas stay one whole square; 8px corners, 3.5 gaps,
   white codes (in the lower middle of the peak; centred on whole squares). Replaces the horizontal bars. Legend note updated.
-- LOCAL, NOT COMMITTED (2026-11-11): State units: trifectas are three triangles too (no whole squares any more), corners 6px
+- Live, pushed 2026-11-11: State units: trifectas are three triangles too (no whole squares any more), corners 6px
   (was 8). Legend note drops the whole-square sentence; Trifectas still counted under the bar. Open: phone codes are 4.7px vs
   Senate Seats' 5.7px (the .alt-grid phone size rule doesn't cover .leg-grid).
-- LOCAL, NOT COMMITTED (2026-11-11): State units BACK TO THREE HORIZONTAL BARS, every year (owner): top to bottom governor /
+- Live, pushed 2026-11-11: State units BACK TO THREE HORIZONTAL BARS, every year (owner): top to bottom governor /
   state Senate / state House; trifectas are three bars too (never one whole square); corners 8px (the bars' radius; the
   triangles had 6). Triangles dropped. Legend note: "Each square is a state: top, the governor; middle, the state Senate;
   bottom, the state House." Phone code size still 4.7px vs Senate Seats' 5.7px (open).
-- LOCAL, NOT COMMITTED (2026-11-11): State units bars have SHARP corners (radius 0, was 8px) (owner). Legend keys keep rx 4.
-- LOCAL, NOT COMMITTED (2026-11-11): STATE UNITS MARGINS + style (owner). Corners 8px again; a Trifecta is one whole square
+- Live, pushed 2026-11-11: State units bars have SHARP corners (radius 0, was 8px) (owner). Legend keys keep rx 4.
+- Live, pushed 2026-11-11: STATE UNITS MARGINS + style (owner). Corners 8px again; a Trifecta is one whole square
   again; codes 2px smaller than Senate Seats (s*.19 - 2px), centred on the middle bar. Results / Margins toggle on State units
   (shared colorMode; mid label "State units results / margins"). Margins: governor bar = GOV_MARGINS shade; chamber bars =
   LEG_MARGIN[year][state] [House, Senate] = majority seats minus the other party's, as points of the chamber, from the seat
@@ -2849,25 +2849,36 @@ STATUS / NEXT
   matches LEG_DATA, else flat). Trifecta square in Margins = the shade of its narrowest hold. Ties / coalitions / Nebraska flat.
   948 of 958 partisan chamber-years have a margin. Legend in Margins: shaded long keys + note. Known: white codes are hard to
   read on the palest shades (owner asked for white always). Nebraska grey = officially nonpartisan (members ~R majority).
-- LOCAL, NOT COMMITTED (2026-11-11): Nebraska = Republican trifecta in every year (owner): NE "rr" in LEG_OLD / LEG24 / LEG26
+- Live, pushed 2026-11-11: Nebraska = Republican trifecta in every year (owner): NE "rr" in LEG_OLD / LEG24 / LEG26
   (its one chamber counts as R; governors R throughout), full red square; legend drops the grey Nonpartisan key (shown only
   if a year has an "n") and the note says NE counts as Republican, its majority. Tallies +1 R chamber / +1 R Trifecta per year.
   SMOOTH YEAR CHANGES (owner): the three bars always stay; the Trifecta square is a 4th path (.whole) over them whose opacity
   fades .45s with the fills, so states cross-fade into / out of Trifectas in Results and Margins alike.
-- LOCAL, NOT COMMITTED (2026-11-11): SMOOTHER Governors <-> State units (owner), Results and Margins. repSwap: when State units
+- Live, pushed 2026-11-11: SMOOTHER Governors <-> State units (owner), Results and Margins. repSwap: when State units
   is the target (or the source: #map-us.leg before the switch), each state's stand-ins glide straight into / out of its State
   units square (8px corners, the governor bar's or Trifecta square's colour on screen), not by way of the Senate tile halves.
   In: .rmorph.leg keeps the bars hidden under the stand-ins; rmClear then shows them at once and fades the stand-ins out
   (.3s). Out: the bars fade (.35s) under the stand-ins as they glide back to the governors blocks. Same speed (senMorphMs).
-- LOCAL, NOT COMMITTED (2026-11-11): State units legend keys = 14px squares rounded 2px, like Senate Seats' legend (were long
+- Live, pushed 2026-11-11: State units legend keys = 14px squares rounded 2px, like Senate Seats' legend (were long
   28 x 14 bars); margin shade keys too.
-- LOCAL, NOT COMMITTED (2026-11-11): State units Margins: Trifectas are NOT merged; every state shows its three bars, each shaded
+- Live, pushed 2026-11-11: State units Margins: Trifectas are NOT merged; every state shows its three bars, each shaded
   by its own margin (governor, Senate, House). Results keeps the whole Trifecta square; the toggle cross-fades between them.
-- LOCAL, NOT COMMITTED (2026-11-11): SMOOTH State units <-> every map (owner), Results and Margins. President / House /
+- Live, pushed 2026-11-11: SMOOTH State units <-> every map (owner), Results and Margins. President / House /
   Governors: repSwap's stand-ins glide square <-> State units square (legSquare(k): 8px corners, colour on screen). Senate All /
   Representation (new): setUS glides each senator's circle into its state's square (in) or the square into the two circles
   (out) with repMorph, skipping the Seats tile morph (senPrev set so senMorph does not run). Senate Seats: a cross-fade (the
   tiles sit exactly where the squares are). Checked all 10 directions x both modes: 100 stand-ins each, no errors.
+- Live, pushed 2026-11-11: Senate Seats <-> State units now a real morph (owner: the cross-fade was barely visible),
+  Results and Margins: each state's two tile halves glide / widen into its State units square (in) or the square splits back
+  into the two halves (out), colours blending; bars appear under the landed stand-ins. senShapes(k, mode) = tile halves for
+  Seats, circles for All / Representation; the same setUS blocks handle all three Senate views. Checked both ways, both modes.
+- Live, pushed 2026-11-11: State units -> Senate (Seats / All / Representation), two beats in the same time (owner):
+  beat 1, each state's three bars blend into the square's colour and their white gaps close (.24s, inline on the paths);
+  the stand-in square fades in over them in the first 30% of the morph (repMorph pair.merge); beat 2, it splits into the two
+  senators' shapes, recolouring as it goes. Total = senMorphMs (800ms), unchanged. paintLeg clears the inline styles.
+- Live, pushed 2026-11-11: States toggle order State units | Governors (owner; the default view is unchanged). Play
+  tour, States part: State units results 2008-2026, State units margins for the latest year (2026), then Governors results
+  and margins 2008-2026 (steps carry gov: "leg" / "gov"; playGo sets govMode; playHere matches it).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
