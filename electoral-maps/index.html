@@ -398,7 +398,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
     <div class="subtoggle" id="gov-view" role="group" aria-label="State offices" hidden>
-      <button type="button" data-gov="leg" aria-pressed="false">State units</button>
+      <button type="button" data-gov="leg" aria-pressed="false">Units</button>
       <button type="button" data-gov="gov" aria-pressed="true">Governors</button>
     </div>
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
@@ -1712,7 +1712,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
-  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?"President "+rm(marginsOn()):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
+  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"Units "+rm(marginsOn()):"Units"):race==="president"?"President "+rm(marginsOn()):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
     race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
   document.getElementById("leg-vacant").hidden=!c.v||y26;

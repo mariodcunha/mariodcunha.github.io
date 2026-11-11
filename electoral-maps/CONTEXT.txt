@@ -2879,6 +2879,8 @@ STATUS / NEXT
 - Live, pushed 2026-11-11: States toggle order State units | Governors (owner; the default view is unchanged). Play
   tour, States part: State units results 2008-2026, State units margins for the latest year (2026), then Governors results
   and margins 2008-2026 (steps carry gov: "leg" / "gov"; playGo sets govMode; playHere matches it).
+- Live, pushed 2026-11-11: "State units" renamed "Units" on screen (owner), at every width: the States toggle reads
+  Units | Governors, the centre label "Units results / margins". Code names (legOn, LEG_*) unchanged.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
