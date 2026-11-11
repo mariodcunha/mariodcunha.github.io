@@ -2881,6 +2881,9 @@ STATUS / NEXT
   and margins 2008-2026 (steps carry gov: "leg" / "gov"; playGo sets govMode; playHere matches it).
 - Live, pushed 2026-11-11: "State units" renamed "Units" on screen (owner), at every width: the States toggle reads
   Units | Governors, the centre label "Units results / margins". Code names (legOn, LEG_*) unchanged.
+- Live, pushed 2026-11-11: phones: the States toggles keep full labels (owner): the rule that shortened unselected
+  Units / Governors and Results / Margins buttons (Gov., R / M) is gone; at 375px Units | Governors and Results | Margins fit on
+  one row beside the year (right edge 359), nothing clipped.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

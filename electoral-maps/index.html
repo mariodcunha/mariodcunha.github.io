@@ -331,10 +331,6 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #map-india{margin-top:-6.3%;width:calc((100vw - 40px)*1.0606);margin-left:calc(4px - (100vw - 40px)*.0304)}
   #map-us .state text{font-size:18px}
   #map-us .alt-grid text{font-size:17.75px!important}   /* about 5.7px on a 375px phone (owner, 2026-11-07; was 19) */
-  /* States tab (owner, 2026-11-10): with Governors | Legislatures beside Results | Margins the row is too tight, so the buttons not
-     selected in both take their short labels (Leg. / Gov., R / M) */
-  .lsctl:has(#gov-view:not([hidden])) :is(#gov-view,#margin-view) button:not([aria-pressed="true"]) .lbl-f{display:none}
-  .lsctl:has(#gov-view:not([hidden])) :is(#gov-view,#margin-view) button:not([aria-pressed="true"]) .lbl-s{display:inline}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
   #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
   #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
