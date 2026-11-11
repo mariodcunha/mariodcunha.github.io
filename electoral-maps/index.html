@@ -822,11 +822,12 @@ const ALT={};
 const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
 function paintAlt(year){
   for(const k in ALT) ALT[k].forEach(({r,t,b},j)=>{const {p,m}=senPairs(year,k)[j]||{};   // every year 2008-2026
-    const f=marginsOn("senate")&&m!=null&&/^[dri]$/.test(p)?shadeOf(p==="r"?"r":"d",m):null;   // independents caucus blue, so they shade blue
+    const mOn=marginsOn("senate")&&senMode==="seats";   // leaving Seats (All / Representation): the tiles morph in Results colours
+    const f=mOn&&m!=null&&/^[dri]$/.test(p)?shadeOf(p==="r"?"r":"d",m):null;   // independents caucus blue, so they shade blue
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
     const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
     if(t) t.setAttribute("class",cls);
-    b.setAttribute("class",(cls+" lead").trim()); const lead=f||marginsOn("senate")&&m!=null&&/^[DR]$/.test(p);   // uncalled seats keep the leading fill but show the lead (AK, MS 2026)
+    b.setAttribute("class",(cls+" lead").trim()); const lead=f||mOn&&m!=null&&/^[DR]$/.test(p);   // uncalled seats keep the leading fill but show the lead (AK, MS 2026)
     b.textContent=lead?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
 }
 // ---------- Senate: Seats <-> All / Representation morph (owner, 2026-10-16) ----------
@@ -1385,6 +1386,11 @@ function setUS(race,animate,year=usYear(race)){
   if(over){if(animate&&race===over.race&&year===over.year){setUSNow(race,animate,year); overPaint(); return} overExit(animate)}
   if(senSeatsOnly.matches) senMode="seats";   // phones and short-label widths (owner, 2026-11-07 / 11-09): Senate is Seats only, with Results / Margins
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
+  // Senate Seats in Margins -> All / Representation (owner, 2026-11-10): the tiles start fading to their Results colours (the
+  // .45s fill transition) and 120ms later begin morphing into the circles, the fade finishing on the way. colorMode itself stays, so Seats comes back in Margins.
+  if(animate&&!reduce&&race==="senate"&&usRace==="senate"&&senPrev==="seats"&&senMode!=="seats"&&marginsOn()&&SEN_MARGINS[year]){
+    const stage=usStage, keep=colorMode; colorMode="results"; paintAlt(year); colorMode=keep;
+    setTimeout(()=>{if(stage===usStage) setUSNow(race,animate,year)},120); return}   // overlaps the fade: the morph starts while the colours finish (owner, 2026-11-10; was 450)
   if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
   return setUSNow(race,animate,year);
 }

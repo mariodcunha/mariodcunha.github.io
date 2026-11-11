@@ -2767,8 +2767,13 @@ STATUS / NEXT
 - Live, pushed 2026-11-10: Play tour (USA) adds House margins after House results, 2008-2026 (owner):
   President results, margins; House results, margins; Senate ...; Governors results, margins. playHere now matches House
   steps by colorMode too.
-- LOCAL, NOT COMMITTED (2026-11-10): Uttar Pradesh reads "UP" everywhere (owner): INDIA's name for UP is "UP" and
+- Live, pushed 2026-11-10: Uttar Pradesh reads "UP" everywhere (owner): INDIA's name for UP is "UP" and
   IN_FULL.UP = "UP", so no view prints the full name (Lok Sabha, Rajya Sabha, States, Chief Ministers; hover already UP).
+- LOCAL, NOT COMMITTED (2026-11-10): Senate Seats in Margins -> All / Representation (owner): the tiles first fade to
+  their Results colours (leads cleared, .45s), then morph into the circles. setUS: paintAlt with colorMode briefly
+  "results", then setUSNow after 120ms, so the morph starts while the fade finishes (was 450ms, owner: snappier; usStage
+  guards a quick second click). paintAlt shades only while senMode is
+  "seats", so the morph keeps the Results colours. colorMode stays: back on Seats it is Margins again.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
