@@ -759,8 +759,9 @@ const SEN_FILL={...PARTY_FILL,i:"var(--dem)"};
 const usSvg=document.getElementById("map-us");
 // House squares that drop first when a state has fewer seats, first to go first, so a block never splits or has a hole
 // in it (owner, 2026-11-04). Serpentine order already does that everywhere on the Figma layout except Arizona.
+const escAt=(k,j,cen)=>{const m=(ESQ_2000[k]||[]).find(m=>m.e===ESQ[k][j]); return m?(cen===2000?m.at:m.home):ESQ_SHIFT[cen]?.[k]?.[j]||ESQ_HOME[k][j]};
 const HSQ_LAST={AZ:"6,15"};
-const HSQ={}, ESQ={}, ESQ_2000={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
+const HSQ={}, ESQ={}, ESQ_2000={}, ESQ_HOME={}, ESQ_SHIFT={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={};
 (function drawUS(){
   // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
   const defs=el("defs",{},usSvg);
@@ -778,7 +779,7 @@ const HSQ={}, ESQ={}, ESQ_2000={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={
       CH_N[k]=st.c.length;
       HSQ[k]=cells.map(c=>sq(sg,c));
     }
-    ESQ[k]=st.e.map(c=>sq(sg,c));
+    ESQ[k]=st.e.map(c=>sq(sg,c)); ESQ_HOME[k]=st.e;
     // st.y: [elector, x, y]. MA, IA, LA's extra 2000-census seat sits on this elector's square so the House block stays
     // in one piece; on President that elector steps aside to x, y for those years
     if(st.y) ESQ_2000[k]=st.y.map(([j,x,y])=>({e:ESQ[k][j],at:[x,y],home:st.e[j]}));
@@ -792,6 +793,14 @@ const HSQ={}, ESQ={}, ESQ_2000={}, SEAT={}, CH_N={}, HOUSE_COL={}, LBL={}, GST={
   // fixed: Senate Seats and Representation are laid out on this box, whatever the squares' positions
   usSvg.setAttribute("viewBox","-16 -23 1062 689");
   // House colours, every year: each square is one district, coloured by that district's winner (HOUSE_MAPS, HOUSE_WIN)
+  // President (owner, 2026-11-11): in a census with fewer House seats, an elector square stranded at a row's end by the
+  // dropped seats slides left to the first free cell after the row's last square, so the row stays one piece (FL 2000 /
+  // 2010, WA and GA 2000). ESQ_SHIFT[census][state][elector] = [x, y]; escAt() gives each elector's cell for a census.
+  for(const cen of [2000,2010]){const diff=CENSUS_DIFF[cen]; ESQ_SHIFT[cen]={};
+    for(const k in ESQ){const d=diff[k]||0; if(d>=0||!HSQ[k]) continue;
+      const cells=HSQ[k].slice(0,CH_N[k]+d).map(e=>[Math.round(e.x.baseVal.value/S),Math.round(e.y.baseVal.value/S)]), occ=new Set(cells.map(String));
+      ESQ_HOME[k].forEach(([ex,ey],j)=>{const row=cells.filter(c=>c[1]===ey).map(c=>c[0]); if(!row.length) return;
+        const x=Math.max(...row)+1; if(ex>x&&!occ.has(x+","+ey)){(ESQ_SHIFT[cen][k]??=[])[j]=[x,ey]; occ.add(x+","+ey)}})}}
   for(const y of [...CH_YEARS,2026]){HOUSE_COL[y]={}; HOUSE_DIST[y]={}; for(const k in CH_N){HOUSE_DIST[y][k]=HOUSE_MAPS[HOUSE_MAP_OF[y]][k].split(",").map(Number); HOUSE_COL[y][k]=HOUSE_DIST[y][k].map(d=>HOUSE_WIN[y][k][d-1])}}
 })();
 
@@ -1297,7 +1306,7 @@ const PACK_US={id:"us",svg:usSvg,cache:{},PL:{},fs:narrow.matches?20:12,h:narrow
   at(e){const p=this.tight&&TIGHT_POS.get(e); return p?{x:{baseVal:{value:p[0]*S}},y:{baseVal:{value:p[1]*S}}}:e},
   now(k){if(!this.corner()) return null; const hs=(HSQ[k]||[]).slice(0,this.seats(k)).map(e=>this.at(e));
     return this.race==="president"?[...hs,...ESQ[k]]:hs},
-  moved:k=>(ESQ_2000[k]||[]).map(m=>m.at),   // the elector squares that step aside in some years
+  moved:k=>[...(ESQ_2000[k]||[]).map(m=>m.at),...Object.values(ESQ_SHIFT).flatMap(o=>(o[k]||[]).filter(Boolean))],   // elector squares that step aside / close gaps in some years
   most:k=>(CH_N[k]||0)+Math.max(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
   least:k=>(CH_N[k]||0)+Math.min(...Object.values(CENSUS_DIFF).map(d=>d[k]||0)),
   // the map's extent: each state's largest President block over the three censuses. Tight (owner, 2026-11-07): its
@@ -1460,7 +1469,7 @@ function overCells(k,y,race){   // [cell, fill] for state k's squares in year y 
   const P=PRES[y], w=P.dem.split(" ").includes(k)?"d":"r";
   const hs=(HSQ[k]||[]).slice(0,n).map((e,j)=>{const v=j===1&&k==="ME"?P.me2:j===1&&k==="NE"?P.ne2:w;
     return [at(e),marginFill(y,k==="ME"||k==="NE"?k+(j+1):k,v)]});
-  const es=ESQ[k].map(e=>{const m=(ESQ_2000[k]||[]).find(m=>m.e===e); return [m?(censusOf(y)===2000?m.at:m.home):at(e),marginFill(y,k,w)]});
+  const es=ESQ[k].map((e,j)=>{const m=(ESQ_2000[k]||[]).find(m=>m.e===e), s=ESQ_SHIFT[censusOf(y)]?.[k]?.[j]; return [m?(censusOf(y)===2000?m.at:m.home):s||at(e),marginFill(y,k,w)]});
   return [...hs,...es];
 }
 const overFill=(r,f)=>{r.style.fill=f; if(r._gov) r.style.stroke=f};   // Governors: borders take the fill, one shape (as setUSNow paints them)
@@ -1559,7 +1568,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   const rw={d:0,r:0,i:0,D:0,R:0,T:0,N:0};   // Senate Representation: each senator weighted 1 / the state's grey squares
   const sm=senMode, tight=race!=="president";   // House, Senate, Governors: the tight Figma layout (TIGHT_SHIFT)
   const paint=(e,show,fill,stroke)=>{e.classList.toggle("gone",!show); if(show){e.style.fill=fill; e.style.stroke=stroke||"var(--bg)"}};
-  for(const k in ESQ_2000) ESQ_2000[k].forEach(({e,at,home})=>{const [x,y]=censusOf(year)===2000?at:home; e.setAttribute("x",x*S); e.setAttribute("y",y*S)});
+  for(const k in ESQ) ESQ[k].forEach((e,j)=>{const [x,y]=escAt(k,j,censusOf(year)); e.setAttribute("x",x*S); e.setAttribute("y",y*S)});   // electors step aside / close gaps per census
   for(const k in ESQ){
     const n=(CH_N[k]||0)+(diff[k]||0), hs=HSQ[k]||[];
     if(race==="president"){
