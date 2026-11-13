@@ -828,6 +828,15 @@ const HSQ={}, ESQ={}, ESQ_2000={}, ESQ_HOME={}, SEAT={}, CH_N={}, HOUSE_COL={}, 
   usSvg.setAttribute("viewBox","-16 -23 1062 689");
   // House colours, every year: each square is one district, coloured by that district's winner (HOUSE_MAPS, HOUSE_WIN)
   for(const y of [...CH_YEARS,2026]){HOUSE_COL[y]={}; HOUSE_DIST[y]={}; for(const k in CH_N){HOUSE_DIST[y][k]=HOUSE_MAPS[HOUSE_MAP_OF[y]][k].split(",").map(Number); HOUSE_COL[y][k]=HOUSE_DIST[y][k].map(d=>HOUSE_WIN[y][k][d-1])}}
+  // 2028 (owner, 2026-11-12): every House seat is up. A district (by number, on the 2026 map) that went to the same party in
+  // every election 2016-2026 is Likely, light blue "D" / light red "R"; any change, or no result (LA 5, 6), is a toss-up (grey "v")
+  HOUSE_MAP_OF[FUT_YEAR]=HOUSE_MAP_OF[2026]; HOUSE_COL[FUT_YEAR]={}; HOUSE_DIST[FUT_YEAR]=HOUSE_DIST[2026];
+  for(const k in CH_N) HOUSE_COL[FUT_YEAR][k]=HOUSE_DIST[2026][k].map(d=>{
+    // (owner, 2026-11-12) same party every time = Likely (solid d / r); one election the other way = Leaning (light D / R,
+    // toward the rest); more than one, or no result (LA 5, 6) = toss-up
+    const v=[2016,2018,2020,2022,2024,2026].map(y=>HOUSE_WIN[y][k][d-1]).filter(Boolean).map(p=>p.toLowerCase());
+    if(v.includes("v")) return "v"; const nd=v.filter(p=>p==="d").length, nr=v.length-nd;
+    return nr===0?"d":nd===0?"r":nr===1?"D":nd===1?"R":"v"})
 })();
 
 function countTo(node,to,animate){
@@ -909,7 +918,12 @@ const LEG28=Object.fromEntries(Object.keys(LEG26).map(k=>[k,"nn"]));   // 2028: 
 const LEG_DATA={...LEG_OLD,2024:LEG24,2026:LEG26,2028:LEG28}, legReal=year=>legOn()&&!!LEG_DATA[year];   // years with real legislature data
 // colours: each part takes its holder's party; t = tied, c = coalition (purple); n = nonpartisan, no governor (grey)
 const LEG_FILL={d:"var(--dem)",r:"var(--rep)",c:"#8a4fbf",t:"#8a4fbf",n:"#bdbdbd"};
-const govPartyOf=(year,k)=>year===FUT_YEAR?"n":year===2026&&GOV_UP.includes(k)?projOf("governors",k):govOf(year,k);
+// 2028 governors (owner, 2026-11-12): the 11 states that elect in 2028 are Likely (light D / R) when the state's governor
+// was the same party after every election 2016-2026, else toss-up (grey "v"); every other state keeps its 2026 governor (solid)
+const GOV28_UP="DE IN MO MT NH NC ND UT VT WA WV".split(" ");
+const gov28=k=>{const now=govPartyOf(2026,k).toLowerCase(); if(!GOV28_UP.includes(k)) return now;
+  const v=new Set([2016,2018,2020,2022,2024].map(y=>govOf(y,k)).concat(now)); return v.size>1?"v":v.has("d")?"D":v.has("r")?"R":"v"};
+const govPartyOf=(year,k)=>year===FUT_YEAR?gov28(k):year===2026&&GOV_UP.includes(k)?projOf("governors",k):govOf(year,k);
 const govFill=g=>PARTY_FILL[g]||ALT_PROJ[g]||LEG_FILL.n;
 // a polygon with rounded corners: each corner cut back along both edges and curved through (cut-back capped for sharp ones)
 function roundPoly(pts,r,cap=.45){const n=pts.length, f=v=>v.toFixed(2), seg=pts.map((V,i)=>{const P=pts[(i+n-1)%n], N=pts[(i+1)%n];
@@ -953,7 +967,7 @@ function legTally(year){if(year===FUT_YEAR) return {d:0,r:0,nd:"Democrats",nr:"R
   return {d,r,nd:"Democrats",nr:"Republicans",tot:d+r+o,mark:null,ctl:null,seg:{d,r},ud:`${td} Trifectas`,ur:`${tr} Trifectas`,
     label:`${year} state governments: Democrats hold ${d} governorships and legislative chambers and ${td} trifectas, Republicans ${r} and ${tr} trifectas; ${o} independent, tied or coalition`}}
 function legLegend(year){
-  if(year===FUT_YEAR){const L=document.getElementById("legend-legis"); L.classList.remove("margins"); L.innerHTML=`<span class="txt">No 2028 results yet.</span>`; return}
+  if(year===FUT_YEAR){const L=document.getElementById("legend-legis"); L.classList.remove("margins"); L.innerHTML=`<span class="txt">Governor pill (top): the 2028 Governors projection, solid where the governor is not up, light blue / light red where Likely, grey for a toss-up. State legislatures: no 2028 results yet.</span>`; return}
   const sw=(c,txt,cls="")=>`<span class="${cls}"><svg viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="${c}"/></svg>${txt}</span>`;   // 2px-rounded squares, like Senate Seats' legend (owner, 2026-11-11)   // long rounded keys (owner, 2026-11-10)
   const src=year===2026?"Results are unofficial, from Wikipedia and NCSL as of Nov 6, 2026. Chambers with no 2026 election keep their control."
     :`Control after the November ${year} elections, for the ${year+1} sessions${year<2024?", from Wikipedia's state legislative election pages":""}.`;
@@ -1654,11 +1668,13 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
       ESQ[k].forEach(e=>{const w=dem.has(k)?"d":"r"; paint(e,true,marginFill(year,k,w)); c[w]++});
     } else {
       ESQ[k].forEach(e=>paint(e,false));
-      if(fut&&(race==="house"||race==="governors")) hs.forEach((e,j)=>{paint(e,j<n,"var(--house)",race==="governors"?"var(--house)":""); if(j<n) c.v++});   // 2028: grey
+      if(fut&&race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,p==="v"?"var(--house)":PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});   // 2028: Likely solid / Leaning light / toss-up grey
       else if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j], m=HOUSE_MARGINS[year]?.[k]?.[HOUSE_DIST[year][k][j]-1];   // Margins: called seats shaded, leading ones stay flat (as Senate Seats)
         paint(e,j<n,marginsOn()&&m!=null&&SHADE[p]?shadeOf(p,m):PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});
       if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
-      if(fut){}
+      if(fut&&race==="governors"&&hs.length){const g=gov28(k), f=PARTY_FILL[g]||ALT_PROJ[g]||"var(--house)";
+        hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
+      else if(fut){}
       else if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=SHADE[g]?marginFill(year,k,g,GOV_MARGINS):PARTY_FILL[g]||ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
       else if(race==="governors"&&hs.length){const g=govOf(year,k), f=marginFill(year,k,g,GOV_MARGINS);
@@ -1685,7 +1701,12 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the big numbers are called + leading, like the Senate's; under the bar: called, leading (owner, 2026-11-09)
   if(fut&&race==="president") T={d:c.d+c.D,r:c.r+c.R,nd:"Democrat",nr:"Republican",tot:538,mark:270/538*100,need:"270",ctl:null,seg:{d:c.d,D:c.D,R:c.R,r:c.r},
     ud:[`${c.d} likely`,c.D&&`${c.D} leaning`].filter(Boolean).join(", "),ur:[`${c.r} likely`,c.R&&`${c.R} leaning`].filter(Boolean).join(", "),label:`2028 president, a projection from 2016-2024: Likely Democrat ${c.d}, Leaning Democrat ${c.D}, toss-up ${c.v}, Leaning Republican ${c.R}, Likely Republican ${c.r} electoral votes`};
-  else if(fut&&race==="senate") T={d:c.d+c.i+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"51",ctl:null,seg:{d:c.d+c.i,D:c.D,m:c.u,R:c.R,r:c.r},
+  else if(fut&&race==="house"&&!legReal(year)) T={d:c.d+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:435,mark:218/435*100,need:"218",ctl:null,seg:{d:c.d,D:c.D,R:c.R,r:c.r},
+    ud:[`${c.d} likely`,c.D&&`${c.D} leaning`].filter(Boolean).join(", "),ur:[`${c.r} likely`,c.R&&`${c.R} leaning`].filter(Boolean).join(", "),
+    label:`2028 House projection: Likely Democrat ${c.d}, Leaning Democrat ${c.D}, toss-up ${c.v}, Leaning Republican ${c.R}, Likely Republican ${c.r}`};
+  else if(fut&&race==="governors"&&!legReal(year)) T={d:g26.d+g26.D,r:g26.r+g26.R,nd:"Democrats",nr:"Republicans",tot:435,mark:null,ctl:null,seg:{d:c.d,D:c.D,R:c.R,r:c.r},
+    ud:`${g26.d} fixed, ${g26.D} likely`,ur:`${g26.r} fixed, ${g26.R} likely`,label:`2028 governors projection: not up ${g26.d} Democrats, ${g26.r} Republicans; up: Likely Democrat ${g26.D}, Likely Republican ${g26.R}, toss-up ${g26.v}`};
+  else if(fut&&race==="senate"&&!legOn()) T={d:c.d+c.i+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"51",ctl:null,seg:{d:c.d+c.i,D:c.D,m:c.u,R:c.R,r:c.r},
     ud:`${c.d+c.i} fixed, ${c.D} likely`,ur:`${c.r} fixed, ${c.R} likely`,label:`2028 Senate: not up ${c.d+c.i} Democratic, ${c.r} Republican; up: Likely Democrat ${c.D}, Likely Republican ${c.R}, ${c.u} open call`};
   else if(fut&&!legReal(year)) T={d:0,r:0,nd:"Democrats",nr:"Republicans",tot:race==="senate"?100:435,mark:race==="governors"?null:race==="senate"?50:218/435*100,
     need:race==="senate"?"51":"218",ctl:null,seg:{},ud:"",ur:"",label:`${year} ${race==="governors"?"governors":race}: no results yet`};
@@ -1777,7 +1798,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
-    const grp=race==="senate"||race==="governors"||(race==="house"&&y26)?g:e.dataset.g;   // Senate and Governors: a white gap between every segment, solid and light too
+    const grp=fut||race==="senate"||race==="governors"||(race==="house"&&y26)?g:e.dataset.g;   // 2028 too: solid | light gap (owner, 2026-11-12)   // Senate and Governors: a white gap between every segment, solid and light too
     const on=w>1e-6;   // a rounding crumb is no segment: it would double the gap
     e.classList.toggle("gap",on&&prev!==null&&prev!==grp); if(on) prev=grp;
   }
@@ -1804,8 +1825,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
-  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?(fut?"President projection":"President "+rm(marginsOn())):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
-    race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?fut?"Senate seats":(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
+  document.getElementById("mid-label").textContent=legOn()?(fut?"State units projection":legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?(fut?"President projection":"President "+rm(marginsOn())):race==="house"?(fut?"House projection":"House "+rm(marginsOn()&&HOUSE_MARGINS[year])):
+    race==="governors"?(fut?"Governors projection":"Governors "+rm(marginsOn()&&GOV_MARGINS[year])):fut?"Senate projection":sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
   document.getElementById("leg-vacant").hidden=!c.v||y26||fut;
   document.getElementById("house-keys").hidden=y26||fut;
@@ -1813,7 +1834,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.getElementById("legend-president").classList.toggle("fut",fut);
   document.getElementById("proj-president").innerHTML=fut&&race==="president"?
     `<span><i class="sw" style="background:var(--dem)"></i>Likely Democrat (${c.d})</span><span><i class="sw" style="background:${ALT_PROJ.D}"></i>Leaning Democrat (${c.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${c.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Leaning Republican (${c.R})</span><span><i class="sw" style="background:var(--rep)"></i>Likely Republican (${c.r})</span>`:"";
-  if(fut){const msg=race==="senate"?"34 seats are up in 2028 (class 3, last elected in 2022; Ohio and Florida in their 2026 specials). Light blue / light red: Likely, the seat went to the same party every time since 2016 (plus Ohio and Florida, Likely Democrat); grey: toss-up. Solid: fixed, not up for election, current holder.":race==="president"?"A projection, not results: Likely (solid) where a state voted for the same party in 2016, 2020 and 2024; Leaning (light) where it switched once; toss-up (grey) where it switched twice, plus Texas, Ohio, Iowa, North Carolina and South Carolina.":"No 2028 results yet.";
+  if(fut){const msg=race==="governors"?" 11 states elect a governor in 2028. Light blue / light red: Likely, the state had a governor of the same party after every election since 2016; grey: toss-up, it changed. Solid: fixed, not up, current governor.":race==="house"?"Every House seat is up in 2028. By district number on today's map, elections 2016-2026: solid = Likely, the same party every time; light = Leaning, one election went the other way; grey = toss-up, more than one.":race==="senate"?"34 seats are up in 2028 (class 3, last elected in 2022; Ohio and Florida in their 2026 specials). Light blue / light red: Likely, the seat went to the same party every time since 2016 (plus Ohio and Florida, Likely Democrat); grey: toss-up. Solid: fixed, not up for election, current holder.":race==="president"?"A projection, not results: Likely (solid) where a state voted for the same party in 2016, 2020 and 2024; Leaning (light) where it switched once; toss-up (grey) where it switched twice, plus Texas, Ohio, Iowa, North Carolina and South Carolina.":"No 2028 results yet.";
     if(race==="president") document.getElementById("p-note").textContent=msg;
     else document.getElementById(race==="house"?"h-note":race==="senate"?"sen-note":"g-note").textContent=msg}   // 2026: projLegend's called / leading keys instead
   document.getElementById("leg-gov-ind").hidden=!govI;
@@ -1829,6 +1850,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // 2026: legend for the races on the ballot
   document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches||legOn();   // phones / short labels: Seats only, no view toggle
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):
+    fut&&r==="house"&&race==="house"?`<span><i class="sw" style="background:var(--dem)"></i>Likely Democrat (${c.d})</span><span><i class="sw" style="background:${ALT_PROJ.D}"></i>Leaning Democrat (${c.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${c.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Leaning Republican (${c.R})</span><span><i class="sw" style="background:var(--rep)"></i>Likely Republican (${c.r})</span>`:
+    fut&&r==="governors"&&race==="governors"&&!legOn()?`<span><i class="sw" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${g26.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${g26.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Likely Republican (${g26.R})</span>`:
     fut&&r==="senate"&&race==="senate"&&!legOn()?`<span><i class="sw c" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${c.D})</span><span><i class="sw c" style="background:${SEN_FILL.u}"></i>Toss-up (${c.u})</span><span><i class="sw c" style="background:${ALT_PROJ.R}"></i>Likely Republican (${c.R})</span>`:""});
   if(race==="senate") legShape("senate",senMode==="seats"?"r2":"c");   // the projected keys just written take the shape too
     panel.setAttribute("aria-labelledby","tab-"+race);
