@@ -34,6 +34,9 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 
 /* Top bar: race toggle on the left, country picker on the right */
 .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* desktop (owner, 2026-11-12): the year stepper sits on the right, just before Play (placeYear moves it; phones keep it in the
+   bottom row with the other toggles) */
+.topbar>#year{margin-left:auto} .topbar>#year~#play{margin-left:0}
 /* Play: one button at rest; while the tour runs it extends into a two-part toggle, Pause (later Stop) and the speed */
 #play{position:relative;margin-left:auto;display:inline-flex;padding:3px;background:var(--chip);border-radius:var(--r-out)}
 #play .pthumb{position:absolute;top:3px;bottom:3px;right:3px;width:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);opacity:0;transition:transform .3s var(--ease),opacity .2s}
@@ -884,9 +887,9 @@ const LEG_FILL={d:"var(--dem)",r:"var(--rep)",c:"#8a4fbf",t:"#8a4fbf",n:"#bdbdbd
 const govPartyOf=(year,k)=>year===2026&&GOV_UP.includes(k)?projOf("governors",k):govOf(year,k);
 const govFill=g=>PARTY_FILL[g]||ALT_PROJ[g]||LEG_FILL.n;
 // a polygon with rounded corners: each corner cut back along both edges and curved through (cut-back capped for sharp ones)
-function roundPoly(pts,r){const n=pts.length, f=v=>v.toFixed(2), seg=pts.map((V,i)=>{const P=pts[(i+n-1)%n], N=pts[(i+1)%n];
+function roundPoly(pts,r,cap=.45){const n=pts.length, f=v=>v.toFixed(2), seg=pts.map((V,i)=>{const P=pts[(i+n-1)%n], N=pts[(i+1)%n];
     const d1=Math.hypot(P[0]-V[0],P[1]-V[1]), d2=Math.hypot(N[0]-V[0],N[1]-V[1]), u1=[(P[0]-V[0])/d1,(P[1]-V[1])/d1], u2=[(N[0]-V[0])/d2,(N[1]-V[1])/d2];
-    const th=Math.acos(Math.max(-1,Math.min(1,u1[0]*u2[0]+u1[1]*u2[1]))), c=Math.min(r/Math.tan(th/2),.45*Math.min(d1,d2));
+    const th=Math.acos(Math.max(-1,Math.min(1,u1[0]*u2[0]+u1[1]*u2[1]))), c=Math.min(r/Math.tan(th/2),cap*Math.min(d1,d2));
     return [[V[0]+u1[0]*c,V[1]+u1[1]*c],V,[V[0]+u2[0]*c,V[1]+u2[1]*c]]});
   return `M${seg.at(-1)[2].map(f)}`+seg.map(([a,v,b])=>`L${a.map(f)}Q${v.map(f)} ${b.map(f)}`).join("")+"Z"}
 const LEG={}; let legGrid=null;
@@ -895,7 +898,7 @@ const LEG={}; let legGrid=null;
 function paintLeg(year){
   if(!legGrid){legGrid=el("g",{class:"leg-grid","aria-hidden":"true"},usSvg);
     for(const k in ALT){const g=el("g",{},legGrid); LEG[k]={p:[0,1,2,3].map(i=>el("path",i===3?{class:"whole"}:{},g)),t:el("text",{"text-anchor":"middle"},g)}; LEG[k].t.textContent=k}}
-  const px=1/(usSvg.getScreenCTM()?.a||1), r=8*px, data=LEG_DATA[year], mOn=marginsOn();   // 8px corners again (owner, 2026-11-11)
+  const px=1/(usSvg.getScreenCTM()?.a||1), r=16*px, data=LEG_DATA[year], mOn=marginsOn();   // Trifecta squares 16px; bars are pills (owner, 2026-11-11)
   for(const k in LEG){const o=ALT[k][0].o, s=o.height, x=o.x, y=o.y, A=[x,y], B=[x+s,y], C=[x+s,y+s], D=[x,y+s];
     const L=data[k]||"nn", g=govPartyOf(year,k), [mh,ms]=LEG_MARGIN[year]?.[k]||[], mg=GOV_MARGINS[year]?.[k];
     // Margins: each part shaded by its own lead (40-step scale, as the other maps); ties, coalitions, Nebraska, uncalled stay flat
@@ -909,7 +912,7 @@ function paintLeg(year){
     // (.45s, like the fills), so a state turning into or out of a Trifecta cross-fades instead of jumping.
     const tri=(L==="dd"&&g==="d")||(L==="rr"&&g==="r"), wp=LEG[k].p[3];
     LEG[k].p.forEach(e=>{e.style.transition=""; e.style.strokeWidth=""});   // undo the merge beat of a Senate switch
-    shapes.forEach((sh,i)=>{LEG[k].p[i].setAttribute("d",roundPoly(sh,r)); LEG[k].p[i].style.fill=fills[i]});
+    shapes.forEach((sh,i)=>{LEG[k].p[i].setAttribute("d",roundPoly(sh,h/2,.5)); LEG[k].p[i].style.fill=fills[i]});   // pills: ends fully round
     wp.setAttribute("d",roundPoly([A,B,C,D],r)); wp.style.opacity=tri&&!mOn?1:0; wp.style.pointerEvents=tri&&!mOn?"":"none";   // hidden: not hoverable   // Margins (owner, 2026-11-11): never merged, each bar its own shade
     if(tri){const ms3=[mg,mh,ms].filter(v=>v!=null); wp.style.fill=shade(g,ms3.length?Math.min(...ms3):null,govFill(g))}
     const tt=LEG[k].t; tt.setAttribute("x",tx); tt.setAttribute("y",ty); tt.style.fontSize=(s*.19-2*px).toFixed(1)+"px";   // 2px smaller than Senate Seats (owner), centred on the middle bar
@@ -1422,14 +1425,14 @@ function repMorph(pairs,ms=senMorphMs){
   Promise.all(anims.map(a=>a.finished)).then(()=>{if(run===rmRun) rmClear()}).catch(()=>{});
 }
 // a state's State units square as a morph stand-in: 8px corners, the colour on screen (the Trifecta square, else the governor bar)
-function legSquare(k){const o=ALT[k][0].o, p=LEG[k]?.p, rr=8/(usSvg.getScreenCTM()?.a||1), w=1.75;   // as it looks: inside its 3.5 outline
+function legSquare(k){const o=ALT[k][0].o, p=LEG[k]?.p, rr=16/(usSvg.getScreenCTM()?.a||1), w=1.75;   // as it looks: inside its 3.5 outline
   return {x:o.x+w,y:o.y+w,width:o.height-2*w,height:o.height-2*w,rx:Math.max(0,rr-w),fill:cssFill(p?(p[3].style.opacity==="1"?p[3].style.fill:p[0].style.fill):""),grill:false}}
 const senCircles=k=>[0,1].map(j=>({...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)}));
 // a Units state as morph shapes: its whole Trifecta square (tri) or its three bars, top to bottom, as on screen
-function legParts(k){const o=ALT[k][0].o, s=o.height, h=s/3, p=LEG[k].p, rr=8/(usSvg.getScreenCTM()?.a||1), w=1.75, sq0=legSquare(k);
+function legParts(k){const o=ALT[k][0].o, s=o.height, h=s/3, p=LEG[k].p, w=1.75, sq0=legSquare(k);
   // as they look on screen (owner, 2026-11-11: no blink at the landing): each path's 3.5-unit white outline eats w into every edge
   const sq=sq0;   // legSquare is already the visible square
-  return {tri:p[3].style.opacity==="1", sq, bars:[0,1,2].map(i=>({x:o.x+w,y:o.y+i*h+w,width:s-2*w,height:h-2*w,rx:Math.max(0,rr-w),fill:cssFill(p[i].style.fill)}))}}
+  return {tri:p[3].style.opacity==="1", sq, bars:[0,1,2].map(i=>({x:o.x+w,y:o.y+i*h+w,width:s-2*w,height:h-2*w,rx:(h-2*w)/2,fill:cssFill(p[i].style.fill)}))}}   // pills
 // Senate Seats <-> Units (owner, 2026-11-11): one solid body breaking along its seams, in one go (same senMorphMs). The pieces
 // always tile the square edge to edge (never overlap); a backing square in the fused colour sits under them while they touch,
 // hiding the notches of their rounded inner corners, so the fused moment reads as one solid rectangle.
@@ -1437,7 +1440,7 @@ function legParts(k){const o=ALT[k][0].o, s=o.height, h=s/3, p=LEG[k].p, rr=8/(u
 //  bars first close up into the solid square (gaps shut, one colour), which then cracks down the middle the same way.
 //  Seats -> Units: the reverse; the tiles join into the solid square, which stays whole (Trifecta) or cracks along its thirds
 //  into the three bars. toUnits: halves -> parts; else parts -> halves.
-const SEATS_LEG_MS=1100;   // Senate Seats <-> Units only, a little slower (owner, 2026-11-11: 1.1s; the rest use senMorphMs, 800)
+const SEATS_LEG_MS=900;   // Senate Seats <-> Units only (owner, 2026-11-12: 0.9s, was 1.1s; the rest use senMorphMs, 800)
 function seatsLegPairs(k,parts,halves,toUnits){
   const {tri,sq,bars}=parts, fc=sq.fill, s=sq.width, h=s/3, x=sq.x, y=sq.y, rx=sq.rx;
   const half=j=>({x:x+j*s/2,y,width:s/2,height:s,rx,fill:fc}), shut=i=>({x,y:y+i*h,width:s,height:h,rx,fill:fc});
@@ -1759,7 +1762,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
-  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"Units "+rm(marginsOn()):"Units"):race==="president"?"President "+rm(marginsOn()):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
+  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?"President "+rm(marginsOn()):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
     race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
   document.getElementById("leg-vacant").hidden=!c.v||y26;
@@ -2713,6 +2716,10 @@ document.querySelectorAll("[data-gov]").forEach(b=>b.addEventListener("click",()
   govMode=b.dataset.gov; usStep("governors"); setUS("governors",true)}));
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
+// the year stepper: next to Play on desktop, first in the toggle row on phones (owner, 2026-11-12)
+function placeYear(){const y=document.getElementById("year"), play=document.getElementById("play"), ctl=document.getElementById("controls");
+  if(narrow.matches){if(y.parentNode!==ctl) ctl.prepend(y)} else if(y.nextElementSibling!==play) play.before(y)}
+placeYear(); narrow.addEventListener("change",placeYear);
 narrow.addEventListener("change",()=>{   // Senate Seats gains or loses its shades and toggle; the map's names change size
   PACK_US.fs=narrow.matches?20:12; PACK_US.h=narrow.matches?25:15; PACK_US.cache={};
   for(const k in PACK_US.PL){const e=PACK_US.PL[k]; e.t.style.fontSize=PACK_US.fs+"px"; e.r.setAttribute("height",PACK_US.h); e.r.setAttribute("y",-PACK_US.h/2)}

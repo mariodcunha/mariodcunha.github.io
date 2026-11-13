@@ -2932,6 +2932,14 @@ STATUS / NEXT
   each fades from its committed opacity and invisible ones are removed at once; per-frame check: visible stand-ins 150 before
   and 150 at the landing, never rising (Results and Margins). Senate Seats <-> Units also slowed to 1.1s (SEATS_LEG_MS, owner; tried 1.6s first;
   every other morph stays senMorphMs 800).
+- Live, pushed 2026-11-12: Units shapes (owner): the three bars are PILLS (corner radius = half the bar height;
+  roundPoly(pts, r, cap) now takes a cap, .5 for pills); Trifecta squares rounded 16px (was 8). legSquare / legParts match
+  (visible pill radius (h-3.5)/2, square 16px - 1.75), so morphs still land exactly; landing check: no stand-in rises.
+- Live, pushed 2026-11-12: Senate Seats <-> Units morph 0.9s (SEATS_LEG_MS 900, was 1100; owner), both directions.
+- Live, pushed 2026-11-12: desktop: the year stepper sits on the RIGHT, just before Play (owner). placeYear() moves #year
+  out of #controls to before #play on desktop and back to the start of #controls on phones (narrow change); .topbar>#year takes
+  the auto margin. Checked 1280 and 880 (one line, short labels), India, and 375 (bottom row as before).
+- Live, pushed 2026-11-12: the centre label reads "State units results / margins" again (owner); the toggle stays "Units".
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
