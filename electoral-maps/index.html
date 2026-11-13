@@ -2330,12 +2330,17 @@ document.querySelectorAll("[data-st]").forEach(b=>b.addEventListener("click",()=
 
 // ---------- Rajya Sabha: grey Lok Sabha map with one circle per elected seat (like the Senate view) ----------
 // Elected seats by state at 31 Dec, [BJP, NDA allies, not aligned, Congress allies, INC, vacant] (see CONTEXT.txt)
-const RS_YEARS=IN_YEARS;
+const RS_YEARS=ST_YEARS;   // the States years (owner, 2026-11-13): 2006, 2011, 2016, 2021 and 2026 added (see CONTEXT.txt)
 const RS={2004:{AP:[0,9,1,0,8,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,1,2,8,2,0],CG:[1,0,0,0,4,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,5,0,0,0],HP:[2,0,0,0,1,0],JK:[0,0,1,1,2,0],JH:[4,0,0,1,1,0],KA:[2,0,2,0,8,0],KL:[0,0,4,2,3,0],MP:[6,0,0,0,5,0],MH:[4,4,1,5,5,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,1,0,0,0,0],NL:[0,1,0,0,0,0],OD:[3,5,1,0,1,0],PY:[0,0,0,0,1,0],PB:[0,2,0,0,5,0],RJ:[4,0,0,0,6,0],SK:[0,0,1,0,0,0],TN:[0,12,0,3,3,0],TR:[0,0,1,0,0,0],UP:[8,0,22,0,1,0],UK:[1,0,0,0,2,0],WB:[0,1,15,0,0,0]},
+  2006:{AP:[0,0,8,0,10,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,5,0,7,1,0],CG:[2,0,0,0,3,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,4,0,1,0],HP:[1,0,0,0,2,0],JK:[0,0,1,1,2,0],JH:[4,1,0,0,1,0],KA:[2,0,4,0,6,0],KL:[0,0,4,1,4,0],MP:[8,0,0,0,3,0],MH:[2,4,3,5,5,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,1,0,0,0,0],NL:[0,1,0,0,0,0],OD:[3,4,1,0,2,0],PY:[0,0,0,0,1,0],PB:[0,3,0,0,4,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,12,3,3,0],TR:[0,0,1,0,0,0],UP:[6,0,24,0,1,0],UK:[0,0,0,0,3,0],WB:[0,0,16,0,0,0]},
   2009:{AP:[0,0,4,0,14,0],AR:[0,0,0,0,1,0],AS:[0,2,1,0,4,0],BR:[3,7,5,0,1,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,1,0,4,0],HP:[1,0,0,0,2,0],JK:[0,0,0,2,2,0],JH:[2,0,1,1,2,0],KA:[4,0,3,0,5,0],KL:[0,0,5,1,3,0],MP:[9,0,0,0,2,0],MH:[2,4,2,5,6,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,0,1,0,0,0],NL:[0,0,1,0,0,0],OD:[3,0,4,0,3,0],PY:[0,0,0,0,1,0],PB:[0,3,0,0,4,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,9,5,4,0],TR:[0,0,1,0,0,0],UP:[4,1,26,0,0,0],UK:[1,0,0,0,2,0],WB:[0,0,14,2,0,0]},
+  2011:{AP:[0,0,5,0,13,0],AR:[0,0,0,0,1,0],AS:[0,0,3,0,4,0],BR:[3,8,5,0,0,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,1,0,4,0],HP:[2,0,0,0,1,0],JK:[0,0,0,3,1,0],JH:[2,0,2,0,2,0],KA:[6,0,2,0,4,0],KL:[0,0,6,0,3,0],MP:[10,0,0,0,1,0],MH:[3,4,0,6,6,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,0,1,0,0,0],NL:[0,0,1,0,0,0],OD:[2,0,6,0,2,0],PY:[0,0,0,0,1,0],PB:[1,3,0,0,3,0],RJ:[5,0,0,0,5,0],SK:[0,0,1,0,0,0],TN:[0,0,6,7,5,0],TR:[0,0,1,0,0,0],UP:[4,0,25,1,1,0],UK:[2,0,0,0,1,0],WB:[0,0,10,5,1,0]},
   2014:{AP:[1,3,1,0,6,0],AR:[0,0,0,0,1,0],AS:[0,0,1,0,6,0],BR:[4,0,12,0,0,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[2,0,1,0,2,0],HP:[2,0,0,0,1,0],JK:[0,0,0,2,2,0],JH:[1,0,1,2,2,0],KA:[5,0,3,0,4,0],KL:[0,0,5,1,3,0],MP:[8,0,0,0,3,0],MH:[2,4,1,6,6,0],MN:[0,0,0,0,1,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[0,0,9,0,1,0],PY:[0,0,0,0,1,0],PB:[1,3,0,0,3,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,17,0,1,0],TS:[1,2,0,0,4,0],TR:[0,0,1,0,0,0],UP:[3,0,25,0,3,0],UK:[1,0,0,0,2,0],WB:[0,0,15,0,1,0]},
+  2016:{AP:[3,2,2,0,4,0],AR:[0,0,0,0,1,0],AS:[0,1,0,0,6,0],BR:[5,0,0,11,0,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[9,0,0,0,2,0],HR:[1,0,2,0,2,0],HP:[1,0,0,0,2,0],JK:[1,2,0,0,1,0],JH:[2,0,1,2,1,0],KA:[4,0,2,0,6,0],KL:[0,0,4,2,3,0],MP:[8,0,0,0,3,0],MH:[5,4,1,5,4,0],MN:[0,0,0,0,1,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[0,0,9,0,1,0],PY:[0,0,1,0,0,0],PB:[1,3,0,0,3,0],RJ:[8,0,0,0,2,0],SK:[0,0,1,0,0,0],TN:[0,0,14,4,0,0],TS:[1,1,2,0,3,0],TR:[0,0,1,0,0,0],UP:[3,0,25,0,3,0],UK:[0,0,0,0,3,0],WB:[0,0,14,0,1,1]},
   2019:{AP:[4,0,5,0,2,0],AR:[0,0,0,0,1,0],AS:[1,2,0,0,3,1],BR:[4,7,0,3,1,1],CG:[3,0,0,0,2,0],DL:[0,0,3,0,0,0],GA:[1,0,0,0,0,0],GJ:[7,0,0,0,4,0],HR:[2,0,1,0,1,1],HP:[1,0,0,0,2,0],JK:[1,0,2,0,1,0],JH:[3,0,1,1,1,0],KA:[4,0,0,1,7,0],KL:[0,1,4,2,2,0],MP:[8,0,0,0,3,0],MH:[7,1,1,7,3,0],MN:[1,0,0,0,0,0],ML:[0,0,0,0,1,0],MZ:[0,0,0,0,1,0],NL:[0,1,0,0,0,0],OD:[1,0,8,0,1,0],PY:[0,1,0,0,0,0],PB:[1,3,0,0,3,0],RJ:[9,0,0,0,1,0],SK:[0,0,1,0,0,0],TN:[0,11,1,6,0,0],TS:[1,0,5,0,1,0],TR:[0,0,1,0,0,0],UP:[15,0,14,0,2,0],UK:[1,0,0,0,2,0],WB:[0,0,14,0,2,0]},
-  2024:{AP:[1,2,8,0,0,0],AR:[1,0,0,0,0,0],AS:[4,2,1,0,0,0],BR:[5,5,0,5,1,0],CG:[1,0,0,0,4,0],DL:[0,0,0,3,0,0],GA:[1,0,0,0,0,0],GJ:[10,0,0,0,1,0],HR:[4,0,1,0,0,0],HP:[3,0,0,0,0,0],JK:[0,0,0,0,0,4],JH:[3,0,0,3,0,0],KA:[6,1,0,0,5,0],KL:[0,0,0,8,1,0],MP:[8,0,0,0,3,0],MH:[7,5,0,4,3,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,1,0,0,0,0],NL:[1,0,0,0,0,0],OD:[3,0,7,0,0,0],PY:[1,0,0,0,0,0],PB:[0,0,0,7,0,0],RJ:[6,0,0,0,4,0],SK:[0,1,0,0,0,0],TN:[0,2,4,11,1,0],TS:[0,0,4,0,3,0],TR:[1,0,0,0,0,0],UP:[24,1,2,4,0,0],UK:[3,0,0,0,0,0],WB:[2,0,0,14,0,0]}};
+  2021:{AP:[4,0,7,0,0,0],AR:[1,0,0,0,0,0],AS:[3,1,1,0,2,0],BR:[4,4,0,5,1,2],CG:[2,0,0,0,3,0],DL:[0,0,3,0,0,0],GA:[1,0,0,0,0,0],GJ:[8,0,0,0,3,0],HR:[3,0,1,0,1,0],HP:[2,0,0,0,1,0],JK:[0,0,0,0,0,4],JH:[4,0,0,1,1,0],KA:[5,0,1,0,5,1],KL:[0,1,7,1,0,0],MP:[8,0,0,0,3,0],MH:[8,1,0,7,3,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,1,0,0,0,0],NL:[0,1,0,0,0,0],OD:[1,0,9,0,0,0],PY:[1,0,0,0,0,0],PB:[1,0,3,0,3,0],RJ:[7,0,0,0,3,0],SK:[0,0,1,0,0,0],TN:[1,5,1,10,1,0],TS:[0,0,6,0,0,1],TR:[0,0,1,0,0,0],UP:[22,0,8,0,1,0],UK:[2,0,0,0,1,0],WB:[0,0,14,0,2,0]},
+  2024:{AP:[1,2,8,0,0,0],AR:[1,0,0,0,0,0],AS:[4,2,1,0,0,0],BR:[5,5,0,5,1,0],CG:[1,0,0,0,4,0],DL:[0,0,0,3,0,0],GA:[1,0,0,0,0,0],GJ:[10,0,0,0,1,0],HR:[4,0,1,0,0,0],HP:[3,0,0,0,0,0],JK:[0,0,0,0,0,4],JH:[3,0,0,3,0,0],KA:[6,1,0,0,5,0],KL:[0,0,0,8,1,0],MP:[8,0,0,0,3,0],MH:[7,5,0,4,3,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,1,0,0,0,0],NL:[1,0,0,0,0,0],OD:[3,0,7,0,0,0],PY:[1,0,0,0,0,0],PB:[0,0,0,7,0,0],RJ:[6,0,0,0,4,0],SK:[0,1,0,0,0,0],TN:[0,2,4,11,1,0],TS:[0,0,4,0,3,0],TR:[1,0,0,0,0,0],UP:[24,1,2,4,0,0],UK:[3,0,0,0,0,0],WB:[2,0,0,14,0,0]},
+  2026:{AP:[2,5,4,0,0,0],AR:[1,0,0,0,0,0],AS:[4,3,0,0,0,0],BR:[7,4,0,4,1,0],CG:[2,0,0,0,3,0],DL:[1,0,2,0,0,0],GA:[1,0,0,0,0,0],GJ:[11,0,0,0,0,0],HR:[3,0,1,0,1,0],HP:[2,0,0,0,1,0],JK:[1,0,0,3,0,0],JH:[2,0,1,3,0,0],KA:[5,0,0,0,7,0],KL:[0,0,0,8,1,0],MP:[9,0,0,0,2,0],MH:[8,7,0,2,2,0],MN:[1,0,0,0,0,0],ML:[0,1,0,0,0,0],MZ:[0,0,1,0,0,0],NL:[1,0,0,0,0,0],OD:[5,0,5,0,0,0],PY:[1,0,0,0,0,0],PB:[6,0,1,0,0,0],RJ:[5,0,0,0,5,0],SK:[1,0,0,0,0,0],TN:[0,5,2,8,3,0],TS:[0,0,3,0,4,0],TR:[1,0,0,0,0,0],UP:[24,1,1,5,0,0],UK:[3,0,0,0,0,0],WB:[7,0,0,9,0,0]}};
 const RS_R=.6;   // every Rajya Sabha circle's radius, in squares (Maharashtra's size)
 // State names as boxes in square units (same size estimate as drawIndia: 12.5-unit text, ~0.7 squares tall)
 const RS_NAMEBOX=INDIA.map(([,name,,[lx,ly,anchor]])=>{const w=name.length*.32*14/11*1.02, x0=anchor==="start"?lx:anchor==="end"?lx-w:lx-w/2;
@@ -2491,10 +2496,20 @@ const RS_TALL={UP:[[11,13.5],[11,15.5],[11,17.5],[12,13.0],[12,15.0],[13,13.0],[
 // Grey bars, same size (owner): the grey filler as a row of 4 over J&K's seats (J&K moved one square left and down to
 // make the room), Ladakh as 2 (its square + the filler beside it), DNH-DD, Chandigarh, Lakshadweep, A&N one each.
 const RS_TALL_GREY={JK:[[9,0],[10,0],[11,0],[12,0]],LA:[[15,1],[16,1]],DD:[[4,26.75]],CH:[[12,10.0]],LD:[[8,46.5]],AN:[[19,46.5]]};
+// Rajya Sabha as seat share (owner, 2026-11-13): these years draw each state's Lok Sabha squares as circles filled in
+// proportion to its Rajya Sabha seats, like States > Seat % (UP: 31 seats over 80 circles). Empty it to bring the
+// rounded-square map (RS_TILES) back for them.
+const RS_PROP=new Set(RS_YEARS);   // every year (owner, 2026-11-13; 2004 and 2024 first)
+const RS_PCT=new Set(RS_YEARS);   // these years' tally reads as % of the elected seats and the title "Rajya Sabha seat share" (owner, 2026-11-13)
 const RS_TILES=new Set(Object.keys(RS).map(Number));   // every Rajya Sabha year (owner, 2026-11-09); was [2004] only   // the rounded-square Rajya Sabha map (RS_BIG, inBig, rsTileNames); owner switched it back on 2026-11-09
 function renderRS(animate){
   const year=inYear, N=[0,0,0,0,0,0], data=RS[year], on=new Set();
-  if(RS_TILES.has(year)){
+  legShape("rajyasabha",RS_PROP.has(year)?"c":"r2");   // seat share: circles, like States > Seat %
+  if(RS_PROP.has(year)){
+    for(const code in data){const g=data[code], rects=regionRects(ST_RECTS,code,data); g.forEach((v,i)=>N[i]+=v);
+      let k=0; stSquares(g,rects.length).forEach((n,i)=>{for(let j=0;j<n;j++) ST_DOT.get(rects[k++]).style.fill=i===5?"var(--house)":LS_FILL[LS_GROUPS[i]]})}
+    document.getElementById("rs-how").textContent="Each state's Lok Sabha squares, as circles, filled in proportion to its elected Rajya Sabha seats (Uttar Pradesh: 31 seats over 80 circles), like the States seat share map"+("TS" in data?"":" (undivided Andhra Pradesh over today's Andhra Pradesh and Telangana)")+"; grey: vacant seats and union territories with no Rajya Sabha seat. The 12 nominated members are not shown.";
+  }else if(RS_TILES.has(year)){
     // the squares keep their colours: inBig turns them into the Rajya Sabha squares (or shrinks them away) and hides them
     for(const code in data) data[code].forEach((v,i)=>N[i]+=v);
     document.getElementById("rs-how").textContent="One rounded square per elected Rajya Sabha seat, each state's squares filling its block from the Chief Ministers map"+("TS" in data?"":" (undivided Andhra Pradesh's 18 drawn as 11 + 7 over today's Andhra Pradesh and Telangana)")+"; a grey square is a union territory with no Rajya Sabha seat. The 12 nominated members are not shown.";
@@ -2507,7 +2522,7 @@ function renderRS(animate){
     for(const code in data) data[code].forEach((v,i)=>N[i]+=v);
     document.getElementById("rs-how").textContent="One rounded bar per elected Rajya Sabha seat, two Lok Sabha squares tall, placed in each state's block from the Chief Ministers map (undivided Andhra Pradesh's 18 drawn as 7 + 11 over today's Telangana and Andhra Pradesh); grey bars: union territories with no Rajya Sabha seat, and the filler around J&K and Ladakh. The 12 nominated members are not shown. The 12 nominated members are not shown.";
   }else document.getElementById("rs-how").textContent="One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.";
-  for(const code in data){if(RS_TILES.has(year)||RS_DRAFT.has(year)) break;
+  for(const code in data){if(RS_PROP.has(year)||RS_TILES.has(year)||RS_DRAFT.has(year)) break;
     const circles=rsCircles(code,data,data[code].reduce((a,b)=>a+b,0)); let k=0;
     data[code].forEach((n,i)=>{N[i]+=n;for(let j=0;j<n;j++){const c=circles[k++];on.add(c);
       c.classList.toggle("vac",i===5); c.style.fill=i===5?"":LS_FILL[LS_GROUPS[i]]}});
@@ -2515,15 +2530,16 @@ function renderRS(animate){
   RS_LAYOUT.forEach(cs=>cs.forEach(c=>c.classList.toggle("on",on.has(c))));
   const tot=N.reduce((a,b)=>a+b,0), anim=animate;
   [...LS_GROUPS,"vac"].forEach((g,i)=>document.getElementById("in-b-"+g).style.width=N[i===5?5:i]/tot*100+"%");
-  countTo(document.getElementById("in-n-nda"),N[0]+N[1],anim);
-  countTo(document.getElementById("in-n-oth"),N[2],anim); inOth=N[2]?`Others ${N[2]}`:"";
-  countTo(document.getElementById("in-n-india"),N[3]+N[4],anim);
-  document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${N[0]}</span><span><i> · </i>Allies ${N[1]}</span>`;
-  document.getElementById("in-sub-india").innerHTML=`<span>Congress ${N[4]}</span><span><i> · </i>Allies ${N[3]}</span>`;
-  const bloc=LS_META[year].bloc;
+  const pct=RS_PCT.has(year), P=v=>v/tot*100, f=v=>pct?P(v).toFixed(1)+"%":v;   // % of all elected seats, vacant included
+  const put=(id,v)=>{const n=document.getElementById(id); pct?countToPct(n,P(v),anim):countTo(n,v,anim)};
+  put("in-n-nda",N[0]+N[1]); put("in-n-oth",N[2]); inOth=N[2]?`Others ${f(N[2])}`:"";
+  put("in-n-india",N[3]+N[4]);
+  document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${f(N[0])}</span><span><i> · </i>Allies ${f(N[1])}</span>`;
+  document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(N[4])}</span><span><i> · </i>Allies ${f(N[3])}</span>`;
+  const bloc=blocOf(year);
   document.getElementById("rs-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("rs-note").textContent=`${year} is not a Rajya Sabha election year (a third of its seats are elected every two years): this is a snapshot of the house on 31 Dec of the Lok Sabha election year.`;
-  inSvg.setAttribute("aria-label",RS_TILES.has(year)?`Rajya Sabha at the end of ${year}: one square per elected seat, in each state's block`:`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
+  document.getElementById("rs-note").textContent=`A third of the Rajya Sabha is elected every two years: this is a snapshot of the house on 31 Dec ${year}${year===2026?" (members already elected for terms starting by then)":""}.`;
+  inSvg.setAttribute("aria-label",RS_PROP.has(year)?`Rajya Sabha at the end of ${year}: each state's Lok Sabha squares filled in proportion to its Rajya Sabha seats`:RS_TILES.has(year)?`Rajya Sabha at the end of ${year}: one square per elected seat, in each state's block`:`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
 }
 
 // Rajya Sabha "Compact" (owner, 2026-10-11): the Map is the standard. Each region's block of circles keeps its Map
@@ -2655,15 +2671,16 @@ function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth")
 addEventListener("resize",placeOth); document.fonts?.ready.then(placeOth);
 function renderIn(animate,sync){
   syncURL();
-  const race=inRace, cm=race==="states"&&stMode==="cm", years=race==="states"?ST_YEARS:IN_YEARS;
+  const race=inRace, cm=race==="states"&&stMode==="cm", years=race==="states"?ST_YEARS:race==="rajyasabha"?RS_YEARS:IN_YEARS;
   if(!years.includes(inYear)) inYear=years[years.length-1];
   if(cm) sync=true;   // Chief Minister: every block changes colour at once, no top-to-bottom wipe (like US Governors)
   if(animate&&sync){inSvg.classList.add("sync"); clearTimeout(inSvg._sync); inSvg._sync=setTimeout(()=>inSvg.classList.remove("sync"),500)}
   const panel=document.getElementById("panel-in");
   if(!animate) panel.classList.add("instant");
-  const rsTiles=race==="rajyasabha"&&RS_TILES.has(inYear);   // Rajya Sabha as squares in the Chief Ministers blocks (parked)
-  const rsDraft=race==="rajyasabha"&&!rsTiles&&RS_DRAFT.has(inYear);   // Rajya Sabha draft: grey CM blocks, some states as Lok Sabha
-  inSvg.classList.toggle("rs",race==="rajyasabha"&&!rsTiles&&!rsDraft); inSvg.classList.toggle("rs4",rsTiles||rsDraft);
+  const rsProp=race==="rajyasabha"&&RS_PROP.has(inYear);   // Rajya Sabha as seat share on the Lok Sabha squares (2004, 2024)
+  const rsTiles=race==="rajyasabha"&&!rsProp&&RS_TILES.has(inYear);   // Rajya Sabha as squares in the Chief Ministers blocks (parked)
+  const rsDraft=race==="rajyasabha"&&!rsProp&&!rsTiles&&RS_DRAFT.has(inYear);   // Rajya Sabha draft: grey CM blocks, some states as Lok Sabha
+  inSvg.classList.toggle("rs",race==="rajyasabha"&&!rsProp&&!rsTiles&&!rsDraft); inSvg.classList.toggle("rs4",rsTiles||rsDraft);
   inSvg.classList.toggle("sq",race==="loksabha"||cm||rsTiles||rsDraft);
   ST_DOT.forEach(d=>{d.classList.remove("rs-off"); d.style.opacity=""});
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""});
@@ -2674,9 +2691,9 @@ function renderIn(animate,sync){
   document.getElementById("in-under").classList.remove("split");
   ["in-total","in-total-oth","in-total-r"].forEach(id=>document.getElementById(id).textContent="");
   document.getElementById("in-total").style.color="var(--muted)";
-  [...inSvg.querySelector(".names").querySelectorAll("text")].forEach((t,i)=>{const [dx,dy]=race==="rajyasabha"?rsNamePlaces(inYear)[i]:[0,0];
+  [...inSvg.querySelector(".names").querySelectorAll("text")].forEach((t,i)=>{const rsN=race==="rajyasabha"&&!rsProp, [dx,dy]=rsN?rsNamePlaces(inYear)[i]:[0,0];
     t.style.transform=`translate(${dx*S}px,${dy*S}px)`;
-    t.style.opacity=race==="rajyasabha"&&!RS_NAME_HAS[inYear][i]?0:""}); // no Rajya Sabha seats: no name (like DC on the Senate map)
+    t.style.opacity=rsN&&!RS_NAME_HAS[inYear][i]?0:""}); // no Rajya Sabha seats: no name (like DC on the Senate map)
   if(race==="loksabha") renderLS(animate); else if(race==="states") renderST(animate); else renderRS(animate);
   // a white gap at every colour division, whatever is on show (owner, 2026-11-07)
   let segs=0; document.querySelectorAll("#panel-in .bar i:not(.mark)").forEach(e=>{const on=parseFloat(e.style.width)>0; e.classList.toggle("gap",on&&segs>0); if(on) segs++});
@@ -2693,15 +2710,15 @@ function renderIn(animate,sync){
   PACK_IN.rsExtent=rsTiles?(()=>{const b=Object.values(RS_BIG).flat(); return [[Math.floor(Math.min(...b.map(p=>p[0]))-RS_P),Math.floor(Math.min(...b.map(p=>p[1]))-RS_P)],[Math.ceil(Math.max(...b.map(p=>p[0]))+2*RS_P)-1,Math.ceil(Math.max(...b.map(p=>p[1]))+2*RS_P)-1]]})():null;   // the squares and the grid's outer cells
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(AP_ONE?"-ap":"")+(rsTiles?"-rs":""));   // the names differ, so does the cache
   applyPack(PACK_IN,pk,LS_GRP);
-  rsPack(pk,race==="rajyasabha"&&!rsTiles&&!rsDraft); inTall(pk,rsDraft,inYear); inBig(pk,rsTiles,inYear);
+  rsPack(pk,race==="rajyasabha"&&!rsProp&&!rsTiles&&!rsDraft); inTall(pk,rsDraft,inYear); inBig(pk,rsTiles,inYear);
   if(pk&&rsTiles) rsTileNames(pk);   // Rajya Sabha 2004: names at each state's top-left square, shown on hover like the other packed maps (owner, 2026-11-09: editor and grid removed)
-  inPad(race==="rajyasabha"?null:pk,cm,race!=="loksabha"&&!cm);   // Rajya Sabha draft: the filler is drawn as grey bars (inTall)   // Rajya Sabha: no grey filler (circles reach it; 2004 squares replace it)   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
+  inPad(race==="rajyasabha"&&!rsProp?null:pk,cm,race!=="loksabha"&&!cm);   // Rajya Sabha draft: the filler is drawn as grey bars (inTall)   // Rajya Sabha: no grey filler (circles reach it; 2004 squares replace it)   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
   inSvg.parentNode.classList.toggle("tight",!!(pk&&tight));   // the tight layout reaches lower: breathing room above the legend (owner, 2026-11-09)
   document.querySelectorAll("[data-lsv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lsv===lsView));
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?"Rajya Sabha":cm?"State CMs":"State seat share";
+  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?(RS_PCT.has(inYear)?"Rajya Sabha seat share":"Rajya Sabha"):cm?"State CMs":"State seat share";
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear;
@@ -3062,7 +3079,7 @@ function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.sli
   } else {
     if(race==="loksabha"){const m=["geo","seat","vote"].find(has); lsMode=m||"geo"}
     if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"}
-    const ys=race==="states"?ST_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
+    const ys=race==="states"?ST_YEARS:race==="rajyasabha"?RS_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
     if(race!==current) show(race,animate); else {inYear=IN_PICK[race]; renderIn(animate,true)}
   }
   urlReplace=true; syncURL()}   // a hash that had to be filled in or corrected is rewritten, not added

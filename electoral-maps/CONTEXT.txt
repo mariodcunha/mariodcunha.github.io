@@ -2962,6 +2962,34 @@ STATUS / NEXT
 - Defaults (owner, 2026-11-12): the page and USA open on States > Governors, 2026, Margins (colorMode "margins", govMode "gov", usYearPick 2026 -- it had become 2028); India opens on State Chief Ministers 2026.
 - Phones (owner, 2026-11-12): the bottom controls row reads year, Results / Margins, then Units / Governors (CSS order on .lsctl). When a toggle label has under 8px padding a side, .lsctl.pshort shows the unselected buttons' short labels (R / M, Gov., Rep., CMs), like .topbar.short on the web.
 - Units Trifecta squares (owner, 2026-11-12): corner radius min(16px, 21% of the square) -- on phones 16px had made them circles -- also in legSquare (morph stand-in). The three bars under a Trifecta square fade out once it has faded in (opacity delay .45s), so their corners / white outlines no longer show at its corners.
+- SAVED RAJYA SABHA MAP (owner, 2026-11-13: "save it, we might bring it back"): as of commit 041666d every Rajya Sabha year
+  (2004-2024) is the rounded-square map -- RS_TILES = every RS year: one 2px-rounded square per elected seat, each state's
+  squares filling its block from the Chief Ministers layout (hand-dragged positions in RS_BIG, names on hover via
+  rsTileNames, inBig draws / slides them, lsSpot for the slide to and from the other India maps). Older parked drafts:
+  circles over the state's shape (rsCircles / RS_LAYOUT / rsPack, the original view) and the tall-bar draft (RS_DRAFT,
+  RS_TALL, inTall). All the code stays in index.html. To bring the squares back for a year now drawn the new way, take it
+  out of RS_PROP (see next entry); `git show 041666d:electoral-maps/index.html` is the full page as it was.
+- Rajya Sabha 2004 and 2024 as seat share (owner, 2026-11-13; RS_PROP = {2004, 2024}): like States > Seat %, each state's
+  Lok Sabha squares become circles filled in proportion to its Rajya Sabha seats (stSquares: UP's 31 seats spread over its
+  80 squares); vacant seats and states / UTs with no Rajya Sabha seat stay grey. The tally counts the real seats, except in RS_PCT years ({2024}): % of the 233 elected seats (vacant included) and the title "Rajya Sabha seat share".
+- Rajya Sabha follows the States years (owner, 2026-11-13): RS_YEARS = ST_YEARS (2004 2006 2009 2011 2014 2016 2019 2021
+  2024 2026); every year is seat share (RS_PROP) with the % tally and "Rajya Sabha seat share" title (RS_PCT).
+  New data 2006 / 2011 / 2016 / 2021 / 2026 (31 Dec snapshots; 2026 counts members already elected for terms starting by
+  then), rebuilt 2026-11-13 from the same Wikipedia "List of Rajya Sabha members from <State>" pages (MediaWiki parse
+  API) -- scripts and raw pages in electoral-maps/rs-build/ (local, not committed): fetch.py, parse.py (all member tables,
+  term dates), snap.py (members on the date; the same person twice keeps the latest row; a state over its seat count
+  drops members a same-cycle by-election successor replaced, notes mentioning an exit first), build.py (hand fixes).
+  Groups use build_states.py's NDA / UPA tables (group()). The five older years were NOT rebuilt (their hand-checked
+  data stays); the new build reproduces them closely, the misses being the known hand fixes.
+  Hand fixes: 2006 GJ +1 INC and PB +1 SAD (missing from the lists), J&K drop Azad (resigned Apr 2006 to be CM);
+  2011 JH K. D. Singh = Kanwar Deep Singh (listed twice); 2016 TN drop Subramanian Swamy (nominated), AP drop the five
+  members moved to Telangana in 2014, WB 1 vacant (Mithun Chakraborty resigned Dec 2016); 2021 BR drop Upendra Kushwaha
+  (his row's 2020 start is wrong; elected 2024), BR 2 vacant (Sharad Yadav disqualified 2017; Mahendra Prasad died
+  27 Dec 2021), KA 1 vacant (Oscar Fernandes died Sep 2021), TS 1 vacant (Banda Prakash resigned Dec 2021), J&K 4
+  vacant (no assembly); 2026 UK +1 BJP (Naresh Bansal's Nov 2026 seat; successor not yet listed).
+  Caveat: 2026 uses members' CURRENT party as Wikipedia lists it (e.g. most Punjab members now BJP).
+  Totals [BJP, NDA allies, others, Congress allies, INC, vacant]: 2006 46/19/80/18/70/0, 2011 51/15/75/23/69/0,
+  2016 55/14/79/24/60/1, 2021 89/15/63/24/34/8, 2026 114/26/21/42/30/0.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
