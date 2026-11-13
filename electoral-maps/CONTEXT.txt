@@ -2990,6 +2990,7 @@ STATUS / NEXT
   Caveat: 2026 uses members' CURRENT party as Wikipedia lists it (e.g. most Punjab members now BJP).
   Totals [BJP, NDA allies, others, Congress allies, INC, vacant]: 2006 46/19/80/18/70/0, 2011 51/15/75/23/69/0,
   2016 55/14/79/24/60/1, 2021 89/15/63/24/34/8, 2026 114/26/21/42/30/0.
+- Rajya Sabha pills (owner, 2026-11-13): RS_PILL = {2004: [UP]} -- in Uttar Pradesh 2004 each of the 31 seats is a pill made of two neighbouring circles (rsPills: pairs left to right, row by row, on the laid-out positions; drawn in the .rs-pills overlay, the paired circles hidden); the 18 circles left over are grey. Then (same day) the whole of 2004: RS_PILL = {2004: "all"}. Side-by-side pairs first, then upright pills when a state is short (Goa, Manipur, Tripura, Delhi...); seats still without a pair stay single circles (Mizoram, Nagaland, Sikkim, Puducherry have 1 circle for 1 seat; HP 4 circles / 3 seats, J&K 6 / 4, UK 5 / 3 can't fit; AS, CG, OD, PB miss one pill each to their shape). 221 pills + 12 single seats = 233. 2006 and 2009 added the same way (owner, 2026-11-13). REVERTED the same day: RS_PILL = {} (parked; rsPills and the .rs-pills overlay stay) -- every Rajya Sabha year is seat share with single circles. Put {2004:"all",...} back to bring the pills back.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

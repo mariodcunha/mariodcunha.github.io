@@ -74,6 +74,8 @@ svg.india text{font-size:14px}
 #map-india .st-dot{fill:var(--seat-empty);stroke:var(--bg);stroke-width:0;transform-box:fill-box;transform-origin:center;transition:fill .45s var(--ease),stroke .45s var(--ease),stroke-width .45s var(--ease),rx .45s var(--ease),ry .45s var(--ease),transform .45s var(--ease),opacity .35s var(--ease)}
 #map-india.sq .st-dot{rx:0;ry:0;transform:scale(1.1628);stroke-width:.86}
 #map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}
+#map-india .st-dot.pilled{opacity:0!important} #map-india .rs-pills{pointer-events:none} #map-india .rs-pills rect{animation:pill-in .45s var(--ease) both}
+@keyframes pill-in{from{opacity:0}}
 /* Rajya Sabha 2004 draft (rs4): the Chief Ministers blocks, solid light grey; Maharashtra's Rajya Sabha seats as bigger rounded squares (inBig) */
 #map-india .in-big rect{transition:opacity .35s var(--ease),fill .6s var(--ease),transform .6s var(--ease),rx .6s var(--ease),ry .6s var(--ease)}   /* the morph to and from the other India maps (inBig) */
 #map-india .in-big rect.jump,#map-india .st-dot.jump{transition:none!important}
@@ -2074,6 +2076,34 @@ const ST_DOT=new Map(), LS_GRP={}, LS_CELL=new Map();
       ST_DOT.set(r,el("rect",{class:"st-dot",x:r.x.baseVal.value+S*.07,y:r.y.baseVal.value+S*.07,
       width:S*.86,height:S*.86,rx:S*.43,ry:S*.43,style:`transition-delay:${r.style.transitionDelay}`},w))})}
 })();
+// Rajya Sabha pills (owner, 2026-11-13): in these years and states one Rajya Sabha seat is two neighbouring circles joined
+// into a pill (UP 2004: 31 pills over 62 of its 80 squares, the other 18 grey), drawn over the circles at their laid-out spots
+const RS_PILL={};   // PARKED (owner, 2026-11-13): was {2004:"all",2006:"all",2009:"all"} (first {2004:["UP"]}); every year is single circles again   // was ["UP"] (owner, 2026-11-13: then the whole of 2004)
+const RS_PILL_G=(()=>{const dots=LS_GRP.UP.parentNode, g=el("g",{class:"rs-pills","aria-hidden":"true"},inSvg); inSvg.insertBefore(g,dots.nextSibling); return g})();
+function rsPills(codes,year){
+  RS_PILL_G.replaceChildren(); ST_DOT.forEach(d=>d.classList.remove("pilled"));
+  if(!codes) return;
+  if(codes==="all") codes=Object.keys(RS[year]);
+  for(const code of codes){const data=RS[year], rects=regionRects(ST_RECTS,code,data);
+    const P=rects.map(r=>{const d=ST_DOT.get(r), m=new DOMMatrix(LS_CELL.get(r).style.transform||"none"), x=+d.getAttribute("x"), y=+d.getAttribute("y");
+      return {d,x:m.a*x+m.e,y:m.d*y+m.f,w:+d.getAttribute("width")*m.a}});
+    const rows=new Map(); P.forEach(p=>{const k=Math.round(p.y); rows.has(k)||rows.set(k,[]); rows.get(k).push(p)});
+    const pairs=[]; [...rows.keys()].sort((a,b)=>a-b).forEach(k=>{const row=rows.get(k).sort((a,b)=>a.x-b.x);
+      for(let i=0;i+1<row.length;){if(Math.abs(row[i+1].x-row[i].x-S*(row[i].w/(S*.86)))<S*.2){pairs.push([row[i],row[i+1]]); i+=2} else i++}});
+    const fills=data[code].flatMap((n,i)=>Array(n).fill(i===5?"var(--house)":LS_FILL[LS_GROUPS[i]]));
+    if(pairs.length<fills.length){   // short of side-by-side pairs: stack two circles into an upright pill (Goa, Manipur...)
+      const taken=new Set(pairs.flat()), step=p=>S*(p.w/(S*.86)), rest=P.filter(p=>!taken.has(p)).sort((a,b)=>a.y-b.y||a.x-b.x);
+      for(const a of rest){if(pairs.length>=fills.length) break; if(taken.has(a)) continue;
+        const b=rest.find(q=>!taken.has(q)&&q!==a&&Math.abs(q.x-a.x)<S*.2&&Math.abs(q.y-a.y-step(a))<S*.2);
+        if(b){pairs.push([a,b]); taken.add(a); taken.add(b)}}}
+    P.forEach(p=>p.d.style.fill="var(--seat-empty)");   // the circles left over
+    const used=pairs.slice(0,fills.length); used.forEach(([a,b],i)=>{a.d.classList.add("pilled"); b.d.classList.add("pilled");
+      el("rect",{x:a.x,y:a.y,width:b.x+b.w-a.x,height:b.y+b.w-a.y,rx:a.w/2,ry:a.w/2,style:`fill:${fills[i]}`},RS_PILL_G)});
+    // too few pairs (small states: Mizoram has 1 circle for 1 seat): the other seats stay single circles, in reading order
+    const free=[...rows.keys()].sort((a,b)=>a-b).flatMap(k=>rows.get(k)).filter(p=>!p.d.classList.contains("pilled"));
+    fills.slice(used.length).forEach((f,i)=>{if(free[i]) free[i].d.style.fill=f});
+  }
+}
 // grey filler squares of the tight layout (IN_TIGHT_PAD), one square each with the seats' white edge; they fade
 // out (staying put) whenever the tight layout isn't on show
 const IN_PAD=el("g",{class:"in-pad off","aria-hidden":"true"},inSvg), IN_PAD_R=[];
@@ -2710,6 +2740,7 @@ function renderIn(animate,sync){
   PACK_IN.rsExtent=rsTiles?(()=>{const b=Object.values(RS_BIG).flat(); return [[Math.floor(Math.min(...b.map(p=>p[0]))-RS_P),Math.floor(Math.min(...b.map(p=>p[1]))-RS_P)],[Math.ceil(Math.max(...b.map(p=>p[0]))+2*RS_P)-1,Math.ceil(Math.max(...b.map(p=>p[1]))+2*RS_P)-1]]})():null;   // the squares and the grid's outer cells
   const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(AP_ONE?"-ap":"")+(rsTiles?"-rs":""));   // the names differ, so does the cache
   applyPack(PACK_IN,pk,LS_GRP);
+  rsPills(race==="rajyasabha"&&rsProp&&RS_PILL[inYear],inYear);
   rsPack(pk,race==="rajyasabha"&&!rsProp&&!rsTiles&&!rsDraft); inTall(pk,rsDraft,inYear); inBig(pk,rsTiles,inYear);
   if(pk&&rsTiles) rsTileNames(pk);   // Rajya Sabha 2004: names at each state's top-left square, shown on hover like the other packed maps (owner, 2026-11-09: editor and grid removed)
   inPad(race==="rajyasabha"&&!rsProp?null:pk,cm,race!=="loksabha"&&!cm);   // Rajya Sabha draft: the filler is drawn as grey bars (inTall)   // Rajya Sabha: no grey filler (circles reach it; 2004 squares replace it)   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
