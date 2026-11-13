@@ -2942,6 +2942,20 @@ STATUS / NEXT
 - Live, pushed 2026-11-12: the centre label reads "State units results / margins" again (owner); the toggle stays "Units".
 - Live, pushed 2026-11-12: Alaska Senate 2026 CALLED for the Democrat (owner): SEN_CALL AK D -> d; no Senate race leading
   any more (56 D called - 44 R). AK margin still the 2-point placeholder ("<3").
+- LOCAL, NOT COMMITTED (2026-11-12): YEAR 2028 (owner). PRES_YEARS and US_YEARS end in 2028 (FUT_YEAR). President 2028 = a projection
+  (PROJ28): a state D in all of 2016, 2020, 2024 is Likely D (ALT_PROJ light blue), R in all three Likely R, otherwise toss-up grey;
+  ME 2 Likely R, NE 2 toss-up. 225 Likely D - 235 Likely R - 78 toss-up (AZ GA MI NV PA WI + NE 2). Centre label "President
+  projection", legend keys Likely D / Toss-up / Likely R + note. House, Senate (All / Representation / Seats), Governors and State
+  units 2028: all grey, 0-0, "No 2028 results yet." (senPairs returns no seats; LEG28 all "nn"; govPartyOf -> "n"). No Margins in
+  2028 (usFut makes marginsOn false; toggle hidden). 2028 is left out of the play tour and of a state over time.
+- LOCAL, NOT COMMITTED (2026-11-12): 2028 bar: the Likely segments are SOLID light blue / light red (ALT_PROJ D / R), not hatched
+  (owner). Inline on #bar-dp / #bar-rp in 2028 only (2026's bars were already flat via .bar.flat).
+- LOCAL, NOT COMMITTED (2026-11-12): FIX, desktop showed the PHONE layout (owner). Since the year stepper moved next to Play
+  (dca6d85, live), the toggle row (#controls) can be empty (e.g. House 2026); an empty flex item sits lower in the bar, so the
+  wrap check saw two lines and raiseBP() switched the whole page to the phone layout at the window's width. The wrap check now
+  ignores zero-width items. Checked 1424 and 880 in every race and year (BP stays 775), India, and 375 (phone layout).
+- 2028 President tiers (owner, 2026-11-12): from 2016/2020/2024 -- same party all three = Safe (solid), one switch = Lean (light #a8d3f4/#f5aca6, toward the party backed twice), two switches = toss-up (grey). Result: Safe D 225, Lean D 7 (NV, NE2), toss-up 71 (AZ GA MI PA WI), Lean R 0, Safe R 235. Tally labels singular 'Democrat' / 'Republican'. Owner override: TX, OH, IA, NC, SC also toss-up (grey) in 2028. Wording: 'Likely' (solid) / 'Leaning' (light), tally reads e.g. '225 likely, 7 leaning'.
+- 2028 Senate (owner, 2026-11-12): the 34 class 3 seats (CLASS3; seat index 1) are up, light purple #cdbbe8 (SEN_FILL.u); every other seat keeps its 2026 result (senPairs reads 2026 for 2028). Tally 40 D / 26 R not up, 34 up (purple middle bar segment); legend key 'Up in 2028 (34)'. Then (same day): up seats held by one party every time since 2016 (sen28) are Likely, light ALT_PROJ D/R; changed hands stays purple. Owner overrides (SEN28_SET): OH, FL Likely D; PA, AZ, GA toss-up; 'u' is now grey #c9c9c9, not purple. Under the bar: 'N fixed, N likely'.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

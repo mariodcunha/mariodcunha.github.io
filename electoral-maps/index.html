@@ -190,7 +190,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .legends{display:grid}
 .legend .proj{display:contents}
 /* Margins: the party keys give way to three shades each, darkest (the base colour) first */
-.legend .mkey{display:none} .legend.margins .base{display:none} .legend.margins .mkey{display:inline-flex}
+.legend .mkey{display:none} .legend.fut .base{display:none} .legend.margins .base{display:none} .legend.margins .mkey{display:inline-flex}
 .legend .tri{display:inline-flex;gap:1px}
 .legend .proj:empty{display:none}
 /* Text notes sit below the colour keys, each on its own line */
@@ -452,6 +452,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <div class="legend" id="legend-president">
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democrat</span>
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican</span>
+        <span class="proj" id="proj-president"></span>
         <span class="txt">Each square is one electoral vote: a state's House seats plus two for its senators (DC has three). <em id="p-note"></em></span>
       </div>
       <div class="legend" id="legend-house">
@@ -542,7 +543,19 @@ const PRES={
   2020:{d:"Biden",r:"Trump",dem:"CA OR WA NV AZ CO NM MN WI MI IL PA GA VA MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"r",ne2:"d"},
   2024:{d:"Harris",r:"Trump",dem:"CA OR WA NM CO MN IL VA MD DE NJ NY CT RI MA VT NH ME HI DC",me2:"r",ne2:"d"},
 };
-const PRES_YEARS=[2008,2012,2016,2020,2024];
+const PRES_YEARS=[2008,2012,2016,2020,2024,2028];
+// 2028 (owner, 2026-11-12): the next elections, no results. President: a projection from the last three (2016, 2020, 2024):
+// (owner, 2026-11-12) same party all three times = Safe (solid d/r); one switch = Lean, light D/R toward the party it backed
+// twice; two switches (R-D-R or D-R-D) = toss-up (grey "v"). House, Senate, Governors, State units: all grey. No Margins in 2028.
+const FUT_YEAR=2028, PROJ28=(()=>{const tier=v=>{const sw=v.slice(1).filter((x,i)=>x!==v[i]).length, d=v.filter(x=>x==="d").length;
+    return sw===0?v[0]:sw===1?(d>=2?"D":"R"):"v"}, o={}, yrs=[2016,2020,2024], dems=yrs.map(y=>new Set(PRES[y].dem.split(" ")));
+  for(const k of "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split(" ")){
+    o[k]=tier(dems.map(s=>s.has(k)?"d":"r"))}
+  const dist=key=>tier(yrs.map(y=>PRES[y][key]));
+  o.ME2=dist("me2"); o.NE2=dist("ne2");
+  for(const k of ["TX","OH","NC","SC","IA"]) o[k]="v";   // owner, 2026-11-12: also toss-ups for 2028
+  return o})();
+PRES[2028]={d:"Democrats",r:"Republicans",dem:"",me2:"",ne2:""};
 // Winning margin shades (owner, 2026-11-06): 20 steps per side, lightest to the full party colour (Figma "Color Scale / 40 steps").
 // Step = whole points of margin: 20+ is full, 19.x is 19, down to the lightest for anything under 4 (owner, 2026-11-06: steps 1 and 2 use step 3's colour). President, Governors and Senate Seats; 2026 uses current counts.
 const SHADE={d:["#d9ebfb","#d9ebfb","#d9ebfb","#d0e6fa","#c6e1f9","#bddcf8","#b3d7f7","#aad2f6","#a0cdf5","#96c7f4","#8dc2f3","#83bdf2","#79b8f0","#6eb3ef","#64aeee","#59a8ec","#4da3eb","#409ee9","#3298e8","#1f93e6"],
@@ -608,7 +621,8 @@ const narrow=mq(()=>innerWidth<=BP);
 // line, i.e. the short-label widths just above the phone layout (owner, 2026-11-09)
 const senSeatsOnly=mq(()=>innerWidth<=Math.max(907,BP));
 const popNote=(p,right)=>`Govern ${p}%${right&&narrow.matches?"":" of population"}`;   // USA Governors: phones keep "of population" on the blue side only (owner, 2026-11-07)
-const marginsOn=race=>colorMode==="margins";   // phones too, Senate included (owner, 2026-11-07)
+let usFut=false;   // 2028 on show: no Margins
+const marginsOn=race=>colorMode==="margins"&&!usFut;   // phones too, Senate included (owner, 2026-11-07)
 const shadeOf=(w,m)=>SHADE[w][Math.max(1,Math.min(20,Math.floor(m)))-1];
 const marginFill=(year,key,w,table=MARGINS)=>{const m=table[year]?.[key]; return !marginsOn()||m==null||!SHADE[w]?PARTY_FILL[w]:shadeOf(w,m)};   // independents and 2026 stay flat
 // Margins on the map (owner, 2026-11-06): a state's name or a Senate tile carries its lead in points
@@ -643,7 +657,7 @@ const CONTROL={
 
 // ---------- 2026 midterms: the map as it stands after 2024 (+ Virginia's 2025 governor), with the races on the
 // ballot shaded by what the chosen polls say (see CONTEXT.txt, 2026 POLLS) ----------
-const US_YEARS=[...CH_YEARS,2026];
+const US_YEARS=[...CH_YEARS,2026,2028];
 // Senate seats up: class 2 (33 states) + the Ohio and Florida specials (Vance's and Rubio's seats). Seat index in
 // SEN_HIST order (lower class first): 1 where the state also has a class 1 seat or for the two specials, else 0.
 const CLASS1="AZ CA CT DE FL HI IN ME MD MA MI MN MS MO MT NE NV NJ NM NY ND OH PA RI TN TX UT VT VA WA WV WI WY".split(" ");
@@ -708,11 +722,21 @@ const HOUSE_MAP_OF={2008:"111",2010:"111",2012:"113",2014:"114",2016:"115",2018:
 const HOUSE_WIN={2008:{AK:"r",AL:"rdrrdrd",AR:"ddrd",AZ:"drrddrdd",CA:"drrrddddddddddddddrdrrdrrrdddddddddddddrrrdrrrdrrrdrd",CO:"ddddrrd",CT:"ddddd",DE:"r",FL:"rddrrrrdrrdrrrrrdrddrdddr",GA:"rdrddrrdrrrdd",HI:"dd",IA:"dddrr",ID:"dr",IL:"dddddrdddrddrdrrdrr",IN:"ddrrrrddd",KS:"rrdr",KY:"rrdrrd",LA:"rrdrrrr",MA:"dddddddddd",MD:"dddddrdd",ME:"dd",MI:"drrrdrdrdrrdddd",MN:"drrddrdd",MO:"drdddrrrr",MS:"ddrd",MT:"r",NC:"ddrdrrddrrddd",ND:"d",NE:"rrr",NH:"dd",NJ:"drdrrdrdddrdd",NM:"ddd",NV:"drd",NY:"ddrdddddddddddddddddddrddrddd",OH:"drrrrdrrdddrdrdddd",OK:"rdrrr",OR:"drddd",PA:"ddddrrddrdddddrrdrr",RI:"dd",SC:"rrrrdd",SD:"d",TN:"rrrdddrdd",TX:"rrrrrrrrdrrrrrddddrdrrdrdrddddrr",UT:"rdr",VA:"rddrdrrddrd",VT:"d",WA:"dddrrddrd",WI:"rdddrrdd",WV:"drd",WY:"r"},2010:{AK:"r",AL:"rrrrrrd",AR:"rrrd",AZ:"rrrdrrdd",CA:"drrrddddddddddddddrdrrdrrrdddddddddddddrrrdrrrdrrrdrd",CO:"ddrrrrd",CT:"ddddd",DE:"d",FL:"rrdrrrrrrrdrrrrrdrddrrdrr",GA:"rdrddrrrrrrdd",HI:"dd",IA:"dddrr",ID:"rr",IL:"dddddrdrdrrdrrrrrrr",IN:"ddrrrrdrr",KS:"rrrr",KY:"rrdrrd",LA:"rdrrrrr",MA:"dddddddddd",MD:"rddddrdd",ME:"dd",MI:"rrrrdrrrdrrdddd",MN:"drrddrdr",MO:"drdrdrrrr",MS:"rdrr",MT:"r",NC:"drrdrrddrrddd",ND:"r",NE:"rrr",NH:"rr",NJ:"drrrrdrdddrdd",NM:"drd",NV:"drr",NY:"ddrdddddddddrdddddrrdddrrrddr",OH:"rrrrrrrrdddrdrrrdr",OK:"rdrrr",OR:"drddd",PA:"ddrdrrrrrrrdddrrdrr",RI:"dd",SC:"rrrrrd",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrrrdrrrrrddrdrdrrrrdrrdddrr",UT:"rdr",VA:"rrdrrrrdrrd",VT:"d",WA:"ddrrrddrd",WI:"rdddrrrr",WV:"rrd",WY:"r"},2012:{AK:"r",AL:"rrrrrrd",AR:"rrrr",AZ:"dddrrrdrd",CA:"rddrdddrdrddddddddddrrrdrdddddrdddddddrddrddrddrrrddd",CO:"ddrrrrd",CT:"ddddd",DE:"d",FL:"rrrrdrrrdrrrrdrrrdrdddddrdr",GA:"rdrddrrrrrrddr",HI:"dd",IA:"ddrr",ID:"rr",IL:"dddddrddddddrrrrdr",IN:"drrrrrdrr",KS:"rrrr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dd",MI:"rrrrdrrrdrrddd",MN:"drrddrdd",MO:"drrrdrrr",MS:"rdrr",MT:"r",NC:"drrdrrdrrrrdr",ND:"r",NE:"rrr",NH:"dd",NJ:"drrrrdrdddrd",NM:"drd",NV:"drrd",NY:"drddddddddrdddddddrddrrdddr",OH:"rrdrrrrrdrdrdrrr",OK:"rrrrr",OR:"drddd",PA:"ddrrrrrrrrrrddrrdr",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrrrdrrrrrddrdrdrrdrrrrdddrrdddr",UT:"rrrd",VA:"rrdrrrrdrrd",VT:"d",WA:"ddrrrddrdd",WI:"rdddrrrr",WV:"rrd",WY:"r"},2014:{AK:"r",AL:"rrrrrrd",AR:"rrrr",AZ:"drdrrrdrd",CA:"rddrdddrdrddddddddddrrrdrdddddddddddddrddrddrddrrrddd",CO:"ddrrrrd",CT:"ddddd",DE:"d",FL:"rdrrdrrrdrrrrdrrrdrdddddrrr",GA:"rdrddrrrrrrrdr",HI:"dd",IA:"rdrr",ID:"rr",IL:"dddddrdddrdrrrrrdr",IN:"drrrrrdrr",KS:"rrrr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dr",MI:"rrrrdrrrdrrddd",MN:"drrddrdd",MO:"drrrdrrr",MS:"rdrr",MT:"r",NC:"drrdrrrrrrrdr",ND:"r",NE:"rdr",NH:"rd",NJ:"drrrrdrdddrd",NM:"drd",NV:"drrr",NY:"rrddddddddrdddddddrdrrrrddr",OH:"rrdrrrrrdrdrdrrr",OK:"rrrrr",OR:"drddd",PA:"ddrrrrrrrrrrddrrdr",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrrrdrrrrrddrdrdrrrrrrrdddrrdddr",UT:"rrrr",VA:"rrdrrrrdrrd",VT:"d",WA:"ddrrrddrdd",WI:"rdddrrrr",WV:"rrr",WY:"r"},2016:{AK:"r",AL:"rrrrrrd",AR:"rrrr",AZ:"drdrrrdrd",CA:"rddrdddrdrddddddddddrrrdrdddddddddddddrddrddrddrrrddd",CO:"ddrrrrd",CT:"ddddd",DE:"d",FL:"rrrrdrdrddrrddrrrrrdddddrrr",GA:"rdrddrrrrrrrdr",HI:"dd",IA:"rdrr",ID:"rr",IL:"dddddrdddddrrrrrdr",IN:"drrrrrdrr",KS:"rrrr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dr",MI:"rrrrdrrrdrrddd",MN:"drrddrdd",MO:"drrrdrrr",MS:"rdrr",MT:"r",NC:"drrdrrrrrrrdr",ND:"r",NE:"rrr",NH:"dd",NJ:"drrrddrdddrd",NM:"drd",NV:"drdd",NY:"rrddddddddrdddddddrdrrrrddr",OH:"rrdrrrrrdrdrdrrr",OK:"rrrrr",OR:"drddd",PA:"ddrrrrrrrrrrddrrdr",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrrrdrrrrrddrdrdrrrrrrrdddrrdddr",UT:"rrrr",VA:"rrddrrrdrrd",VT:"d",WA:"ddrrrddrdd",WI:"rdddrrrr",WV:"rrr",WY:"r"},2018:{AK:"r",AL:"rrrrrrd",AR:"rrrr",AZ:"dddrrrdrd",CA:"rddrdddrdddddddddddddrrddddddddddddddddddrdddddddrddd",CO:"ddrrrdd",CT:"ddddd",DE:"d",FL:"rrrrdrdrddrrddrrrrrdddddrdd",GA:"rdrdddrrrrrrdr",HI:"dd",IA:"dddr",ID:"rr",IL:"dddddddddddrrdrrdr",IN:"drrrrrdrr",KS:"rrdr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dd",MI:"rrrrdrrddrdddd",MN:"rddddrdr",MO:"drrrdrrr",MS:"rdrr",MT:"r",NC:"drrdrrrrvrrdr",ND:"r",NE:"rrr",NH:"dd",NJ:"dddrdddddddd",NM:"ddd",NV:"drdd",NY:"rrddddddddddddddddddrdrrddr",OH:"rrdrrrrrdrdrdrrr",OK:"rrrrd",OR:"drddd",PA:"rdddddddrrrrrrrrdd",RI:"dd",SC:"drrrrdr",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrdrdrrrrrddrdrdrrrrrrrdddrddddr",UT:"rrrd",VA:"rdddrrddrdd",VT:"d",WA:"ddrrrddddd",WI:"rdddrrrr",WV:"rrr",WY:"r"},2020:{AK:"r",AL:"rrrrrrd",AR:"rrrr",AZ:"dddrrrdrd",CA:"rddrdddrddddddddddddrrrdrdddddddddddddrddrdddddrdrddd",CO:"ddrrrdd",CT:"ddddd",DE:"d",FL:"rrrrdrdrddrrddrrrrrdddddrrr",GA:"rdrddddrrrrrdr",HI:"dd",IA:"rrdr",ID:"rr",IL:"dddddddddddrrdrrdr",IN:"drrrrrdrr",KS:"rrdr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dd",MI:"rrrrdrrddrdddd",MN:"rddddrrr",MO:"drrrdrrr",MS:"rdrr",MT:"r",NC:"ddrdrdrrrrrdr",ND:"r",NE:"rrr",NH:"dd",NJ:"drdrdddddddd",NM:"drd",NV:"drdd",NY:"rrddddddddrdddddddddrrrrddr",OH:"rrdrrrrrdrdrdrrr",OK:"rrrrr",OR:"drddd",PA:"rdddddddrrrrrrrrdd",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrdrrrd",TX:"rrrrrrdrdrrrrrddrdrdrrrrrrrdddrddddr",UT:"rrrr",VA:"rdddrrddrdd",VT:"d",WA:"ddrrrddddd",WI:"rdddrrrr",WV:"rrr",WY:"r"},2022:{AK:"d",AL:"rrrrrrd",AR:"rrrr",AZ:"rrddrrdrr",CA:"rdrdrdddddddrddddddrdrrdddrddddddddddddrrdddrddrdddd",CO:"ddrrrddd",CT:"ddddd",DE:"d",FL:"rrrrrrrrddrrrdrrrrrdrddddrrr",GA:"rdrddrdrrrrrdr",HI:"dd",IA:"rrrr",ID:"rr",IL:"dddddddddddrddrrd",IN:"drrrrrdrr",KS:"rrdr",KY:"rrdrrr",LA:"rdrrrr",MA:"ddddddddd",MD:"rddddddd",ME:"dd",MI:"rrdrrdddrrddd",MN:"rddddrrr",MO:"drrrdrrr",MS:"rdrr",MT:"rr",NC:"ddrdrdrrrrrddd",ND:"r",NE:"rrr",NH:"dd",NJ:"drdrddrddddd",NM:"ddd",NV:"drdd",NY:"rrrrddddddrdddddrdrdrrrrdd",OH:"drdrrrrrdrdrdrr",OK:"rrrrr",OR:"drddrd",PA:"rdddddddrrrdrrrrd",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrrrrrd",TX:"rrrrrrdrdrrrrrrdrdrdrrrrrrrdddrddddrdr",UT:"rrrr",VA:"rrddrrddrdd",VT:"d",WA:"dddrrddddd",WI:"rdrdrrrr",WV:"rr",WY:"r"},2024:{AK:"r",AL:"rdrrrrd",AR:"rrrr",AZ:"rrddrrdrr",CA:"rdrdrddddddddddddddrdrrddddddddddddddddrrddddddrdddd",CO:"ddrrrddr",CT:"ddddd",DE:"d",FL:"rrrrrrrrddrrrdrrrrrdrddddrrr",GA:"rdrdddrrrrrrdr",HI:"dd",IA:"rrrr",ID:"rr",IL:"dddddddddddrddrrd",IN:"drrrrrdrr",KS:"rrdr",KY:"rrdrrr",LA:"rdrrrd",MA:"ddddddddd",MD:"rddddddd",ME:"dd",MI:"rrdrrdrdrrddd",MN:"rddddrrr",MO:"drrrdrrr",MS:"rdrr",MT:"rr",NC:"ddrdrrrrrrrdrr",ND:"r",NE:"rrr",NH:"dd",NJ:"drdrddrddddd",NM:"ddd",NV:"drdd",NY:"rrddddddddrdddddrdddrdrrdd",OH:"drdrrrrrdrdrdrr",OK:"rrrrr",OR:"drdddd",PA:"rdddddrrrrrdrrrrd",RI:"dd",SC:"rrrrrdr",SD:"r",TN:"rrrrrrrrd",TX:"rrrrrrdrdrrrrrrdrdrdrrrrrrrdddrddddrdr",UT:"rrrr",VA:"rrddrrddrdd",VT:"d",WA:"dddrrddddd",WI:"rdrdrrrr",WV:"rr",WY:"r"},2026:{AK:"R",AL:"rdrrrrd",AR:"rrrr",AZ:"drddrddrr",CA:"ddddrddddddddddddddrddRddddddddddddddddrdddddddddddd",CO:"ddrDdddd",CT:"ddddd",DE:"d",FL:"rrrrrrRrDdrrrdrrrrrdrddddrRr",GA:"rdrdddrrrrrrdr",HI:"dd",IA:"dddr",ID:"rr",IL:"dddddddddddrddrrd",IN:"drrrdrdrr",KS:"rrdr",KY:"rrdrrd",LA:"rdrrvv",MA:"ddddddddd",MD:"rddddddd",ME:"dR",MI:"rrddrdddrdddd",MN:"Dddddrrr",MO:"ddrrdrrr",MS:"rdrr",MT:"dr",NC:"ddRdDdRrdRdddd",ND:"r",NE:"rdr",NH:"dd",NJ:"dddrdddddddd",NM:"ddd",NV:"dddd",NY:"rrddddddddrdddddddddrdrrdd",OH:"drdrrrdrdddrdrd",OK:"rrrrr",OR:"drdddd",PA:"ddddddddrdrdrrrrd",RI:"dd",SC:"dRrrrdr",SD:"r",TN:"rrrDrrrrr",TX:"rrrrrrdrdrrrrrddrdrdrrdrrrrdddrrdddrdr",UT:"drrr",VA:"ddddrrddrdd",VT:"d",WA:"dddrrddddd",WI:"ddddrrrr",WV:"rr",WY:"r"}};
 // A state's two Senate seats as drawn, every view and year (owner, 2026-11-03): blue left, red right; with two of one
 // colour, the lighter on the left. Light blue, blue, (toss-up / can't call), light red, red.
-const SEN_RANK={D:0,d:1,i:1,T:2,N:2,R:3,r:4};
+const SEN_RANK={D:0,d:1,i:1,T:2,N:2,u:2,R:3,r:4};
 const SEN_FLIP="PA SC OH NC WI".split(" ");   // the owner's exceptions (2026-11-04): a blue and a red seat go red left, blue right
 // Each seat keeps its own margin (SEN_MARGINS is in class order) through the sort.
-function senPairs(year,k){const m=SEN_MARGINS[year]?.[k]||[], s=[...(SEN_HIST[year]?.[k]||"")].map((p,i)=>({p,m:m[i]}));
+// 2028 (owner, 2026-11-12): the 34 class 3 seats are up (light purple "u"); every other seat keeps its 2026 result.
+// Class 3 = every state except the 16 with class 1 and 2 seats; it is the higher class, so seat index 1.
+const CLASS3=Object.keys(SEN_HIST[2024]).filter(k=>!(CLASS1.includes(k)&&k in SEN_UP)||k==="OH"||k==="FL");
+// (owner, 2026-11-12) an up seat that went to the same party every time since 2016 (holder after each election 2016-2026,
+// independents as Democrats; OH / FL include their 2026 specials) is Likely, light blue "D" / light red "R"; else purple "u"
+function sen28(k,now){const v=new Set([2016,2018,2020,2022,2024].map(y=>SEN_HIST[y][k][1]).concat(now).map(p=>p==="i"?"d":p));
+  return SEN28_SET[k]||(v.size>1?"u":v.has("d")?"D":"R")}
+const SEN28_SET={OH:"D",FL:"D",PA:"u",AZ:"u",GA:"u"};   // owner's calls (2026-11-12)
+function senPairs(year,k){const fut=year===FUT_YEAR; if(fut) year=2026;
+  const m=SEN_MARGINS[year]?.[k]||[], s=[...(SEN_HIST[year]?.[k]||"")].map((p,i)=>({p,m:m[i]}));
   if(year===2026&&k in SEN_UP) s[SEN_UP[k]].p=projOf("senate",k);
+  if(fut&&CLASS3.includes(k)) s[1]={p:sen28(k,s[1].p),m:null};
   s.sort((a,b)=>SEN_RANK[a.p]-SEN_RANK[b.p]);
   return SEN_FLIP.includes(k)&&SEN_RANK[s[0].p]<2&&SEN_RANK[s[1].p]>2?s.reverse():s}
 function senSeats(year,k){return senPairs(year,k).map(o=>o.p)}
@@ -759,7 +783,7 @@ const GOV_IND={RI:"Independent governor (Lincoln Chafee, Rhode Island)",AK:"Inde
 const govOf=(year,k)=>GOV_HIST[year].d.split(" ").includes(k)?"d":(GOV_HIST[year].i||"").split(" ").includes(k)?"i":"r";
 const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"};
 // Senate: independents who caucus with the Democrats take the Democrats' blue (owner, 2026-10-23)
-const SEN_FILL={...PARTY_FILL,i:"var(--dem)"};
+const SEN_FILL={...PARTY_FILL,i:"var(--dem)",u:"#c9c9c9"};   // u: up in 2028, toss-up (grey; was light purple)
 
 // ---------- USA map: President, House, Senate and Governors on the same squares ----------
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
@@ -881,10 +905,11 @@ const LEG_OLD={
 // (house-district/scripts/legseats.py, legmargins.py): the latest count up to that year, kept only when its majority agrees
 // with LEG_DATA's control (else null: the bar stays flat). Governors use GOV_MARGINS. Ties, coalitions, Nebraska: flat.
 const LEG_MARGIN={2008:{AK:[10.0,null],AL:[18.1,31.4],AR:[43.0,54.3],AZ:[16.7,20.0],CA:[27.5,25.0],CO:[16.9,20.0],CT:[51.0,33.3],DE:[17.1,52.4],FL:[26.7,30.0],GA:[17.2,21.4],HI:[76.5,84.0],IA:[14.0,28.0],ID:[48.6,60.0],IL:[18.6,25.4],IN:[4.0,32.0],KS:[23.2,55.0],KY:[30.0,18.4],LA:[null,null],MA:[80.6,75.0],MD:[47.5,40.4],ME:[26.5,14.3],MI:[21.8,10.5],MN:[29.9,31.3],MO:[9.2,35.3],MS:[11.5,null],MT:[null,8.0],NC:[13.3,20.0],ND:[23.4,10.6],NE:[null,null],NH:[12.5,16.7],NJ:[17.5,20.0],NM:[28.6,28.6],NV:[33.3,14.3],NY:[44.0,3.2],OH:[7.1,27.3],OK:[20.8,8.3],OR:[20.0,20.0],PA:[2.5,20.0],RI:[84.0,76.3],SC:[17.7,17.4],SD:[31.4,20.0],TN:[1.0,15.2],TX:[1.3,22.6],UT:[41.3,44.8],VA:[20.0,10.0],VT:[30.7,53.3],WA:[26.5,26.5],WI:[6.1,9.1],WV:[42.0,52.9],WY:[36.7,53.3]},2010:{AK:[20.0,null],AL:[18.1,28.6],AR:[10.0,14.3],AZ:[33.3,40.0],CA:[30.0,25.0],CO:[1.5,14.3],CT:[32.5,27.8],DE:[26.8,33.3],FL:[35.0,40.0],GA:[20.6,25.0],HI:[68.6,92.0],IA:[20.0,4.0],ID:[62.9,60.0],IL:[8.5,18.6],IN:[20.0,48.0],KS:[47.2,55.0],KY:[16.0,18.4],LA:[10.5,null],MA:[62.5,80.0],MD:[39.0,48.9],ME:[2.6,17.1],MI:[14.5,36.8],MN:[7.5,10.4],MO:[30.1,52.9],MS:[11.5,3.8],MT:[36.0,12.0],NC:[12.5,24.0],ND:[46.8,48.9],NE:[null,null],NH:[49.0,58.3],NJ:[17.5,20.0],NM:[2.9,28.6],NV:[23.8,4.8],NY:[32.7,3.2],OH:[19.2,39.4],OK:[38.6,33.3],OR:[null,6.7],PA:[10.3,20.0],RI:[73.3,55.3],SC:[22.6,17.4],SD:[44.3,65.7],TN:[30.3,21.2],TX:[32.0,22.6],UT:[54.7,51.7],VA:[20.0,10.0],VT:[30.7,43.3],WA:[14.3,10.2],WI:[22.2,15.2],WV:[30.0,64.7],WY:[66.7,73.3]},2012:{AK:[30.0,30.0],AL:[18.1,28.6],AR:[3.0,20.0],AZ:[20.0,13.3],CA:[40.0,45.0],CO:[13.8,14.3],CT:[29.8,22.2],DE:[31.7,23.8],FL:[26.7,30.0],GA:[32.8,35.7],HI:[72.5,92.0],IA:[6.0,4.0],ID:[62.9,65.7],IL:[20.3,35.6],IN:[38.0,48.0],KS:[47.2,60.0],KY:[10.0,23.7],LA:[12.4,23.1],MA:[63.7,80.0],MD:[39.0,48.9],ME:[20.5,11.4],MI:[7.3,36.8],MN:[9.0,16.4],MO:[35.0,41.2],MS:[3.3,15.4],MT:[22.0,8.0],NC:[28.3,28.0],ND:[51.1,40.4],NE:[null,null],NH:[10.5,8.3],NJ:[20.0,20.0],NM:[8.6,19.0],NV:[28.6,4.8],NY:[40.7,null],OH:[21.2,39.4],OK:[42.6,50.0],OR:[13.3,6.7],PA:[9.4,8.0],RI:[84.0,71.1],SC:[25.8,21.7],SD:[51.4,60.0],TN:[44.4,57.6],TX:[26.7,22.6],UT:[62.7,65.5],VA:[35.0,null],VT:[34.0,46.7],WA:[12.2,null],WI:[21.2,9.1],WV:[8.0,47.1],WY:[73.3,73.3]},2014:{AK:[17.5,40.0],AL:[37.1,51.4],AR:[28.0,37.1],AZ:[26.7,13.3],CA:[30.0,30.0],CO:[4.6,2.9],CT:[15.2,16.7],DE:[22.0,14.3],FL:[35.0,30.0],GA:[32.8,35.7],HI:[68.6,92.0],IA:[14.0,4.0],ID:[60.0,60.0],IL:[20.3,32.2],IN:[42.0,60.0],KS:[55.2,60.0],KY:[8.0,36.8],LA:[12.4,23.1],MA:[56.2,70.0],MD:[29.1,40.4],ME:[6.6,14.3],MI:[14.5,42.1],MN:[7.5,16.4],MO:[44.2,47.1],MS:[3.3,15.4],MT:[18.0,16.0],NC:[23.3,36.0],ND:[51.1,36.2],NE:[null,null],NH:[19.8,16.7],NJ:[20.0,20.0],NM:[5.7,19.0],NV:[28.6,4.8],NY:[41.3,null],OH:[31.3,39.4],OK:[42.6,66.7],OR:[13.3,20.0],PA:[17.2,20.0],RI:[68.0,71.1],SC:[25.8,21.7],SD:[65.7,54.3],TN:[47.5,69.7],TX:[30.7,29.0],UT:[68.0,65.5],VA:[35.0,null],VT:[21.3,33.3],WA:[2.0,null],WI:[27.3,15.2],WV:[28.0,5.9],WY:[70.0,73.3]},2016:{AK:[null,40.0],AL:[37.1,51.4],AR:[46.0,48.6],AZ:[16.7,13.3],CA:[37.5,35.0],CO:[13.8,2.9],CT:[6.0,null],DE:[22.0,4.8],FL:[31.7,25.0],GA:[31.1,35.7],HI:[76.5,100.0],IA:[18.0,18.0],ID:[68.6,65.7],IL:[13.6,25.4],IN:[40.0,64.0],KS:[36.0,55.0],KY:[28.0,42.1],LA:[12.4,23.1],MA:[56.2,70.0],MD:[29.1,40.4],ME:[3.3,2.9],MI:[14.5,42.1],MN:[14.9,1.5],MO:[43.6,47.1],MS:[3.3,15.4],MT:[18.0,28.0],NC:[23.3,40.0],ND:[72.3,61.7],NE:[null,null],NH:[13.5,16.7],NJ:[20.0,20.0],NM:[8.6,23.8],NV:[28.6,4.8],NY:[42.0,null],OH:[33.3,45.5],OK:[48.5,75.0],OR:[16.7,13.3],PA:[19.2,36.0],RI:[72.0,73.7],SC:[29.0,21.7],SD:[71.4,65.7],TN:[49.5,69.7],TX:[26.7,29.0],UT:[65.3,65.5],VA:[35.0,null],VT:[21.1,46.7],WA:[2.0,null],WI:[29.3,21.2],WV:[26.0,29.4],WY:[70.0,80.0]},2018:{AK:[null,30.0],AL:[46.7,54.3],AR:[52.0,48.6],AZ:[3.3,13.3],CA:[53.8,45.0],CO:[26.2,8.6],CT:[28.5,22.2],DE:[26.8,14.3],FL:[21.7,15.0],GA:[16.7,25.0],HI:[80.4,92.0],IA:[6.0,28.0],ID:[60.0,60.0],IL:[25.4,35.6],IN:[34.0,60.0],KS:[34.4,55.0],KY:[22.0,47.4],LA:[12.4,23.1],MA:[59.4,70.0],MD:[40.4,36.2],ME:[21.9,20.0],MI:[5.5,15.8],MN:[11.9,1.5],MO:[42.3,39.4],MS:[3.3,15.4],MT:[16.0,20.0],NC:[8.3,16.0],ND:[68.1,57.4],NE:[null,null],NH:[17.0,16.7],NJ:[20.0,20.0],NM:[31.4,23.8],NV:[38.1,23.8],NY:[40.7,27.0],OH:[23.2,45.5],OK:[54.0,61.7],OR:[26.7,20.0],PA:[8.4,14.0],RI:[76.0,73.7],SC:[29.0,21.7],SD:[68.6,71.4],TN:[47.5,68.8],TX:[10.7,22.6],UT:[57.3,58.6],VA:[35.0,null],VT:[34.7,53.3],WA:[16.3,14.3],WI:[29.9,15.2],WV:[18.0,17.6],WY:[68.3,80.0]},2020:{AK:[null,30.0],AL:[46.7,54.3],AR:[56.0,60.0],AZ:[3.3,6.7],CA:[51.2,55.0],CO:[26.2,14.3],CT:[28.5,33.3],DE:[26.8,33.3],FL:[30.0,20.0],GA:[14.4,21.4],HI:[84.3,92.0],IA:[18.0,28.0],ID:[65.7,60.0],IL:[23.7,39.0],IN:[42.0,56.0],KS:[37.6,45.0],KY:[50.0,57.9],LA:[31.4,38.5],MA:[61.9,85.0],MD:[40.4,36.2],ME:[8.6,25.7],MI:[5.5,15.8],MN:[4.5,1.5],MO:[39.9,39.4],MS:[23.8,38.5],MT:[34.0,24.0],NC:[15.0,12.0],ND:[70.2,70.2],NE:[null,null],NH:[6.5,16.7],NJ:[30.0,20.0],NM:[27.1,28.6],NV:[23.8,14.3],NY:[41.3,36.5],OH:[29.3,51.5],OK:[62.4,61.7],OR:[23.3,20.0],PA:[11.3,14.0],RI:[73.3,73.7],SC:[30.6,30.4],SD:[77.1,82.9],TN:[47.5,63.6],TX:[10.7,16.1],UT:[54.7,58.6],VA:[10.0,5.0],VT:[30.7,46.7],WA:[16.3,14.3],WI:[23.2,27.3],WV:[52.0,35.3],WY:[73.3,86.7]},2022:{AK:[null,null],AL:[46.7,54.3],AR:[64.0,65.7],AZ:[3.3,6.7],CA:[55.0,60.0],CO:[41.5,31.4],CT:[29.8,33.3],DE:[26.8,42.9],FL:[41.7,40.0],GA:[12.2,17.9],HI:[76.5,84.0],IA:[28.0,36.0],ID:[68.6,60.0],IL:[32.2,35.6],IN:[40.0,60.0],KS:[36.0,45.0],KY:[60.0,63.2],LA:[31.4,38.5],MA:[68.1,85.0],MD:[44.7,44.7],ME:[9.9,25.7],MI:[1.8,5.3],MN:[4.5,1.5],MO:[36.2,41.2],MS:[23.8,38.5],MT:[36.0,36.0],NC:[18.3,20.0],ND:[74.5,83.0],NE:[null,null],NH:[0.5,16.7],NJ:[15.0,20.0],NM:[28.6,28.6],NV:[33.3,23.8],NY:[36.0,33.3],OH:[36.7,57.6],OK:[60.4,66.7],OR:[16.7,16.7],PA:[0.5,12.0],RI:[74.7,73.7],SC:[41.9,30.4],SD:[80.0,77.1],TN:[51.5,63.6],TX:[14.7,22.6],UT:[62.7,58.6],VA:[4.0,5.0],VT:[44.0,50.0],WA:[18.4,18.4],WI:[29.3,33.3],WV:[76.0,76.5],WY:[83.9,87.1]},2024:{AK:[null,null],AL:[46.7,54.3],AR:[62.0,65.7],AZ:[10.0,13.3],CA:[50.0,50.0],CO:[32.3,31.4],CT:[35.1,38.9],DE:[31.7,42.9],FL:[41.7,40.0],GA:[11.1,17.9],HI:[64.7,76.0],IA:[34.0,40.0],ID:[74.3,65.7],IL:[32.2,35.6],IN:[40.0,60.0],KS:[40.8,55.0],KY:[60.0,63.2],LA:[39.0,43.6],MA:[68.1,75.0],MD:[44.7,44.7],ME:[2.0,14.3],MI:[5.5,5.3],MN:[null,1.5],MO:[36.2,41.2],MS:[31.1,38.5],MT:[16.0,28.0],NC:[18.3,20.0],ND:[76.6,78.7],NE:[null,null],NH:[11.0,33.3],NJ:[30.0,25.0],NM:[25.7,23.8],NV:[28.6,23.8],NY:[37.3,30.2],OH:[31.3,45.5],OK:[60.4,66.7],OR:[20.0,20.0],PA:[0.5,12.0],RI:[72.0,78.9],SC:[41.9,47.8],SD:[82.9,82.9],TN:[51.5,63.6],TX:[17.3,29.0],UT:[62.7,58.6],VA:[2.0,5.0],VT:[20.7,10.0],WA:[20.4,22.4],WI:[9.1,9.1],WV:[82.0,88.2],WY:[80.6,87.1]},2026:{AK:[null,null],AL:[41.0,40.0],AR:[40.0,60.0],AZ:[null,33.3],CA:[50.0,50.0],CO:[32.3,37.1],CT:[53.6,83.3],DE:[46.3,42.9],FL:[17.6,32.5],GA:[3.3,3.6],HI:[74.5,76.0],IA:[34.0,40.0],ID:[60.0,60.0],IL:[32.2,35.6],IN:[8.0,60.0],KS:[8.8,55.0],KY:[48.0,57.9],LA:[39.0,43.6],MA:[68.1,75.0],MD:[44.7,48.9],ME:[2.0,37.1],MI:[14.5,21.1],MN:[14.9,16.4],MO:[36.2,29.4],MS:[31.1,38.5],MT:[16.0,20.0],NC:[19.2,20.0],ND:[76.6,74.5],NE:[null,null],NH:[null,25.0],NJ:[42.5,25.0],NM:[34.3,23.8],NV:[28.6,23.8],NY:[37.3,30.2],OH:[31.3,33.3],OK:[48.5,66.7],OR:[30.0,26.7],PA:[0.5,4.0],RI:[72.0,89.5],SC:[41.9,47.8],SD:[70.0,82.9],TN:[39.4,63.6],TX:[null,22.6],UT:[62.7,58.6],VA:[28.0,5.0],VT:[42.7,40.0],WA:[34.7,26.5],WI:[7.1,9.1],WV:[58.0,76.5],WY:[77.4,87.1]}};
-const LEG_DATA={...LEG_OLD,2024:LEG24,2026:LEG26}, legReal=year=>legOn()&&!!LEG_DATA[year];   // years with real legislature data
+const LEG28=Object.fromEntries(Object.keys(LEG26).map(k=>[k,"nn"]));   // 2028: no results, all grey
+const LEG_DATA={...LEG_OLD,2024:LEG24,2026:LEG26,2028:LEG28}, legReal=year=>legOn()&&!!LEG_DATA[year];   // years with real legislature data
 // colours: each part takes its holder's party; t = tied, c = coalition (purple); n = nonpartisan, no governor (grey)
 const LEG_FILL={d:"var(--dem)",r:"var(--rep)",c:"#8a4fbf",t:"#8a4fbf",n:"#bdbdbd"};
-const govPartyOf=(year,k)=>year===2026&&GOV_UP.includes(k)?projOf("governors",k):govOf(year,k);
+const govPartyOf=(year,k)=>year===FUT_YEAR?"n":year===2026&&GOV_UP.includes(k)?projOf("governors",k):govOf(year,k);
 const govFill=g=>PARTY_FILL[g]||ALT_PROJ[g]||LEG_FILL.n;
 // a polygon with rounded corners: each corner cut back along both edges and curved through (cut-back capped for sharp ones)
 function roundPoly(pts,r,cap=.45){const n=pts.length, f=v=>v.toFixed(2), seg=pts.map((V,i)=>{const P=pts[(i+n-1)%n], N=pts[(i+1)%n];
@@ -920,13 +945,15 @@ function paintLeg(year){
   legLegend(year);
 }
 // the tally: governors and chambers held together (149: 50 governors + 99 chambers, Nebraska's one); under the bar, Trifectas
-function legTally(year){let d=0,r=0,o=0,td=0,tr=0; const data=LEG_DATA[year];
+function legTally(year){if(year===FUT_YEAR) return {d:0,r:0,nd:"Democrats",nr:"Republicans",tot:149,mark:null,ctl:null,seg:{},ud:"",ur:"",label:"2028 state units: no results yet"};
+  let d=0,r=0,o=0,td=0,tr=0; const data=LEG_DATA[year];
   for(const k in data){const L=data[k], g=govPartyOf(year,k).toLowerCase(), ch=k==="NE"?[L[0]]:[...L];
     ch.forEach(x=>x==="d"?d++:x==="r"?r++:o++); g==="d"?d++:g==="r"?r++:o++;   // + the governor (owner, 2026-11-11)
     if(L==="dd"&&g==="d") td++; if(L==="rr"&&g==="r") tr++}
   return {d,r,nd:"Democrats",nr:"Republicans",tot:d+r+o,mark:null,ctl:null,seg:{d,r},ud:`${td} Trifectas`,ur:`${tr} Trifectas`,
     label:`${year} state governments: Democrats hold ${d} governorships and legislative chambers and ${td} trifectas, Republicans ${r} and ${tr} trifectas; ${o} independent, tied or coalition`}}
 function legLegend(year){
+  if(year===FUT_YEAR){const L=document.getElementById("legend-legis"); L.classList.remove("margins"); L.innerHTML=`<span class="txt">No 2028 results yet.</span>`; return}
   const sw=(c,txt,cls="")=>`<span class="${cls}"><svg viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="${c}"/></svg>${txt}</span>`;   // 2px-rounded squares, like Senate Seats' legend (owner, 2026-11-11)   // long rounded keys (owner, 2026-11-10)
   const src=year===2026?"Results are unofficial, from Wikipedia and NCSL as of Nov 6, 2026. Chambers with no 2026 election keep their control."
     :`Control after the November ${year} elections, for the ${year+1} sessions${year<2024?", from Wikipedia's state legislative election pages":""}.`;
@@ -1498,7 +1525,7 @@ function overShape(k,cx,cy,maxH,maxW){   // the outline as an SVG path, as big a
 let over=null;
 // Governors too (owner, 2026-11-07, web only): every year 2008-2026, the House squares on the tight layout, coloured by the
 // governor (Results) or the governor's margin (Margins; 2026 = the calls), one solid shape per block as on that map
-const overYears=race=>race==="governors"?US_YEARS:PRES_YEARS;
+const overYears=race=>(race==="governors"?US_YEARS:PRES_YEARS).filter(y=>y!==FUT_YEAR);   // no 2028 in a state over time
 function overCells(k,y,race){   // [cell, fill] for state k's squares in year y on this race's map
   const n=(CH_N[k]||0)+(CENSUS_DIFF[censusOf(y)][k]||0), at=e=>[e.x.baseVal.value/S,e.y.baseVal.value/S];
   if(race==="governors"){let f;
@@ -1605,8 +1632,9 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   const morph=race==="senate"&&animate&&!reduce&&senPrev&&(senPrev==="seats")!==(senMode==="seats");
   const fromCircles=morph&&senMode==="seats"&&seatCircles();   // where the circles are now, before they move
   if(!animate) panel.classList.add("instant");
+  usFut=year===FUT_YEAR; const fut=usFut;
   const P=PRES[year], dem=race==="president"&&new Set(P.dem.split(" "));
-  const c={d:0,r:0,i:0,v:0,D:0,R:0,T:0,N:0}; let govD=0,govR=0,govI=0;
+  const c={d:0,r:0,i:0,v:0,D:0,R:0,T:0,N:0,u:0}; let govD=0,govR=0,govI=0;
   const y26=year===2026&&race!=="president", g26={d:0,r:0,v:0,D:0,R:0,T:0,N:0};
   const rw={d:0,r:0,i:0,D:0,R:0,T:0,N:0};   // Senate Representation: each senator weighted 1 / the state's grey squares
   const sm=senMode, tight=race!=="president";   // House, Senate, Governors: the tight Figma layout (TIGHT_SHIFT)
@@ -1614,7 +1642,11 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   for(const k in ESQ) ESQ[k].forEach((e,j)=>{const [x,y]=escAt(k,j,censusOf(year)); e.setAttribute("x",x*S); e.setAttribute("y",y*S)});   // electors step aside per census (ESQ_2000)
   for(const k in ESQ){
     const n=(CH_N[k]||0)+(diff[k]||0), hs=HSQ[k]||[];
-    if(race==="president"){
+    if(race==="president"&&fut){   // 2028: Likely D / Likely R (light), toss-up grey
+      const W=j=>j===1&&(k==="ME"||k==="NE")?PROJ28[k+"2"]:PROJ28[k], F=w=>w==="v"?"var(--house)":PARTY_FILL[w]||ALT_PROJ[w];
+      hs.forEach((e,j)=>{const w=W(j); paint(e,j<n,F(w)); if(j<n) c[w]++});
+      ESQ[k].forEach(e=>{const w=PROJ28[k]; paint(e,true,F(w)); c[w]++});
+    } else if(race==="president"){
       hs.forEach((e,j)=>{let w=dem.has(k)?"d":"r";
         if(j===1&&k==="ME") w=P.me2;   // Maine's 2nd district
         if(j===1&&k==="NE") w=P.ne2;   // Nebraska's 2nd district
@@ -1622,10 +1654,12 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
       ESQ[k].forEach(e=>{const w=dem.has(k)?"d":"r"; paint(e,true,marginFill(year,k,w)); c[w]++});
     } else {
       ESQ[k].forEach(e=>paint(e,false));
-      if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j], m=HOUSE_MARGINS[year]?.[k]?.[HOUSE_DIST[year][k][j]-1];   // Margins: called seats shaded, leading ones stay flat (as Senate Seats)
+      if(fut&&(race==="house"||race==="governors")) hs.forEach((e,j)=>{paint(e,j<n,"var(--house)",race==="governors"?"var(--house)":""); if(j<n) c.v++});   // 2028: grey
+      else if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j], m=HOUSE_MARGINS[year]?.[k]?.[HOUSE_DIST[year][k][j]-1];   // Margins: called seats shaded, leading ones stay flat (as Senate Seats)
         paint(e,j<n,marginsOn()&&m!=null&&SHADE[p]?shadeOf(p,m):PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});
       if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
-      if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=SHADE[g]?marginFill(year,k,g,GOV_MARGINS):PARTY_FILL[g]||ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
+      if(fut){}
+      else if(race==="governors"&&hs.length&&y26&&GOV_UP.includes(k)){const g=projOf("governors",k), f=SHADE[g]?marginFill(year,k,g,GOV_MARGINS):PARTY_FILL[g]||ALT_PROJ[g];   // flat light colours, like Senate (owner, 2026-10-16)
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
       else if(race==="governors"&&hs.length){const g=govOf(year,k), f=marginFill(year,k,g,GOV_MARGINS);
         // borders take the state's own colour, so its squares merge into one shape
@@ -1635,7 +1669,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
     hs.forEach(e=>{const p=tight&&TIGHT_POS.get(e), g=e.classList.contains("gone")?" scale(0)":"";
       e.style.transform=p?`translate(${p[0]*S-e.x.baseVal.value}px,${p[1]*S-e.y.baseVal.value}px)${g}`:""});
     SEAT[k].forEach((e,j)=>{const p=senSeats(year,k)[j];
-      if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}}
+      if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}} else if(fut) e.style.fill="#c9c9c9";   // 2028: grey circles
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
       const o=race==="senate"&&sm==="power"&&powerLayout()[k];
@@ -1649,7 +1683,13 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   let T;
   const pctOf=n=>Math.round(n/435*100);
   // the big numbers are called + leading, like the Senate's; under the bar: called, leading (owner, 2026-11-09)
-  if(legReal(year)) T=legTally(year);
+  if(fut&&race==="president") T={d:c.d+c.D,r:c.r+c.R,nd:"Democrat",nr:"Republican",tot:538,mark:270/538*100,need:"270",ctl:null,seg:{d:c.d,D:c.D,R:c.R,r:c.r},
+    ud:[`${c.d} likely`,c.D&&`${c.D} leaning`].filter(Boolean).join(", "),ur:[`${c.r} likely`,c.R&&`${c.R} leaning`].filter(Boolean).join(", "),label:`2028 president, a projection from 2016-2024: Likely Democrat ${c.d}, Leaning Democrat ${c.D}, toss-up ${c.v}, Leaning Republican ${c.R}, Likely Republican ${c.r} electoral votes`};
+  else if(fut&&race==="senate") T={d:c.d+c.i+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:100,mark:50,need:"51",ctl:null,seg:{d:c.d+c.i,D:c.D,m:c.u,R:c.R,r:c.r},
+    ud:`${c.d+c.i} fixed, ${c.D} likely`,ur:`${c.r} fixed, ${c.R} likely`,label:`2028 Senate: not up ${c.d+c.i} Democratic, ${c.r} Republican; up: Likely Democrat ${c.D}, Likely Republican ${c.R}, ${c.u} open call`};
+  else if(fut&&!legReal(year)) T={d:0,r:0,nd:"Democrats",nr:"Republicans",tot:race==="senate"?100:435,mark:race==="governors"?null:race==="senate"?50:218/435*100,
+    need:race==="senate"?"51":"218",ctl:null,seg:{},ud:"",ur:"",label:`${year} ${race==="governors"?"governors":race}: no results yet`};
+  else if(legReal(year)) T=legTally(year);
   else if(y26&&race==="house") T={d:c.d+c.D,r:c.r+c.R,nd:"Democrats",nr:"Republicans",tot:435,mark:218/435*100,need:"218",ctl:c.d>=218?"d":c.r>=218?"r":null,
     seg:{d:c.d,D:c.D,T:c.T,R:c.R,r:c.r},ud:[c.d&&`${c.d} called`,c.D&&`${c.D} leading`].filter(Boolean).join(", "),ur:[c.r&&`${c.r} called`,c.R&&`${c.R} leading`].filter(Boolean).join(", "),
     label:`2026 House: ${c.d+c.D} Democrats, ${c.d} called and ${c.D} leading; ${c.r+c.R} Republicans, ${c.r} called and ${c.R} leading; ${c.v} with no result`};
@@ -1678,7 +1718,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   }
   // Senate Representation (every year): the tally shows each side's share of representation, not seats. A senator
   // counts 1 / their state's grey squares (that year's House map), so Wyoming's two outweigh California's two 52 to 1
-  if(race==="senate"&&sm==="power"){
+  if(race==="senate"&&sm==="power"&&!fut){
     const W=Object.values(rw).reduce((a,b)=>a+b,0), pc=v=>v/W*100, sd=T.d, sr=T.r;
     const d=pc(rw.d+rw.i+rw.D), r=pc(rw.r+rw.R);
     T={...T,d:Math.round(d),r:Math.round(r),tot:100,mark:null,pct:true,
@@ -1731,7 +1771,9 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   seg.m??=Math.max(0,T.tot-sum);
   // Governors: an independent governor's states fill the middle in their map colour, not as a blank strip that would
   // widen the white gap between the sides
-  document.getElementById("bar-m").style.background=legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?"var(--ind)":(race==="house"||race==="governors")&&y26?"var(--house)":"";
+  // 2028 (owner, 2026-11-12): the Likely segments are solid light blue / light red, the maps' "waiting" colours, not hatched
+  [["bar-dp",ALT_PROJ.D],["bar-rp",ALT_PROJ.R]].forEach(([id,c])=>{const e=document.getElementById(id); e.style.background=fut?c:""; e.style.boxShadow=fut?"none":""});
+  document.getElementById("bar-m").style.background=fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?"var(--ind)":(race==="house"||race==="governors")&&y26?"var(--house)":"";
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
@@ -1755,18 +1797,25 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
   document.getElementById("gov-view").hidden=!statesTab;
   document.querySelectorAll("[data-gov]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gov===govMode));
-  document.getElementById("margin-view").hidden=legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]);
+  document.getElementById("margin-view").hidden=fut||(legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]));
   document.getElementById("h-note").textContent=race==="house"&&marginsOn()&&HOUSE_MARGINS[year]?"Darker shades mean a wider win in that district: full colour is 20 points or more, the lightest is under 4."+(y26?" Leading and no-result seats stay as in Results. 2026 margins use current counts and may change.":c.v?" The vacant seat stays grey.":""):"";
   const mOn={house:marginsOn()&&HOUSE_MARGINS[year],president:marginsOn(),governors:marginsOn()&&GOV_MARGINS[year],senate:sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]};
   for(const r in mOn) document.getElementById("legend-"+r).classList.toggle("margins",!!mOn[r]);
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
-  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?"President "+rm(marginsOn()):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
-    race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
+  document.getElementById("mid-label").textContent=legOn()?(legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?(fut?"President projection":"President "+rm(marginsOn())):race==="house"?"House "+rm(marginsOn()&&HOUSE_MARGINS[year]):
+    race==="governors"?"Governors "+rm(marginsOn()&&GOV_MARGINS[year]):sm==="all"?"Senate":sm==="seats"?fut?"Senate seats":(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
-  document.getElementById("leg-vacant").hidden=!c.v||y26;
-  document.getElementById("house-keys").hidden=y26;   // 2026: projLegend's called / leading keys instead
+  document.getElementById("leg-vacant").hidden=!c.v||y26||fut;
+  document.getElementById("house-keys").hidden=y26||fut;
+  // 2028 (owner, 2026-11-12): the President projection's keys and note; every other race says it has no results yet
+  document.getElementById("legend-president").classList.toggle("fut",fut);
+  document.getElementById("proj-president").innerHTML=fut&&race==="president"?
+    `<span><i class="sw" style="background:var(--dem)"></i>Likely Democrat (${c.d})</span><span><i class="sw" style="background:${ALT_PROJ.D}"></i>Leaning Democrat (${c.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${c.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Leaning Republican (${c.R})</span><span><i class="sw" style="background:var(--rep)"></i>Likely Republican (${c.r})</span>`:"";
+  if(fut){const msg=race==="senate"?"34 seats are up in 2028 (class 3, last elected in 2022; Ohio and Florida in their 2026 specials). Light blue / light red: Likely, the seat went to the same party every time since 2016 (plus Ohio and Florida, Likely Democrat); grey: toss-up. Solid: fixed, not up for election, current holder.":race==="president"?"A projection, not results: Likely (solid) where a state voted for the same party in 2016, 2020 and 2024; Leaning (light) where it switched once; toss-up (grey) where it switched twice, plus Texas, Ohio, Iowa, North Carolina and South Carolina.":"No 2028 results yet.";
+    if(race==="president") document.getElementById("p-note").textContent=msg;
+    else document.getElementById(race==="house"?"h-note":race==="senate"?"sen-note":"g-note").textContent=msg}   // 2026: projLegend's called / leading keys instead
   document.getElementById("leg-gov-ind").hidden=!govI;
   if(govI) document.getElementById("gov-ind-name").textContent=GOV_IND[GOV_HIST[year].i];
   const power=race==="senate"&&sm==="power", ns=Object.values(CH_N);
@@ -1779,7 +1828,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.getElementById("pres-view").hidden=true;   // USA: Compact only
   // 2026: legend for the races on the ballot
   document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches||legOn();   // phones / short labels: Seats only, no view toggle
-  ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):""});
+  ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):
+    fut&&r==="senate"&&race==="senate"&&!legOn()?`<span><i class="sw c" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${c.D})</span><span><i class="sw c" style="background:${SEN_FILL.u}"></i>Toss-up (${c.u})</span><span><i class="sw c" style="background:${ALT_PROJ.R}"></i>Likely Republican (${c.R})</span>`:""});
   if(race==="senate") legShape("senate",senMode==="seats"?"r2":"c");   // the projected keys just written take the shape too
     panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
@@ -2839,13 +2889,14 @@ function playSteps(){
     pass("loksabha",IN_YEARS,{ls:"geo"}); pass("loksabha",IN_YEARS,{ls:"seat"}); pass("loksabha",IN_YEARS,{ls:"vote"}); pass("rajyasabha",RS_YEARS);
     pass("states",ST_YEARS,{st:"seats"}); pass("states",ST_YEARS,{st:"cm"});
     return list}
+  const PY=PRES_YEARS.filter(y=>y!==FUT_YEAR), UY=US_YEARS.filter(y=>y!==FUT_YEAR);   // no 2028 in the tour
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
-  pass("president","results",PRES_YEARS); pass("president","margins",PRES_YEARS); pass("house","results",US_YEARS); pass("house","margins",US_YEARS);   // House margins after results (owner, 2026-11-10)
-  if(!senSeatsOnly.matches){pass("senate","results",US_YEARS.slice(0,1),"all"); pass("senate","results",US_YEARS.slice(0,1),"power")}   // phones: Seats only
-  pass("senate","results",US_YEARS,"seats"); pass("senate","margins",US_YEARS,"seats");
+  pass("president","results",PY); pass("president","margins",PY); pass("house","results",UY); pass("house","margins",UY);   // House margins after results (owner, 2026-11-10)
+  if(!senSeatsOnly.matches){pass("senate","results",UY.slice(0,1),"all"); pass("senate","results",UY.slice(0,1),"power")}   // phones: Seats only
+  pass("senate","results",UY,"seats"); pass("senate","margins",UY,"seats");
   // States (owner, 2026-11-11): Units results every year, then Units margins every year, then Governors results and margins
-  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); US_YEARS.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
-  US_YEARS.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); US_YEARS.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
+  UY.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
+  UY.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
   return list;
 }
 function playGo({race,mode,year,sen,ls,st,gov}){
@@ -2918,7 +2969,9 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
    const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];
    if(!sh) return; const full=b.textContent; b.setAttribute("aria-label",full);
    b.innerHTML=`<span class="lbl-f">${full}</span><span class="lbl-s" aria-hidden="true">${sh}</span>`});
- const shown=e=>e.offsetParent!==null&&getComputedStyle(e).display!=="none";
+ // an empty group (the toggle row once the year moved next to Play, owner 2026-11-12) has no width and sits lower: ignore it,
+ // or it reads as a wrap and switches the whole page to the phone layout
+ const shown=e=>e.offsetParent!==null&&getComputedStyle(e).display!=="none"&&e.getBoundingClientRect().width>0;
  const wraps=()=>{const items=[...bar.children,...bar.querySelector(".lsctl").children].filter(shown);
    const tops=items.map(e=>e.getBoundingClientRect().top); return Math.max(...tops)-Math.min(...tops)>4};
  let busy=false;
