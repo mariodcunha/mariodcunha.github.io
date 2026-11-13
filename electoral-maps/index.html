@@ -316,6 +316,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .toggle button{flex:1 1 0;padding-inline:4px;white-space:nowrap}
   .lsctl{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(62px + env(safe-area-inset-bottom));justify-content:space-between;flex-wrap:nowrap;gap:8px}
   .lsctl .subtoggle{flex:1;display:flex;min-width:0}
+  .lsctl #margin-view{order:1} .lsctl #gov-view,.lsctl #sen-view{order:2}   /* phones: year, Results / Margins, then Units / Governors on the right (owner, 2026-11-12) */
   .lsctl .subtoggle button{flex:1 1 0;padding-inline:4px;font-size:12.5px;white-space:nowrap}
   body::after{content:"";position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(124px + env(safe-area-inset-bottom));
     background:linear-gradient(rgba(255,255,255,0),#fff 22px);pointer-events:none}
@@ -368,6 +369,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .topbar.short button:not([aria-selected="true"]):not([aria-pressed="true"]) .lbl-f{display:none}
 .topbar.short button:not([aria-selected="true"]):not([aria-pressed="true"]) .lbl-s{display:inline}
 /* and the gaps and side padding tighten a little, so the short bar stays on one line down to the phone layout */
+/* phones (owner, 2026-11-12): when a view toggle's labels don't fit, its unselected buttons take the short form, as on the web */
+.lsctl.pshort .subtoggle button:not([aria-pressed="true"]) .lbl-f{display:none}
+.lsctl.pshort .subtoggle button:not([aria-pressed="true"]) .lbl-s{display:inline}
 .topbar.short,.topbar.short .lsctl{gap:6px} .topbar.short .toggle button{padding-inline:12px} .topbar.short .subtoggle button{padding-inline:8px}
 </style>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -3009,6 +3013,9 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
    // still two lines with short labels (Play or the country picker pushed down): phone layout from this width up
    if(bar.classList.contains("short")&&wraps()&&document.fonts?.status!=="loading"){bar.classList.remove("short"); raiseBP(innerWidth)}
    const t=tabs.find(t=>t.getAttribute("aria-selected")==="true"); if(t) moveThumb(t,was===bar.classList.contains("short"));
+   // phones: short labels when any toggle's label is left with under 8px of padding a side (it reads cramped or clips)
+   const ctl=bar.querySelector(".lsctl"); ctl.classList.remove("pshort");
+   if(narrow.matches&&[...ctl.querySelectorAll(".subtoggle button")].some(b=>{const f=b.querySelector(".lbl-f"); return shown(b)&&f&&f.getBoundingClientRect().width+16>b.clientWidth})) ctl.classList.add("pshort");
    fitIndia(); busy=false};
  new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
  new MutationObserver(fit).observe(document.getElementById("play"),{attributes:true,attributeFilter:["class"]});   // Play widens while the tour runs
