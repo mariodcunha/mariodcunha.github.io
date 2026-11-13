@@ -603,7 +603,7 @@ function legShape(id,shape){const L=document.getElementById("legend-"+id), g=LEG
   L.querySelectorAll(".sw").forEach(e=>{e.classList.remove("c"); e.style.borderRadius=shape==="c"?"50%":/2$/.test(shape)?"2px":"0";
     e.style.width=shape==="t2"?"8px":""; e.style.margin=shape==="t2"?"0 3px":""})}
 legShape("rajyasabha","r2");   // Rajya Sabha draws 2px-rounded squares in every year, like Senate Seats' legend (owner, 2026-11-09)
-let colorMode="results";
+let colorMode="margins";   // the page opens on Margins (owner, 2026-11-12)
 // Phone layout breakpoint (owner, 2026-11-09): 775px, raised at run time (never lowered) to the current width whenever the
 // desktop top bar would still wrap with short labels, so Play or the country picker never drop to a second line: the page
 // goes to the phone layout instead. BP_RULES = the stylesheet's @media rules written for 775 / 776px, rewritten to BP.
@@ -850,11 +850,11 @@ function countTo(node,to,animate){
 // Visitors land on the latest election: House / Senate / Governors start at the newest year (2026 midterms)
 // One year for every US race (owner, 2026-10-11): the page opens on Senate 2026, Seats view (owner, 2026-10-16); after that each
 // race keeps the last year picked. President has no midterms: it shows the latest presidential year up to that one.
-let usRace=null, usYearPick=US_YEARS.at(-1), senMode="seats";
+let usRace=null, usYearPick=2026, senMode="seats";   // opens on 2026, not the 2028 projection (owner, 2026-11-12)
 // States tab (owner, 2026-11-10; the tab was "Governors", its race id stays "governors"): Governors | Legislatures. Legislatures
 // is a PLACEHOLDER for now: 2024 and 2026 only, drawn as Senate Seats results. While it shows, senMode is "seats" (the Senate
 // tab's own view is kept in senKeep and put back on leaving) and colorMode reads "results".
-let govMode="leg", statesTab=false, senKeep=null;   // States opens on Units (owner, 2026-11-11)
+let govMode="gov", statesTab=false, senKeep=null;   // States opens on Governors (owner, 2026-11-12; was Units)
 const LEG_YEARS=US_YEARS, legOn=()=>statesTab&&govMode==="leg";
 const usYearsOf=race=>race==="president"?PRES_YEARS:race==="governors"&&govMode==="leg"?LEG_YEARS:US_YEARS;
 // Arriving on Senate from another map shows All, so the map visibly morphs, until the viewer picks a Senate view
@@ -959,7 +959,11 @@ function paintLeg(year){
   legLegend(year);
 }
 // the tally: governors and chambers held together (149: 50 governors + 99 chambers, Nebraska's one); under the bar, Trifectas
-function legTally(year){if(year===FUT_YEAR) return {d:0,r:0,nd:"Democrats",nr:"Republicans",tot:149,mark:null,ctl:null,seg:{},ud:"",ur:"",label:"2028 state units: no results yet"};
+function legTally(year){if(year===FUT_YEAR){   // 2028 (owner, 2026-11-12): the governors projection counts; chambers have no results yet
+    const n={d:0,D:0,R:0,r:0,v:0}; for(const k in LEG_DATA[year]){const g=gov28(k); n[g in n?g:"v"]++}
+    return {d:n.d+n.D,r:n.r+n.R,nd:"Democrats",nr:"Republicans",tot:149,mark:null,ctl:null,seg:{d:n.d,D:n.D,R:n.R,r:n.r},
+      ud:[`${n.d} fixed`,n.D&&`${n.D} likely`].filter(Boolean).join(", ")+" governors",ur:[`${n.r} fixed`,n.R&&`${n.R} likely`].filter(Boolean).join(", ")+" governors",
+      label:`2028 state units projection: governors ${n.d+n.D} Democratic (${n.D} likely), ${n.r+n.R} Republican (${n.R} likely), ${n.v} toss-up; legislatures no results yet`}}
   let d=0,r=0,o=0,td=0,tr=0; const data=LEG_DATA[year];
   for(const k in data){const L=data[k], g=govPartyOf(year,k).toLowerCase(), ch=k==="NE"?[L[0]]:[...L];
     ch.forEach(x=>x==="d"?d++:x==="r"?r++:o++); g==="d"?d++:g==="r"?r++:o++;   // + the governor (owner, 2026-11-11)
@@ -1600,6 +1604,7 @@ usSvg.addEventListener("click",e=>{if(over){e.stopPropagation(); overExit(true)}
 // legend and buttons show the race picked from the start. setUSNow's mapOnly is unused now.
 let usStage=0;
 function setUS(race,animate,year=usYear(race)){
+  syncURL();
   if(legOn()&&(race==="governors"||race==="senate")){   // Legislatures: the Senate Seats map, Results only (placeholder)
     if(senKeep==null) senKeep=senMode; senMode="seats"; race="senate";
     if(!LEG_YEARS.includes(year)) year=usYearPick=LEG_YEARS.includes(usYearPick)?usYearPick:LEG_YEARS.at(-1);
@@ -2640,6 +2645,7 @@ function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth")
   else {o.style.left=Math.max(lo,Math.min(c-tw/2,hi-tw))+"px"; o.style.top="17px"}}
 addEventListener("resize",placeOth); document.fonts?.ready.then(placeOth);
 function renderIn(animate,sync){
+  syncURL();
   const race=inRace, cm=race==="states"&&stMode==="cm", years=race==="states"?ST_YEARS:IN_YEARS;
   if(!years.includes(inYear)) inYear=years[years.length-1];
   if(cm) sync=true;   // Chief Minister: every block changes colour at once, no top-to-bottom wipe (like US Governors)
@@ -2768,7 +2774,7 @@ function show(race,animate){
   document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us) usStep(race);
   if(!us){if(race!==inRace) inYear=IN_PICK[race]; inRace=race}
-  if(from===to){ if(us) setUS(race,animate); else renderIn(animate,true); current=race; history.replaceState(null,"","#"+race); return }
+  if(from===to){ if(us) setUS(race,animate); else renderIn(animate,true); current=race; syncURL(); return }
   if(us) setUS(race,false); else renderIn(false,true);
   const reveal=()=>{
     document.querySelectorAll(".panel").forEach(p=>{if(p!==to){p.hidden=true;p.classList.remove("out","in")}});
@@ -2779,7 +2785,7 @@ function show(race,animate){
   };
   if(from&&animate&&!reduce){from.classList.add("out");setTimeout(reveal,200)} else reveal();
   current=race;
-  history.replaceState(null,"","#"+race);
+  syncURL();
 }
 // the USA year stepper for a race (States in Legislatures: 2024 and 2026 only)
 function usStep(race){const years=usYearsOf(race);
@@ -2861,10 +2867,10 @@ function openMenu(open){
   cMenu.classList.toggle("open",open); cBtn.setAttribute("aria-expanded",open);
   if(open){const sel=opts.find(o=>o.getAttribute("aria-selected")==="true");opts.forEach(o=>o.classList.toggle("active",o===sel));cMenu.focus()}
 }
-// Picking a country always opens its default: USA = Governors 2026 in Results, India = State Chief Ministers 2026 (owner,
+// Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = State Chief Ministers 2026 (owner,
 // 2026-11-09; was Lok Sabha 2024 seats), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
-  if(country==="usa"){usYearPick=US_YEARS.at(-1); colorMode="results"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; stMode="cm"}
+  if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; stMode="cm"}
   show(country==="usa"?"governors":"states",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
@@ -3023,7 +3029,33 @@ function fitIndia(){
   const k=cw/(hi-lo); svg.style.maxWidth="none"; svg.style.width=vb.width*k+"px"; svg.style.marginLeft=-(lo-vb.x)*k-left+"px";
 }
 addEventListener("resize",fitIndia); narrow.addEventListener("change",()=>requestAnimationFrame(fitIndia)); document.fonts?.ready.then(fitIndia);
-show(location.hash.slice(1),false); fitIndia();
+// ---------- One URL per view (owner, 2026-11-12) ----------
+// The hash names the view: race / year / its modes, e.g. #governors/2026/governors/margins, #senate/2024/seats/results,
+// #loksabha/2024/vote, #states/2026/cm. Every change pushes a history entry (the tour only replaces it), so the browser's
+// Back / Forward step through the views; a hash missing a part keeps that part's default.
+function viewHash(){const r=current; if(!r) return "";
+  if(countryOf(r)==="usa") return "#"+[r,usYear(r),r==="senate"&&senMode,r==="governors"&&(govMode==="leg"?"units":"governors"),colorMode].filter(Boolean).join("/");
+  return "#"+[r,inYear,r==="loksabha"&&lsMode,r==="states"&&stMode].filter(Boolean).join("/")}
+let urlTimer=0, urlReplace=true;
+function syncURL(){clearTimeout(urlTimer); urlTimer=setTimeout(()=>{const h=viewHash(); if(!h||h===location.hash){urlReplace=false; return}
+  history[urlReplace||playing?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
+function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.slice(1)).split("/"), race=countryOf(r0)?r0:"governors";
+  const y=+t.find(x=>/^\d{4}$/.test(x))||null, has=v=>t.includes(v);
+  if(countryOf(race)==="usa"){
+    colorMode=has("results")?"results":"margins";
+    if(race==="governors") govMode=has("units")?"leg":"gov";
+    if(race==="senate"){const m=["all","power","seats"].find(has); if(m){senMode=m; senPicked=true; senKeep=null}}
+    if(y&&usYearsOf(race).includes(y)) usYearPick=y; else if(!y) usYearPick=2026;
+    if(race!==current) show(race,animate); else {usStep(race); setUS(race,animate)}
+  } else {
+    if(race==="loksabha"){const m=["geo","seat","vote"].find(has); lsMode=m||"geo"}
+    if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"}
+    const ys=race==="states"?ST_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
+    if(race!==current) show(race,animate); else {inYear=IN_PICK[race]; renderIn(animate,true)}
+  }
+  urlReplace=true; syncURL()}   // a hash that had to be filled in or corrected is rewritten, not added
+addEventListener("popstate",()=>{stopPlay(); applyHash(true)});
+applyHash(false); fitIndia();
 // Loader: off once the page (fonts included) has loaded and the first map has painted; never longer than 10 s
 {const L=document.getElementById("loader"), off=()=>{if(!L.isConnected||L.classList.contains("out")) return;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{L.classList.add("out"); setTimeout(()=>L.remove(),400)}))};
