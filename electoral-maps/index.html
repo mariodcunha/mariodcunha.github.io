@@ -955,8 +955,13 @@ function paintLeg(year){
     // (.45s, like the fills), so a state turning into or out of a Trifecta cross-fades instead of jumping.
     const tri=(L==="dd"&&g==="d")||(L==="rr"&&g==="r"), wp=LEG[k].p[3];
     LEG[k].p.forEach(e=>{e.style.transition=""; e.style.strokeWidth=""});   // undo the merge beat of a Senate switch
-    shapes.forEach((sh,i)=>{LEG[k].p[i].setAttribute("d",roundPoly(sh,h/2,.5)); LEG[k].p[i].style.fill=fills[i]});   // pills: ends fully round
-    wp.setAttribute("d",roundPoly([A,B,C,D],r)); wp.style.opacity=tri&&!mOn?1:0; wp.style.pointerEvents=tri&&!mOn?"":"none";   // hidden: not hoverable   // Margins (owner, 2026-11-11): never merged, each bar its own shade
+    // Trifecta square: 16px corners, but never more than ~a fifth of the square (phones: a rounded square, not a circle).
+    // the bars under a Trifecta square go once it has faded in (their corners and white outlines would show at its rounded
+    // corners: phones, owner 2026-11-12); they come back at once when it fades out
+    const under=tri&&!mOn;
+    shapes.forEach((sh,i)=>{const e=LEG[k].p[i]; e.setAttribute("d",roundPoly(sh,h/2,.5)); e.style.fill=fills[i];   // pills: ends fully round
+      e.style.opacity=under?0:""; e.style.transitionDelay=under?"0s,.45s,0s":""});
+    wp.setAttribute("d",roundPoly([A,B,C,D],Math.min(r,s*.21))); wp.style.opacity=tri&&!mOn?1:0; wp.style.pointerEvents=tri&&!mOn?"":"none";   // hidden: not hoverable   // Margins (owner, 2026-11-11): never merged, each bar its own shade
     if(tri){const ms3=[mg,mh,ms].filter(v=>v!=null); wp.style.fill=shade(g,ms3.length?Math.min(...ms3):null,govFill(g))}
     const tt=LEG[k].t; tt.setAttribute("x",tx); tt.setAttribute("y",ty); tt.style.fontSize=(s*.19-2*px).toFixed(1)+"px";   // 2px smaller than Senate Seats (owner), centred on the middle bar
     tt.setAttribute("class","in")}   // always white, purple and grey too (owner, 2026-11-10)
@@ -1474,7 +1479,7 @@ function repMorph(pairs,ms=senMorphMs){
   Promise.all(anims.map(a=>a.finished)).then(()=>{if(run===rmRun) rmClear()}).catch(()=>{});
 }
 // a state's State units square as a morph stand-in: 8px corners, the colour on screen (the Trifecta square, else the governor bar)
-function legSquare(k){const o=ALT[k][0].o, p=LEG[k]?.p, rr=16/(usSvg.getScreenCTM()?.a||1), w=1.75;   // as it looks: inside its 3.5 outline
+function legSquare(k){const o=ALT[k][0].o, p=LEG[k]?.p, rr=Math.min(16/(usSvg.getScreenCTM()?.a||1),o.height*.21), w=1.75;   // as it looks: inside its 3.5 outline
   return {x:o.x+w,y:o.y+w,width:o.height-2*w,height:o.height-2*w,rx:Math.max(0,rr-w),fill:cssFill(p?(p[3].style.opacity==="1"?p[3].style.fill:p[0].style.fill):""),grill:false}}
 const senCircles=k=>[0,1].map(j=>({...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)}));
 // a Units state as morph shapes: its whole Trifecta square (tri) or its three bars, top to bottom, as on screen

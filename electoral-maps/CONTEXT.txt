@@ -2961,6 +2961,7 @@ STATUS / NEXT
 - One URL per view (owner, 2026-11-12): the hash is race/year/modes (#governors/2026/governors/margins, #senate/2020/seats/results, #loksabha/2024/vote, #states/2026/cm). syncURL() (debounced, from show / setUS / renderIn) pushes a history entry per change (replaceState while the tour plays); popstate -> applyHash(). Missing parts take defaults; a bad hash is rewritten.
 - Defaults (owner, 2026-11-12): the page and USA open on States > Governors, 2026, Margins (colorMode "margins", govMode "gov", usYearPick 2026 -- it had become 2028); India opens on State Chief Ministers 2026.
 - Phones (owner, 2026-11-12): the bottom controls row reads year, Results / Margins, then Units / Governors (CSS order on .lsctl). When a toggle label has under 8px padding a side, .lsctl.pshort shows the unselected buttons' short labels (R / M, Gov., Rep., CMs), like .topbar.short on the web.
+- Units Trifecta squares (owner, 2026-11-12): corner radius min(16px, 21% of the square) -- on phones 16px had made them circles -- also in legSquare (morph stand-in). The three bars under a Trifecta square fade out once it has faded in (opacity delay .45s), so their corners / white outlines no longer show at its corners.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
