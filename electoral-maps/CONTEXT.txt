@@ -2991,6 +2991,24 @@ STATUS / NEXT
   Totals [BJP, NDA allies, others, Congress allies, INC, vacant]: 2006 46/19/80/18/70/0, 2011 51/15/75/23/69/0,
   2016 55/14/79/24/60/1, 2021 89/15/63/24/34/8, 2026 114/26/21/42/30/0.
 - Rajya Sabha pills (owner, 2026-11-13): RS_PILL = {2004: [UP]} -- in Uttar Pradesh 2004 each of the 31 seats is a pill made of two neighbouring circles (rsPills: pairs left to right, row by row, on the laid-out positions; drawn in the .rs-pills overlay, the paired circles hidden); the 18 circles left over are grey. Then (same day) the whole of 2004: RS_PILL = {2004: "all"}. Side-by-side pairs first, then upright pills when a state is short (Goa, Manipur, Tripura, Delhi...); seats still without a pair stay single circles (Mizoram, Nagaland, Sikkim, Puducherry have 1 circle for 1 seat; HP 4 circles / 3 seats, J&K 6 / 4, UK 5 / 3 can't fit; AS, CG, OD, PB miss one pill each to their shape). 221 pills + 12 single seats = 233. 2006 and 2009 added the same way (owner, 2026-11-13). REVERTED the same day: RS_PILL = {} (parked; rsPills and the .rs-pills overlay stay) -- every Rajya Sabha year is seat share with single circles. Put {2004:"all",...} back to bring the pills back.
+- LOK SABHA 2004 LAYOUT EDITOR (owner, 2026-11-14; rebuilt from the RS 2004 editor of 2026-11-09): on only with "/edit"
+  at the end of the address (#loksabha/2004/geo/edit; LS_EDIT, kept in the hash by viewHash, "Done" turns it off).
+  lsEdit(): each 2004 state one flat colour (16-colour palette, states within 3 cells never share one, least-used
+  colour first); the grey filler hidden; a faint grid (.ls-edit-grid, #f3f3f3) over the squares' area + 2 cells. Every
+  square drags (pointer events on .st-dot) and snaps to the tight layout's own grid (origin / pitch read from the cell
+  transforms, pitch = 20 x 1.0639); a drop on a taken cell goes back with a red outline. No spacing rule between states
+  (unlike RS). Moves saved in localStorage "ls2004-layout-v1" (per today's LS_RECTS code, square index -> [gx, gy]);
+  legend line #ls-edit-tools: Copy layout (`const LS_LAYOUT_2004={...};` to the clipboard and the console), Reset
+  layout, Done. Names don't follow dragged squares. ADOPTED (owner, 2026-11-14): the owner's pasted LS_LAYOUT_2004 is now
+  IN_TIGHT_LS04 (editor cells moved 2 left, 1 down onto IN_TIGHT's grid; 543 squares, counts per state as IN_TIGHT; AN LA
+  LD GA HP JK DL PB unchanged). renderIn uses it as PACK_IN.fixed for Lok Sabha 2004 only (Seats, Seat %, Vote %), cache
+  key "-ls04"; packLayout re-places the state names for it; same grey filler (IN_TIGHT_PAD). Other years keep IN_TIGHT.
+  The editor now starts from it (localStorage key "ls2004-layout-v2"). To change it again: edit, Copy layout, paste. Pasted three times on 2026-11-14 (last: a full rework, West Bengal taller); the editor's grid origin can shift between pastes, so the offset onto IN_TIGHT is read from states left in place (J&K, Ladakh, HP...), 1 row down for the third.
+- INDIA LAYOUT = THE OWNER'S GRID (2026-11-14): IN_TIGHT = IN_TIGHT_LS04 (the owner's editor layout, third paste) for every
+  India view and year -- Lok Sabha (Seats, Seat %, Vote %), Rajya Sabha, States (Seat % and Chief Ministers). The Figma
+  layout it replaced is kept as IN_TIGHT_FIGMA. Same grey filler (IN_TIGHT_PAD). Labels are placed by packLayout as before.
+  Not adapted: IN_TIGHT_AP1 (unused, built on the Figma layout) and the parked Rajya Sabha squares (RS_BIG, hand-placed
+  around the Figma layout). Checked: every view and year puts the 543 squares on 543 distinct cells, no errors.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
