@@ -3003,7 +3003,7 @@ STATUS / NEXT
   IN_TIGHT_LS04 (editor cells moved 2 left, 1 down onto IN_TIGHT's grid; 543 squares, counts per state as IN_TIGHT; AN LA
   LD GA HP JK DL PB unchanged). renderIn uses it as PACK_IN.fixed for Lok Sabha 2004 only (Seats, Seat %, Vote %), cache
   key "-ls04"; packLayout re-places the state names for it; same grey filler (IN_TIGHT_PAD). Other years keep IN_TIGHT.
-  The editor now starts from it (localStorage key "ls2004-layout-v2"). To change it again: edit, Copy layout, paste. Pasted three times on 2026-11-14 (last: a full rework, West Bengal taller); the editor's grid origin can shift between pastes, so the offset onto IN_TIGHT is read from states left in place (J&K, Ladakh, HP...), 1 row down for the third.
+  The editor now starts from it (localStorage key "ls2004-layout-v2"). To change it again: edit, Copy layout, paste. Pasted three times on 2026-11-14 (last: a full rework, West Bengal taller); the editor's grid origin can shift between pastes, so the offset onto IN_TIGHT is read from states left in place (J&K, Ladakh, HP...), 1 row down for the third. Fourth paste (same day, from the live editor): UP, WB, BR, TN, AP, KL reshaped; again 1 row down.
 - INDIA LAYOUT = THE OWNER'S GRID (2026-11-14): IN_TIGHT = IN_TIGHT_LS04 (the owner's editor layout, third paste) for every
   India view and year -- Lok Sabha (Seats, Seat %, Vote %), Rajya Sabha, States (Seat % and Chief Ministers). The Figma
   layout it replaced is kept as IN_TIGHT_FIGMA. Same grey filler (IN_TIGHT_PAD). Labels are placed by packLayout as before.
