@@ -218,6 +218,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us .sq.gone{transform:scale(0)}
 /* House, web (owner, 2026-11-10): the hovered square gets a white inner border, so it reads as shrinking a little; a wide
    white stroke clipped to the square's own box, so it only grows inward */
+#map-us.blocks-wait .sq{opacity:0;transition:none} #map-us.blocks-in .sq{transition:opacity .5s var(--ease)!important;transition-delay:0s!important}   /* Units -> Senate All: blocks after the morph */
 #map-us .sq{stroke-width:1px} #map-us .sq.hov{stroke:var(--bg);stroke-width:7px;clip-path:inset(0) fill-box;transition:stroke-width .15s var(--ease),fill .45s var(--ease)}
 #map-us .seat{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),fill .45s var(--ease)}
 #map-us.senate .seat{transform:scale(1)}
@@ -1655,6 +1656,10 @@ function setUS(race,animate,year=usYear(race)){
     // the Units grid stays fully on until the stand-in squares have faded in over it (no blink: it used to fade out in
     // .35s while they came in, and the page showed through around 280ms; owner, 2026-11-17), then goes at once
     usSvg.classList.add("leg-hold"); clearTimeout(usSvg._hold); usSvg._hold=setTimeout(()=>usSvg.classList.remove("leg-hold"),senMorphMs*.5);
+    // Senate All: the grey state blocks stay out of sight for the first half of the morph, then all fade in together while
+    // the squares finish becoming the circles (owner, 2026-11-17: they used to show up bold right away, then one by one)
+    if(senMode==="all"){usSvg.classList.remove("blocks-in"); usSvg.classList.add("blocks-wait"); clearTimeout(usSvg._blk);
+      usSvg._blk=setTimeout(()=>{usSvg.classList.replace("blocks-wait","blocks-in"); usSvg._blk=setTimeout(()=>usSvg.classList.remove("blocks-in"),550)},senMorphMs*.45)}   // all at once (no per-square stagger), from mid-morph
     senPrev=senMode; setUSNow(race,true,year);   // no Seats tile morph on the way
     // beat 2: the square splits into the two senators' shapes, recolouring as it goes (same total time, senMorphMs)
     repMorph(keys.flatMap(k=>senShapes(k,senMode).map(c=>({from:c0[k],to:c,merge:true})))); return}
