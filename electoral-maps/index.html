@@ -234,6 +234,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us.morph .alt-grid{opacity:1;transition:none} #map-us.morph .seat{opacity:0} #map-us.morph .alt-grid text{opacity:0;transition:none}
 #map-us.rmorph .seat,#map-us.rmorph .alt-grid{opacity:0;transition:none}
 #map-us.rmorph.leg .leg-grid{opacity:0;transition:none}   /* into State units: the bars wait under the stand-ins (owner, 2026-11-11) */
+#map-us.leg-hold .leg-grid{opacity:1!important;transition:none!important}   /* Units -> Senate All / Representation: held under the stand-ins (owner, 2026-11-17) */
 /* A state over time (owner, 2026-11-07): President, click California. .focus shrinks every state away; .fk hides the
    clicked state's own squares (its stand-in takes over); .over holds one block per year, with year labels always shown */
 #map-us.focus .state .sq{transform:scale(0)!important} #map-us.focus .plabels{opacity:0!important}
@@ -1651,6 +1652,9 @@ function setUS(race,animate,year=usYear(race)){
       repMorph(keys.flatMap(k=>seatsLegPairs(k,parts[k],senHalves(k),false)),SEATS_LEG_MS); return}
     // All / Representation, beat 1 (owner, 2026-11-11): each state's three bars blend into its square's colour and their gaps close
     keys.forEach(k=>LEG[k]?.p.forEach(e=>{e.style.transition="fill .24s ease-out,stroke-width .24s ease-out,opacity .35s .1s"; e.style.fill=c0[k].fill; e.style.strokeWidth="0"}));
+    // the Units grid stays fully on until the stand-in squares have faded in over it (no blink: it used to fade out in
+    // .35s while they came in, and the page showed through around 280ms; owner, 2026-11-17), then goes at once
+    usSvg.classList.add("leg-hold"); clearTimeout(usSvg._hold); usSvg._hold=setTimeout(()=>usSvg.classList.remove("leg-hold"),senMorphMs*.5);
     senPrev=senMode; setUSNow(race,true,year);   // no Seats tile morph on the way
     // beat 2: the square splits into the two senators' shapes, recolouring as it goes (same total time, senMorphMs)
     repMorph(keys.flatMap(k=>senShapes(k,senMode).map(c=>({from:c0[k],to:c,merge:true})))); return}
