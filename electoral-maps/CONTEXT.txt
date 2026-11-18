@@ -3009,6 +3009,15 @@ STATUS / NEXT
   layout it replaced is kept as IN_TIGHT_FIGMA. Same grey filler (IN_TIGHT_PAD). Labels are placed by packLayout as before.
   Not adapted: IN_TIGHT_AP1 (unused, built on the Figma layout) and the parked Rajya Sabha squares (RS_BIG, hand-placed
   around the Figma layout). Checked: every view and year puts the 543 squares on 543 distinct cells, no errors.
+- RAJYA SABHA PILL EDITOR (owner, 2026-11-14): on only with "/edit" at the end of a Rajya Sabha address
+  (#rajyasabha/2024/edit; RS_EDIT, kept in the hash). rsEdit(): every circle (a Lok Sabha square) pale in its state's
+  flat colour (states with no Rajya Sabha seat grey); click a circle, then a side-by-side or stacked neighbour of the
+  same state, and they join into a pill (one RS seat, full colour, .rs-edit layer); click a pill to split it; a far or
+  over-quota click flashes red. State names read "Kar. (3/12)" (pills / 2024 RS seats, green when full; names always shown
+  while editing); the legend line #rs-edit-tools counts all 233 and has Copy pairs (`const RS_PAIRS={code:[[i,j],...]}`,
+  indexes into LS_RECTS[code]), Reset pairs, Done. Pairs in localStorage "rs-pairs-v1" plus memory. Not wired into the
+  real map yet (paste RS_PAIRS back to apply). Owner edits it on a local server copy (http://localhost:8760/...).
+- Senate All (owner, 2026-11-17): each state one solid grey block (squares painted with a grey outline, no white lines). Circle pairs side by side wherever the block allows: TIGHT_SEAT adds NY [38,3],[39,3] and LA [16,23],[17,23] (cells present in every census). ME, RI, ID (two stacked squares), VT (one) and HI (diagonal) stay stacked.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

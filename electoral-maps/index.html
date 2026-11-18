@@ -76,7 +76,12 @@ svg.india text{font-size:14px}
 #map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}
 #map-india .st-dot.pilled{opacity:0!important}
 #map-india.ls-editing .st-dot{cursor:grab;transition:none!important} #map-india.ls-editing .st-dot.ls-bad{stroke:#e15759!important;stroke-width:3!important}
-#map-india .ls-edit-grid rect{fill:#f3f3f3} #map-india.ls-editing .in-pad{display:none} #map-india:not(.ls-editing) .ls-edit-grid{display:none}
+#map-india .ls-edit-grid rect{fill:#f3f3f3}
+#map-india.rs-editing .st-dot{cursor:pointer;opacity:.35;transition:none!important} #map-india.rs-editing .st-dot.rs-sel{opacity:1;stroke:var(--fg)!important;stroke-width:2.5!important}
+#map-india.rs-editing .st-dot.ls-bad{opacity:1;stroke:#e15759!important;stroke-width:3!important}
+#map-india .rs-edit rect{cursor:pointer} #map-india:not(.rs-editing) .rs-edit{display:none}
+#map-india.rs-editing .plabels,#map-india.rs-editing .plabels text{opacity:1!important} #map-india.rs-editing .plabel text.rs-full{fill:#2e8b57!important}
+#rs-edit-tools button{font:inherit;font-size:13px;padding:2px 8px;margin-left:6px;border:1px solid var(--muted);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer} #map-india.ls-editing .in-pad{display:none} #map-india:not(.ls-editing) .ls-edit-grid{display:none}
 #ls-edit-tools button{font:inherit;font-size:13px;padding:2px 8px;margin-left:6px;border:1px solid var(--muted);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer} #map-india .rs-pills{pointer-events:none} #map-india .rs-pills rect{animation:pill-in .45s var(--ease) both}
 @keyframes pill-in{from{opacity:0}}
 /* Rajya Sabha 2004 draft (rs4): the Chief Ministers blocks, solid light grey; Maharashtra's Rajya Sabha seats as bigger rounded squares (inBig) */
@@ -519,6 +524,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="txt geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
       </div>
       <div class="legend" id="legend-rajyasabha">
+        <span class="txt" id="rs-edit-tools" hidden><b>Making Rajya Sabha pills</b> — click a circle, then a neighbouring circle of the same state, to join them into one seat; click a pill to split it. <span id="rs-edit-count"></span> Saved in this browser. <button type="button" id="rs-edit-copy">Copy pairs</button> <button type="button" id="rs-edit-reset">Reset pairs</button> <button type="button" id="rs-edit-done">Done</button></span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--inc)"/></svg>Congress</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--india)"/></svg><em id="rs-leg-bloc">Congress allies (INDIA)</em></span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--oth)"/></svg>Others</span>
@@ -1347,7 +1353,10 @@ AL -2 -1|MS -2 -1|SC -3 0|LA -1 -2|FL -3 -1|AK 0 0|HI 0 0`.split("|").map(t=>t.t
 // (2008-2010) Nebraska and Kansas at one corner each, and PA's 19th (2008-2010) New York at one: those blocks are boxed in.
 const TIGHT_CELL={MD:{"39,14":[32,13]},CA:{"4,15":[3,13]},PA:{"33,9":[32,8],"34,8":[37,9]},IL:{"21,16":[20,15],"21,17":[20,16]},
   MO:{"19,16":[15,15]},IA:{"18,12":[15,11]},WV:{"34,15":[32,15]}};
-const TIGHT_SEAT={VT:[[41,0]]};   // Senate circles placed on their own: VT's left one would touch NY, so it sits above
+const TIGHT_SEAT={VT:[[41,0]],
+  NY:[[38,3],[39,3]],LA:[[16,23],[17,23]]};   // Senate circles placed on their own: VT's left one would touch NY, so it sits above;
+  // NY and LA side by side (owner, 2026-11-17: pairs horizontal wherever the block allows; cells there in every census).
+  // ME, RI, ID (two squares stacked), VT (one) and HI (two at a diagonal) have no side-by-side pair inside the block.
 const tightSeat=(k,j,e)=>TIGHT_SEAT[k]?.[j]||(([x,y],[dx,dy])=>[x+dx,y+dy])(seatCell(e),TIGHT_SHIFT[k]||[0,0]);
 const TIGHT_POS=new Map();   // House square -> its House 2024 cell
 for(const k in HSQ) HSQ[k].forEach(e=>{const x=e.x.baseVal.value/S, y=e.y.baseVal.value/S, [dx,dy]=TIGHT_SHIFT[k]||[0,0];
@@ -1691,7 +1700,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
       if(fut&&race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j]; paint(e,j<n,p==="v"?"var(--house)":PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});   // 2028: Likely solid / Leaning light / toss-up grey
       else if(race==="house") hs.forEach((e,j)=>{const p=HOUSE_COL[year][k][j], m=HOUSE_MARGINS[year]?.[k]?.[HOUSE_DIST[year][k][j]-1];   // Margins: called seats shaded, leading ones stay flat (as Senate Seats)
         paint(e,j<n,marginsOn()&&m!=null&&SHADE[p]?shadeOf(p,m):PARTY_FILL[p]||ALT_PROJ[p]); if(j<n) c[p]++});
-      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)"));
+      if(race==="senate") hs.forEach((e,j)=>paint(e,j<n&&sm==="all","var(--house)","var(--house)"));   // Senate All: one solid grey block per state, no white lines (owner, 2026-11-17)
       if(fut&&race==="governors"&&hs.length){const g=gov28(k), f=PARTY_FILL[g]||ALT_PROJ[g]||"var(--house)";
         hs.forEach((e,j)=>paint(e,j<n,f,f)); c[g]+=n; g26[g]++}
       else if(fut){}
@@ -2166,6 +2175,69 @@ function lsEditLayout(){const out={}; for(const k in LS_RECTS) out[k]=LS_RECTS[k
     navigator.clipboard?.writeText(t).catch(()=>{}); console.log(t); const b=document.getElementById("ls-edit-copy"); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy layout",1200)});
   document.getElementById("ls-edit-reset").addEventListener("click",()=>{if(!confirm("Reset the Lok Sabha 2004 layout to the page's own?")) return; try{localStorage.removeItem(LS_EDIT_KEY)}catch(e){} renderIn(false,true)});
   document.getElementById("ls-edit-done").addEventListener("click",()=>{LS_EDIT=false; renderIn(false,true)});
+})();
+// ---------- Rajya Sabha pill editor (owner, 2026-11-14) ----------
+// On only with "/edit" at the end of a Rajya Sabha address (#rajyasabha/2024/edit). Every circle is a Lok Sabha square;
+// click one, then a neighbouring circle of the same state (side by side or one above the other), and the two become a
+// pill: one Rajya Sabha seat. Click a pill to split it again. Each state's name reads "KAR. (3/12)": pills made / its
+// Rajya Sabha seats (2024 counts; Telangana and Andhra Pradesh apart). Pairs stay in this browser (localStorage);
+// the line under the map has Copy pairs (`const RS_PAIRS={...}` to paste back into the page), Reset pairs and Done.
+let RS_EDIT=/^#rajyasabha\/.*(^|\/)edit$/.test(location.hash);
+const RS_EDIT_KEY="rs-pairs-v1", RS_EDIT_G=(()=>{const dots=LS_GRP.UP.parentNode, g=el("g",{class:"rs-edit"},inSvg); inSvg.insertBefore(g,dots.nextSibling); return g})();
+let rsEditOn=false, rsEditSel=null;
+let rsPairsMem=null;   // the pairs in memory too, so the editor works where storage is blocked
+const rsPairsLoad=()=>{if(!rsPairsMem){try{rsPairsMem=JSON.parse(localStorage.getItem(RS_EDIT_KEY))||{}}catch(e){rsPairsMem={}}} return JSON.parse(JSON.stringify(rsPairsMem))};
+const rsPairsSave=L=>{rsPairsMem=L; try{localStorage.setItem(RS_EDIT_KEY,JSON.stringify(L))}catch(e){}};
+const rsSeatsOf=k=>(RS[2024][k]||[]).reduce((a,b)=>a+b,0);
+function rsEditPos(r){const d=ST_DOT.get(r), m=new DOMMatrix(LS_CELL.get(r).style.transform||"none"), x=+d.getAttribute("x"), y=+d.getAttribute("y");
+  return {x:m.a*x+m.e,y:m.d*y+m.f,w:+d.getAttribute("width")*m.a,step:S*m.a}}
+function rsEditDraw(){
+  RS_EDIT_G.replaceChildren(); ST_DOT.forEach(d=>d.classList.remove("pilled","rs-sel"));
+  const L=rsPairsLoad();
+  for(const k in L){const rs=LS_RECTS[k]; if(!rs) continue;
+    L[k].forEach(([i,j])=>{const a=rsEditPos(rs[i]), b=rsEditPos(rs[j]); if(!a||!b) return;
+      ST_DOT.get(rs[i]).classList.add("pilled"); ST_DOT.get(rs[j]).classList.add("pilled");
+      const x=Math.min(a.x,b.x), y=Math.min(a.y,b.y), r=el("rect",{x,y,width:Math.max(a.x,b.x)+a.w-x,height:Math.max(a.y,b.y)+a.w-y,rx:a.w/2,ry:a.w/2,
+        style:`fill:${ST_DOT.get(rs[i]).dataset.col}`},RS_EDIT_G); r.dataset.k=k; r.dataset.i=i})}
+  if(rsEditSel) ST_DOT.get(rsEditSel.r).classList.add("rs-sel");
+  // names: "KAR. (3/12)"
+  let done=0, all=0;
+  for(const k in PACK_IN.PL){const e=PACK_IN.PL[k], n=rsSeatsOf(k), m=(L[k]||[]).length; done+=Math.min(m,n); all+=n;
+    if(!e.t.dataset.base) e.t.dataset.base=e.t.textContent;
+    e.t.textContent=n?`${e.t.dataset.base} (${m}/${n})`:e.t.dataset.base;
+    e.t.classList.toggle("rs-full",!!n&&m>=n)}
+  document.getElementById("rs-edit-count").textContent=`${done} of ${all} seats made into pills.`;
+}
+function rsEdit(on){
+  rsEditOn=on; inSvg.classList.toggle("rs-editing",on); document.getElementById("rs-edit-tools").hidden=!on;
+  for(const k in PACK_IN.PL) delete PACK_IN.PL[k].t.dataset.base;
+  if(!on){RS_EDIT_G.replaceChildren(); rsEditSel=null; ST_DOT.forEach(d=>d.classList.remove("pilled","rs-sel")); return}
+  // one flat colour per state (as in the Lok Sabha editor), circles pale, pills full
+  const regs=Object.keys(LS_RECTS), cell=r=>{const p=rsEditPos(r); return [Math.round(p.x/p.step),Math.round(p.y/p.step)]}, at=new Map();
+  regs.forEach((k,i)=>LS_RECTS[k].forEach(r=>at.set(cell(r).join(","),i)));
+  const nb=regs.map((k,i)=>{const n=new Set(); LS_RECTS[k].forEach(r=>{const [x,y]=cell(r); for(let dx=-3;dx<=3;dx++) for(let dy=-3;dy<=3;dy++){const j=at.get((x+dx)+","+(y+dy)); if(j!=null&&j!==i) n.add(j)}}); return n});
+  const col=[], cnt=LS_EDIT_COL.map(()=>0); regs.map((k,i)=>i).sort((a,b)=>LS_RECTS[regs[b]].length-LS_RECTS[regs[a]].length).forEach(i=>{const used=new Set([...nb[i]].map(j=>col[j]));
+    const ok=[...LS_EDIT_COL.keys()].filter(c=>!used.has(c)); col[i]=(ok.length?ok:[...LS_EDIT_COL.keys()]).sort((a,b)=>cnt[a]-cnt[b]||a-b)[0]; cnt[col[i]]++});
+  regs.forEach((k,i)=>LS_RECTS[k].forEach(r=>{const d=ST_DOT.get(r); d.dataset.col=LS_EDIT_COL[col[i]]; d.style.fill=rsSeatsOf(k)?LS_EDIT_COL[col[i]]:"var(--seat-empty)"}));
+  rsEditDraw();
+}
+(()=>{
+  const find=d=>{for(const k in LS_RECTS){const i=LS_RECTS[k].findIndex(r=>ST_DOT.get(r)===d); if(i>=0) return {k,i,r:LS_RECTS[k][i]}} return null};
+  inSvg.addEventListener("click",e=>{if(!rsEditOn) return;
+    const L=rsPairsLoad();
+    if(e.target.parentNode===RS_EDIT_G){const k=e.target.dataset.k, i=+e.target.dataset.i;   // split a pill
+      L[k]=(L[k]||[]).filter(p=>p[0]!==i); if(!L[k].length) delete L[k]; rsPairsSave(L); rsEditSel=null; rsEditDraw(); return}
+    if(!e.target.classList.contains("st-dot")||e.target.classList.contains("pilled")) return;
+    const o=find(e.target); if(!o||!rsSeatsOf(o.k)) return;
+    if(!rsEditSel||rsEditSel.k!==o.k||rsEditSel.i===o.i){rsEditSel=rsEditSel&&rsEditSel.i===o.i&&rsEditSel.k===o.k?null:o; rsEditDraw(); return}
+    const a=rsEditPos(rsEditSel.r), b=rsEditPos(o.r), dx=Math.abs(a.x-b.x)/a.step, dy=Math.abs(a.y-b.y)/a.step;
+    const next=(Math.abs(dx-1)<.2&&dy<.2)||(Math.abs(dy-1)<.2&&dx<.2), full=(L[o.k]||[]).length>=rsSeatsOf(o.k);
+    if(!next||full){const d=e.target; d.classList.add("ls-bad"); setTimeout(()=>d.classList.remove("ls-bad"),600); if(full) rsEditSel=null; rsEditDraw(); return}
+    (L[o.k]||=[]).push([rsEditSel.i,o.i]); rsPairsSave(L); rsEditSel=null; rsEditDraw()});
+  document.getElementById("rs-edit-copy").addEventListener("click",()=>{const t="const RS_PAIRS="+JSON.stringify(rsPairsLoad())+";";
+    navigator.clipboard?.writeText(t).catch(()=>{}); console.log(t); const b=document.getElementById("rs-edit-copy"); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy pairs",1200)});
+  document.getElementById("rs-edit-reset").addEventListener("click",()=>{if(!confirm("Remove every pill you've made?")) return; rsPairsMem={}; try{localStorage.removeItem(RS_EDIT_KEY)}catch(e){} rsEditSel=null; rsEditDraw()});
+  document.getElementById("rs-edit-done").addEventListener("click",()=>{RS_EDIT=false; renderIn(false,true)});
 })();
 // grey filler squares of the tight layout (IN_TIGHT_PAD), one square each with the seats' white edge; they fade
 // out (staying put) whenever the tight layout isn't on show
@@ -2812,6 +2884,7 @@ function renderIn(animate,sync){
   applyPack(PACK_IN,pk,LS_GRP);
   rsPills(race==="rajyasabha"&&rsProp&&RS_PILL[inYear],inYear);
   lsEdit(race==="loksabha"&&inYear===2004&&LS_EDIT&&!!pk);
+  if(rsEditOn||race==="rajyasabha"&&RS_EDIT&&pk) rsEdit(race==="rajyasabha"&&RS_EDIT&&!!pk);
   rsPack(pk,race==="rajyasabha"&&!rsProp&&!rsTiles&&!rsDraft); inTall(pk,rsDraft,inYear); inBig(pk,rsTiles,inYear);
   if(pk&&rsTiles) rsTileNames(pk);   // Rajya Sabha 2004: names at each state's top-left square, shown on hover like the other packed maps (owner, 2026-11-09: editor and grid removed)
   inPad(race==="rajyasabha"&&!rsProp?null:pk,cm,race!=="loksabha"&&!cm);   // Rajya Sabha draft: the filler is drawn as grey bars (inTall)   // Rajya Sabha: no grey filler (circles reach it; 2004 squares replace it)   // Rajya Sabha: its bigger circles reach the filler, so it fades (its room stays)
@@ -3166,7 +3239,7 @@ addEventListener("resize",fitIndia); narrow.addEventListener("change",()=>reques
 // Back / Forward step through the views; a hash missing a part keeps that part's default.
 function viewHash(){const r=current; if(!r) return "";
   if(countryOf(r)==="usa") return "#"+[r,usYear(r),r==="senate"&&senMode,r==="governors"&&(govMode==="leg"?"units":"governors"),colorMode].filter(Boolean).join("/");
-  return "#"+[r,inYear,r==="loksabha"&&lsMode,r==="states"&&stMode,r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit"].filter(Boolean).join("/")}
+  return "#"+[r,inYear,r==="loksabha"&&lsMode,r==="states"&&stMode,r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
 let urlTimer=0, urlReplace=true;
 function syncURL(){clearTimeout(urlTimer); urlTimer=setTimeout(()=>{const h=viewHash(); if(!h||h===location.hash){urlReplace=false; return}
   history[urlReplace||playing?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
@@ -3181,6 +3254,7 @@ function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.sli
   } else {
     if(race==="loksabha"){const m=["geo","seat","vote"].find(has); lsMode=m||"geo"; LS_EDIT=has("edit")}
     if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"}
+    if(race==="rajyasabha") RS_EDIT=has("edit");
     const ys=race==="states"?ST_YEARS:race==="rajyasabha"?RS_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
     if(race!==current) show(race,animate); else {inYear=IN_PICK[race]; renderIn(animate,true)}
   }
