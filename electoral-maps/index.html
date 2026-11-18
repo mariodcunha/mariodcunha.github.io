@@ -160,7 +160,9 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #us-tally,#in-tally{position:relative}
 .cand.mid{position:absolute;left:50%;bottom:0;transform:translateX(-50%);max-width:46%;width:max-content;text-align:center}
 .cand.mid b,.cand.mid span{color:#A6A6A6} .tally.pct .cand.mid b::after{content:none}
-#mini .cand.mid{display:none}
+/* pinned bar (owner, 2026-11-17): the centre label on one line, "2026 House results", at the names' size; the year no bigger */
+#mini .tally{position:relative} #mini .cand.mid{display:flex;gap:.3em;align-items:baseline;white-space:nowrap;max-width:none}
+#mini .cand.mid b,#mini .cand.mid span{font-size:15px!important;line-height:18px!important;font-weight:700}
 @media (max-width:775px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
 .bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px #fff;transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
@@ -342,6 +344,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #mini .cand small,#mini .cand.oth,#mini .under{display:none}
   #mini .bar{height:8px;margin-top:6px}
   #mini .bar .mark{top:-2px;bottom:-2px}
+  /* phones: no room between the names and the country button, so the centre label sits on its own line under the bar */
+  #mini{padding-bottom:26px} #mini .cand.mid{top:calc(100% + 18px);bottom:auto}
+  #mini .cand.mid b,#mini .cand.mid span{font-size:12.5px!important;line-height:15px!important}
   body.stuck .country{position:fixed;z-index:31;top:calc(7px + env(safe-area-inset-top));right:16px;animation:mini-in .25s var(--ease)}
   @keyframes mini-in{from{transform:translateY(-150%)}}
   /* both maps fit the phone, no side-scroll; their names grow to stay readable at that size (labels: PACK_US, PACK_IN) */
