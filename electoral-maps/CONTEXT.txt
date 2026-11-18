@@ -3022,6 +3022,23 @@ STATUS / NEXT
 - Montana compact layout (owner, 2026-11-17): TIGHT_SHIFT MT -1 1 -> -1 2, so Montana's block sits on Wyoming's row in House, Senate and Governors (President keeps CHAMBER cells; the morphs follow TIGHT_POS). No neighbour within one square.
 - Senate Margins 2026 Alaska (owner, 2026-11-17): SEN_MARGINS[2026].AK[0] 2 -> 5 (Democrat won by 5).
 - States toggle order (owner, 2026-11-17): Governors first, Units second (#gov-view buttons swapped).
+- President 2024 "By District" (was "If by District") (owner, 2026-11-17): #pdist-view toggle, Electoral | By District (short EV / Dist.), on
+  President 2024 only (hidden other years). If by District: each House square goes to whoever carried that district for
+  president (PRES_CD24, Harris minus Trump per district, matched via HOUSE_DIST[2024]), the 2 senator squares and DC's 3 to
+  the statewide winner; the bar counts those squares: Harris 246, Trump 292 (Electoral 226 / 312). Results only: Margins
+  toggle hidden, marginsOn() false while usDist. Title "President by district". URL token "district"
+  (#president/2024/district/results). Data: Wikipedia state pages' "By congressional district" tables (some rounded to whole
+  points), fetched by electoral-maps/cd-build/fetch.py (local, untracked) into cd24.json; Trump 230 districts, Harris 205.
+  Margins for this view: later (owner).
+  Update (owner, same day): By District is drawn on the House map's tight layout (tight / PACK 'hg' / bar flat), no senator or
+  DC squares, the bar counts the 435 districts only: Harris 205, Trump 230, majority mark 218.
+  Later (owner, same day): President Electoral is drawn on the House map too (tight=true for every race): senator / DC
+  squares (ESQ) never drawn but still counted to the state winner, so totals stay the real EV counts; text.dc hidden; legend
+  p-ev explains it. By District for every year in PRES_CD (2008 Obama 242 / McCain 193, 2012 Obama 209 / Romney 226, 2016, 2020, 2024: all President years; cd-build/parse.py
+  per year; 2016 PA-6 Clinton +0.6, PA-8 Trump +0.2 set by hand, Wikipedia rounds them to 0; 2016 and 2020 later replaced by Daily Kos Elections'
+  sheets (cd-build/dk2016.csv, dk2020.csv; one decimal, published counts 205/230 and 224/211; MO-2 2020 Trump -0.05)). By District Margins on: each district shaded by |margin| (shadeOf, as
+  House), Results / Margins toggle shown, title "President by district results / margins" (phones "By district ...").
+- States tab (owner, 2026-11-17): clicking States from another race always opens on Governors (govMode reset in the tab click), even after Units was picked earlier; a #.../units link still opens Units.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
