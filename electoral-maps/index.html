@@ -3164,25 +3164,28 @@ function playSteps(){
     return list}
   const PY=PRES_YEARS.filter(y=>y!==FUT_YEAR), UY=US_YEARS.filter(y=>y!==FUT_YEAR);   // no 2028 in the tour
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
-  pass("president","results",PY); pass("president","margins",PY); pass("house","results",UY); pass("house","margins",UY);   // House margins after results (owner, 2026-11-10)
+  // Tour order (owner, 2026-11-17): President Electoral results, President By District margins, House results then margins,
+  // Senate All and Representation one year then Seats every year, Seats margins (web; phones: Seats results and margins),
+  // Governors results then margins, State units results one year then margins every year
+  pass("president","results",PY); PY.filter(y=>PRES_CD[y]).forEach(year=>list.push({race:"president",mode:"margins",year,dist:true}));
+  pass("house","results",UY); pass("house","margins",UY);
   if(!senSeatsOnly.matches){pass("senate","results",UY.slice(0,1),"all"); pass("senate","results",UY.slice(0,1),"power")}   // phones: Seats only
   pass("senate","results",UY,"seats"); pass("senate","margins",UY,"seats");
-  // States (owner, 2026-11-11): Units results every year, then Units margins every year, then Governors results and margins
-  UY.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"leg"})); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
   UY.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
+  list.push({race:"governors",mode:"results",year:UY[0],gov:"leg"}); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
   return list;
 }
-function playGo({race,mode,year,sen,ls,st,gov}){
+function playGo({race,mode,year,sen,ls,st,gov,dist}){
   if(countryOf(race)==="india"){const view=st&&st!==stMode;   // a new view morphs at once; a new year wipes down the map
     if(ls) lsMode=ls; if(st) stMode=st; inYear=IN_PICK[race]=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
   // a new race: show() alone draws it in that year (and moves the stepper). Calling stepOnPick too re-rendered the map
   // straight away, which cut off the Senate Seats / Representation morphs mid-way (owner, 2026-11-07)
-  colorMode=mode; if(sen) senMode=sen; usYearPick=year;
+  colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race==="president") presDist=!!dist;
   if(race==="governors"&&govMode!==(gov||"gov")){govMode=gov||"gov"; if(race===current){usStep(race); setUS(race,true,year); return}}   // State units or Governors, as the step says
   if(race!==current) show(race,true); else stepOnPick(year)}
 // the step that matches the view on show (of the Senate views only Seats has margins)
 const playHere=()=>countryOf(current)==="india"?playList.findIndex(s=>s.race===inRace&&s.year===inYear&&(s.ls||lsMode)===lsMode&&(s.st||stMode)===stMode):
-  playList.findIndex(s=>s.race===(statesTab?"governors":usRace)&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&(s.race!=="governors"||(s.gov||"gov")===govMode)&&
+  playList.findIndex(s=>s.race===(statesTab?"governors":usRace)&&s.year===usYear(usRace)&&(s.race!=="senate"||s.sen===senMode)&&(s.race!=="governors"||(s.gov||"gov")===govMode)&&(s.race!=="president"||!!s.dist===presDist)&&
   (s.race==="senate"&&senMode!=="seats"||s.mode===colorMode));
 async function startPlay(){
   playing=true; renderPlay(); if(countryOf(current)==="usa") senPicked=true; playList=playSteps(); playAt=0; playGo(playList[0]);

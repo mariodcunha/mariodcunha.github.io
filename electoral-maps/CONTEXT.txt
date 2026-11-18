@@ -3039,6 +3039,10 @@ STATUS / NEXT
   sheets (cd-build/dk2016.csv, dk2020.csv; one decimal, published counts 205/230 and 224/211; MO-2 2020 Trump -0.05)). By District Margins on: each district shaded by |margin| (shadeOf, as
   House), Results / Margins toggle shown, title "President by district results / margins" (phones "By district ...").
 - States tab (owner, 2026-11-17): clicking States from another race always opens on Governors (govMode reset in the tab click), even after Units was picked earlier; a #.../units link still opens Units.
+- Play tour order (owner, 2026-11-17): President Electoral results (all years) -> President By District margins (years in
+  PRES_CD) -> House results, margins -> Senate All, Representation (first year; not phones) -> Seats results every year ->
+  Seats margins -> Governors results, margins -> State units results (first year only) -> State units margins every year.
+  Steps carry dist:true for By District (playGo sets presDist; playHere matches it).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
