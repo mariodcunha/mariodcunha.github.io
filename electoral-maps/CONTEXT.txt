@@ -3057,6 +3057,18 @@ STATUS / NEXT
   in the gap right of Uttarakhand / Delhi, left of Sikkim, above Bihar; South (MH, GA, KA, KL, TN, PY, AP, TS, OD, LD, AN,
   D&D) the same width in the Bay of Bengal, between Andhra Pradesh's middle and Tamil Nadu's upper part. Measured from the
   blocks on screen at each hover (seatHover place()); falls back to the old top spot if an anchor state is missing.
+- India grid, fifth paste (owner, 2026-11-22): IN_TIGHT_LS04 replaced from the editor (cells +1 x to match the stored grid,
+  read from 34 unmoved states). Gujarat moved one column west; MP two squares, MH one, RJ one moved west. Every India view.
+- India States toggle order (owner, 2026-11-22): Chief Ministers first, Seat % second (as USA's Governors | Units).
+- Legend notes as one paragraph (owner, 2026-11-22): President (#p-ev inline, the note runs on) and House (#h-note now an <em>
+  inside "Each square is one district.") no longer break onto a new line.
+- Senate notes (owner, 2026-11-22): 2026 key note now "Results from The New York Times, with later calls for Idaho, Michigan,
+  Montana, Nebraska, Mississippi and Alaska" (no more "Nov 4 ... ahead of it"); Representation's Wyoming-vs-California ratio
+  uses that year's census (53x for 2008-2010, 52x from 2012).
+- State units legend trimmed (owner, 2026-11-22): "Each square is a state: governor on top, state Senate in the middle,
+  state House below. A solid square is a Trifecta." + in Margins "Darker shades mean a bigger lead: governors by their latest
+  election's margin, chambers by the size of the majority; full colour is 20 points or more, the lightest is under 4."
+  Dropped: totals / Nebraska sentence, source line (src still computed, unused), Trifectas-in-Margins and 2026-counts lines.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
