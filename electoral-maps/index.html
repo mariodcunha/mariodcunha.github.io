@@ -3066,6 +3066,17 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   const box=document.getElementById("seat-name"), hover=matchMedia("(hover:hover)"); let hov=null, own=null, ownKey="";
   const lit=e=>{if(hov===e) return; hov?.classList.remove("hov"); hov=e; e?.classList.add("hov")};
   const off=()=>{box.classList.remove("on"); lit(null)};
+  // where the name goes (owner, 2026-11-22): in the map's own empty space. North (to Bengal and the North-East): right of
+  // Uttarakhand and Delhi, left of Sikkim, above Bihar. South (Maharashtra, Odisha and below): the same width, in the Bay of
+  // Bengal beside Andhra Pradesh and Tamil Nadu. Read from the blocks on screen, so it follows the layout and the width.
+  const SOUTH=new Set(["MH","GA","KA","KL","TN","PY","AP","TS","OD","LD","AN","DN","DM"]);
+  const boxOf=(code,regions,w)=>{const rs=lsRegionRects(code,regions).map(r=>ST_DOT.get(r)).filter(Boolean).map(e=>e.getBoundingClientRect());
+    return rs.length?{l:Math.min(...rs.map(b=>b.left))-w.left,t:Math.min(...rs.map(b=>b.top))-w.top,r:Math.max(...rs.map(b=>b.right))-w.left,b:Math.max(...rs.map(b=>b.bottom))-w.top}:null};
+  const place=code=>{const w=box.parentNode.getBoundingClientRect(), R=lsSeats(inYear), g=c=>boxOf(c,R,w);
+    const UK=g("UK"), DL=g("DL"), SK=g("SK"), BR=g("BR"), AP=g("AP"), TN=g("TN"), st=box.style;
+    if(!UK||!SK||!BR||!DL||(SOUTH.has(code)&&(!AP||!TN))){st.left=st.width=st.top=st.transform=st.whiteSpace=""; return}
+    const x0=Math.max(UK.r,DL.r)+8, x1=SK.l-8, yc=SOUTH.has(code)?((AP.t+AP.b)/2+TN.t+(TN.b-TN.t)/4)/2:(DL.t+BR.t)/2;
+    Object.assign(st,{left:x0+"px",right:"auto",width:Math.max(80,x1-x0)+"px",top:yc+"px",transform:"translateY(-50%)",whiteSpace:"normal"})};
   const index=()=>{const key=inYear+"", regions=lsSeats(inYear); if(own&&ownKey===key) return own; own=new Map(); ownKey=key;
     for(const code in regions) lsRegionRects(code,regions).forEach((r,k)=>{const e=ST_DOT.get(r); if(e) own.set(e,[code,k])}); return own};
   inSvg.addEventListener("pointerover",ev=>{
@@ -3073,7 +3084,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const o=index().get(ev.target); if(!o) return off();
     const [code,k]=o, i=LS_NAME[inYear][code]?.split(",")[k]; if(i==null) return off();
     const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
-    box.textContent=`${LS_NAMES[+i]}, ${st}`; box.classList.add("on"); lit(ev.target)});
+    box.textContent=`${LS_NAMES[+i]}, ${st}`; place(code); box.classList.add("on"); lit(ev.target)});
   inSvg.addEventListener("pointerleave",off);
 })();
 // House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "El Paso, TX 16"
