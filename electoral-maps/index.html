@@ -208,7 +208,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .legend .proj:empty{display:none}
 /* Text notes sit below the colour keys, each on its own line */
 .legend .own{order:1;flex-basis:100%}
-.legend .txt{order:2;flex-basis:100%;display:block} #p-ev:not([hidden]){display:inline}   /* the President note runs on after it, same line (owner, 2026-11-22) */
+.legend .txt{order:2;flex-basis:100%;display:block} #p-ev:not([hidden]),.legend .txt span:not([hidden]){display:inline}   /* the President note runs on after it, same line (owner, 2026-11-22) */
 .legend .txt:empty{display:none}
 .credit{font-size:12px;color:var(--muted);border-top:1px solid #e6e6e6;padding-top:12px}
 .credit-top{display:none}
@@ -531,8 +531,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--oth)"/></svg>Others</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
-        <span class="txt" id="ls-note">Each square is one seat</span>
-        <span class="txt geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
+        <span class="txt"><span id="ls-note">Each square is one seat</span> <span class="geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span></span>   <!-- one paragraph (owner, 2026-11-22) -->
       </div>
       <div class="legend" id="legend-rajyasabha">
         <span class="txt" id="rs-edit-tools" hidden><b>Making Rajya Sabha pills</b> — click a circle, then a neighbouring circle of the same state, to join them into one seat; click a pill to split it. <span id="rs-edit-count"></span> Saved in this browser. <button type="button" id="rs-edit-copy">Copy pairs</button> <button type="button" id="rs-edit-reset">Reset pairs</button> <button type="button" id="rs-edit-done">Done</button></span>
@@ -542,9 +541,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--house)"/></svg>Vacant</span>
-        <span class="txt" id="rs-how">One circle per elected Rajya Sabha seat, spread over the state's shape on the Lok Sabha map; the 12 nominated members are not shown.</span>
-        <span class="txt" id="rs-note"></span>
-        <span class="txt geo-note">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
+        <span class="txt"><span id="rs-how"></span> <span id="rs-note"></span> <span class="geo-note">A circle's place inside its state is not geographic.</span></span>   <!-- one paragraph, trimmed (owner, 2026-11-22) -->
       </div>
       <div class="legend" id="legend-states">
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--inc)"/></svg>Congress</span>
@@ -553,8 +550,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--seat-empty)"/></svg>No state assembly</span>
-        <span class="txt" id="st-note"></span>
-        <span class="txt geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span>
+        <span class="txt"><span id="st-note"></span> <span class="geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span></span>   <!-- one paragraph (owner, 2026-11-22) -->
       </div>
     </div>
   </section>
@@ -2731,7 +2727,7 @@ function renderRS(animate){
   if(RS_PROP.has(year)){
     for(const code in data){const g=data[code], rects=regionRects(ST_RECTS,code,data); g.forEach((v,i)=>N[i]+=v);
       let k=0; stSquares(g,rects.length).forEach((n,i)=>{for(let j=0;j<n;j++) ST_DOT.get(rects[k++]).style.fill=i===5?"var(--house)":LS_FILL[LS_GROUPS[i]]})}
-    document.getElementById("rs-how").textContent="Each state's Lok Sabha squares, as circles, filled in proportion to its elected Rajya Sabha seats (Uttar Pradesh: 31 seats over 80 circles), like the States seat share map"+("TS" in data?"":" (undivided Andhra Pradesh over today's Andhra Pradesh and Telangana)")+"; grey: vacant seats and union territories with no Rajya Sabha seat. The 12 nominated members are not shown.";
+    document.getElementById("rs-how").textContent="Each state's Lok Sabha circles, filled by its share of elected Rajya Sabha seats"+("TS" in data?"":" (undivided Andhra Pradesh over today's Andhra Pradesh and Telangana)")+"; grey: vacant or no seat. The 12 nominated members are not shown.";   // trimmed (owner, 2026-11-22)
   }else if(RS_TILES.has(year)){
     // the squares keep their colours: inBig turns them into the Rajya Sabha squares (or shrinks them away) and hides them
     for(const code in data) data[code].forEach((v,i)=>N[i]+=v);
@@ -2761,7 +2757,7 @@ function renderRS(animate){
   document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(N[4])}</span><span><i> · </i>Allies ${f(N[3])}</span>`;
   const bloc=blocOf(year);
   document.getElementById("rs-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("rs-note").textContent=`A third of the Rajya Sabha is elected every two years: this is a snapshot of the house on 31 Dec ${year}${year===2026?" (members already elected for terms starting by then)":""}.`;
+  document.getElementById("rs-note").textContent=`As of 31 Dec ${year}.`;   // trimmed (owner, 2026-11-22)
   inSvg.setAttribute("aria-label",RS_PROP.has(year)?`Rajya Sabha at the end of ${year}: each state's Lok Sabha squares filled in proportion to its Rajya Sabha seats`:RS_TILES.has(year)?`Rajya Sabha at the end of ${year}: one square per elected seat, in each state's block`:`Rajya Sabha at the end of ${year}: one circle per elected seat, spread over each state's shape`);
 }
 

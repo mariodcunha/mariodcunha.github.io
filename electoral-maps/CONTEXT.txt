@@ -3069,6 +3069,10 @@ STATUS / NEXT
   state House below. A solid square is a Trifecta." + in Margins "Darker shades mean a bigger lead: governors by their latest
   election's margin, chambers by the size of the majority; full colour is 20 points or more, the lightest is under 4."
   Dropped: totals / Nebraska sentence, source line (src still computed, unused), Trifectas-in-Margins and 2026-counts lines.
+- India legends one paragraph + Rajya Sabha trimmed (owner, 2026-11-22): Lok Sabha, Rajya Sabha and States notes each sit in
+  one .txt as inline spans (ls-note + ls-geo; rs-how + rs-note + geo-note; st-note + geo-note). Rajya Sabha seat share now:
+  "Each state's Lok Sabha circles, filled by its share of elected Rajya Sabha seats; grey: vacant or no seat. The 12 nominated
+  members are not shown. As of 31 Dec YEAR. A circle's place inside its state is not geographic."
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
