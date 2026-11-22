@@ -3046,6 +3046,13 @@ STATUS / NEXT
 - Pinned top bar centre label (owner, 2026-11-17): #mini now shows .cand.mid on one line ("2026 House results"), year and
   label both at the names' size (15px), grey; desktop in the names row (#mini .tally position:relative), phones on a line
   under the bar (12.5px; #mini padding-bottom 26px) as the names row has no room beside the country button. India too.
+- President tabs renamed (owner, 2026-11-22): Electoral | District (was By District); short labels Elec. / Dist.
+- Popular vote under the President bar (owner, 2026-11-22): Electoral and District, every year but 2028: "Popular vote x%"
+  each side (PRES_PV: 2008 52.9/45.7, 2012 51.1/47.2, 2016 48.2/46.1, 2020 51.3/46.8, 2024 48.3/49.8), in the net-gain
+  style (.gain), with a check on the popular-vote winner (nameHTML; blue check on the left). Under-bar text now goes in
+  via innerHTML (esc() for the other races' notes).
+- District hover (owner, 2026-11-22): President District names the hovered square like House ("El Paso, TX 16"), web
+  only; both use HOUSE_MAPS[HOUSE_MAP_OF[year]] for square -> district, so a district sits on the same square in both.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
