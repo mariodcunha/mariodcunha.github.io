@@ -3073,6 +3073,9 @@ STATUS / NEXT
   one .txt as inline spans (ls-note + ls-geo; rs-how + rs-note + geo-note; st-note + geo-note). Rajya Sabha seat share now:
   "Each state's Lok Sabha circles, filled by its share of elected Rajya Sabha seats; grey: vacant or no seat. The 12 nominated
   members are not shown. As of 31 Dec YEAR. A circle's place inside its state is not geographic."
+- Favicon (owner, 2026-11-22): the page's own icon from Figma Frame 1681 (file BzjnNRCZt4OUQyNoepsVYf, node 40004014:190,
+  pink "E" on a 7x7 grid with a one-square margin, counters pale pink #FFDFF0, transparent background; tried 1680, 1682, 1692): electoral-maps/favicon.svg (crispEdges), favicon-32.png, apple-touch-icon.png (180),
+  linked relatively in index.html instead of the site-wide /favicon.svg.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
