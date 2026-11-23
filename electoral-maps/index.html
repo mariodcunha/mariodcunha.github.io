@@ -375,6 +375,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #map-india{margin-top:-6.3%;width:calc((100vw - 40px)*1.0606);margin-left:calc(4px - (100vw - 40px)*.0304)}
   #map-us .state text{font-size:18px}
   #map-us .alt-grid text{font-size:17.75px!important}   /* about 5.7px on a 375px phone (owner, 2026-11-07; was 19) */
+  /* the state codes, Senate Seats and Units alike: about 6.4px on a 375px phone, the most WV fits in its tile (owner, 2026-11-23; were 5.7 and about 2.6). Leads stay 5.7 */
+  #map-us .alt-grid text:not(.lead),#map-us .leg-grid text{font-size:19.9px!important}
   /* state labels stay hidden until the map is tapped; a second tap hides them (.names: see the listener by narrow) */
   #map-us:not(.names) text,#map-us:not(.names) .plabels,#map-india:not(.names) text,#map-india:not(.names) .plabels{opacity:0}
   #map-us.packed.names .plabels,#map-india.packed.names .plabels{transition:opacity .15s}
@@ -1020,7 +1022,7 @@ function paintLeg(year){
     wp.setAttribute("d",roundPoly([A,B,C,D],Math.min(r,s*.21))); wp.style.opacity=tri&&!mOn?1:0; wp.style.pointerEvents=tri&&!mOn?"":"none";   // hidden: not hoverable   // Margins (owner, 2026-11-11): never merged, each bar its own shade
     if(tri){const ms3=[mg,mh,ms].filter(v=>v!=null); wp.style.fill=shade(g,ms3.length?Math.min(...ms3):null,govFill(g))}
     const tt=LEG[k].t; tt.setAttribute("x",tx); tt.setAttribute("y",ty); tt.style.fontSize=(s*.19-2*px).toFixed(1)+"px";   // 2px smaller than Senate Seats (owner), centred on the middle bar
-    tt.setAttribute("class","in")}   // always white, purple and grey too (owner, 2026-11-10)
+    tt.setAttribute("class",PALE_SHADE.has(fills[1])?"dk":"in")}   // on the middle bar: white, purple and grey too (owner, 2026-11-10), dark on a pale Margins shade, as Senate Seats (owner, 2026-11-23)
   legLegend(year);
 }
 // the tally: governors and chambers held together (149: 50 governors + 99 chambers, Nebraska's one); under the bar, Trifectas
@@ -3107,7 +3109,7 @@ function show(race,animate){
   if(us) setUS(race,false); else renderIn(false,true);
   const reveal=()=>{
     document.querySelectorAll(".panel").forEach(p=>{if(p!==to){p.hidden=true;p.classList.remove("out","in")}});
-    to.hidden=false; to.classList.remove("out");
+    to.hidden=false; to.classList.remove("out"); if(!us) fitIndia();
     if(animate&&!reduce){to.classList.remove("in");void to.offsetWidth;to.classList.add("in")}
     if(!us&&inView(race)==="packed"&&!Object.keys(PACK_IN.cache).length) renderIn(false,true);   // hidden panel: lay Compact out now
     if(us) stackLegend();
@@ -3376,6 +3378,9 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
    // phones: short labels when any toggle's label is left with under 8px of padding a side (it reads cramped or clips)
    const ctl=bar.querySelector(".lsctl"); ctl.classList.remove("pshort");
    if(narrow.matches&&[...ctl.querySelectorAll(".subtoggle button")].some(b=>{const f=b.querySelector(".lbl-f"); return shown(b)&&f&&f.getBoundingClientRect().width+16>b.clientWidth})) ctl.classList.add("pshort");
+   // Governors picked and "Units" still running past its button: "U" (owner, 2026-11-23)
+   const uf=ctl.querySelector('[data-gov="leg"] .lbl-s'); uf.textContent="Units";
+   if(ctl.classList.contains("pshort")&&shown(uf)&&uf.getBoundingClientRect().right+4>document.getElementById("gov-view").getBoundingClientRect().right) uf.textContent="U";
    fitIndia(); busy=false};
  new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
  new MutationObserver(fit).observe(document.getElementById("play"),{attributes:true,attributeFilter:["class"]});   // Play widens while the tour runs
@@ -3391,7 +3396,7 @@ function fitIndia(){
     lo=Math.min(lo,m.a*(x-pad)+m.e); hi=Math.max(hi,m.a*(x+w+pad)+m.e)}
   const vb=svg.viewBox.baseVal, main=document.querySelector("main"), ms=getComputedStyle(main),
     cw=main.clientWidth-parseFloat(ms.paddingLeft)-parseFloat(ms.paddingRight), x0=main.getBoundingClientRect().left+parseFloat(ms.paddingLeft),
-    left=svg.parentNode.getBoundingClientRect().left-x0;   // the map's box may start a little inside the content edge
+    left=svg.parentNode.getClientRects().length?svg.parentNode.getBoundingClientRect().left-x0:0;   // the map's box may start a little inside the content edge; a hidden panel (coming from the USA) has no place yet: show() fits again once it's up (owner, 2026-11-23)
   if(!cw||!(hi>lo)) return;
   const k=cw/(hi-lo); svg.style.maxWidth="none"; svg.style.width=vb.width*k+"px"; svg.style.marginLeft=-(lo-vb.x)*k-left+"px";
 }

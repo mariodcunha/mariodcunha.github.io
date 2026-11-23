@@ -3123,6 +3123,9 @@ STATUS / NEXT
   is under", "Dim blue / dim red"). The switch cross-fades with View Transitions (instant where unsupported or reduced motion).
   Figma "Regular Dark": file BzjnNRCZt4OUQyNoepsVYf, node 40004024:17796 ("Regular Light" beside it).
 - 2026-11-23 fix: the India tour had skipped Rajya Sabha since 2026-11-22 (its line had been commented out by mistake).
+- 2026-11-23 phones: state codes on Senate Seats and State units 6.4px at 375px (leads stay 5.7); "Units" shortens to "U" beside
+  Governors only when it would overflow; India maps keep the 16px margins when coming from a USA map (fitIndia ignores a hidden panel,
+  show() fits again). Units codes are dark on pale Margins bars (PALE_SHADE of the middle bar), web too; white otherwise.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
