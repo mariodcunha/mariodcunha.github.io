@@ -582,10 +582,12 @@ const FUT_YEAR=2028, PROJ28=(()=>{const tier=v=>{const sw=v.slice(1).filter((x,i
   for(const k of ["TX","OH","NC","SC","IA"]) o[k]="v";   // owner, 2026-11-12: also toss-ups for 2028
   return o})();
 PRES[2028]={d:"Democrats",r:"Republicans",dem:"",me2:"",ne2:""};
-// Winning margin shades (owner, 2026-11-06): 20 steps per side, lightest to the full party colour (Figma "Color Scale / 40 steps").
-// Step = whole points of margin: 20+ is full, 19.x is 19, down to the lightest for anything under 4 (owner, 2026-11-06: steps 1 and 2 use step 3's colour). President, Governors and Senate Seats; 2026 uses current counts.
-const SHADE={d:["#d9ebfb","#d9ebfb","#d9ebfb","#d0e6fa","#c6e1f9","#bddcf8","#b3d7f7","#aad2f6","#a0cdf5","#96c7f4","#8dc2f3","#83bdf2","#79b8f0","#6eb3ef","#64aeee","#59a8ec","#4da3eb","#409ee9","#3298e8","#1f93e6"],
-  r:["#fde1dd","#fde1dd","#fde1dd","#fdd9d4","#fcd1cb","#fcc9c3","#fbc1ba","#fab9b1","#f9b2a9","#f8aaa0","#f7a298","#f5998f","#f49187","#f2897e","#f08176","#ee786e","#ec6f65","#ea665c","#e75d54","#e5534b"]};
+// Winning margin shades, lightest to the full party colour. President, House, Senate Seats, Governors and Units; 2026 uses current counts.
+// Six bands (owner, 2026-11-23; was 18 steps): under 4, 4-8, 8-12, 12-16, 16-20, 20+ points; 20+ is the main party colour (Figma "Margin shades").
+// Kept as 20 whole-point entries (1..20) so every lookup by points works as before.
+const band=(...c)=>Array.from({length:20},(_,i)=>c[Math.floor((i+1)/4)]);
+const SHADE={d:band("#d9ebfb","#bddcf8","#96c7f4","#79b8f0","#4da3eb","#1f93e6"),
+  r:band("#fde1dd","#fcc9c3","#f8aaa0","#f49187","#ec6f65","#e5534b")};
 // Percentage-point margin of all votes cast, by state; ME1 ME2 NE1 NE2 NE3 are the districts (see CONTEXT.txt for the source)
 const MARGINS={2008:{AK:21.54,AL:21.58,AR:19.85,AZ:8.52,CA:24.06,CO:8.95,CT:22.37,DC:85.92,DE:25.0,FL:2.82,GA:5.21,HI:45.26,IA:9.53,ID:25.43,IL:25.14,IN:1.03,KS:14.96,KY:16.23,LA:18.63,MA:25.81,MD:25.44,ME:17.32,ME1:22.82,ME2:11.25,MI:16.47,MN:10.24,MO:0.13,MS:13.17,MT:2.26,NC:0.33,ND:8.63,NE:14.93,NE1:9.77,NE2:1.21,NE3:39.01,NH:9.61,NJ:15.57,NM:15.13,NV:12.49,NY:26.86,OH:4.59,OK:31.29,OR:16.35,PA:10.32,RI:27.81,SC:8.98,SD:8.41,TN:15.07,TX:11.77,UT:28.18,VA:6.3,VT:37.01,WA:17.18,WI:13.9,WV:13.12,WY:32.24},
   2012:{AK:13.99,AL:22.19,AR:23.69,AZ:9.06,CA:23.12,CO:5.37,CT:17.33,DC:83.63,DE:18.63,FL:0.88,GA:7.82,HI:42.71,IA:5.81,ID:31.69,IL:16.87,IN:10.2,KS:21.72,KY:22.69,LA:17.21,MA:23.14,MD:26.08,ME:15.29,ME1:21.39,ME2:8.56,MI:9.5,MN:7.69,MO:9.38,MS:11.5,MT:13.65,NC:2.04,ND:19.63,NE:21.78,NE1:16.6,NE2:7.16,NE3:42.42,NH:5.58,NJ:17.79,NM:10.15,NV:6.68,NY:28.18,OH:2.98,OK:33.54,OR:12.09,PA:5.39,RI:27.46,SC:10.47,SD:18.02,TN:20.4,TX:15.78,UT:48.04,VA:3.87,VT:35.6,WA:14.87,WI:6.94,WV:26.76,WY:40.82},
@@ -617,7 +619,7 @@ const SEN_MARGINS={2008:{AK:[1.2,3.1],AL:[26.9,35.26],AR:[59.0,11.83],AZ:[9.8,55
   // 2026: seats up use current counts as of 2026-11-06 (Wikipedia race boxes), NOT final; AK D+5 (owner, 2026-11-17); MS has none yet. Other seats as 2024.
   2026:{AK:[5,7.4],AL:[9.4,35.7],AR:[11.9,34.8],AZ:[2.4,4.9],CA:[17.8,22.2],CO:[24.3,14.6],CT:[18.8,15],DE:[17.1,27.2],FL:[12.8,2.9],GA:[18,2.8],HI:[32.7,45.2],IA:[4.1,12.2],ID:[23,32],IL:[23.1,15.3],IN:[19.8,20.7],KS:[4.8,23],KY:[12.1,23.6],LA:[1.8,43.7],MA:[19.8,31],MD:[11.8,31.6],ME:[17.5,6.9],MI:[0.3,7],MN:[15.7,10.1],MO:[13.8,13.2],MS:[26.2,2],MT:[7.1,11.1],NC:[19.6,3.2],ND:[33,31.4],NE:[6.7,6.8],NH:[13.8,9.2],NJ:[9.6,26.8],NM:[10.2,26.4],NV:[1.7,0.8],NY:[17.5,14],OH:[3.6,4.8],OK:[18.1,32.2],OR:[16.1,14.9],PA:[0.2,4.9],RI:[19.8,37.2],SC:[4.4,25.9],SD:[21,43.4],TN:[29.6,12.2],TX:[8.5,12.1],UT:[30.8,10.3],VA:[9,22.4],VT:[31.1,40.4],WA:[18.5,14.5],WI:[0.8,1],WV:[41.5,20.4],WY:[51,30.4]}};
 // Margin keys (owner, 2026-11-06): base colour, medium, light; placed in each legend that can show margins
-const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[base,SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw${round?" c":""}" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`;
+const marginKey=(w,base,name,round)=>`<span class="mkey"><b class="tri">${[SHADE[w][19],SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw${round?" c":""}" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`;
 ["president","governors","senate","house"].forEach(r=>document.getElementById("legend-"+r).insertAdjacentHTML("afterbegin",marginKey("d","var(--dem)","Democrat",r==="senate")+marginKey("r","var(--rep)","Republican",r==="senate")));   // Senate's keys are circles
 // Results / Margins toggle (owner, 2026-11-06): Results = flat party colours, Margins = the shades. President, Governors and
 // Senate Seats share one setting. Phones: Senate Seats has no toggle and always shows Results.
@@ -675,7 +677,7 @@ const MARGIN_NOTE="Darker shades mean a wider win: full colour is 20 points or m
 const GOV_NOTE=" Darker shades mean a wider win in the state's latest election for governor: full colour is 20 points or more, the lightest is under 4.";
 const SEN_NOTE="Darker shades mean a wider win in that seat's latest election: full colour is 20 points or more, the lightest is under 4.";
 const rgbOf=h=>`rgb(${[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(", ")})`;
-const PALE_SHADE=new Set([...SHADE.d.slice(0,16),...SHADE.r.slice(0,16)].map(rgbOf));   // these shades take dark names, like the flat light colours
+const PALE_SHADE=new Set([...SHADE.d.slice(0,19),...SHADE.r.slice(0,19)].map(rgbOf));   // these shades take dark names, like the flat light colours
 // ---------- USA map (all four races), one object per state ----------
 // s: state, c: House squares [x,y,isDem] (2024), x: extra House squares for older censuses,
 // e: the two elector squares added on the President map (House + 2 = electoral votes; DC: 3, no House seat),
@@ -1026,7 +1028,7 @@ function legLegend(year){
     :`Control after the November ${year} elections, for the ${year+1} sessions${year<2024?", from Wikipedia's state legislative election pages":""}.`;
   const vals=Object.values(LEG_DATA[year]).join(""), purple=[vals.includes("t")&&"Tied chamber",vals.includes("c")&&"bipartisan or cross-party coalition"].filter(Boolean).join(" or ");
   const mOn=marginsOn(), L=document.getElementById("legend-legis"); L.classList.toggle("margins",mOn);
-  const mk=(w,base,name)=>`<span class="mkey"><b class="tri">${[base,SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw" style="background:${c};border-radius:2px"></i>`).join("")}</b>${name} lead</span>`;
+  const mk=(w,base,name)=>`<span class="mkey"><b class="tri">${[SHADE[w][19],SHADE[w][10],SHADE[w][2]].map(c=>`<i class="sw" style="background:${c};border-radius:2px"></i>`).join("")}</b>${name} lead</span>`;
   // trimmed (owner, 2026-11-22): the two layout sentences, plus the shades in Margins; no totals / source lines
   const mnote=mOn?" Darker shades mean a bigger lead: governors by their latest election's margin, chambers by the size of the majority; full colour is 20 points or more, the lightest is under 4.":"";
   L.innerHTML=mk("d","var(--dem)","Democrat")+mk("r","var(--rep)","Republican")+sw("var(--dem)","Democrats","base")+sw("var(--rep)","Republicans","base")+
@@ -2028,11 +2030,10 @@ let lsColor="results";   // Lok Sabha: Results or Margins (every year, owner 202
 const lsMarginsOn=()=>inRace==="loksabha"&&lsMode==="geo"&&!!LS_MARGIN[inYear]&&lsColor==="margins";
 // Margins shade by alliance (owner, 2026-11-22): BJP and allies share BJP orange, Congress and allies Congress blue, Others green;
 // five bands, under 5 / 5-10 / 10-15 / 15-20 / 20+ points, the last the main colour itself
-const LS_RAMP_BASE={0:"#f26a1b",1:"#f26a1b",2:"#3a9d5d",3:"#1f93e6",4:"#1f93e6"};
-const lsShade=(g,m)=>{const h=LS_RAMP_BASE[g]; if(m==null||m>=20) return h; const t=[.2,.4,.6,.8][Math.max(0,Math.floor(m/5))];   // a negative lead (the government's side polled less) takes the lightest
-  return "#"+[1,3,5].map(i=>Math.round(255-(255-parseInt(h.slice(i,i+2),16))*t).toString(16).padStart(2,"0")).join("")};
+const LS_RAMP={c:["#d2e9fa","#a5d4f5","#79bef0","#4ca9eb","#1f93e6"],b:["#fce1d1","#fac3a4","#f7a676","#f58849","#f26a1b"],o:["#d8ebdf","#b0d8be","#89c49e","#61b17d","#3a9d5d"]};   // under 5, 5-10, 10-15, 15-20, 20+ (the main colour; owner, 2026-11-23, Figma "Margin shades")
+const lsShade=(g,m)=>LS_RAMP["bbocc"[g]][m==null?4:Math.max(0,Math.min(4,Math.floor(m/5)))];   // unopposed: the full colour; a negative lead (the government's side polled less): the lightest
 document.getElementById("legend-loksabha").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
-  .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[base,lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));   // like the USA keys (owner, 2026-11-22)
+  .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[lsShade(g,20),lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));   // like the USA keys (owner, 2026-11-22)
 const lsMarginOf=(year,code,k)=>{const v=LS_MARGIN[year]?.[code]?.split(",")[k]; return v===""||v==null?null:+v};
 function countToPct(node,to,animate){
   const from=parseFloat(node.textContent)||0, fmt=v=>v.toFixed(1)+"%"; cancelAnimationFrame(node._raf);
@@ -2608,7 +2609,7 @@ const ST_MARGIN={2004:{AP:6.1,AR:29.69,AS:19.74,BR:13.22,CG:2.55,DL:12.91,GA:-2.
 let stColor="results";
 const stMarginsOn=()=>inRace==="states"&&stMode==="cm"&&!!ST_MARGIN[inYear]&&stColor==="margins";
 document.getElementById("legend-states").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
-  .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[base,lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));
+  .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[lsShade(g,20),lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));
 
 // ---------- Rajya Sabha: grey Lok Sabha map with one circle per elected seat (like the Senate view) ----------
 // Elected seats by state at 31 Dec, [BJP, NDA allies, not aligned, Congress allies, INC, vacant] (see CONTEXT.txt)

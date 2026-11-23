@@ -3101,6 +3101,18 @@ STATUS / NEXT
   population" under (two lines on phones). State units and Governors 2026 keep counts (no national vote total).
 - 2026-11-22 India Govts. Margins: block labels carry the lead as USA Governors ("UP+12", ">20", "<3"; behind by 3+: "Meg.-10").
   India opens on Lok Sabha 2024 Margins.
+- 2026-11-23 MARGIN PALETTES (owner; Figma file BzjnNRCZt4OUQyNoepsVYf, node 40004024:17796). Margins maps and legends only; 20+ is
+  the MAIN colour used in Results, bars, numbers and text. (A darker-20+ version, main colour at 16-20 / 15-20, was tried and
+  reverted the same day.)
+  USA (SHADE)        <4       4-8      8-12     12-16    16-20    20+=main
+    Democrat         #d9ebfb  #bddcf8  #96c7f4  #79b8f0  #4da3eb  #1f93e6
+    Republican       #fde1dd  #fcc9c3  #f8aaa0  #f49187  #ec6f65  #e5534b
+  India (LS_RAMP)    <5       5-10     10-15    15-20    20+=main
+    Congress+allies  #d2e9fa  #a5d4f5  #79bef0  #4ca9eb  #1f93e6
+    BJP+allies       #fce1d1  #fac3a4  #f7a676  #f58849  #f26a1b
+    Others           #d8ebdf  #b0d8be  #89c49e  #61b17d  #3a9d5d
+  A lead on a boundary takes the higher band. Unopposed = full colour; a negative India Govts. lead = lightest. Only the full
+  colours pass 3:1 on white. Legend keys: full, middle, lightest. Replaces the 18-step USA scale (older notes are out of date).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
