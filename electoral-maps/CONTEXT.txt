@@ -3086,6 +3086,15 @@ STATUS / NEXT
   Elections-India-2019 (Vellore added by hand, +0.79), 2024 Wikipedia "Results of the 2024 Indian general election"
   (Surat unopposed: blank, full colour; Indore runner-up NOTA: set to 75). Build scripts in ls-build/ (untracked).
   Tour: Lok Sabha Results every year, then Margins every year.
+- 2026-11-22 India States: "Chief Ministers" renamed "Govts." (top bar "State Govts.", short "Govts."). Govts. has Results /
+  Margins for every year (ST_MARGIN[year][state], hash #states/YEAR/cm/margins): the government alliance's vote-share lead over the
+  strongest rival alliance or party in the state election behind the sitting assembly (each election's pre-poll fronts; post-poll
+  partners count alone, so some are negative = lightest shade). Built in st-build/ (datameet assembly.csv to 2013, Wikipedia
+  results tables after, 12 elections from infoboxes; AP/TS 2014 split and some small allies from memory: to check). Tour: Govts.
+  results, Govts. margins, then Seat %.
+- 2026-11-22 USA: House Margins legend drops the leading keys; Senate and Governors keys ordered blues, reds, purple, greys;
+  independent governors (Chafee RI, Walker AK) purple #8a4fbf; district hovers on Margins end ", +12.3" (House winner over runner-up,
+  "unopposed" at 100; President District |D-R|, at-large = state margin). Lok Sabha hover: "Varanasi, UP, +13.6" (no middle dot).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

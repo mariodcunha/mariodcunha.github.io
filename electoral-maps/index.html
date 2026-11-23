@@ -208,6 +208,9 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .legend .proj:empty{display:none}
 /* Text notes sit below the colour keys, each on its own line */
 .legend .own{order:1;flex-basis:100%}
+/* Senate and Governors keys by shade: blues, reds, purple, then greys (owner, 2026-11-22); margin keys first; leading keys go on Margins */
+#legend-senate .kd,#legend-governors .kd{order:-4} #legend-senate .kr,#legend-governors .kr{order:-3} #legend-senate .ki,#legend-governors .ki{order:-2} #legend-senate .kt,#legend-governors .kt{order:-1}
+.legend .mkey{order:-5} .legend.margins .lead{display:none}
 .legend .txt{order:2;flex-basis:100%;display:block} #p-ev:not([hidden]),.legend .txt span:not([hidden]){display:inline}   /* the President note runs on after it, same line (owner, 2026-11-22) */
 .legend .txt:empty{display:none}
 .credit{font-size:12px;color:var(--muted);border-top:1px solid #e6e6e6;padding-top:12px}
@@ -440,7 +443,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
     </div>
     <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
-      <button type="button" data-st="cm" aria-pressed="false">Chief Ministers</button>
+      <button type="button" data-st="cm" aria-pressed="false">Govts.</button>   <!-- was Chief Ministers (owner, 2026-11-22) -->
       <button type="button" data-st="seats" aria-pressed="true">Seat %</button>
     </div>
   </div>
@@ -488,8 +491,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
       <div class="legend" id="legend-senate">
-        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
-        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--rep)"/></svg>Republican</span>
+        <span class="base kd"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
+        <span class="base kr"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--rep)"/></svg>Republican</span>
         <span class="own"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
         <span class="proj" id="proj-senate"></span>
         <span class="txt" id="sen-power" hidden></span>
@@ -497,9 +500,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       </div>
       <div class="legend off" id="legend-legis"></div>
       <div class="legend" id="legend-governors">
-        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
-        <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
-        <span id="leg-gov-ind" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--ind)"/></svg><em id="gov-ind-name"></em></span>
+        <span class="base kd"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
+        <span class="base kr"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
+        <span id="leg-gov-ind" class="ki" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="#8a4fbf"/></svg><em id="gov-ind-name"></em></span>
         <span class="proj" id="proj-governors"></span>
         <span class="txt">Each state is drawn as its House seats, so its size shows its population.<em id="g-note"></em></span>
       </div>
@@ -544,11 +547,11 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="txt"><span id="rs-how"></span> <span id="rs-note"></span> <span class="geo-note">A circle's place inside its state is not geographic.</span></span>   <!-- one paragraph, trimmed (owner, 2026-11-22) -->
       </div>
       <div class="legend" id="legend-states">
-        <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--inc)"/></svg>Congress</span>
-        <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--india)"/></svg><em id="st-leg-bloc">Congress allies (INDIA)</em></span>
-        <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--oth)"/></svg>Others</span>
-        <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
-        <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--bjp)"/></svg>BJP</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--inc)"/></svg>Congress</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--india)"/></svg><em id="st-leg-bloc">Congress allies (INDIA)</em></span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--oth)"/></svg>Others</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
+        <span class="base"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--bjp)"/></svg>BJP</span>
         <span><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--seat-empty)"/></svg>No state assembly</span>
         <span class="txt"><span id="st-note"></span> <span class="geo-note">The circles show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress circles gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span></span>   <!-- one paragraph (owner, 2026-11-22) -->
       </div>
@@ -819,7 +822,7 @@ const GOV_HIST={
 GOV_HIST[2026]={d:GOV_HIST[2024].d+" VA"};  // 2026 starts from today: Spanberger (D) won Virginia in November 2025
 const GOV_IND={RI:"Independent governor (Lincoln Chafee, Rhode Island)",AK:"Independent governor (Bill Walker, Alaska)"};
 const govOf=(year,k)=>GOV_HIST[year].d.split(" ").includes(k)?"d":(GOV_HIST[year].i||"").split(" ").includes(k)?"i":"r";
-const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--ind)",v:"var(--house)"};
+const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"#8a4fbf",v:"var(--house)"};   // i: independent governors (Chafee, Walker) in the State units purple (owner, 2026-11-22)
 // Senate: independents who caucus with the Democrats take the Democrats' blue (owner, 2026-10-23)
 const SEN_FILL={...PARTY_FILL,i:"var(--dem)",u:"#c9c9c9"};   // u: up in 2028, toss-up (grey; was light purple)
 
@@ -1864,7 +1867,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // widen the white gap between the sides
   // 2028 (owner, 2026-11-12): the Likely segments are solid light blue / light red, the maps' "waiting" colours, not hatched
   [["bar-dp",ALT_PROJ.D],["bar-rp",ALT_PROJ.R]].forEach(([id,c])=>{const e=document.getElementById(id); e.style.background=fut?c:""; e.style.boxShadow=fut?"none":""});
-  document.getElementById("bar-m").style.background=fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?"var(--ind)":(race==="house"||race==="governors")&&y26?"var(--house)":"";
+  document.getElementById("bar-m").style.background=fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?PARTY_FILL.i:(race==="house"||race==="governors")&&y26?"var(--house)":"";
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
@@ -1926,8 +1929,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches||legOn();   // phones / short labels: Seats only, no view toggle
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):
     fut&&r==="house"&&race==="house"?`<span><i class="sw" style="background:var(--dem)"></i>Likely Democrat (${c.d})</span><span><i class="sw" style="background:${ALT_PROJ.D}"></i>Leaning Democrat (${c.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${c.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Leaning Republican (${c.R})</span><span><i class="sw" style="background:var(--rep)"></i>Likely Republican (${c.r})</span>`:
-    fut&&r==="governors"&&race==="governors"&&!legOn()?`<span><i class="sw" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${g26.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${g26.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Likely Republican (${g26.R})</span>`:
-    fut&&r==="senate"&&race==="senate"&&!legOn()?`<span><i class="sw c" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${c.D})</span><span><i class="sw c" style="background:${SEN_FILL.u}"></i>Toss-up (${c.u})</span><span><i class="sw c" style="background:${ALT_PROJ.R}"></i>Likely Republican (${c.R})</span>`:""});
+    fut&&r==="governors"&&race==="governors"&&!legOn()?`<span class="kd"><i class="sw" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${g26.D})</span><span class="kt"><i class="sw" style="background:var(--house)"></i>Toss-up (${g26.v})</span><span class="kr"><i class="sw" style="background:${ALT_PROJ.R}"></i>Likely Republican (${g26.R})</span>`:
+    fut&&r==="senate"&&race==="senate"&&!legOn()?`<span class="kd"><i class="sw c" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${c.D})</span><span class="kt"><i class="sw c" style="background:${SEN_FILL.u}"></i>Toss-up (${c.u})</span><span class="kr"><i class="sw c" style="background:${ALT_PROJ.R}"></i>Likely Republican (${c.R})</span>`:""});
   if(race==="senate") legShape("senate",senMode==="seats"?"r2":"c");   // the projected keys just written take the shape too
     panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
@@ -2014,7 +2017,7 @@ const lsMarginsOn=()=>inRace==="loksabha"&&lsMode==="geo"&&!!LS_MARGIN[inYear]&&
 // Margins shade by alliance (owner, 2026-11-22): BJP and allies share BJP orange, Congress and allies Congress blue, Others green;
 // five bands, under 5 / 5-10 / 10-15 / 15-20 / 20+ points, the last the main colour itself
 const LS_RAMP_BASE={0:"#f26a1b",1:"#f26a1b",2:"#3a9d5d",3:"#1f93e6",4:"#1f93e6"};
-const lsShade=(g,m)=>{const h=LS_RAMP_BASE[g]; if(m==null||m>=20) return h; const t=[.2,.4,.6,.8][Math.floor(m/5)];
+const lsShade=(g,m)=>{const h=LS_RAMP_BASE[g]; if(m==null||m>=20) return h; const t=[.2,.4,.6,.8][Math.max(0,Math.floor(m/5))];   // a negative lead (the government's side polled less) takes the lightest
   return "#"+[1,3,5].map(i=>Math.round(255-(255-parseInt(h.slice(i,i+2),16))*t).toString(16).padStart(2,"0")).join("")};
 document.getElementById("legend-loksabha").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
   .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[base,lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));   // like the USA keys (owner, 2026-11-22)
@@ -2535,7 +2538,8 @@ function renderST(animate){
   if(cm) for(const code in CM[year]){
     const i=LS_GROUPS.indexOf(CM[year][code]), rects=regionRects(ST_RECTS,code,cmData);
     N[i]++; L[i]+=rects.length;
-    rects.forEach(r=>{const d=ST_DOT.get(r); d.style.fill=d.style.stroke=LS_FILL[LS_GROUPS[i]]});
+    const mg=stMarginsOn()?ST_MARGIN[year][code]:undefined, col=stMarginsOn()&&mg!=null?lsShade(i,mg):LS_FILL[LS_GROUPS[i]];
+    rects.forEach(r=>{const d=ST_DOT.get(r); d.style.fill=d.style.stroke=col});
   }
   else for(const code in data){
     const g=data[code]; if(!g) continue;
@@ -2562,16 +2566,37 @@ function renderST(animate){
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
+  document.getElementById("margin-view").hidden=!cm;   // Govts.: Results / Margins (owner, 2026-11-22)
+  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===stColor));
+  document.getElementById("legend-states").classList.toggle("margins",stMarginsOn());
   document.querySelector("#legend-states .geo-note").hidden=cm;
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
   document.getElementById("st-leg-bloc").textContent=`Congress allies (${blocOf(year)})`;
   document.getElementById("st-note").textContent=cm
-    ?`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
+    ?(stMarginsOn()?"Darker shades mean a wider lead in vote share for the government's alliance over the strongest rival, in the state election behind it: full colour is 20 points or more, the lightest is under 5 (or behind). A party and its allies share one colour. ":"")+`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
     :`Each state's circles are split by its assembly seats, from its latest election up to ${stWhen(year)}, grouped by each party's alliance then. States vote on their own calendars: this is a snapshot of every assembly.`;
   inSvg.setAttribute("aria-label",cm?`Chief ministers in ${stWhen(year)} by alliance, each state sized by its Lok Sabha seats`
     :`State assemblies in ${stWhen(year)} by alliance, drawn on the Lok Sabha seat squares`);
 }
 document.querySelectorAll("[data-st]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.st!==stMode){stMode=b.dataset.st; if(inRace==="states") renderIn(true,true)}}));
+// Govts. margins (owner, 2026-11-22): the vote-share lead of the government's alliance over the strongest rival alliance (or
+// party) in the state election behind the assembly sitting then; negative where the governing side polled less (a post-poll
+// coalition or a change of sides). Built in st-build/ (datameet assembly.csv to 2013; Wikipedia results tables after). Alliances
+// are each election's pre-poll fronts; independents left out. Undivided AP to 2013; Jharkhand 2004 has no Jharkhand election yet.
+const ST_MARGIN={2004:{AP:6.1,AR:29.69,AS:19.74,BR:13.22,CG:2.55,DL:12.91,GA:-2.85,GJ:10.57,HP:5.62,HR:7.34,JK:-18.95,KA:4.62,KL:7.4,MH:6.14,ML:10.57,MN:8.05,MP:10.89,MZ:1.63,NL:-6.09,OD:7.98,PB:-0.95,PY:12.66,RJ:3.55,SK:44.96,TN:15.35,TR:18.24,UK:1.46,UP:2.31,WB:8.97},
+  2006:{AP:6.1,AR:29.69,AS:12.98,BR:-5.03,CG:2.55,DL:12.91,GA:2.85,GJ:10.57,HP:5.62,HR:16.76,JH:8.67,JK:-3.99,KA:-14.51,KL:9.79,MH:6.14,ML:10.57,MN:8.05,MP:10.89,MZ:1.63,NL:-6.09,OD:7.98,PB:-0.95,PY:30.32,RJ:3.55,SK:44.96,TN:4.94,TR:18.24,UK:1.46,UP:2.31,WB:21.94},
+  2009:{AP:2.62,AR:31.04,AS:12.98,BR:-5.03,CG:1.36,DL:7.23,GA:6.81,GJ:10.82,HP:3.77,HR:9.63,JH:-11.22,JK:4.34,KA:-0.68,KL:9.79,MH:7.16,ML:12.76,MN:27.01,MP:4.88,MZ:9.01,NL:-3.84,OD:6.83,PB:4.19,PY:30.32,RJ:2.67,SK:37.85,TN:4.94,TR:14.97,UK:0.75,UP:4.99,WB:21.94},
+  2011:{AP:2.62,AR:31.04,AS:25.58,BR:20.61,CG:1.36,DL:7.23,GA:6.81,GJ:10.82,HP:3.77,HR:9.63,JH:-3.24,JK:4.34,KA:-0.68,KL:0.25,MH:7.16,ML:12.76,MN:27.01,MP:4.88,MZ:9.01,NL:-3.84,OD:6.83,PB:4.19,PY:8.28,RJ:2.67,SK:37.85,TN:12.24,TR:14.97,UK:0.75,UP:4.99,WB:7.85},
+  2014:{AP:2.6,AR:18.53,AS:25.58,BR:20.61,CG:0.46,GA:-0.07,GJ:8.92,HP:4.66,HR:9.7,JH:0.92,JK:15.8,KA:16.47,KL:0.25,MH:12.46,ML:17.67,MN:25.42,MP:8.36,MZ:16.9,NL:16.1,OD:17.64,PB:1.84,PY:8.28,RJ:12.07,SK:14.2,TN:12.24,TR:15.97,TS:9.1,UK:1.39,UP:3.22,WB:7.85},
+  2016:{AP:2.6,AR:-18.53,AS:10.63,BR:7.8,CG:0.46,DL:21.1,GA:-0.07,GJ:8.92,HP:4.66,HR:9.7,JH:0.92,JK:-16.11,KA:16.47,KL:4.67,MH:12.46,ML:17.67,MN:25.42,MP:8.36,MZ:16.9,NL:16.1,OD:17.64,PB:1.84,PY:11.4,RJ:12.07,SK:14.2,TN:1.72,TR:15.97,TS:9.1,UK:1.39,UP:3.22,WB:19.22},
+  2019:{AP:10.78,AR:31.85,AS:10.63,BR:7.8,CG:10,DL:21.1,GA:4.1,GJ:7.1,HP:7.1,HR:8.79,JH:2.4,KA:-1.79,KL:4.67,MH:9.73,ML:-9.5,MN:1.2,MP:-0.01,MZ:7.72,NL:-13.4,OD:12.2,PB:7.95,PY:11.4,RJ:0.53,SK:0.46,TN:1.72,TR:6.62,TS:18.44,UK:13,UP:19.22,WB:19.22},
+  2021:{AP:10.78,AR:31.85,AS:11.45,BR:8.56,CG:10,DL:13.8,GA:4.1,GJ:7.1,HP:7.1,HR:8.79,JH:2.4,KA:-1.79,KL:2.73,MH:9.73,ML:-9.5,MN:1.2,MP:0.01,MZ:7.72,NL:-13.4,OD:12.2,PB:7.95,PY:5.29,RJ:0.53,SK:0.46,TN:5.67,TR:6.62,TS:18.44,UK:13,UP:19.22,WB:9.95},
+  2024:{AP:15.92,AR:38.46,AS:11.45,BR:8.56,CG:4.04,DL:13.8,GA:7.05,GJ:24.98,HP:0.9,HR:0.6,JH:6.19,JK:10.87,KA:6.88,KL:2.73,MH:13.98,ML:4.57,MN:22.91,MP:8.17,MZ:2.76,NL:41.48,OD:-0.15,PB:19.03,PY:5.29,RJ:1.91,SK:31.01,TN:5.67,TR:13.43,TS:2.39,UK:6.4,UP:11.76,WB:9.95},
+  2026:{AP:15.92,AR:38.46,AS:12.62,BR:8.89,CG:4.04,DL:3.58,GA:7.05,GJ:24.98,HP:0.9,HR:0.6,JH:6.19,JK:10.87,KA:6.88,KL:10.63,MH:13.98,ML:4.57,MN:22.91,MP:8.17,MZ:2.76,NL:41.48,OD:-0.15,PB:19.03,PY:7.28,RJ:1.91,SK:31.01,TN:4.72,TR:13.43,TS:2.39,UK:6.4,UP:11.76,WB:5.24}};
+let stColor="results";
+const stMarginsOn=()=>inRace==="states"&&stMode==="cm"&&!!ST_MARGIN[inYear]&&stColor==="margins";
+document.getElementById("legend-states").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
+  .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[base,lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));
 
 // ---------- Rajya Sabha: grey Lok Sabha map with one circle per elected seat (like the Senate view) ----------
 // Elected seats by state at 31 Dec, [BJP, NDA allies, not aligned, Congress allies, INC, vacant] (see CONTEXT.txt)
@@ -2966,7 +2991,7 @@ function renderIn(animate,sync){
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsMarginsOn()?"Lok Sabha margins":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?(RS_PCT.has(inYear)?"Rajya Sabha seat share":"Rajya Sabha"):cm?"State CMs":"State seat share";
+  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsMarginsOn()?"Lok Sabha margins":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?(RS_PCT.has(inYear)?"Rajya Sabha seat share":"Rajya Sabha"):cm?(stMarginsOn()?"State Govts. margins":"State Govts."):"State seat share";
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear;
@@ -3016,14 +3041,14 @@ function moveThumb(tab,animate){
 }
 // Legend for a 2026 map: what the shading means (with counts) and how the calls were made
 function projLegend(race,n){
-  const sw=(cls,t)=>`<span><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
+  const sw=(cls,t)=>`<span class="${cls==="hatch-d"?"kd lead":cls==="hatch-r"?"kr lead":"kt"}"><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   if(race==="house") return `<span class="base"><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats leading (${n.D})`)+(n.T?sw("hatch-t",`Toss-up (${n.T})`):"")+
     `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans leading (${n.R})`)+`<span class="base"><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
     `<span class="txt">The totals count called and leading seats. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th, headed to runoffs. Results from The New York Times and The Associated Press, as of Nov 9, 2026.</span>`;
   if(race==="senate") return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
     `<span class="txt">${n.D||n.R?"Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. ":"Every 2026 race is called. "}Results from The New York Times, with later calls for Idaho, Michigan, Montana, Nebraska, Mississippi and Alaska.</span>`;   // keys and the light-circle line only while a race is uncalled
   return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
-    (n.v?`<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"");
+    (n.v?`<span class="kt"><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`:"");
 }
 
 function show(race,animate){
@@ -3071,7 +3096,7 @@ document.querySelectorAll("[data-gov]").forEach(b=>b.addEventListener("click",()
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 document.querySelectorAll("[data-pdist]").forEach(b=>b.addEventListener("click",()=>{const on=b.dataset.pdist==="district";
   if(on!==presDist){presDist=on; setUS("president",true)}}));
-document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
+document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(inRace==="states"){if(b.dataset.margin!==stColor){stColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
 // the year stepper: next to Play on desktop, first in the toggle row on phones (owner, 2026-11-12)
 function placeYear(){const y=document.getElementById("year"), play=document.getElementById("play"), ctl=document.getElementById("controls");
   if(narrow.matches){if(y.parentNode!==ctl) ctl.prepend(y)} else if(y.nextElementSibling!==play) play.before(y)}
@@ -3107,7 +3132,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const o=index().get(ev.target); if(!o) return off();
     const [code,k]=o, i=LS_NAME[inYear][code]?.split(",")[k]; if(i==null) return off();
     const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
-    const mg=lsMarginsOn()?lsMarginOf(inYear,code,k):null; box.textContent=`${LS_NAMES[+i]}, ${st}`+(mg!=null?` · +${mg.toFixed(1)}`:""); place(code); box.classList.add("on"); lit(ev.target)});
+    const mg=lsMarginsOn()?lsMarginOf(inYear,code,k):null; box.textContent=`${LS_NAMES[+i]}, ${st}`+(mg!=null?`${st.endsWith(".")?"":","} ${mg<0?"−":"+"}${Math.abs(mg).toFixed(1)}`:""); place(code); box.classList.add("on"); lit(ev.target)});
   inSvg.addEventListener("pointerleave",off);
 })();
 // House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "El Paso, TX 16"
@@ -3130,7 +3155,9 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const o=own.get(ev.target); if(!o||!(current==="house"||current==="president"&&usDist)||!hover.matches||narrow.matches) return off();
     const [k,j]=o, y=usYear(current), ds=HOUSE_MAPS[HOUSE_MAP_OF[y]]?.[k]?.split(","); if(!ds||j>=ds.length) return off();
     const m=HOUSE_MAP_OF[y], d=+ds[j], place=HOUSE_PLACES[+HOUSE_PLACE[m]?.[k]?.split(",")[d-1]]??NAME[k];
-    box.textContent=`${place}, ${k} ${ds.length===1?"at-large":d}`;   // "El Paso, TX 16" (owner, 2026-11-10)
+    // Margins: the lead after it, "Fresno, CA 22, +12.3" (owner, 2026-11-22); House: winner over runner-up; President District: |D - R|
+    const mg=!marginsOn()?null:current==="house"?HOUSE_MARGINS[y]?.[k]?.[d-1]:(PRES_CD[y]?.[k]?.[d-1]??(ds.length===1?MARGINS[y]?.[k]:null)), lead=mg==null?"":mg>=100?", unopposed":`, +${Math.abs(mg).toFixed(1)}`;
+    box.textContent=`${place}, ${k} ${ds.length===1?"at-large":d}${lead}`;   // "El Paso, TX 16" (owner, 2026-11-10)
     box.classList.add("on"); lit(ev.target)});
   usSvg.addEventListener("pointerleave",off);
 })();   // phones: tap the map to show or hide the state labels
@@ -3160,7 +3187,7 @@ function openMenu(open){
 // Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = Lok Sabha 2024 Seats (owner,
 // 2026-11-22; was State Chief Ministers 2026), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
-  if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; lsColor="results"; stMode="cm"}
+  if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; lsColor="results"; stMode="cm"; stColor="results"}
   show(country==="usa"?"governors":"loksabha",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
@@ -3206,7 +3233,7 @@ function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSp
 function playSteps(){
   if(countryOf(current)==="india"){const list=[], pass=(race,years,o)=>years.forEach(year=>list.push({race,year,...o}));
     pass("loksabha",IN_YEARS,{ls:"geo",lm:"results"}); pass("loksabha",IN_YEARS.filter(y=>LS_MARGIN[y]),{ls:"geo",lm:"margins"});   // Results every year, then Margins (owner, 2026-11-22) pass("rajyasabha",RS_YEARS);
-    pass("states",ST_YEARS,{st:"cm"}); pass("states",ST_YEARS,{st:"seats"});   // Chief Ministers first (owner, 2026-11-22)
+    pass("states",ST_YEARS,{st:"cm",sm:"results"}); pass("states",ST_YEARS,{st:"cm",sm:"margins"}); pass("states",ST_YEARS,{st:"seats"});   // Chief Ministers first (owner, 2026-11-22)
     return list}
   const PY=PRES_YEARS.filter(y=>y!==FUT_YEAR), UY=US_YEARS.filter(y=>y!==FUT_YEAR);   // no 2028 in the tour
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
@@ -3221,9 +3248,9 @@ function playSteps(){
   list.push({race:"governors",mode:"results",year:UY[0],gov:"leg"}); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
   return list;
 }
-function playGo({race,mode,year,sen,ls,st,gov,dist,lm}){
-  if(countryOf(race)==="india"){const view=st&&st!==stMode||lm&&lm!==lsColor;   // a new view morphs at once; a new year wipes down the map
-    if(ls) lsMode=ls; if(lm) lsColor=lm; if(st) stMode=st; inYear=IN_PICK[race]=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
+function playGo({race,mode,year,sen,ls,st,gov,dist,lm,sm}){
+  if(countryOf(race)==="india"){const view=st&&st!==stMode||lm&&lm!==lsColor||sm&&sm!==stColor;   // a new view morphs at once; a new year wipes down the map
+    if(ls) lsMode=ls; if(lm) lsColor=lm; if(sm) stColor=sm; if(st) stMode=st; inYear=IN_PICK[race]=year; if(race!==current) show(race,true); else renderIn(true,!!view); return}
   // a new race: show() alone draws it in that year (and moves the stepper). Calling stepOnPick too re-rendered the map
   // straight away, which cut off the Senate Seats / Representation morphs mid-way (owner, 2026-11-07)
   colorMode=mode; if(sen) senMode=sen; usYearPick=year; if(race==="president") presDist=!!dist;
@@ -3285,7 +3312,7 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 // Short labels: P / H / S / G, LS / RS, R / M ... for the buttons not selected, only when the full top bar would wrap
 {const SHORT={president:"P",house:"H",senate:"S",governors:"St",loksabha:"LS",rajyasabha:"RS",
-   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"CMs","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
+   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"Govts.","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
  const bar=document.querySelector(".topbar");
  bar.querySelectorAll(".toggle button,.subtoggle button").forEach(b=>{
    const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];
@@ -3331,7 +3358,7 @@ addEventListener("resize",fitIndia); narrow.addEventListener("change",()=>reques
 // Back / Forward step through the views; a hash missing a part keeps that part's default.
 function viewHash(){const r=current; if(!r) return "";
   if(countryOf(r)==="usa") return "#"+[r,usYear(r),r==="senate"&&senMode,r==="governors"&&(govMode==="leg"?"units":"governors"),r==="president"&&PRES_CD[usYear(r)]&&presDist&&"district",colorMode].filter(Boolean).join("/");
-  return "#"+[r,inYear,r==="loksabha"&&lsMarginsOn()&&"margins",r==="states"&&stMode,r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
+  return "#"+[r,inYear,r==="loksabha"&&lsMarginsOn()&&"margins",r==="states"&&stMode,r==="states"&&stMarginsOn()&&"margins",r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
 let urlTimer=0, urlReplace=true;
 function syncURL(){clearTimeout(urlTimer); urlTimer=setTimeout(()=>{const h=viewHash(); if(!h||h===location.hash){urlReplace=false; return}
   history[urlReplace||playing?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
@@ -3346,7 +3373,7 @@ function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.sli
     if(race!==current) show(race,animate); else {usStep(race); setUS(race,animate)}
   } else {
     if(race==="loksabha"){lsMode="geo"; lsColor=has("margins")?"margins":"results"; LS_EDIT=has("edit")}
-    if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"}
+    if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"; stColor=has("margins")?"margins":"results"}
     if(race==="rajyasabha") RS_EDIT=has("edit");
     const ys=race==="states"?ST_YEARS:race==="rajyasabha"?RS_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
     if(race!==current) show(race,animate); else {inYear=IN_PICK[race]; renderIn(animate,true)}
