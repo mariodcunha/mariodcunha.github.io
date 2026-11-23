@@ -3076,6 +3076,16 @@ STATUS / NEXT
 - Favicon (owner, 2026-11-22): the page's own icon from Figma Frame 1681 (file BzjnNRCZt4OUQyNoepsVYf, node 40004014:190,
   pink "E" on a 7x7 grid with a one-square margin, counters pale pink #FFDFF0, transparent background; tried 1680, 1682, 1692): electoral-maps/favicon.svg (crispEdges), favicon-32.png, apple-touch-icon.png (180),
   linked relatively in index.html instead of the site-wide /favicon.svg.
+- 2026-11-22 India: picking India opens Lok Sabha 2024 (Results); the tour shows State Chief Ministers before State seat %.
+- 2026-11-22 Lok Sabha Results / Margins: the Seats / Seat % / Vote % toggle is hidden; Lok Sabha is Results or Margins only
+  (hash #loksabha/YEAR or #loksabha/YEAR/margins). LS_MARGIN[year][state] = winner's minus runner-up's share of all votes,
+  per constituency in LS_NAME / LS_GEO order, every year 2004-2024. Margins shade by alliance (BJP + allies orange,
+  Congress + allies blue, Others green), five bands <5 / 5-10 / 10-15 / 15-20 / 20+, the last the main colour; the top bar
+  shows the five groups' vote share (LS_VOTE_NAT); legend keys Congress + allies, BJP + allies, Others; hover "Name, ST · +12.3".
+  Sources: 2004/2009 datameet parliament.csv, 2014 datameet election2014 eci-candidate-wise.csv, 2019 pratapvardhan
+  Elections-India-2019 (Vellore added by hand, +0.79), 2024 Wikipedia "Results of the 2024 Indian general election"
+  (Surat unopposed: blank, full colour; Indore runner-up NOTA: set to 75). Build scripts in ls-build/ (untracked).
+  Tour: Lok Sabha Results every year, then Margins every year.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
