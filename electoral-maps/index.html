@@ -3184,10 +3184,10 @@ function openMenu(open){
   cMenu.classList.toggle("open",open); cBtn.setAttribute("aria-expanded",open);
   if(open){const sel=opts.find(o=>o.getAttribute("aria-selected")==="true");opts.forEach(o=>o.classList.toggle("active",o===sel));cMenu.focus()}
 }
-// Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = Lok Sabha 2024 Seats (owner,
-// 2026-11-22; was State Chief Ministers 2026), every India view back on its default year
+// Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = Lok Sabha 2024 Margins (owner,
+// 2026-11-22; was State Chief Ministers 2026, then Lok Sabha 2024 Results), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
-  if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; lsColor="results"; stMode="cm"; stColor="results"}
+  if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; lsColor="margins"; stMode="cm"; stColor="results"}
   show(country==="usa"?"governors":"loksabha",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
