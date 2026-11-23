@@ -3131,11 +3131,11 @@ function openMenu(open){
   cMenu.classList.toggle("open",open); cBtn.setAttribute("aria-expanded",open);
   if(open){const sel=opts.find(o=>o.getAttribute("aria-selected")==="true");opts.forEach(o=>o.classList.toggle("active",o===sel));cMenu.focus()}
 }
-// Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = State Chief Ministers 2026 (owner,
-// 2026-11-09; was Lok Sabha 2024 seats), every India view back on its default year
+// Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = Lok Sabha 2024 Seats (owner,
+// 2026-11-22; was State Chief Ministers 2026), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
   if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; stMode="cm"}
-  show(country==="usa"?"governors":"states",true)}
+  show(country==="usa"?"governors":"loksabha",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
 opts.forEach(o=>o.addEventListener("click",()=>choose(o.dataset.country)));
 cMenu.addEventListener("keydown",e=>{
@@ -3176,11 +3176,11 @@ function renderPlay(){
 const playWait=ms=>new Promise(r=>{let last=performance.now();
   const tick=()=>{const t=performance.now(); if(!playPaused) ms-=(t-last)*playSpeed; last=t; if(ms<=0) r(); else playTimer=setTimeout(tick,40)}; tick()});
 function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSpeed=1; senMorphMs=800; clearTimeout(playTimer); renderPlay()}
-// India (owner, 2026-11-07): Lok Sabha seats, Lok Sabha vote share, Rajya Sabha, State seat share, Chief Ministers, each first year to latest
+// India (owner, 2026-11-07; CMs before seat share 2026-11-22): Lok Sabha seats, seat share, vote share, Rajya Sabha, Chief Ministers, State seat share, each first year to latest
 function playSteps(){
   if(countryOf(current)==="india"){const list=[], pass=(race,years,o)=>years.forEach(year=>list.push({race,year,...o}));
     pass("loksabha",IN_YEARS,{ls:"geo"}); pass("loksabha",IN_YEARS,{ls:"seat"}); pass("loksabha",IN_YEARS,{ls:"vote"}); pass("rajyasabha",RS_YEARS);
-    pass("states",ST_YEARS,{st:"seats"}); pass("states",ST_YEARS,{st:"cm"});
+    pass("states",ST_YEARS,{st:"cm"}); pass("states",ST_YEARS,{st:"seats"});   // Chief Ministers first (owner, 2026-11-22)
     return list}
   const PY=PRES_YEARS.filter(y=>y!==FUT_YEAR), UY=US_YEARS.filter(y=>y!==FUT_YEAR);   // no 2028 in the tour
   const list=[], pass=(race,mode,years,sen)=>years.forEach(year=>list.push({race,mode,year,sen}));
