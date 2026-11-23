@@ -661,6 +661,9 @@ const PRES_CD={2008:{AL:[-22.63,-27.37,-13.17,-53.84,-22.92,-52.63,45.08],AR:[-2
   2024:{AL:[-54.99,8.07,-46.02,-66.31,-28.98,-38.94,23.97],AR:[-45.29,-15.53,-24.89,-39.91],AZ:[-3.11,-14.97,39.75,6.67,-19.98,-0.75,22.13,-16.33,-31.08],CA:[-25,45.2,-3.8,31.2,-17.7,13.8,29.8,43.5,-1.8,33.8,67.7,73.9,-5.4,35.5,47.9,48.6,37.9,29.5,34.4,-30.3,3.8,-5.8,-16.9,25,2.5,13.2,3.9,26.9,34.8,41,16.9,31.3,8.7,50.7,10.3,39.1,60.4,16.1,9.7,-2.3,-6,32.5,49,33.8,1.6,17.7,4.1,-15.3,7.8,29.6,23.5,21.2],CO:[55.94,39.76,-9.73,-18.24,-9.08,19.76,14.92,-1.83],CT:[22.88,7.73,14.06,23.36,5.59],FL:[-37.2,-18,-21.12,-11.84,-21.44,-30.09,-12.48,-22.34,3.52,22.71,-16.26,-34.58,-11.85,7.67,-11.19,-15.47,-23.94,-29.4,-29.16,39.6,-16.57,5.57,1.91,30.06,5.34,-34.97,-14.66,-25.4],GA:[-15.83,7.62,-29.71,52.48,71.58,49.93,-22.02,-30.63,-34.07,-20.8,-23.3,-14.13,42.26,-36.79],HI:[24.73,21.59],IA:[-8.43,-9.96,-4.39,-31.36],ID:[-45.05,-26.72],IL:[32,33,31,28,36,6,64,7,36,22,11,-44,11,5,-40,-22,5],IN:[0.39,-26.51,-31.19,-29.34,-16.81,-32.53,41.45,-35.88,-29.89],KS:[-31.27,-19.68,4.1,-23.29],KY:[-47.28,-41.31,18.91,-35.54,-63.88,-15.02],LA:[-38.17,31.35,-45.02,-52.34,-36.4,14.91],MA:[13.56,23.55,18.88,19.59,44.88,20.57,62.66,26.23,10.71],MD:[-16.82,18.31,23.54,73.23,33.08,5.74,58.56,55.84],ME:[21.6,-9.04],MI:[-21.2,-30.08,7.82,-5.52,-27.01,23.29,-1.28,-1.98,-32.31,-6.55,16.08,37.97,41.06],MN:[-11.96,5.8,21.15,35.5,61.59,-19.59,-36.37,-14.24],MO:[57.13,-7.95,-26.72,-42.12,23.4,-38.85,-42.65,-53.89],MS:[-37.03,20.38,-29.21,-42.54],MT:[-11.56,-29.54],NC:[-3.15,33.68,-21.82,45.09,-17.69,-17.03,-13.86,-19.34,-15.82,-17.65,-9.47,45.86,-16.47,-15.01],NE:[-12.97,4.59,-53.59],NH:[1.99,3.57],NJ:[18.73,-12.56,8.36,-30.11,1.51,6.42,-1.18,24.18,-1.14,50.77,8.72,23.87],NM:[12.67,-1.81,5.2],NV:[2.26,-13.93,-0.73,2.32],NY:[-10,-13,-4,1,42,6,46,44,40,60,-24,64,59,32,49,33,1,3,1,14,-21,8,-21,-23,19,19],OH:[6.35,-47.58,40.24,-36.76,-29.27,-33.68,-10.64,-23.68,-6.71,-5.73,55.07,-32.72,0.04,-17.93,-9.21],OK:[-21.53,-55.62,-44.82,-32.93,-18.24],OR:[37.51,-27,45.63,11.98,8.49,11.3],PA:[0.33,35.74,77.32,15.82,28.63,11.4,-3.2,-8.5,-37.92,-5.23,-21.36,19.18,-45.54,-33.35,-37.99,-22.78,5.51],RI:[22.01,6.78],SC:[-13.08,-13.95,-43,-23.56,-22.78,22.86,-26.35],TN:[-57.84,-33.86,-35.89,-43.58,-17.9,-35.16,-22.14,-41.55,42.59],TX:[-51,-24,-20,-32,-27,-29,21,-34,44,-25,-45,-23,-47,-34,-17,16,-29,40,-51,21,-23,-20,-15,-16,-37,-23,-29,-7,21,47,-23,23,34,-5,34,-37,49,-20],UT:[-20.04,-20.32,-19.31,-26.67],VA:[-5,-0.2,34,32,-12,-24,3,49,-44,9,34],WA:[28.47,23.51,-3.28,-20.55,-10.71,19.16,74.54,5.73,40.95,17.9],WI:[-4.5,40.04,-7.38,51.4,-22.09,-16.44,-22.46,-16.23],WV:[-44.36,-39.59]}};   // year -> state -> margins per district (owner, 2026-11-17: every President year)
 // national popular vote, Democrat / Republican % (owner, 2026-11-22: under the bar on President, a check for the winner)
 const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");   // text into innerHTML
+const HOUSE_PV={2008:[52.9,42.4],2010:[44.9,51.7],2012:[48.8,47.7],2014:[45.5,51.2],2016:[47.3,48.3],2018:[53.4,44.8],2020:[50.3,47.2],2022:[47.3,50.0],2024:[47.2,49.8],2026:[56.3,42.2]};   // House popular vote D / R % (Wikipedia, 2026-11-22; 2026 current counts)
+const SEN_PV={2008:[51.9,44.5],2010:[44.0,49.4],2012:[53.4,41.8],2014:[43.9,51.4],2016:[53.0,42.2],2018:[58.5,38.4],2020:[47.0,49.3],2022:[50.0,47.4],2024:[49.8,46.8],2026:[53.4,43.1]};   // Senate popular vote D / R % across that year's races (Wikipedia, 2026-11-22; 2026 current counts)
+const GOV_PV={2008:[50.2,47.3],2010:[47.0,47.8],2012:[47.9,49.7],2014:[46.2,50.3],2016:[47.4,49.5],2018:[51.4,48.3],2020:[44.1,52.4],2022:[49.3,49.1],2024:[45.8,49.7]};   // governor races that year, D / R % (Wikipedia, 2026-11-22; no 2026 total yet)
 const PRES_PV={2008:[52.9,45.7],2012:[51.1,47.2],2016:[48.2,46.1],2020:[51.3,46.8],2024:[48.3,49.8]};
 let presDist=false, usDist=false;   // usDist: By District on screen (President, years in PRES_CD)
 const marginsOn=race=>colorMode==="margins"&&!usFut;   // phones too, Senate included (owner, 2026-11-07)
@@ -1810,6 +1813,15 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
       ud:gSide==="d"?`+${gN} net gain`:"",ur:gSide==="r"?`+${gN} net gain`:"",
       label:house?`${year} House results, one square per district`:`Senate seats after the ${year} election: two circles per state on the gray House map`};
   }
+  // House Margins (owner, 2026-11-22): the bar and big numbers show the national House popular vote, Democrats / Republicans
+  // (Wikipedia infoboxes; 2026: current counts), others grey in the middle; seats under the bar
+  // Senate Seats Margins too: the popular vote in that year's Senate races (same day)
+  const PVT=race==="house"?HOUSE_PV:race==="senate"&&sm==="seats"&&SEN_MARGINS[year]?SEN_PV:race==="governors"&&!legOn()&&GOV_MARGINS[year]?GOV_PV:null;   // Governors: that year's governor races
+  // Results (owner, 2026-11-22): House and Senate Seats keep the seats up top and put the vote share under the bar, as President
+  if(PVT&&PVT!==GOV_PV&&!fut&&!legOn()&&!marginsOn()&&PVT[year]) T={...T,pv:PVT[year]};
+  if(PVT&&!fut&&!legOn()&&marginsOn()&&PVT[year]){const [vd,vr]=PVT[year], ch=race==="house"?"House":race==="governors"?"governor races":"Senate";
+    T={...T,d:vd,r:vr,tot:100,mark:null,vote:true,seg:{d:vd,m:100-vd-vr,r:vr},ud:race==="governors"?`${T.d} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.d/435*100)}% population`:`${T.d} seats`,ur:race==="governors"?`${T.r} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.r/435*100)}% population`:`${T.r} seats`,   // Governors: + population share (owner, 2026-11-22)
+      label:`${year} ${ch} popular vote: Democrats ${vd}%, Republicans ${vr}%; seats ${T.d} to ${T.r}`}}
   // Senate Representation (every year): the tally shows each side's share of representation, not seats. A senator
   // counts 1 / their state's grey squares (that year's House map), so Wyoming's two outweigh California's two 52 to 1
   if(race==="senate"&&sm==="power"&&!fut){
@@ -1855,8 +1867,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   senPrev=race==="senate"?senMode:null;
   if(mapOnly) return;   // a step on the way (setUS): the map only
   usSvg.setAttribute("aria-label",T.label);
-  countTo(document.getElementById("num-d"),T.d,animate);
-  countTo(document.getElementById("num-r"),T.r,animate);
+  (T.vote?countToPct:countTo)(document.getElementById("num-d"),T.d,animate);
+  (T.vote?countToPct:countTo)(document.getElementById("num-r"),T.r,animate);
   document.getElementById("name-d").innerHTML=nameHTML(T.nd,T.ctl==="d",true);
   document.getElementById("name-r").innerHTML=nameHTML(T.nr,T.ctl==="r");
   // bar: held (solid) and leaning (hatched) per side, toss-ups and unpolled races in between; a white gap
@@ -1867,7 +1879,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // widen the white gap between the sides
   // 2028 (owner, 2026-11-12): the Likely segments are solid light blue / light red, the maps' "waiting" colours, not hatched
   [["bar-dp",ALT_PROJ.D],["bar-rp",ALT_PROJ.R]].forEach(([id,c])=>{const e=document.getElementById(id); e.style.background=fut?c:""; e.style.boxShadow=fut?"none":""});
-  document.getElementById("bar-m").style.background=fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?PARTY_FILL.i:(race==="house"||race==="governors")&&y26?"var(--house)":"";
+  document.getElementById("bar-m").style.background=T.vote?"var(--house)":fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?PARTY_FILL.i:(race==="house"||race==="governors")&&y26?"var(--house)":"";
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
     const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
@@ -1882,7 +1894,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   if(T.mark!=null){mark.style.left=need.style.left=T.mark+"%"; need.innerHTML=T.need}
   const ud=document.getElementById("under-d"), ur=document.getElementById("under-r");
   // President: "Popular vote x%" under each side, with the check on the popular-vote winner (owner, 2026-11-22)
-  const pv=T.pv, udH=pv?nameHTML(`Popular vote ${pv[0]}%`,pv[0]>pv[1],true):esc(T.ud||""), urH=pv?nameHTML(`Popular vote ${pv[1]}%`,pv[1]>pv[0]):esc(T.ur||"");
+  const pv=T.pv, udH=pv?nameHTML(`Popular vote ${pv[0].toFixed(1)}%`,pv[0]>pv[1],true):esc(T.ud||""), urH=pv?nameHTML(`Popular vote ${pv[1].toFixed(1)}%`,pv[1]>pv[0]):esc(T.ur||"");
   const applyUnder=()=>{ud.innerHTML=udH;ur.innerHTML=urH;ud.style.opacity=ur.style.opacity=1;ur.style.color=T.urMuted?"var(--muted)":""};
   if(animate&&!reduce&&(ud.innerHTML!==udH||ur.innerHTML!==urH)){ud.style.opacity=ur.style.opacity=0;setTimeout(applyUnder,250)} else applyUnder();
   ["president","house","senate","governors"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race||r==="senate"&&legReal(year)));
@@ -2978,7 +2990,9 @@ function renderIn(animate,sync){
   // AP and Telangana always keep their own blocks (owner, 2026-11-09: no joined block); IN_TIGHT_AP1 kept, unused
   const tight=true; PACK_IN.fixed=tight?IN_TIGHT:IN_COMPACT;   // tight layout (the owner's grid since 2026-11-14): every India view and year
   PACK_IN.rsExtent=rsTiles?(()=>{const b=Object.values(RS_BIG).flat(); return [[Math.floor(Math.min(...b.map(p=>p[0]))-RS_P),Math.floor(Math.min(...b.map(p=>p[1]))-RS_P)],[Math.ceil(Math.max(...b.map(p=>p[0]))+2*RS_P)-1,Math.ceil(Math.max(...b.map(p=>p[1]))+2*RS_P)-1]]})():null;   // the squares and the grid's outer cells
-  const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(AP_ONE?"-ap":"")+(rsTiles?"-rs":""));   // the names differ, so does the cache
+  // Govts. margins (owner, 2026-11-22): each state's name carries its lead, as the USA's Governors ("+12", ">20", "<3"; behind: "−4")
+  const stTag=stMarginsOn()&&ST_MARGIN[inYear]; PACK_IN.tag=stTag?k=>{const m=stTag[k]; return m==null?"":m<=-3?"−"+Math.round(-m):marginTag(Math.max(m,0))}:null;
+  const pk=inView(race)==="packed"&&packLayout(PACK_IN,(tight?"tight":"all")+(AP_ONE?"-ap":"")+(rsTiles?"-rs":"")+(stTag?"-m"+inYear:""));   // the names differ, so does the cache
   applyPack(PACK_IN,pk,LS_GRP);
   rsPills(race==="rajyasabha"&&rsProp&&RS_PILL[inYear],inYear);
   lsEdit(race==="loksabha"&&inYear===2004&&LS_EDIT&&!!pk);
