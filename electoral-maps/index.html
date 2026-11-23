@@ -433,6 +433,10 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-pdist="electoral" aria-pressed="true">Electoral</button>
       <button type="button" data-pdist="district" aria-pressed="false">District</button>
     </div>
+    <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
+      <button type="button" data-st="cm" aria-pressed="false">Govts.</button>   <!-- was Chief Ministers (owner, 2026-11-22) -->
+      <button type="button" data-st="seats" aria-pressed="true">Seat %</button>
+    </div>
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
       <button type="button" data-margin="results" aria-pressed="true">Results</button>
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
@@ -441,10 +445,6 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-ls="geo" aria-pressed="true">Seats</button>
       <button type="button" data-ls="seat" aria-pressed="false" hidden>Seat %</button>   <!-- hidden for every year (owner, 2026-11-22) -->
       <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
-    </div>
-    <div class="subtoggle" id="st-view" role="group" aria-label="Show" hidden>
-      <button type="button" data-st="cm" aria-pressed="false">Govts.</button>   <!-- was Chief Ministers (owner, 2026-11-22) -->
-      <button type="button" data-st="seats" aria-pressed="true">Seat %</button>
     </div>
   </div>
   <p class="credit-top" style="margin:0">Inspired by<br>@NYTimes</p>
@@ -3132,7 +3132,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const o=index().get(ev.target); if(!o) return off();
     const [code,k]=o, i=LS_NAME[inYear][code]?.split(",")[k]; if(i==null) return off();
     const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
-    const mg=lsMarginsOn()?lsMarginOf(inYear,code,k):null; box.textContent=`${LS_NAMES[+i]}, ${st}`+(mg!=null?`${st.endsWith(".")?"":","} ${mg<0?"−":"+"}${Math.abs(mg).toFixed(1)}`:""); place(code); box.classList.add("on"); lit(ev.target)});
+    const mg=lsMarginsOn()?lsMarginOf(inYear,code,k):null; box.textContent=`${LS_NAMES[+i]}, ${st}`+(mg!=null?`, ${mg<0?"−":"+"}${Math.abs(mg).toFixed(1)}`:""); place(code); box.classList.add("on"); lit(ev.target)});
   inSvg.addEventListener("pointerleave",off);
 })();
 // House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "El Paso, TX 16"
