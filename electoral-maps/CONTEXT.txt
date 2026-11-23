@@ -3101,7 +3101,7 @@ STATUS / NEXT
   population" under (two lines on phones). State units and Governors 2026 keep counts (no national vote total).
 - 2026-11-22 India Govts. Margins: block labels carry the lead as USA Governors ("UP+12", ">20", "<3"; behind by 3+: "Meg.-10").
   India opens on Lok Sabha 2024 Margins.
-- 2026-11-23 MARGIN PALETTES (owner; Figma file BzjnNRCZt4OUQyNoepsVYf, node 40004024:17796). Margins maps and legends only; 20+ is
+- 2026-11-23 MARGIN PALETTES (owner; Figma file BzjnNRCZt4OUQyNoepsVYf, frame "Regular Light" in node 40004024:23321). Margins maps and legends only; 20+ is
   the MAIN colour used in Results, bars, numbers and text. (A darker-20+ version, main colour at 16-20 / 15-20, was tried and
   reverted the same day.)
   USA (SHADE)        <4       4-8      8-12     12-16    16-20    20+=main
@@ -3113,6 +3113,16 @@ STATUS / NEXT
     Others           #d8ebdf  #b0d8be  #89c49e  #61b17d  #3a9d5d
   A lead on a boundary takes the higher band. Unopposed = full colour; a negative India Govts. lead = lightest. Only the full
   colours pass 3:1 on white. Legend keys: full, middle, lightest. Replaces the 18-step USA scale (older notes are out of date).
+- 2026-11-23 DARK MODE, every view and the tour (owner; began as a two-map trial): sun / moon button (#theme) between Play and the
+  country picker; light unless the viewer picked dark (localStorage "em-theme"; a script in <head> sets html.dark before first paint).
+  EVERY map and page colour is a CSS variable in :root, overridden in html.dark; switching swaps the palette only, nothing is
+  redrawn (so new colours must be variables too, never hex in JS; morphs resolve them with cssFill). Shades: SHADE -> --md0-5 /
+  --mr0-5, LS_RAMP -> --mc / --mb / --mo 0-4. Dark: page #191919, text #f2f2f2, muted #a6a6a6, controls #2a2a2a, empty #333 / #3a3a3a;
+  main colours and the India allies unchanged; shades run from 28% main colour on #191919 (closest) to the main colour (20+); Likely
+  / Leaning dim blue #1c5580 / red #85362f; purple #9d63d3. Legend notes swap words in dark (NOTE_WORDS: "Brighter", "the darkest
+  is under", "Dim blue / dim red"). The switch cross-fades with View Transitions (instant where unsupported or reduced motion).
+  Figma "Regular Dark": file BzjnNRCZt4OUQyNoepsVYf, node 40004024:17796 ("Regular Light" beside it).
+- 2026-11-23 fix: the India tour had skipped Rajya Sabha since 2026-11-22 (its line had been commented out by mistake).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

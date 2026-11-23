@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Electoral Maps</title>
+<script>try{if(localStorage.getItem("em-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&display=swap">
 <style>
 /* Layout: race toggle in the top-left corner, NYT-style tally bar, then the square cartogram. Always on white. */
@@ -18,9 +19,23 @@
   --ease:cubic-bezier(.65,0,.35,1);
   color-scheme:light;
 }
+/* Margin shades (light to full, Figma "Regular Light"): --md / --mr USA six bands, --mc / --mb / --mo India five; then the rest of the map and page colours */
+:root{--md0:#d9ebfb;--md1:#bddcf8;--md2:#96c7f4;--md3:#79b8f0;--md4:#4da3eb;--md5:#1f93e6; --mr0:#fde1dd;--mr1:#fcc9c3;--mr2:#f8aaa0;--mr3:#f49187;--mr4:#ec6f65;--mr5:#e5534b; --mc0:#d2e9fa;--mc1:#a5d4f5;--mc2:#79bef0;--mc3:#4ca9eb;--mc4:#1f93e6; --mb0:#fce1d1;--mb1:#fac3a4;--mb2:#f7a676;--mb3:#f58849;--mb4:#f26a1b; --mo0:#d8ebdf;--mo1:#b0d8be;--mo2:#89c49e;--mo3:#61b17d;--mo4:#3a9d5d;
+  --likd:#a8d3f4;--likr:#f5aca6;--toss:#f2cf4a;--tossu:#c9c9c9;--purple:#8a4fbf;--nonp:#bdbdbd;--mid:#a6a6a6;--off:#c2c2c2;--rule:#e6e6e6;--press:rgba(0,0,0,.06);--edge:rgba(0,0,0,.08);--tile:#efeeea;--tile-edge:#d9d7d0;--tile-fg:#a3a19a;--hd2:#cfe5f8;--hr2:#f9d4d1;--ht1:#e8bd2e;--ht2:#fbefc4;--hn1:#a9a9a9;--hn2:#ffffff;--hn3:#d8d8d8;--blk:#6b6c72;--grid:#f3f3f3;}
+/* Dark mode (owner, 2026-11-23; Figma "Regular Dark"): only the palette changes, so every map, morph and legend follows by itself */
+html.dark{--bg:#191919;--fg:#f2f2f2;--muted:#a6a6a6;--chip:#2a2a2a;--house:#333333;--seat-empty:#3a3a3a;--rs-empty:#262626;--rs-block:#2e2e2e;color-scheme:dark;
+  --md0:#1b3b52;--md1:#1c4d70;--md2:#1c5e8d;--md3:#1d70ab;--md4:#1e81c8;--md5:#1f93e6; --mr0:#522927;--mr1:#6f322e;--mr2:#8d3a35;--mr3:#aa423d;--mr4:#c84b44;--mr5:#e5534b; --mc0:#1b3b52;--mc1:#1c5177;--mc2:#1d679c;--mc3:#1e7dc1;--mc4:#1f93e6; --mb0:#56301a;--mb1:#7d3e1a;--mb2:#a44d1a;--mb3:#cb5b1b;--mb4:#f26a1b; --mo0:#223e2c;--mo1:#285638;--mo2:#2e6d45;--mo3:#348551;--mo4:#3a9d5d;
+  --likd:#1c5580;--likr:#85362f;--toss:#8a7220;--tossu:#5c5c5c;--purple:#9d63d3;--nonp:#5c5c5c;--mid:#a6a6a6;--off:#5a5a5a;--rule:#333333;--press:rgba(255,255,255,.08);--edge:rgba(255,255,255,.1);--tile:#262626;--tile-edge:#3a3a3a;--tile-fg:#8c8c8c;--hd2:#1c3a50;--hr2:#50292a;--ht1:#8a7220;--ht2:#3d3517;--hn1:#6a6a6a;--hn2:#191919;--hn3:#4a4a4a;--blk:#a6a6a6;--grid:#222222;}
+html.dark #play.idle #play-right{color:var(--muted)} html.dark #play.idle #play-right:hover{color:var(--fg)}
+html.dark .menu{box-shadow:0 0 0 1px #3a3a3a,0 8px 24px rgba(0,0,0,.5)}
+/* the switch: the page cross-fades once (View Transitions); the elements' own transitions sit that one frame out */
+html.theming *,html.theming *::before,html.theming *::after{transition:none!important}
+::view-transition{pointer-events:none} ::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+#theme{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer}
+html.dark #theme{color:var(--muted)} #theme:hover,html.dark #theme:hover{color:var(--fg)} #theme:focus-visible{outline:2px solid var(--dem);outline-offset:2px} #theme svg{width:16px;height:16px}
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{background:#fff} html{overflow-x:clip}   /* the edge-to-edge India map's frame runs past the screen: no side-scroll */
+html,body{background:var(--bg)} html{overflow-x:clip}   /* the edge-to-edge India map's frame runs past the screen: no side-scroll */
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans)}
 main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:grid;gap:22px}
 
@@ -76,7 +91,7 @@ svg.india text{font-size:14px}
 #map-india.rs .st-dot{transform:scale(0);transition-duration:.6s}
 #map-india .st-dot.pilled{opacity:0!important}
 #map-india.ls-editing .st-dot{cursor:grab;transition:none!important} #map-india.ls-editing .st-dot.ls-bad{stroke:#e15759!important;stroke-width:3!important}
-#map-india .ls-edit-grid rect{fill:#f3f3f3}
+#map-india .ls-edit-grid rect{fill:var(--grid)}
 #map-india.rs-editing .st-dot{cursor:pointer;opacity:.35;transition:none!important} #map-india.rs-editing .st-dot.rs-sel{opacity:1;stroke:var(--fg)!important;stroke-width:2.5!important}
 #map-india.rs-editing .st-dot.ls-bad{opacity:1;stroke:#e15759!important;stroke-width:3!important}
 #map-india .rs-edit rect{cursor:pointer} #map-india:not(.rs-editing) .rs-edit{display:none}
@@ -117,8 +132,8 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
 .stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
-.stepper button:hover:not(:disabled){background:rgba(0,0,0,.06);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
-.stepper button:disabled{color:#c2c2c2;cursor:default}
+.stepper button:hover:not(:disabled){background:var(--press);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
+.stepper button:disabled{color:var(--off);cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
 .stepper .win{position:relative;width:52px;height:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
 .stepper .view{position:absolute;inset:0;perspective:140px;-webkit-mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent);mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent)}
@@ -146,25 +161,25 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .bar i{display:block;height:100%;transition:width .8s var(--ease)}
 .bar i.gap{margin-left:3px} /* white gap where one side (alliance / party) ends and the next begins */
 /* 2026 calls: hatched = the party the poll aggregate (or Cook's rating) has ahead; yellow hatch = toss-up; grey = can't call */
-.hatch-d{background:repeating-linear-gradient(135deg,var(--dem) 0 2.5px,#cfe5f8 2.5px 5px)}
-.hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,#f9d4d1 2.5px 5px)}
-.hatch-t{background:repeating-linear-gradient(135deg,#e8bd2e 0 2.5px,#fbefc4 2.5px 5px)}
-.hatch-n{background:repeating-linear-gradient(135deg,#a9a9a9 0 2px,#fff 2px 5px);box-shadow:inset 0 0 0 1px #d8d8d8}
+.hatch-d{background:repeating-linear-gradient(135deg,var(--dem) 0 2.5px,var(--hd2) 2.5px 5px)}
+.hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,var(--hr2) 2.5px 5px)}
+.hatch-t{background:repeating-linear-gradient(135deg,var(--ht1) 0 2.5px,var(--ht2) 2.5px 5px)}
+.hatch-n{background:repeating-linear-gradient(135deg,var(--hn1) 0 2px,var(--hn2) 2px 5px);box-shadow:inset 0 0 0 1px var(--hn3)}
 /* Senate and Governors (owner, 2026-10-16): flat light colours instead of hatching, as on the Seats tiles (ALT_PROJ) */
-.bar.flat .hatch-d,#proj-senate .hatch-d,#proj-governors .hatch-d,#proj-house .hatch-d{background:#a8d3f4}
-.bar.flat .hatch-r,#proj-senate .hatch-r,#proj-governors .hatch-r,#proj-house .hatch-r{background:#f5aca6}
-.bar .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t,#proj-house .hatch-t{background:#f2cf4a}   /* toss-up / undecided: solid yellow on every bar, House too (owner, 2026-10-23) */
+.bar.flat .hatch-d,#proj-senate .hatch-d,#proj-governors .hatch-d,#proj-house .hatch-d{background:var(--likd)}
+.bar.flat .hatch-r,#proj-senate .hatch-r,#proj-governors .hatch-r,#proj-house .hatch-r{background:var(--likr)}
+.bar .hatch-t,#proj-senate .hatch-t,#proj-governors .hatch-t,#proj-house .hatch-t{background:var(--toss)}   /* toss-up / undecided: solid yellow on every bar, House too (owner, 2026-10-23) */
 .legend .sw{display:inline-block;width:14px;height:14px;flex:none} .legend .sw.c{border-radius:50%}
 .tally.pct b::after{content:"%";font-size:.6em;margin-left:1px}
 /* USA and India: the year and what's on show, centred over the bar's halfway mark, in a lighter gray */
 #us-tally,#in-tally{position:relative}
 .cand.mid{position:absolute;left:50%;bottom:0;transform:translateX(-50%);max-width:46%;width:max-content;text-align:center}
-.cand.mid b,.cand.mid span{color:#A6A6A6} .tally.pct .cand.mid b::after{content:none}
+.cand.mid b,.cand.mid span{color:var(--mid)} .tally.pct .cand.mid b::after{content:none}
 /* pinned bar (owner, 2026-11-17): the centre label on one line, "2026 House results", at the names' size; the year no bigger */
 #mini .tally{position:relative} #mini .cand.mid{display:flex;gap:.3em;align-items:baseline;white-space:nowrap;max-width:none}
 #mini .cand.mid b,#mini .cand.mid span{font-size:15px!important;line-height:18px!important;font-weight:700}
 @media (max-width:775px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
-.bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px #fff;transition:left .8s var(--ease)}
+.bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px var(--bg);transition:left .8s var(--ease)}
 .under{position:relative;min-height:30px;font-size:13px}
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s;white-space:pre-line}
 .gain.d{left:0;text-align:left;color:var(--dem)} .gain.r{right:0;text-align:right;color:var(--rep)}
@@ -194,7 +209,7 @@ svg.map{width:100%;min-width:560px;height:auto;display:block}
 svg.map text{font-family:var(--sans);font-size:11px;fill:var(--muted);font-weight:500;dominant-baseline:central;pointer-events:none}
 /* TRIAL (owner, 2026-11-09, may be reverted): every state name in capitals, USA and India. Revert: drop class="caps" from <html> */
 html.caps svg.map text{text-transform:uppercase}
-svg.map text.blk{fill:var(--sel)}   /* USA and India names outside the blocks: the toggles' gray */
+svg.map text.blk{fill:var(--blk)}   /* USA and India names outside the blocks: the toggles' gray */
 #map-us .plabel{transition:transform .45s var(--ease)}   /* names travel with the squares */
 svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.in.dark{fill:var(--fg)}   /* pill on uncalled (grey) / toss-up (yellow) squares */
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center;align-content:flex-start}
@@ -213,7 +228,7 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .legend .mkey{order:-5} .legend.margins .lead{display:none}
 .legend .txt{order:2;flex-basis:100%;display:block} #p-ev:not([hidden]),.legend .txt span:not([hidden]){display:inline}   /* the President note runs on after it, same line (owner, 2026-11-22) */
 .legend .txt:empty{display:none}
-.credit{font-size:12px;color:var(--muted);border-top:1px solid #e6e6e6;padding-top:12px}
+.credit{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
 .credit-top{display:none}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
@@ -234,9 +249,9 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us.seats .alt-grid{opacity:1;transition:opacity .35s .2s}
 #map-us.seats .state text{opacity:0}
 #map-us .alt-grid text{transform-box:fill-box;transform-origin:center}
-#map-us .alt-grid rect{fill:#efeeea;stroke:#d9d7d0;stroke-width:1}
+#map-us .alt-grid rect{fill:var(--tile);stroke:var(--tile-edge);stroke-width:1}
 #map-us .alt-grid rect{transition:fill .45s var(--ease)} #map-us .alt-grid rect.on{stroke:none}
-#map-us .alt-grid text{fill:#a3a19a;font-weight:500;transition:fill .45s var(--ease),opacity .3s}
+#map-us .alt-grid text{fill:var(--tile-fg);font-weight:500;transition:fill .45s var(--ease),opacity .3s}
 /* Seats <-> circles morph (senMorph): the tile halves stay on show and travel; the circles wait hidden, the codes too */
 #map-us.morph .alt-grid{opacity:1;transition:none} #map-us.morph .seat{opacity:0} #map-us.morph .alt-grid text{opacity:0;transition:none}
 #map-us.rmorph .seat,#map-us.rmorph .alt-grid{opacity:0;transition:none}
@@ -298,7 +313,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .topbar{position:sticky;top:0;z-index:30;background:var(--bg);margin:-10px -16px;padding:10px 16px}
   .topbar::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg)}
   body{overflow-x:clip}
-  #mini{display:block;position:fixed;z-index:29;top:var(--top-h,57px);left:0;right:0;background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,.08);
+  #mini{display:block;position:fixed;z-index:29;top:var(--top-h,57px);left:0;right:0;background:var(--bg);box-shadow:0 1px 0 var(--edge);
     padding:4px max(16px,calc((100% - 1100px)/2 + 16px)) 10px;transform:translateY(-100%);opacity:0;visibility:hidden;
     transition:transform .25s var(--ease),opacity .2s,visibility 0s .25s}
   body.stuck #mini{transform:none;opacity:1;visibility:visible;transition:transform .25s var(--ease),opacity .2s}
@@ -337,8 +352,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .lsctl #margin-view{order:1} .lsctl #gov-view,.lsctl #sen-view,.lsctl #pdist-view{order:2}   /* phones: year, Results / Margins, then Units / Governors on the right (owner, 2026-11-12) */
   .lsctl .subtoggle button{flex:1 1 0;padding-inline:4px;font-size:12.5px;white-space:nowrap}
   body::after{content:"";position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(124px + env(safe-area-inset-bottom));
-    background:linear-gradient(rgba(255,255,255,0),#fff 22px);pointer-events:none}
-  #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,.08);
+    background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),var(--bg) 22px);pointer-events:none}
+  #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 var(--edge);
     padding:calc(10px + env(safe-area-inset-top)) var(--mini-pr,130px) 10px 16px;transform:translateY(-110%);transition:transform .25s var(--ease)}
   body.stuck #mini{transform:none}
   #mini .tally{align-items:baseline}
@@ -377,9 +392,9 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 /* always the middle of the visible screen, any device: dvh follows phone toolbars as they show and hide */
 #loader .lq{position:fixed;left:50%;top:50%;top:50dvh;width:47px;height:47px;margin:-23.5px 0 0 -23.5px}
 #loader .lq i{position:absolute;left:0;top:0;width:22px;height:22px;animation:lq-cw 2.4s var(--ease) infinite}
-#loader .lq i:nth-child(1){background:#f5aca6;animation-delay:0s}      /* starts top left */
+#loader .lq i:nth-child(1){background:var(--likr);animation-delay:0s}      /* starts top left */
 #loader .lq i:nth-child(2){background:var(--dem);animation-delay:-.6s}  /* top right */
-#loader .lq i:nth-child(3){background:#a8d3f4;animation-delay:-1.2s}    /* bottom right */
+#loader .lq i:nth-child(3){background:var(--likd);animation-delay:-1.2s}    /* bottom right */
 #loader .lq i:nth-child(4){background:var(--rep);animation-delay:-1.8s} /* bottom left */
 @keyframes lq-cw{0%,10%{transform:translate(0,0)}25%,35%{transform:translate(25px,0)}50%,60%{transform:translate(25px,25px)}
   75%,85%{transform:translate(0,25px)}100%{transform:translate(0,0)}}
@@ -449,6 +464,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   </div>
   <p class="credit-top" style="margin:0">Inspired by<br>@NYTimes</p>
   <div id="play" class="idle" role="group" aria-label="Play through every map"><span class="pthumb" aria-hidden="true"></span><button type="button" id="play-left"></button><button type="button" id="play-right"></button></div>
+  <button type="button" id="theme" aria-pressed="false" aria-label="Dark mode"></button>
   <div class="country">
     <button type="button" id="country-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="country-menu" aria-label="Country">
       <span class="face"><span id="country-flag"><svg class="flag" viewBox="0 0 21 14" aria-hidden="true"><rect width="21" height="14" fill="#b22234"/><path d="M0 1.62h21M0 3.77h21M0 5.92h21M0 8.08h21M0 10.23h21M0 12.38h21" stroke="#fff" stroke-width="1.08"/><rect width="8.4" height="7.54" fill="#3c3b6e"/><g fill="#fff"><circle cx="1.4" cy="1.3" r=".45"/><circle cx="3.5" cy="1.3" r=".45"/><circle cx="5.6" cy="1.3" r=".45"/><circle cx="7.3" cy="1.3" r=".45"/><circle cx="2.45" cy="2.9" r=".45"/><circle cx="4.55" cy="2.9" r=".45"/><circle cx="6.6" cy="2.9" r=".45"/><circle cx="1.4" cy="4.5" r=".45"/><circle cx="3.5" cy="4.5" r=".45"/><circle cx="5.6" cy="4.5" r=".45"/><circle cx="7.3" cy="4.5" r=".45"/><circle cx="2.45" cy="6.1" r=".45"/><circle cx="4.55" cy="6.1" r=".45"/><circle cx="6.6" cy="6.1" r=".45"/></g></svg></span><span id="country-name">USA</span>
@@ -502,7 +518,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <div class="legend" id="legend-governors">
         <span class="base kd"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democratic governor</span>
         <span class="base kr"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republican governor</span>
-        <span id="leg-gov-ind" class="ki" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="#8a4fbf"/></svg><em id="gov-ind-name"></em></span>
+        <span id="leg-gov-ind" class="ki" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--purple)"/></svg><em id="gov-ind-name"></em></span>
         <span class="proj" id="proj-governors"></span>
         <span class="txt">Each state is drawn as its House seats, so its size shows its population.<em id="g-note"></em></span>
       </div>
@@ -586,8 +602,7 @@ PRES[2028]={d:"Democrats",r:"Republicans",dem:"",me2:"",ne2:""};
 // Six bands (owner, 2026-11-23; was 18 steps): under 4, 4-8, 8-12, 12-16, 16-20, 20+ points; 20+ is the main party colour (Figma "Margin shades").
 // Kept as 20 whole-point entries (1..20) so every lookup by points works as before.
 const band=(...c)=>Array.from({length:20},(_,i)=>c[Math.floor((i+1)/4)]);
-const SHADE={d:band("#d9ebfb","#bddcf8","#96c7f4","#79b8f0","#4da3eb","#1f93e6"),
-  r:band("#fde1dd","#fcc9c3","#f8aaa0","#f49187","#ec6f65","#e5534b")};
+const SHADE={d:band(...[0,1,2,3,4,5].map(i=>`var(--md${i})`)),r:band(...[0,1,2,3,4,5].map(i=>`var(--mr${i})`))};   // colours: the --md / --mr variables, light and dark
 // Percentage-point margin of all votes cast, by state; ME1 ME2 NE1 NE2 NE3 are the districts (see CONTEXT.txt for the source)
 const MARGINS={2008:{AK:21.54,AL:21.58,AR:19.85,AZ:8.52,CA:24.06,CO:8.95,CT:22.37,DC:85.92,DE:25.0,FL:2.82,GA:5.21,HI:45.26,IA:9.53,ID:25.43,IL:25.14,IN:1.03,KS:14.96,KY:16.23,LA:18.63,MA:25.81,MD:25.44,ME:17.32,ME1:22.82,ME2:11.25,MI:16.47,MN:10.24,MO:0.13,MS:13.17,MT:2.26,NC:0.33,ND:8.63,NE:14.93,NE1:9.77,NE2:1.21,NE3:39.01,NH:9.61,NJ:15.57,NM:15.13,NV:12.49,NY:26.86,OH:4.59,OK:31.29,OR:16.35,PA:10.32,RI:27.81,SC:8.98,SD:8.41,TN:15.07,TX:11.77,UT:28.18,VA:6.3,VT:37.01,WA:17.18,WI:13.9,WV:13.12,WY:32.24},
   2012:{AK:13.99,AL:22.19,AR:23.69,AZ:9.06,CA:23.12,CO:5.37,CT:17.33,DC:83.63,DE:18.63,FL:0.88,GA:7.82,HI:42.71,IA:5.81,ID:31.69,IL:16.87,IN:10.2,KS:21.72,KY:22.69,LA:17.21,MA:23.14,MD:26.08,ME:15.29,ME1:21.39,ME2:8.56,MI:9.5,MN:7.69,MO:9.38,MS:11.5,MT:13.65,NC:2.04,ND:19.63,NE:21.78,NE1:16.6,NE2:7.16,NE3:42.42,NH:5.58,NJ:17.79,NM:10.15,NV:6.68,NY:28.18,OH:2.98,OK:33.54,OR:12.09,PA:5.39,RI:27.46,SC:10.47,SD:18.02,TN:20.4,TX:15.78,UT:48.04,VA:3.87,VT:35.6,WA:14.87,WI:6.94,WV:26.76,WY:40.82},
@@ -676,8 +691,7 @@ const marginTag=m=>m==null?"":m>20?">20":m<3?"<3":"+"+Math.round(m);
 const MARGIN_NOTE="Darker shades mean a wider win: full colour is 20 points or more, the lightest is under 4.";
 const GOV_NOTE=" Darker shades mean a wider win in the state's latest election for governor: full colour is 20 points or more, the lightest is under 4.";
 const SEN_NOTE="Darker shades mean a wider win in that seat's latest election: full colour is 20 points or more, the lightest is under 4.";
-const rgbOf=h=>`rgb(${[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(", ")})`;
-const PALE_SHADE=new Set([...SHADE.d.slice(0,19),...SHADE.r.slice(0,19)].map(rgbOf));   // these shades take dark names, like the flat light colours
+const PALE_SHADE=new Set([...SHADE.d.slice(0,19),...SHADE.r.slice(0,19)]);   // these shades take dark names, like the flat light colours
 // ---------- USA map (all four races), one object per state ----------
 // s: state, c: House squares [x,y,isDem] (2024), x: extra House squares for older censuses,
 // e: the two elector squares added on the President map (House + 2 = electoral votes; DC: 3, no House seat),
@@ -827,9 +841,9 @@ const GOV_HIST={
 GOV_HIST[2026]={d:GOV_HIST[2024].d+" VA"};  // 2026 starts from today: Spanberger (D) won Virginia in November 2025
 const GOV_IND={RI:"Independent governor (Lincoln Chafee, Rhode Island)",AK:"Independent governor (Bill Walker, Alaska)"};
 const govOf=(year,k)=>GOV_HIST[year].d.split(" ").includes(k)?"d":(GOV_HIST[year].i||"").split(" ").includes(k)?"i":"r";
-const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"#8a4fbf",v:"var(--house)"};   // i: independent governors (Chafee, Walker) in the State units purple (owner, 2026-11-22)
+const PARTY_FILL={d:"var(--dem)",r:"var(--rep)",i:"var(--purple)",v:"var(--house)"};   // i: independent governors (Chafee, Walker) in the State units purple (owner, 2026-11-22)
 // Senate: independents who caucus with the Democrats take the Democrats' blue (owner, 2026-10-23)
-const SEN_FILL={...PARTY_FILL,i:"var(--dem)",u:"#c9c9c9"};   // u: up in 2028, toss-up (grey; was light purple)
+const SEN_FILL={...PARTY_FILL,i:"var(--dem)",u:"var(--tossu)"};   // u: up in 2028, toss-up (grey; was light purple)
 
 // ---------- USA map: President, House, Senate and Governors on the same squares ----------
 // Per state: House squares in fill order (today's row by row, snake; then older-census extras) - a year shows
@@ -845,7 +859,7 @@ const HSQ={}, ESQ={}, ESQ_2000={}, ESQ_HOME={}, SEAT={}, CH_N={}, HOUSE_COL={}, 
 (function drawUS(){
   // hatching for 2026 projections, in SVG units (one square = 20); stripes run on one grid across a state's squares
   const defs=el("defs",{},usSvg);
-  [["hd","var(--dem)","#cfe5f8"],["hr","var(--rep)","#f9d4d1"],["ht","#e8bd2e","#fbefc4"],["hn","#a9a9a9","#ffffff"]].forEach(([id,a,b])=>{
+  [["hd","var(--dem)","var(--hd2)"],["hr","var(--rep)","var(--hr2)"],["ht","var(--ht1)","var(--ht2)"],["hn","var(--hn1)","var(--hn2)"]].forEach(([id,a,b])=>{
     const pt=el("pattern",{id,width:7,height:7,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
     el("rect",{width:7,height:7,style:`fill:${b}`},pt); el("rect",{width:3.5,height:7,style:`fill:${a}`},pt);
   });
@@ -963,7 +977,7 @@ const LEG_MARGIN={2008:{AK:[10.0,null],AL:[18.1,31.4],AR:[43.0,54.3],AZ:[16.7,20
 const LEG28=Object.fromEntries(Object.keys(LEG26).map(k=>[k,"nn"]));   // 2028: no results, all grey
 const LEG_DATA={...LEG_OLD,2024:LEG24,2026:LEG26,2028:LEG28}, legReal=year=>legOn()&&!!LEG_DATA[year];   // years with real legislature data
 // colours: each part takes its holder's party; t = tied, c = coalition (purple); n = nonpartisan, no governor (grey)
-const LEG_FILL={d:"var(--dem)",r:"var(--rep)",c:"#8a4fbf",t:"#8a4fbf",n:"#bdbdbd"};
+const LEG_FILL={d:"var(--dem)",r:"var(--rep)",c:"var(--purple)",t:"var(--purple)",n:"var(--nonp)"};
 // 2028 governors (owner, 2026-11-12): the 11 states that elect in 2028 are Likely (light D / R) when the state's governor
 // was the same party after every election 2016-2026, else toss-up (grey "v"); every other state keeps its 2026 governor (solid)
 const GOV28_UP="DE IN MO MT NH NC ND UT VT WA WV".split(" ");
@@ -1036,13 +1050,13 @@ function legLegend(year){
     `<span class="txt">Each square is a state: governor on top, state Senate in the middle, state House below. A solid square is a Trifecta.${mnote}</span>`}
 // Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
 // The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
-const ALT_PROJ={D:"#a8d3f4",R:"#f5aca6",T:"#f2cf4a",N:"url(#hn)"};
+const ALT_PROJ={D:"var(--likd)",R:"var(--likr)",T:"var(--toss)",N:"url(#hn)"};
 function paintAlt(year){
   for(const k in ALT) ALT[k].forEach(({r,t,b},j)=>{const {p,m}=senPairs(year,k)[j]||{};   // every year 2008-2026
     const mOn=marginsOn("senate")&&senMode==="seats";   // leaving Seats (All / Representation): the tiles morph in Results colours
     const f=mOn&&m!=null&&/^[dri]$/.test(p)?shadeOf(p==="r"?"r":"d",m):null;   // independents caucus blue, so they shade blue
     r.style.fill=f||(p?SEN_FILL[p]||ALT_PROJ[p]:""); r.classList.toggle("on",!!p);
-    const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(rgbOf(f)))?"in":"dk";
+    const cls=!p?"":/^[dri]$/.test(p)&&!(f&&PALE_SHADE.has(f))?"in":"dk";
     if(t) t.setAttribute("class",cls);
     b.setAttribute("class",(cls+" lead").trim()); const lead=f||mOn&&m!=null&&/^[DR]$/.test(p);   // uncalled seats keep the leading fill but show the lead (AK, MS 2026)
     b.textContent=lead?(narrow.matches?marginTag(m).replace("+",""):marginTag(m)):""});   // phones: no "+", only > / < (owner, 2026-11-07)
@@ -1342,7 +1356,7 @@ function applyPack(M,pk,groups){
     e.t.style.fontSize=pk.fs+"px"; e.t.classList.toggle("blk",!!L.blk);
     e.t.classList.toggle("in",!L.out); e.t.setAttribute("text-anchor",L.out||"middle"); e.r.style.display=L.out?"none":"";
     e.r.setAttribute("x",-L.w/2); e.r.setAttribute("width",L.w);
-    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht|#a8d3f4|#f5aca6|#f2cf4a|rgb\((168, 211, 244|245, 172, 166|242, 207, 74)\)/.test(s.e.style.fill))||L.seg.some(s=>PALE_SHADE.has(s.e.style.fill)));
+    e.t.classList.toggle("dark",!L.out&&L.seg.every(s=>/#ht|var\(--(likd|likr|toss)\)/.test(s.e.style.fill))||L.seg.some(s=>PALE_SHADE.has(s.e.style.fill)));
     e.t.classList.toggle("grey",!L.out&&L.seg.every(s=>!s.e.style.fill||/var\(--(house|seat-empty)\)|#hn/.test(s.e.style.fill)));
     const fill=s=>{const f=s.e.style.fill, h=/#h([drtn])/.exec(f); return h?HATCH_SOLID[h[1]]:f||"var(--seat-empty)"}, stops=L.seg.flatMap(s=>[[s.a,fill(s)],[s.b,fill(s)]]);
     while(e.gr.children.length>stops.length) e.gr.lastChild.remove();
@@ -1359,7 +1373,7 @@ function applyPack(M,pk,groups){
 // (M.avoid), so a name is in the same place in all three maps and every year. A name that doesn't fit goes outside: above
 // the state's topmost, leftmost square, left-aligned to it (M.topLeft). States of one or two squares, or one column, go
 // by their postal code on these maps (M.label; owner, 2026-11-06).
-const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"#e8bd2e",n:"#a9a9a9"};   // pill colour for a hatched (2026) square
+const HATCH_SOLID={d:"var(--dem)",r:"var(--rep)",t:"var(--ht1)",n:"var(--hn1)"};   // pill colour for a hatched (2026) square
 const seatCell=c=>[c.cx.baseVal.value/S-.5,c.cy.baseVal.value/S-.5];
 // Desktop names (owner, 2026-11-07), every map race: the full name if the state's squares can hold it, else the short name
 // (US_SHORT, then LBL), and a state of 1 or 2 House seats always its postal code. In Margins the lead comes first: the short
@@ -1558,7 +1572,7 @@ function seatsLegPairs(k,parts,halves,toUnits){
   if(!toUnits) return out;
   return out.map(p=>({frames:p.frames.map(f=>({...f,offset:1-f.offset})).reverse()}));   // played backwards
 }
-const senHalves=k=>[0,1].map(j=>({...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill):"#efeeea"}));   // Senate Seats' tile halves
+const senHalves=k=>[0,1].map(j=>({...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill||"var(--tile)"):cssFill("var(--tile)")}));   // Senate Seats' tile halves
 const senShapes=(k,mode)=>mode==="seats"?senHalves(k):senCircles(k);
 const senKeys=()=>Object.keys(SEAT).filter(k=>SEAT[k].length&&ALT[k]);
 function repSwap(race,year){
@@ -1567,7 +1581,7 @@ function repSwap(race,year){
   // (in the governor's colour, or the Trifecta's), not by way of the Senate tile halves; the bars cross-fade in underneath
   const leg=toSen?legOn()&&!!LEG_DATA[year]:usSvg.classList.contains("leg");
   const shapes=k=>[0,1].map(j=>leg?legSquare(k)
-    :mode==="seats"?{...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill):"#efeeea"}
+    :mode==="seats"?{...ALT[k][j].o,fill:ALT[k][j].r.style.fill?cssFill(ALT[k][j].r.style.fill||"var(--tile)"):cssFill("var(--tile)")}
     :{...seatCircle(k,j),fill:cssFill(SEAT[k][j].style.fill)});
   const keys=Object.keys(SEAT).filter(k=>SEAT[k].length&&ALT[k]);
   if(toSen){const src=Object.fromEntries(keys.map(k=>[k,repSquares(k,base)]));
@@ -1761,7 +1775,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
     hs.forEach(e=>{const p=tight&&TIGHT_POS.get(e), g=e.classList.contains("gone")?" scale(0)":"";
       e.style.transform=p?`translate(${p[0]*S-e.x.baseVal.value}px,${p[1]*S-e.y.baseVal.value}px)${g}`:""});
     SEAT[k].forEach((e,j)=>{const p=senSeats(year,k)[j];
-      if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}} else if(fut) e.style.fill="#c9c9c9";   // 2028: grey circles
+      if(p){e.style.fill=SEN_FILL[p]||ALT_PROJ[p]; if(race==="senate"){c[p]++; rw[p]+=1/n}} else if(fut) e.style.fill="var(--tossu)";   // 2028: grey circles
       // Voter power: circle AREA ~ senators per grey square (2 / House seats), so a 1-seat state's circle fills its
       // square (radius .5) and California's (52 seats) is 1/52 of that area
       const o=race==="senate"&&sm==="power"&&powerLayout()[k];
@@ -2030,7 +2044,7 @@ let lsColor="results";   // Lok Sabha: Results or Margins (every year, owner 202
 const lsMarginsOn=()=>inRace==="loksabha"&&lsMode==="geo"&&!!LS_MARGIN[inYear]&&lsColor==="margins";
 // Margins shade by alliance (owner, 2026-11-22): BJP and allies share BJP orange, Congress and allies Congress blue, Others green;
 // five bands, under 5 / 5-10 / 10-15 / 15-20 / 20+ points, the last the main colour itself
-const LS_RAMP={c:["#d2e9fa","#a5d4f5","#79bef0","#4ca9eb","#1f93e6"],b:["#fce1d1","#fac3a4","#f7a676","#f58849","#f26a1b"],o:["#d8ebdf","#b0d8be","#89c49e","#61b17d","#3a9d5d"]};   // under 5, 5-10, 10-15, 15-20, 20+ (the main colour; owner, 2026-11-23, Figma "Margin shades")
+const LS_RAMP=Object.fromEntries(["c","b","o"].map(k=>[k,[0,1,2,3,4].map(i=>`var(--m${k}${i})`)]));   // under 5, 5-10, 10-15, 15-20, 20+ (the main colour): the --mc / --mb / --mo variables
 const lsShade=(g,m)=>LS_RAMP["bbocc"[g]][m==null?4:Math.max(0,Math.min(4,Math.floor(m/5)))];   // unopposed: the full colour; a negative lead (the government's side polled less): the lightest
 document.getElementById("legend-loksabha").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
   .map(([g,base,name])=>`<span class="mkey"><b class="tri">${[lsShade(g,20),lsShade(g,12),lsShade(g,2)].map(c=>`<i class="sw" style="background:${c}"></i>`).join("")}</b>${name} percentage lead</span>`).join(""));   // like the USA keys (owner, 2026-11-22)
@@ -3233,6 +3247,21 @@ const PLAY_ICON={play:'<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 3
   pause:'<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="8" y="2" width="3" height="10" rx="1" fill="currentColor"/></svg>',
   stop:'<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>'};
 let playing=false, playTimer=null, playStep=1500, playSpeed=1, playPaused=false, playList=[], playAt=0;
+// Dark mode (owner, 2026-11-23): the sun / moon button swaps the palette (html.dark); light unless the viewer picked dark, kept in this browser
+const THEME_ICON={sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><path d="M12 1.8v2.4M12 19.8v2.4M1.8 12h2.4M19.8 12h2.4M4.8 4.8l1.7 1.7M17.5 17.5l1.7 1.7M4.8 19.2l1.7-1.7M17.5 6.5l1.7-1.7"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.6 14.6A8.9 8.9 0 0 1 9.4 3.4a.7.7 0 0 0-.9-.9 10 10 0 1 0 13 13 .7.7 0 0 0-.9-.9z"/></svg>'};
+const themeBtn=document.getElementById("theme"), isDark=()=>document.documentElement.classList.contains("dark");
+function themeUI(){const d=isDark(); themeBtn.innerHTML=THEME_ICON[d?"moon":"sun"]; themeBtn.setAttribute("aria-pressed",d); themeBtn.title=d?"Switch to light":"Switch to dark"; themeNotes()}
+// The notes name the shades: in dark the scale runs from dark tints up, so their words swap (and back). Text only, as it is written.
+const NOTE_WORDS=[["Darker shades mean","Brighter shades mean"],["the lightest is under","the darkest is under"],["Light blue / light red","Dim blue / dim red"],["light blue / light red","dim blue / dim red"],["Light circles","Dim circles"],["light colours","dim colours"]];
+function themeNotes(){const d=isDark()?0:1, w=document.createTreeWalker(document.querySelector("main"),NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentNode.closest(".legend")?1:2});
+  for(let n;n=w.nextNode();){let t=n.data; for(const p of NOTE_WORDS) t=t.replaceAll(p[d],p[1-d]); if(t!==n.data) n.data=t}}
+document.querySelectorAll(".legends").forEach(e=>new MutationObserver(()=>{if(isDark()) themeNotes()}).observe(e,{subtree:true,childList:true,characterData:true}));
+themeBtn.addEventListener("click",()=>{const h=document.documentElement, d=!isDark();
+  const swap=()=>{h.classList.add("theming"); h.classList.toggle("dark",d); themeUI(); void getComputedStyle(h).color; void h.offsetHeight; h.classList.remove("theming")};
+  try{localStorage.setItem("em-theme",d?"dark":"light")}catch{}
+  if(document.startViewTransition&&!reduce){const v=document.startViewTransition(swap); v.ready.catch(()=>{}); v.finished.catch(()=>{})} else swap()});
+themeUI();
 function renderPlay(){
   playBox.classList.toggle("idle",!playing); playBox.classList.toggle("paused",playPaused);
   playLeft.innerHTML=playPaused?PLAY_ICON.stop:PLAY_ICON.pause; playLeft.setAttribute("aria-label",playPaused?"Stop":"Pause");
@@ -3244,10 +3273,10 @@ function renderPlay(){
 const playWait=ms=>new Promise(r=>{let last=performance.now();
   const tick=()=>{const t=performance.now(); if(!playPaused) ms-=(t-last)*playSpeed; last=t; if(ms<=0) r(); else playTimer=setTimeout(tick,40)}; tick()});
 function stopPlay(){if(!playing) return; playing=false; playPaused=false; playSpeed=1; senMorphMs=800; clearTimeout(playTimer); renderPlay()}
-// India (owner, 2026-11-07; CMs before seat share 2026-11-22): Lok Sabha seats, seat share, vote share, Rajya Sabha, Chief Ministers, State seat share, each first year to latest
+// India (owner, 2026-11-23): Lok Sabha Results, Lok Sabha Margins, Rajya Sabha, State Govts. Results, Govts. Margins, State Seat %, each first year to latest
 function playSteps(){
   if(countryOf(current)==="india"){const list=[], pass=(race,years,o)=>years.forEach(year=>list.push({race,year,...o}));
-    pass("loksabha",IN_YEARS,{ls:"geo",lm:"results"}); pass("loksabha",IN_YEARS.filter(y=>LS_MARGIN[y]),{ls:"geo",lm:"margins"});   // Results every year, then Margins (owner, 2026-11-22) pass("rajyasabha",RS_YEARS);
+    pass("loksabha",IN_YEARS,{ls:"geo",lm:"results"}); pass("loksabha",IN_YEARS.filter(y=>LS_MARGIN[y]),{ls:"geo",lm:"margins"}); pass("rajyasabha",RS_YEARS);   // Results every year, then Margins (owner, 2026-11-22)
     pass("states",ST_YEARS,{st:"cm",sm:"results"}); pass("states",ST_YEARS,{st:"cm",sm:"margins"}); pass("states",ST_YEARS,{st:"seats"});   // Chief Ministers first (owner, 2026-11-22)
     return list}
   const PY=PRES_YEARS.filter(y=>y!==FUT_YEAR), UY=US_YEARS.filter(y=>y!==FUT_YEAR);   // no 2028 in the tour
@@ -3289,8 +3318,8 @@ playRight.addEventListener("click",()=>{
 playLeft.addEventListener("click",()=>playPaused?stopPlay():pausePlay());
 renderPlay();
 renderPlay();
-document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,.country")) pausePlay()},true);
-document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play,.country")) pausePlay()},true);
+document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,#theme,.country")) pausePlay()},true);
+document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#play,#theme,.country")) pausePlay()},true);
 const mini=document.getElementById("mini"), phone=narrow, topbar=document.querySelector(".topbar");
 function cloneNoIds(n){const c=n.cloneNode(true); if(c.nodeType===1){c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"))} return c}
 function patch(dst,src){
