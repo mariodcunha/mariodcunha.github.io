@@ -3127,7 +3127,8 @@ STATUS / NEXT
   Governors only when it would overflow; India maps keep the 16px margins when coming from a USA map (fitIndia ignores a hidden panel,
   show() fits again). Units codes are dark on pale Margins bars (PALE_SHADE of the middle bar), web too; white otherwise.
 - USA tally hover (owner, 2026-11-24; web, every USA map, Results and Margins, pinned bar too): hovering the blue (or red) part
-  keeps that side's shapes untouched and fades all others to one grey (--fade; Senate All circles --fade2). CSS matches each square's
+  keeps that side's shapes untouched and fades all others to one grey (--fade; Senate All circles --fade2). --fade is lighter than the
+  lightest Margins shade (owner, 2026-11-25); Senate All's blocks and India's pads go --fade too. CSS matches each square's
   inline fill variable (#map-us.lit-d / .lit-r); the bar itself does not change.
   Hover area of a side: its number and name, its part of the bar and the line under it; hand cursor.
   Click locks the map to that side (kept across years, races and Results / Margins, morph stand-ins too via cssFill; a lock icon in its colour, left or right
