@@ -3126,6 +3126,19 @@ STATUS / NEXT
 - 2026-11-23 phones: state codes on Senate Seats and State units 6.4px at 375px (leads stay 5.7); "Units" shortens to "U" beside
   Governors only when it would overflow; India maps keep the 16px margins when coming from a USA map (fitIndia ignores a hidden panel,
   show() fits again). Units codes are dark on pale Margins bars (PALE_SHADE of the middle bar), web too; white otherwise.
+- USA tally hover (owner, 2026-11-24; web, every USA map, Results and Margins, pinned bar too): hovering the blue (or red) part
+  keeps that side's shapes untouched and fades all others to one grey (--fade; Senate All circles --fade2). CSS matches each square's
+  inline fill variable (#map-us.lit-d / .lit-r); the bar itself does not change.
+  Hover area of a side: its number and name, its part of the bar and the line under it; hand cursor.
+  Click locks the map to that side (kept across years, races and Results / Margins, morph stand-ins too via cssFill; a lock icon in its colour, left or right
+  of the centre label); click the same side to release, the other side to move it. Changing country releases it.
+  India: five separate filters (Congress, Congress allies, Others, BJP allies, BJP); hover area is
+  each one's bar part and its words under the bar (the big INDIA / NDA totals: the whole alliance). In Margins, squares carry
+  their own group in data-p (the shades are per alliance). Congress side locks left, BJP side right; the green lock left
+  or right of the centre label, by where the middle of the Others bar lies; it moves over when a year changes that.
+- India legends (owner, 2026-11-24): the paragraph ends with a sentence on who the Others are (.oth-note).
+- Bar hover growth (owner, 2026-11-24): the hovered part(s) of the tally bar (main + light shades, or a middle part)
+  grow 4px upwards (.bar[data-up]); the majority mark rises too if it stands on them.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
