@@ -223,7 +223,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #map-us text.face:not(.on),#map-us text.face.on.swap{transform:scale(.4)} #map-us text.face.on.swap{opacity:0!important;transition-duration:.22s}   /* a year change: a face that changes shrinks out and the new one grows in, a face that comes or goes the same way, in step with the squares (owner, 2026-11-26) */
 /* phones and touch screens (owner, 2026-11-26): scaling ~435 emoji at once is too heavy there and stutters, so faces only
    fade, quickly, and a changed face swaps in place (paintFaces) */
-@media (max-width:775px),(hover:none){#map-us text.face,#map-us text.face:not(.on),#map-us text.face.on.swap{transform:none!important;transition:opacity .2s linear}}
+@media (max-width:775px),(hover:none){#map-us text.face,#map-us text.face:not(.on){transform:none!important;transition:opacity .35s var(--ease)} #map-us text.face.on.swap{transform:none!important;transition:opacity .2s var(--ease)}}
 #map-india.sq .st-dot.hov{stroke:var(--bg);stroke-width:4.5;clip-path:inset(0) fill-box;transition:stroke-width .15s var(--ease),fill .45s var(--ease);transition-delay:0s!important}   /* Lok Sabha Seats: the hovered seat, as on the House map */
 svg.map{width:100%;min-width:560px;height:auto;display:block}
 /* India is Compact only: the compact map sits centred in the Map's taller frame, so pull it up toward the bar (and the
@@ -3184,8 +3184,8 @@ function paintFaces(fc,y){   // y: the year shown; its map (HOUSE_MAPS / HOUSE_C
       const p=TIGHT_POS.get(e)||[e.x.baseVal.value/S,e.y.baseVal.value/S]; t.setAttribute("x",(p[0]+.5)*S); t.setAttribute("y",(p[1]+.54)*S);
       const put=()=>{if(t._g!==g) return; t.textContent=f; t.dataset.p=HOUSE_COL[y][k][j]; t.classList.remove("swap"); t.classList.add("on")};   // data-p: the winner's party, for the tally filter
       // a shown face that changes (another winner, a new year): out quickly, then the new one in (owner, 2026-11-26)
-      const light=narrow.matches||!matchMedia("(hover:hover)").matches;   // phones: no out-and-in, the face just changes
-      if(t.classList.contains("on")&&t.textContent!==f&&!reduce&&!light){t.classList.add("swap"); SWAP.set(t,setTimeout(()=>{SWAP.delete(t); put()},220))}
+      // phones fade out and back in (opacity only, CSS), the web also shrinks and grows; same timing either way
+      if(t.classList.contains("on")&&t.textContent!==f&&!reduce){t.classList.add("swap"); SWAP.set(t,setTimeout(()=>{SWAP.delete(t); put()},220))}
       else if(fresh) requestAnimationFrame(()=>requestAnimationFrame(put));   // a new face fades in (phones: fade only)   // a new face: its small, clear start first, then in
       else put()})}}
 // USA Others under the bar: centred under the grey part, kept clear of the two side notes
