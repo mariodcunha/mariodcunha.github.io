@@ -3168,6 +3168,30 @@ STATUS / NEXT
   (the November winner; later specials not used). The district hover box (web, House) shows the name on a second line
   ("San Fernando Valley, CA 28, +99.9" / "Howard Berman"). All 435 parties checked against HOUSE_WIN 2008: no mismatch
   (VT's Peter Welch ran with both nominations). Other years: no second line until their names are added.
+- Race view (owner, 2026-11-26): a third button, Results / Margins / Race (data-margin="race", colorMode "race"), shown
+  only on House years with faces (HOUSE_FACE; 2008-2026, see below). Every district square (all 435, owner 2026-11-26; California
+  first) carries an emoji of its winner (text.face, paintFaces, placed on TIGHT_POS in the square's own group). Emoji read
+  off each member's Wikipedia portrait (mostly official House photos, some later than 2008): gender, hair (white/grey,
+  bald, red/auburn, blond, curly) and skin tone, the tone checked against the member's published background (Black:
+  Lee, Watson, Waters, Richardson; Hispanic: Becerra, Solis, Roybal-Allard, Napolitano, L. Sánchez, Baca, L. Sanchez;
+  Asian American: Matsui, Honda). Emoji have no eye colours.
+  Rest of the nation the same way (grids of the Wikipedia portraits); tones checked against the published lists of
+  Black, Hispanic, Asian / Pacific Islander and Native American members of the 111th Congress: every member on them got a
+  matching tone (OK-4 Tom Cole, Chickasaw: medium-light, as his photo). Centre label "House by race"; the House note explains it;
+  the hover box puts the emoji before the winner's name. URL #house/<year>/race; 2028 or any other race falls back to
+  Results. Web only for now (owner, 2026-11-26): no Race button on phones, and a #…/race link opens Results there,
+  until the web version is finished.
+  Race squares all plain light grey (--fade, the filter grey; was --house, too dark), no party colours (owner, 2026-11-26; were --md0 / --mr0 before); the party
+  keys hide. The tally bar keeps its colours; a party filter still hides the other party's faces.
+  Tally filter in Race (owner, 2026-11-26): the other party's faces disappear, leaving plain grey squares as in any other
+  view (each face carries its winner's party, data-p).
+- Race view, every House year (owner, 2026-11-26): HOUSE_REP / HOUSE_FACE filled for 2010-2026 the same way as 2008 (November
+  winners from each year's Wikipedia wikitext; parties matched HOUSE_WIN everywhere). A member keeps their 2008 emoji;
+  the 732 new members read off their portraits, tones checked against the four Wikipedia minority-member lists (all
+  listed members non-lightest). paintFaces(fc, y) now uses the shown year's map (HOUSE_MAP_OF[y], HOUSE_COL[y]).
+  No name / face: NC 9 2018 (no winner); 2026 uncalled seats (leading D / R, LA 5-6), 419 faces. NC 3 2026: the page has
+  R leading, Wikipedia says Raymond Smith Jr. (D) won, so it is left blank until HOUSE_WIN is updated. No portrait on
+  Wikipedia: Luke Letlow (LA 5 2020), Charlie Hatcher (TN 5 2026), given a plain 👨🏻. No 2028 (projection) faces.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
