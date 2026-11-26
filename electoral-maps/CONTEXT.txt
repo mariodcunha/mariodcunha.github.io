@@ -3160,6 +3160,8 @@ STATUS / NEXT
   Phones show the lock too (owner, 2026-11-26), smaller (12px, 5px from the label), on the side as on the web. It sits by the
   label's text, not its box (placeLock: --in-l / --in-r), so on a label wrapped on two lines ("Rajya Sabha seat share")
   it stays in the centre column, clear of the big numbers. The web keeps hover + click as before.
+- Locked side stays raised (owner, 2026-11-26): web and phones, USA and India, the locked part of the bar keeps its
+  4px lift after the pointer leaves (hovering another part lifts that one meanwhile).
 - Releasing a lock from the centre (owner, 2026-11-26): with a side locked, a click or tap on the centre year or the
   label under it releases it (web and phones, the pinned bar too); hand cursor there while locked. Playback keeps the lock
   through its steps (the tour stays in one country), web and phones: checked.
@@ -3168,6 +3170,10 @@ STATUS / NEXT
   (the November winner; later specials not used). The district hover box (web, House) shows the name on a second line
   ("San Fernando Valley, CA 28, +99.9" / "Howard Berman"). All 435 parties checked against HOUSE_WIN 2008: no mismatch
   (VT's Peter Welch ran with both nominations). Other years: no second line until their names are added.
+- Others key (owner, 2026-11-26): in Margins views whose bar shows the popular vote (House, Senate Seats, Governors), the
+  legend gets a grey square (--house, the bar's middle) "Others", no figure. The figure sits under the bar instead, like
+  India's: "Others 4.7%" (phones "Oth." / "4.7%" on two lines) in --muted grey, centred under the grey part and kept clear
+  of the two side notes (#under-m, placeUsOth; 100 - D% - R%). Both hidden elsewhere (T.vote).
 - Race view (owner, 2026-11-26): a third button, Results / Margins / Race (data-margin="race", colorMode "race"), shown
   only on House years with faces (HOUSE_FACE; 2008-2026, see below). Every district square (all 435, owner 2026-11-26; California
   first) carries an emoji of its winner (text.face, paintFaces, placed on TIGHT_POS in the square's own group). Emoji read
@@ -3179,8 +3185,16 @@ STATUS / NEXT
   Black, Hispanic, Asian / Pacific Islander and Native American members of the 111th Congress: every member on them got a
   matching tone (OK-4 Tom Cole, Chickasaw: medium-light, as his photo). Centre label "House by race"; the House note explains it;
   the hover box puts the emoji before the winner's name. URL #house/<year>/race; 2028 or any other race falls back to
-  Results. Web only for now (owner, 2026-11-26): no Race button on phones, and a #…/race link opens Results there,
-  until the web version is finished.
+  Results. Phones too (owner, 2026-11-26; was web only): the Race button shows there and the faces fill each square (at
+  phone size the browser's smallest text decides the emoji size, so no grey frame shows). Phones have no district
+  box, so no names there, as in Results; the party lock hides the other side's faces as on the web.
+  Year change in Race (owner, 2026-11-26; was an instant swap): a face whose winner changes shrinks out (.22s, .swap), then
+  the new one grows in; faces that come or go scale and fade with the squares (.45s, --ease). Pending swaps are dropped
+  when a newer paint comes (faceGen), so fast clicking or leaving Race mid-swap ends on the right faces. Reduced motion: instant.
+  Play tour (owner, 2026-11-26): after House Margins, House Race with Democrats locked, 2008 to 2026, then Republicans
+  locked, 2026 back to 2008, then Senate as before. Steps carry lit:"d" / "r"; playGo locks through litSet (from the tally
+  code) and the next step releases a lock the tour set (playLit), never one the viewer set. Stop keeps the lock on show;
+  the next Play releases it. Pause / resume finds the step by its lock too (playHere, litGet).
   Race squares all plain light grey (--fade, the filter grey; was --house, too dark), no party colours (owner, 2026-11-26; were --md0 / --mr0 before); the party
   keys hide. The tally bar keeps its colours; a party filter still hides the other party's faces.
   Tally filter in Race (owner, 2026-11-26): the other party's faces disappear, leaving plain grey squares as in any other
@@ -3192,6 +3206,11 @@ STATUS / NEXT
   No name / face: NC 9 2018 (no winner); 2026 uncalled seats (leading D / R, LA 5-6), 419 faces. NC 3 2026: the page has
   R leading, Wikipedia says Raymond Smith Jr. (D) won, so it is left blank until HOUSE_WIN is updated. No portrait on
   Wikipedia: Luke Letlow (LA 5 2020), Charlie Hatcher (TN 5 2026), given a plain 👨🏻. No 2028 (projection) faces.
+- Lok Sabha 2004 winners (owner, 2026-11-26): LS_REP[2004][state] = the winner per square in LS_NAME order, "|" between,
+  from datameet parliament.csv (ls-build/dl, the file the 2004 map was built from; all 543 matched by state + seat name).
+  Names title-cased, nicknames in quotes dropped, "Last, Initials" / "Last. I. I." turned round ("K. M. Kader Mohideen").
+  The seat hover box (web, Results and Margins) shows the name on a second line ("Shahjahanpur, UP, +12.9" / "Kunwar
+  Jitin Prasad"); the box keeps line breaks where it is placed between states (white-space pre-line).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
