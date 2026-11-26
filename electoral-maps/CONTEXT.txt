@@ -3211,6 +3211,15 @@ STATUS / NEXT
   Names title-cased, nicknames in quotes dropped, "Last, Initials" / "Last. I. I." turned round ("K. M. Kader Mohideen").
   The seat hover box (web, Results and Margins) shows the name on a second line ("Shahjahanpur, UP, +12.9" / "Kunwar
   Jitin Prasad"); the box keeps line breaks where it is placed between states (white-space pre-line).
+- Race face fix (owner, 2026-11-26): Alexandria Ocasio-Cortez (NY-14, 2018-2026) is 👩🏻, fair skin and dark
+  hair (owner's call; Latina, Puerto Rican descent); was 👩🏼 (lighter brown hair), then briefly 👩🏽.
+- House hover box (owner, 2026-11-26): the winner's face emoji before their name in Results and Margins too, not only
+  in Race (every year with HOUSE_FACE).
+- Dark names on Margins shades (owner, 2026-11-26): only the three lightest steps (--md0-2 / --mr0-2) take dark text
+  (PALE_SHADE); the two darker steps take white like full colour, e.g. WA in Senate Seats. Same rule for the State units
+  codes and the map's name pills.
+- Senate tiles under a filter (owner, 2026-11-26): each name and lead follows its own tile: a kept tile keeps its white /
+  dark text, a faded tile turns --fade-fg (was: any state with a faded tile turned its kept tile's name black). Web and phones.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
