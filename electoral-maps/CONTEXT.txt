@@ -3140,6 +3140,34 @@ STATUS / NEXT
 - India legends (owner, 2026-11-24): the paragraph ends with a sentence on who the Others are (.oth-note).
 - Bar hover growth (owner, 2026-11-24): the hovered part(s) of the tally bar (main + light shades, or a middle part)
   grow 4px upwards (.bar[data-up]); the majority mark rises too if it stands on them.
+- DC on President Electoral (owner, 2026-11-26): its three electoral votes drawn as three squares, an L (one on top, two
+  below) at CHAMBER cells 38,17 / 38,18 / 39,18 (no TIGHT_SHIFT), right of Virginia's bottom row, one square clear of
+  Virginia, Maryland and Delaware. Every year 2008-2028, Results and Margins (DC's MARGINS; 2028: PROJ28), counted as before;
+  named "DC" (with its lead in Margins). Not drawn on District or any other race. PACK_US always packs DC's cells (no shift
+  between races) and names it only when drawn (PACK_US.dc; layouts cached with "dc"). State over time: DC's three squares.
+- Phone toggles with short labels (.lsctl.pshort, owner 2026-11-26): no longer equal halves. A short button (R, M, Elec.,
+  Gov., Seat %) takes only the width its letters need (8px a side) and the selected one, full label, takes the rest; the
+  groups size to their content too (gap 6px). Toggles whose full labels fit stay equal. Desktop's short bar was already
+  sized by content.
+- View toggles glide (owner, 2026-11-26): every .subtoggle (Results / Margins, Electoral / District, Governors / Units,
+  All / Representation / Seats, Govts. / Seat %, Lok Sabha shares, Map / Compact) has its own thumb (.sthumb, class glide)
+  that slides to the pressed button like the race toggle (.38s, same ease), following its width as labels go short / full
+  (ResizeObserver). A group just shown gets its thumb in place without sliding. Phones and web.
+- Tally lock on phones and touch screens (owner, 2026-11-26): no hover there, so a tap on a side (its number and name, its
+  part of the bar, or its words under the bar) locks the filter at once and that part of the bar stays raised 4px; tapping it
+  again releases, tapping another side moves the lock. India: the big INDIA / NDA labels lock the whole alliance, the bar
+  parts and their words one group each (phones put "Congress 21.2%" / "Allies 20.3%" on two lines: each line is its group).
+  Phones show the lock too (owner, 2026-11-26), smaller (12px, 5px from the label), on the side as on the web. It sits by the
+  label's text, not its box (placeLock: --in-l / --in-r), so on a label wrapped on two lines ("Rajya Sabha seat share")
+  it stays in the centre column, clear of the big numbers. The web keeps hover + click as before.
+- Releasing a lock from the centre (owner, 2026-11-26): with a side locked, a click or tap on the centre year or the
+  label under it releases it (web and phones, the pinned bar too); hand cursor there while locked. Playback keeps the lock
+  through its steps (the tour stays in one country), web and phones: checked.
+- House district winners (owner, 2026-11-26), 2008 only for now: HOUSE_REP[2008][state] = names by district number,
+  "|" between them, parsed from Wikipedia's "2008 United States House of Representatives elections" district tables
+  (the November winner; later specials not used). The district hover box (web, House) shows the name on a second line
+  ("San Fernando Valley, CA 28, +99.9" / "Howard Berman"). All 435 parties checked against HOUSE_WIN 2008: no mismatch
+  (VT's Peter Welch ran with both nominations). Other years: no second line until their names are added.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
