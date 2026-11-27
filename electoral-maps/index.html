@@ -46,7 +46,7 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 /* Race toggle with a sliding thumb */
 .toggle{position:relative;justify-self:start;display:inline-flex;background:var(--chip);border-radius:var(--r-out);padding:3px;gap:2px}
 .toggle .thumb{position:absolute;top:3px;bottom:3px;left:3px;width:0;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);transition:left .38s var(--ease),width .38s var(--ease)}
-.toggle button{position:relative;z-index:1;font:600 13px/1 var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 16px;cursor:pointer;transition:color .25s}
+.toggle button{position:relative;z-index:1;font:600 13px/1 var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 8px;cursor:pointer;transition:color .25s}   /* 8px a side, every toggle, web and phones (owner, 2026-11-26) */
 .toggle button:hover{color:var(--fg)}
 .toggle button[aria-selected="true"]{color:#fff}
 .toggle button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
@@ -128,7 +128,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 /* Top-bar controls: year stepper (all races with data) + seat share / vote share (Lok Sabha only) */
 .lsctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .subtoggle{display:inline-flex;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
-.subtoggle button{font:600 13px/1 var(--sans);color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 11px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+.subtoggle button{font:600 13px/1 var(--sans);color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 8px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
 .subtoggle button:hover{color:var(--fg)}
 .subtoggle button[aria-pressed="true"]{background:var(--sel);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.16)}
 .subtoggle button:focus-visible{outline:2px solid var(--inc);outline-offset:2px}
@@ -277,6 +277,11 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 /* House, web (owner, 2026-11-10): the hovered square gets a white inner border, so it reads as shrinking a little; a wide
    white stroke clipped to the square's own box, so it only grows inward */
 #map-us.blocks-wait .sq{opacity:0;transition:none} #map-us.blocks-in .sq{transition:opacity .5s var(--ease)!important;transition-delay:0s!important}   /* Units -> Senate All: blocks after the morph */
+/* Race and Religion (owner, 2026-11-26): the hovered cell takes the other theme's grey, dark in light mode, light in dark mode */
+#map-us.race .sq.hov,#map-india.rel .st-dot.hov{fill:#292929!important;transition:none!important;clip-path:none!important}   /* no white border here: the flip alone (owner, 2026-11-26) */
+#map-us.race .sq.hov{stroke-width:1px!important} #map-india.rel .st-dot.hov{stroke-width:.86!important}   /* each map's usual hairline */
+#map-us.race .sq.hov-off,#map-india.rel .st-dot.hov-off{transition:none!important}   /* immediate both ways: on, and back the moment the pointer leaves (owner, 2026-11-26) */
+html.dark #map-us.race .sq.hov,html.dark #map-india.rel .st-dot.hov{fill:#f1f1f1!important}
 #map-us .sq{stroke-width:1px} #map-us .sq.hov{stroke:var(--bg);stroke-width:7px;clip-path:inset(0) fill-box;transition:stroke-width .15s var(--ease),fill .45s var(--ease)}
 /* India, each party group on its own (owner, 2026-11-24): .lit-inc, .lit-india (Congress allies), .lit-oth, .lit-nda (BJP allies),
    .lit-bjp. Margins shade a party and its allies alike, so there each square carries its own group (data-p); elsewhere its
@@ -411,12 +416,12 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .credit-top{display:block;font-size:12px;line-height:15px;color:var(--muted)}
   #panel-us.pct #need{display:none}
   .topbar{min-height:37px}
-  .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-self:stretch}
-  .toggle button{flex:1 1 0;padding-inline:4px;white-space:nowrap}
+  .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-self:stretch}   /* edge to edge (owner, 2026-11-26) */
+  .toggle button{flex:1 0 auto;padding-inline:8px;white-space:nowrap}   /* each its words + 8px a side, the spare room shared out evenly */
   .lsctl{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(62px + env(safe-area-inset-bottom));justify-content:space-between;flex-wrap:nowrap;gap:8px}
-  .lsctl .subtoggle{flex:1;display:flex;min-width:0}
+  .lsctl .subtoggle{flex:1 0 auto;display:flex;min-width:0}   /* the groups fill the row next to the year (owner, 2026-11-26) */
   .lsctl #margin-view{order:1} .lsctl #gov-view,.lsctl #sen-view,.lsctl #pdist-view{order:2}   /* phones: year, Results / Margins, then Units / Governors on the right (owner, 2026-11-12) */
-  .lsctl .subtoggle button{flex:1 1 0;padding-inline:4px;font-size:12.5px;white-space:nowrap}
+  .lsctl .subtoggle button{flex:1 0 auto;padding-inline:8px;font-size:12.5px;white-space:nowrap}
   body::after{content:"";position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(124px + env(safe-area-inset-bottom));
     background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),var(--bg) 22px);pointer-events:none}
   #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 var(--edge);
@@ -477,8 +482,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 .lsctl.pshort .subtoggle button:not([aria-pressed="true"]) .lbl-f{display:none}
 .lsctl.pshort .subtoggle button:not([aria-pressed="true"]) .lbl-s{display:inline}
 /* ...and the short ones take only the room their letters need, so the selected one gets the rest (owner, 2026-11-26) */
-.lsctl.pshort{gap:6px} .lsctl.pshort .subtoggle{flex:1 1 auto} .lsctl.pshort .subtoggle button:not([aria-pressed="true"]){flex:0 0 auto;padding-inline:8px} .lsctl.pshort .subtoggle button[aria-pressed="true"]{flex:1 1 auto;padding-inline:8px}
-.topbar.short,.topbar.short .lsctl{gap:6px} .topbar.short .toggle button{padding-inline:12px} .topbar.short .subtoggle button{padding-inline:8px}
+.lsctl.pshort{gap:6px}   /* every button already takes only its words plus 8px a side (owner, 2026-11-26) */
+.topbar.short,.topbar.short .lsctl{gap:6px} .topbar.short .toggle button,.topbar.short .subtoggle button{padding-inline:8px}
 </style>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">   <!-- the page's own icon, from Figma Frame 1681 (owner, 2026-11-22) -->
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -526,6 +531,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
       <button type="button" data-margin="results" aria-pressed="true">Results</button>
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
+      <button type="button" data-margin="power" aria-pressed="false" hidden>Representation</button>   <!-- Senate, web: Results / Margins / Representation in one toggle, no All (owner, 2026-11-26) -->
       <button type="button" data-margin="race" aria-pressed="false" hidden>Race</button>   <!-- House 2008 (owner, 2026-11-26) -->
       <button type="button" data-margin="religion" aria-pressed="false" hidden>Religion</button>   <!-- Lok Sabha 2009 (owner, 2026-11-26) -->
     </div>
@@ -1805,7 +1811,7 @@ function setUS(race,animate,year=usYear(race)){
 function setUSRoute(race,animate,year){
   // a state over time on show: the Results / Margins toggle recolours it; anything else takes the map back first
   if(over){if(animate&&race===over.race&&year===over.year){setUSNow(race,animate,year); overPaint(); return} overExit(animate)}
-  if(senSeatsOnly.matches) senMode="seats";   // phones and short-label widths (owner, 2026-11-07 / 11-09): Senate is Seats only, with Results / Margins
+  // phones get Representation too now (owner, 2026-11-26; was Seats only on phones and short-label widths, 2026-11-07 / 11-09)
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
   // Senate Seats in Margins -> All / Representation (owner, 2026-11-10): the tiles start fading to their Results colours (the
   // .45s fill transition) and 120ms later begin morphing into the circles, the fade finishing on the way. colorMode itself stays, so Seats comes back in Margins.
@@ -2025,9 +2031,12 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
   document.getElementById("gov-view").hidden=!statesTab;
   document.querySelectorAll("[data-gov]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gov===govMode));
-  document.getElementById("margin-view").hidden=fut||(legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&sm==="seats"&&SEN_MARGINS[year]));
+  const senOne=race==="senate"&&!legOn()&&!fut;   // Senate, web and phones (owner, 2026-11-26): one toggle, Results / Margins / Representation
+  document.getElementById("margin-view").hidden=fut||(legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&(sm==="seats"&&SEN_MARGINS[year]||senOne)));
   document.querySelector('[data-margin="race"]').hidden=!(race==="house"&&HOUSE_FACE[year]); document.querySelector('[data-margin="religion"]').hidden=true;
+  document.querySelector('[data-margin="power"]').hidden=!senOne;   // Senate on the web: Representation sits in the Results / Margins toggle
   paintFaces(race==="house"&&colorMode==="race"&&HOUSE_FACE[year],year);
+  usSvg.classList.toggle("race",!!(race==="house"&&colorMode==="race"&&HOUSE_FACE[year]));   // Race: the hovered cell flips light / dark
   // Race: every square plain grey, no party colours, so only the faces show (owner, 2026-11-26); no party keys then
   document.getElementById("h-note").textContent=race==="house"&&colorMode==="race"?"Race: each district's winner as an emoji, from their published photo: gender, hair and skin tone, the tone checked against their stated background. A rough stand-in: emoji have five skin tones and no eye colours.":race==="house"&&marginsOn()&&HOUSE_MARGINS[year]?"Darker shades mean a wider win in that district: full colour is 20 points or more, the lightest is under 4."+(y26?" Leading and no-result seats stay as in Results. 2026 margins use current counts and may change.":c.v?" The vacant seat stays grey.":""):"";
   const mOn={house:marginsOn()&&HOUSE_MARGINS[year],president:marginsOn(),governors:marginsOn()&&GOV_MARGINS[year],senate:sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]};
@@ -2037,7 +2046,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.getElementById("mid-year").textContent=year;
   document.getElementById("mid-label").textContent=legOn()?(fut?"State units projection":legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?(fut?"President projection":usDist?(narrow.matches?"By district ":"President by district ")+rm(marginsOn()):"President "+rm(marginsOn())):race==="house"?(fut?"House projection":colorMode==="race"?"House by race":"House "+rm(marginsOn()&&HOUSE_MARGINS[year])):
     race==="governors"?(fut?"Governors projection":"Governors "+rm(marginsOn()&&GOV_MARGINS[year])):fut?"Senate projection":sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+rm(marginsOn("senate")&&SEN_MARGINS[year]):"Senate representation";
-  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===colorMode));
+  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===(race==="senate"&&sm==="power"?"power":colorMode)));
   document.getElementById("leg-vacant").hidden=!c.v||y26||fut;
   document.getElementById("house-keys").hidden=y26||fut||colorMode==="race";   // Race: no party keys (owner, 2026-11-26)
   // 2028 (owner, 2026-11-12): the President projection's keys and note; every other race says it has no results yet
@@ -2058,7 +2067,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.querySelectorAll("[data-pres]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pres===presMode));
   document.getElementById("pres-view").hidden=true;   // USA: Compact only
   // 2026: legend for the races on the ballot
-  document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches||legOn();   // phones / short labels: Seats only, no view toggle
+  document.getElementById("sen-view").hidden=true;   // All / Representation / Seats retired (owner, 2026-11-26): Representation is in the Results / Margins toggle; no All
   ["house","senate","governors"].forEach(r=>{const box=document.getElementById("proj-"+r); box.innerHTML=y26&&r===race?projLegend(race,race==="governors"?g26:c):
     fut&&r==="house"&&race==="house"?`<span><i class="sw" style="background:var(--dem)"></i>Likely Democrat (${c.d})</span><span><i class="sw" style="background:${ALT_PROJ.D}"></i>Leaning Democrat (${c.D})</span><span><i class="sw" style="background:var(--house)"></i>Toss-up (${c.v})</span><span><i class="sw" style="background:${ALT_PROJ.R}"></i>Leaning Republican (${c.R})</span><span><i class="sw" style="background:var(--rep)"></i>Likely Republican (${c.r})</span>`:
     fut&&r==="governors"&&race==="governors"&&!legOn()?`<span class="kd"><i class="sw" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${g26.D})</span><span class="kt"><i class="sw" style="background:var(--house)"></i>Toss-up (${g26.v})</span><span class="kr"><i class="sw" style="background:${ALT_PROJ.R}"></i>Likely Republican (${g26.R})</span>`:
@@ -3273,7 +3282,7 @@ function show(race,animate){
   if(!countryOf(race)) race="governors";   // no or unknown #hash: the page opens on Governors, latest year (owner, 2026-11-06)
   if(race===current) return;
   statesTab=race==="governors"; if(!statesTab&&senKeep!=null){senMode=senKeep; senKeep=null}
-  if(race==="senate"&&current&&!senPicked) senMode="all";
+  if(race==="senate"&&current&&!senPicked) senMode="seats";   // Senate opens on Results (owner, 2026-11-26; was All)
   setCountryUI(countryOf(race));
   const tab=tabs.find(t=>t.dataset.race===race);
   tabs.forEach(t=>{const on=t===tab;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1});
@@ -3283,7 +3292,7 @@ function show(race,animate){
   // year stepper for every race (Governors: 2024 only for now); seat/vote share only for Lok Sabha
   document.getElementById("year").hidden=!(race==="loksabha"||race==="states"||race==="rajyasabha"||countryOf(race)==="usa");
   document.getElementById("ls-share").hidden=true;   // Lok Sabha is Results / Margins only: no Seats, Seat % or Vote % (owner, 2026-11-22)
-  document.getElementById("sen-view").hidden=race!=="senate"||senSeatsOnly.matches;
+  document.getElementById("sen-view").hidden=true;
   document.getElementById("gov-view").hidden=race!=="governors";
   document.getElementById("pdist-view").hidden=race!=="president";   // setUS narrows this down (years in PRES_CD)
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
@@ -3315,7 +3324,9 @@ document.querySelectorAll("[data-gov]").forEach(b=>b.addEventListener("click",()
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 document.querySelectorAll("[data-pdist]").forEach(b=>b.addEventListener("click",()=>{const on=b.dataset.pdist==="district";
   if(on!==presDist){presDist=on; setUS("president",true)}}));
-document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(inRace==="states"){if(b.dataset.margin!==stColor){stColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
+document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(inRace==="states"){if(b.dataset.margin!==stColor){stColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin==="power"){if(senMode!=="power"){senPicked=true; senMode="power"; setUS("senate",true)}}   // Senate Representation
+  else if(usRace==="senate"&&senMode!=="seats"){senPicked=true; senMode="seats"; colorMode=b.dataset.margin; setUS("senate",true)}   // back from Representation
+  else if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
 // the year stepper: next to Play on desktop, first in the toggle row on phones (owner, 2026-11-12)
 function placeYear(){const y=document.getElementById("year"), play=document.getElementById("play"), ctl=document.getElementById("controls");
   if(narrow.matches){if(y.parentNode!==ctl) ctl.prepend(y)} else if(y.nextElementSibling!==play) play.before(y)}
@@ -3331,7 +3342,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
 // same white inner border as the House map. Only in Seats (each square one real seat); Seat % / Vote % squares are not seats.
 (function seatHover(){
   const box=document.getElementById("seat-name"), hover=matchMedia("(hover:hover)"); let hov=null, own=null, ownKey="";
-  const lit=e=>{if(hov===e) return; hov?.classList.remove("hov"); hov=e; e?.classList.add("hov")};
+  const lit=e=>{if(hov===e) return; const o=hov; if(o){o.classList.add("hov-off"); o.classList.remove("hov"); requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.remove("hov-off")))} hov=e; e?.classList.add("hov")};   // hov-off: Race / Religion snap back, no fade
   const off=()=>{box.classList.remove("on"); lit(null)};
   // where the name goes (owner, 2026-11-22): in the map's own empty space. North (to Bengal and the North-East): right of
   // Uttarakhand and Delhi, left of Sikkim, above Bihar. South (Maharashtra, Odisha and below): the same width, in the Bay of
@@ -3361,7 +3372,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   for(const k in HSQ) HSQ[k].forEach((e,j)=>own.set(e,[k,j]));
   const NAME={...US_FULL,NY:"New York",WI:"Wisconsin"};
   const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
-  let hov=null; const lit=e=>{if(hov===e) return; hov?.classList.remove("hov"); hov=e; e?.classList.add("hov")};
+  let hov=null; const lit=e=>{if(hov===e) return; const o=hov; if(o){o.classList.add("hov-off"); o.classList.remove("hov"); requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.remove("hov-off")))} hov=e; e?.classList.add("hov")};   // hov-off: Race / Religion snap back, no fade
   const off=()=>{box.classList.remove("on"); lit(null)};
   // Units (owner, 2026-11-11): the governor / Senate / House bar under the pointer, or a Trifecta's whole square, named the
   // same way: "Texas, Governor", "Texas, Senate", "Texas, House", "California, Trifecta (Governor, Senate, House)"
@@ -3560,7 +3571,7 @@ function playSteps(){
   pass("house","results",UY); pass("house","margins",UY);
   // House Race (owner, 2026-11-26): Democrats locked, first year to last; then Republicans locked, back to the first year
   const RY=UY.filter(y=>HOUSE_FACE[y]); RY.forEach(year=>list.push({race:"house",mode:"race",year,lit:"d"})); [...RY].reverse().forEach(year=>list.push({race:"house",mode:"race",year,lit:"r"}));
-  if(!senSeatsOnly.matches){pass("senate","results",UY.slice(0,1),"all"); pass("senate","results",UY.slice(0,1),"power")}   // phones: Seats only
+  // no Senate All or Representation in the tour, web or phones (owner, 2026-11-26): Seats results, then margins
   pass("senate","results",UY,"seats"); pass("senate","margins",UY,"seats");
   UY.forEach(year=>list.push({race:"governors",mode:"results",year,gov:"gov"})); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"gov"}));
   list.push({race:"governors",mode:"results",year:UY[0],gov:"leg"}); UY.forEach(year=>list.push({race:"governors",mode:"margins",year,gov:"leg"}));
@@ -3609,8 +3620,8 @@ function ttViews(country){const Y=2024;
     ["President electoral results",{race:"president",mode:"results",year:Y}],["President electoral margins",{race:"president",mode:"margins",year:Y}],
     ["President district results",{race:"president",mode:"results",year:Y,dist:true}],["President district margins",{race:"president",mode:"margins",year:Y,dist:true}],
     ["House results",{race:"house",mode:"results",year:Y}],["House margins",{race:"house",mode:"margins",year:Y}],["House race",{race:"house",mode:"race",year:Y}],
-    ...(senSeatsOnly.matches?[]:[["Senate all",{race:"senate",mode:"results",year:Y,sen:"all"}],["Senate representation",{race:"senate",mode:"results",year:Y,sen:"power"}]]),   // phones: Seats only
-    ["Senate seats results",{race:"senate",mode:"results",year:Y,sen:"seats"}],["Senate seats margins",{race:"senate",mode:"margins",year:Y,sen:"seats"}],
+    ["Senate results",{race:"senate",mode:"results",year:Y,sen:"seats"}],["Senate margins",{race:"senate",mode:"margins",year:Y,sen:"seats"}],
+    ["Senate representation",{race:"senate",mode:"results",year:Y,sen:"power"}],   // the Senate toggle's order (owner, 2026-11-26)
     ["Governors results",{race:"governors",mode:"results",year:Y,gov:"gov"}],["Governors margins",{race:"governors",mode:"margins",year:Y,gov:"gov"}],
     ["State units results",{race:"governors",mode:"results",year:Y,gov:"leg"}],["State units margins",{race:"governors",mode:"margins",year:Y,gov:"leg"}]]}
 // one view, the way its own toggle would draw it (one morph, no year change)
@@ -3671,8 +3682,8 @@ addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",s
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false);
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 // Short labels: P / H / S / G, LS / RS, R / M ... for the buttons not selected, only when the full top bar would wrap
-{const SHORT={president:"P",house:"H",senate:"S",governors:"St",loksabha:"LS",rajyasabha:"RS",
-   "margin:results":"R","margin:margins":"M","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"Govts.","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
+{const SHORT2={"gov:leg":"U","gov:gov":"G","pdist:district":"D","pdist:electoral":"E","st:seats":"%","st:cm":"G","margin:power":"Rep."}, SHORT={president:"P",house:"H",senate:"S",governors:"St",loksabha:"LS",rajyasabha:"RS",
+   "margin:results":"R","margin:margins":"M","margin:power":"Rep.","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"Govts.","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
  const bar=document.querySelector(".topbar");
  bar.querySelectorAll(".toggle button,.subtoggle button").forEach(b=>{
    const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];
@@ -3691,10 +3702,12 @@ document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);i
    const t=tabs.find(t=>t.getAttribute("aria-selected")==="true"); if(t) moveThumb(t,was===bar.classList.contains("short"));
    // phones: short labels when any toggle's label is left with under 8px of padding a side (it reads cramped or clips)
    const ctl=bar.querySelector(".lsctl"); ctl.classList.remove("pshort");
-   if(narrow.matches&&[...ctl.querySelectorAll(".subtoggle button")].some(b=>{const f=b.querySelector(".lbl-f"); return shown(b)&&f&&f.getBoundingClientRect().width+16>b.clientWidth})) ctl.classList.add("pshort");
-   // Governors picked and "Units" still running past its button: "U" (owner, 2026-11-23)
-   const uf=ctl.querySelector('[data-gov="leg"] .lbl-s'); uf.textContent="Units";
-   if(ctl.classList.contains("pshort")&&shown(uf)&&uf.getBoundingClientRect().right+4>document.getElementById("gov-view").getBoundingClientRect().right) uf.textContent="U";
+   // (owner, 2026-11-26) buttons are as wide as their words now, so: short labels once the row runs past the screen's edge
+   const R=ctl.getBoundingClientRect().right, over=()=>[...ctl.children].filter(shown).some(e=>e.getBoundingClientRect().right>R+1);
+   ctl.querySelectorAll(".lbl-s").forEach(e=>e.textContent=e.dataset.s1??=e.textContent);   // back to the first short forms
+   if(narrow.matches&&over()){ctl.classList.add("pshort");
+     // still past the edge: the unpicked buttons go down to one letter (Units -> U, Dist. -> D, Seat % -> %...; owner, 2026-11-23 / 11-26)
+     if(over()) ctl.querySelectorAll(".subtoggle button").forEach(b=>{const k=Object.keys(b.dataset).map(k=>k+":"+b.dataset[k])[0], t=SHORT2[k], e=b.querySelector(".lbl-s"); if(t&&e) e.textContent=t})}
    fitIndia(); busy=false};
  new MutationObserver(fit).observe(bar,{subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-selected","hidden"]});
  new MutationObserver(fit).observe(document.getElementById("play"),{attributes:true,attributeFilter:["class"]});   // Play widens while the tour runs
@@ -3731,7 +3744,7 @@ function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.sli
     colorMode=has("results")?"results":has("race")?"race":"margins";
     if(race==="governors") govMode=has("units")?"leg":"gov";
     if(race==="president") presDist=has("district");
-    if(race==="senate"){const m=["all","power","seats"].find(has); if(m){senMode=m; senPicked=true; senKeep=null}}
+    if(race==="senate"){const m=["all","power","seats"].find(has); if(m){senMode=m==="all"?"seats":m; senPicked=true; senKeep=null}}   // an old #senate/.../all link opens Results
     if(y&&usYearsOf(race).includes(y)) usYearPick=y; else if(!y) usYearPick=2026;
     if(race!==current) show(race,animate); else {usStep(race); setUS(race,animate)}
   } else {
