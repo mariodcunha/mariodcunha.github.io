@@ -3596,7 +3596,7 @@ playLeft.addEventListener("click",()=>playPaused?stopPlay():pausePlay());
 // then A -> the next type, and so on, so each type morphs into every other one both ways, at normal speed with a long pause
 // between. The caption names each step. Press the button again (or any other control) to stop.
 var ttLive=false;
-const ttBtn=document.getElementById("ttest"), ttCap=document.getElementById("ttest-cap"), TT_PAUSE=3500;
+const ttBtn=document.getElementById("ttest"), ttCap=document.getElementById("ttest-cap"), TT_PAUSE=1000+1000;   /* about 1s for the morph itself, then a 1s wait (owner, 2026-11-26; was 3.5s, then 2.5s) */
 let ttRun=0;
 ttBtn.hidden=!new URLSearchParams(location.search).has("transitions");
 function ttViews(country){const Y=2024;
