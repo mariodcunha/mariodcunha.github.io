@@ -35,7 +35,7 @@ html.theming *,html.theming *::before,html.theming *::after{transition:none!impo
 #ttest{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer;margin-left:8px} #ttest[hidden]{display:none} #ttest svg{width:16px;height:16px} #ttest:hover{color:var(--fg)} #ttest.on{background:var(--sel);color:#fff}
 #ttest-cap{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);padding:7px 12px;border-radius:var(--r-out);background:var(--sel);color:#fff;font:500 12.5px/1.3 var(--sans);text-align:center;pointer-events:none} #ttest-cap[hidden]{display:none}
 @media (max-width:775px){#ttest-cap{bottom:calc(124px + env(safe-area-inset-bottom))}}   /* phones: just above the pinned controls */
-#theme{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer}
+#theme{display:grid;place-items:center;flex:none;width:38px;height:38px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer}
 html.dark #theme{color:var(--muted)} #theme:hover,html.dark #theme:hover{color:var(--fg)} #theme:focus-visible{outline:2px solid var(--dem);outline-offset:2px} #theme svg{width:16px;height:16px}
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -46,7 +46,7 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 /* Race toggle with a sliding thumb */
 .toggle{position:relative;justify-self:start;display:inline-flex;background:var(--chip);border-radius:var(--r-out);padding:3px;gap:2px}
 .toggle .thumb{position:absolute;top:3px;bottom:3px;left:3px;width:0;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);transition:left .38s var(--ease),width .38s var(--ease)}
-.toggle button{position:relative;z-index:1;font:600 13px/1 var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 8px;cursor:pointer;transition:color .25s}   /* 8px a side, every toggle, web and phones (owner, 2026-11-26) */
+.toggle button{position:relative;z-index:1;font:600 13px/12px var(--sans);letter-spacing:.01em;color:var(--muted);background:none;border:0;border-radius:var(--r-in);height:32px;padding:10px 12px;cursor:pointer;transition:color .25s}   /* 8px a side, every toggle, web and phones (owner, 2026-11-26) */
 .toggle button:hover{color:var(--fg)}
 .toggle button[aria-selected="true"]{color:#fff}
 .toggle button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
@@ -58,8 +58,8 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 .topbar>#year{margin-left:auto} .topbar>#year~#play{margin-left:0}
 /* Play: one button at rest; while the tour runs it extends into a two-part toggle, Pause (later Stop) and the speed */
 #play{position:relative;margin-left:auto;display:inline-flex;padding:3px;background:var(--chip);border-radius:var(--r-out)}
-#play .pthumb{position:absolute;top:3px;bottom:3px;right:3px;width:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);opacity:0;transition:transform .3s var(--ease),opacity .2s}
-#play button{position:relative;z-index:1;display:grid;place-items:center;width:31px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);font:600 13px/1 var(--sans);cursor:pointer;transition:color .25s,width .3s var(--ease),margin .3s var(--ease),opacity .2s}
+#play .pthumb{position:absolute;top:3px;bottom:3px;right:3px;width:32px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);opacity:0;transition:transform .3s var(--ease),opacity .2s}
+#play button{position:relative;z-index:1;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);font:600 13px/1 var(--sans);cursor:pointer;transition:color .25s,width .3s var(--ease),margin .3s var(--ease),opacity .2s}
 #play button svg{width:14px;height:14px}
 #play button:hover{color:var(--fg)} #play button.on,#play button.on:hover{color:#fff}
 #play button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
@@ -67,10 +67,10 @@ main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;
 #play.idle #play-left{width:0;opacity:0;visibility:hidden}
 #play:not(.idle) #play-left{margin-right:2px}
 #play:not(.idle) .pthumb{opacity:1}
-#play.paused .pthumb{transform:translateX(-33px)}
+#play.paused .pthumb{transform:translateX(-34px)}
 .country{position:relative}
 .country>button{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--muted);background:var(--chip);border:0;border-radius:var(--r-out);padding:3px;cursor:pointer}
-.country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-in);height:31px;padding:0 12px 0 10px}
+.country>button .face{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-in);height:32px;padding:0 12px 0 10px}
 .country>button:focus-visible{outline:2px solid var(--dem);outline-offset:2px} .country>button:hover{color:var(--fg)}   /* text and arrow in the toggle labels' grey, darker on hover like them (owner, 2026-11-09) */
 .country .chev{width:10px;height:10px;transition:transform .25s var(--ease)}
 .country>button[aria-expanded="true"] .chev{transform:rotate(180deg)}
@@ -128,7 +128,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 /* Top-bar controls: year stepper (all races with data) + seat share / vote share (Lok Sabha only) */
 .lsctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .subtoggle{display:inline-flex;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
-.subtoggle button{font:600 13px/1 var(--sans);color:var(--muted);background:none;border:0;border-radius:var(--r-in);padding:9px 8px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+.subtoggle button{font:600 13px/12px var(--sans);color:var(--muted);background:none;border:0;border-radius:var(--r-in);height:32px;padding:10px 12px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
 .subtoggle button:hover{color:var(--fg)}
 .subtoggle button[aria-pressed="true"]{background:var(--sel);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.16)}
 .subtoggle button:focus-visible{outline:2px solid var(--inc);outline-offset:2px}
@@ -138,7 +138,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .subtoggle .sthumb{position:absolute;top:3px;bottom:3px;left:3px;width:0;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);transition:left .38s var(--ease),width .38s var(--ease)}
 /* Year stepper: < year >, the year sits on a drum that rolls like a meter when it changes */
 .stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
-.stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
+.stepper button{display:grid;place-items:center;width:30px;height:32px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
 #race-step{display:none}
 /* the race stepper's window (owner, 2026-11-26): the picked race in the dark pill, its neighbours peeking out faded on either side, cut off at the edges */
@@ -151,7 +151,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .stepper button:hover:not(:disabled){background:var(--press);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
 .stepper button:disabled{color:var(--off);cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
-.stepper .win{position:relative;width:52px;height:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
+.stepper .win{position:relative;width:52px;height:32px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
 .stepper .view{position:absolute;inset:0;perspective:220px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
 .stepper .drum{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transition:transform .6s var(--ease)}
 .stepper .face{position:absolute;left:-22px;width:44px;top:-10px;height:20px;text-align:center;font:600 13px/20px var(--sans);color:#fff;font-variant-numeric:tabular-nums;backface-visibility:hidden;-webkit-backface-visibility:hidden}
