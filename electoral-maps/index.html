@@ -140,6 +140,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
 .stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
+#race-step{display:none} .rstep .win{width:auto;min-width:76px;padding:0 12px;display:grid;place-items:center} .rstep .rlab{font:600 13px/31px var(--sans);color:#fff;white-space:nowrap;transition:opacity .18s var(--ease)} .rstep .rlab.swap{opacity:0}
 .stepper button:hover:not(:disabled){background:var(--press);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
 .stepper button:disabled{color:var(--off);cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
@@ -427,9 +428,15 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .credit-top{display:block;font-size:12px;line-height:15px;color:var(--muted)}
   #panel-us.pct #need{display:none}
   .topbar{min-height:37px}
-  .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-self:stretch}   /* edge to edge (owner, 2026-11-26) */
+  .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:none!important;justify-self:stretch}   /* phones: the race stepper instead (owner, 2026-11-26) */
+  /* bottom row (owner, 2026-11-26): the year on the left, the race stepper on the right; the view toggles fill the row above */
+  /* the two steppers share the row edge to edge, 8px between: the year a fixed 128px (four digits), the race stepper the rest; middles stretch (owner, 2026-11-26) */
+  #race-step{display:flex;position:fixed;z-index:20;left:calc(16px + 128px + 8px);right:16px;bottom:calc(12px + env(safe-area-inset-bottom))}
+  .lsctl #year{display:flex;position:fixed;z-index:20;left:16px;width:128px;bottom:calc(12px + env(safe-area-inset-bottom))}
+  #race-step .win,.lsctl #year .win{flex:1 1 auto;width:auto;min-width:0}
   .toggle button{flex:1 0 auto;padding-inline:8px;white-space:nowrap}   /* each its words + 8px a side, the spare room shared out evenly */
   .lsctl{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(62px + env(safe-area-inset-bottom));justify-content:space-between;flex-wrap:nowrap;gap:8px}
+  .lsctl .subtoggle{flex:1 1 0!important}   /* the view toggles share the whole row (owner, 2026-11-26) */
   .lsctl .subtoggle{flex:1 0 auto;display:flex;min-width:0}   /* the groups fill the row next to the year (owner, 2026-11-26) */
   .lsctl #margin-view{order:1} .lsctl #gov-view,.lsctl #sen-view,.lsctl #pdist-view{order:2}   /* phones: year, Results / Margins, then Units / Governors on the right (owner, 2026-11-12) */
   .lsctl .subtoggle button{flex:1 0 auto;padding-inline:8px;font-size:12.5px;white-space:nowrap}
@@ -516,6 +523,12 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <button role="tab" id="tab-rajyasabha" data-race="rajyasabha" data-country="india" hidden>Rajya Sabha</button>
     <button role="tab" id="tab-states" data-race="states" data-country="india" hidden>States</button>
   </nav>
+  <!-- phones (owner, 2026-11-26): the race tabs become a stepper like the year's, bottom right -->
+  <div class="stepper rstep" id="race-step" role="group" aria-label="Race">
+    <button type="button" class="prev" aria-label="Previous race"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M6.5 2l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span class="win"><span class="rlab" aria-live="polite"></span></span>
+    <button type="button" class="next" aria-label="Next race"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
   <div class="lsctl" id="controls">
     <div class="stepper" id="year" role="group" aria-label="Election year">
       <button type="button" class="prev" aria-label="Earlier election"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M6.5 2l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2320,7 +2333,7 @@ function renderLS(animate){
   const geoNote=document.getElementById("ls-geo"); geoNote.dataset.text??=geoNote.textContent;
   geoNote.textContent=lsMode==="geo"&&LS_GEO[year]?`Each square is one constituency, placed roughly where it lies within its state${year===2004?" (2004 used the constituencies from before the 2008 redrawing; their positions are approximate)":""}.`:geoNote.dataset.text;
   document.querySelectorAll("[data-ls]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ls===lsMode));
-  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true;   // Results / Margins: Seats, years with margins
+  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true;   // Results / Margins: Seats, years with margins
   document.querySelector('[data-margin="religion"]').hidden=!(lsMode==="geo"&&LS_MREL[year]); paintRel(lsRelOn(),year,regions);   // Religion: 2009 (owner, 2026-11-26)
   document.getElementById("legend-loksabha").classList.toggle("relig",lsRelOn());
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===lsColor));
@@ -2797,7 +2810,7 @@ function renderST(animate){
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
-  document.getElementById("margin-view").hidden=!cm; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=true;   // Govts.: Results / Margins (owner, 2026-11-22)
+  document.getElementById("margin-view").hidden=!cm; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=true;   // Govts.: Results / Margins (owner, 2026-11-22)
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===stColor));
   document.getElementById("legend-states").classList.toggle("margins",stMarginsOn());
   document.querySelector("#legend-states .geo-note").hidden=cm;
@@ -3259,6 +3272,15 @@ function setStepper(years,year,animate,onPick){
 const stepBy=d=>{const y=stepYears[stepYears.indexOf(+stepLive.textContent)+d]; if(y&&stepOnPick) stepOnPick(y)};
 stepEl.querySelector(".prev").addEventListener("click",()=>stepBy(-1));
 stepEl.querySelector(".next").addEventListener("click",()=>stepBy(1));
+// Phones (owner, 2026-11-26): the race stepper, < President >, walks the country's race tabs as the year stepper walks years
+{const rs=document.getElementById("race-step"), lab=rs.querySelector(".rlab"), nav=document.querySelector("nav.toggle")||document.querySelector(".toggle");
+ const vis=()=>[...nav.querySelectorAll('[role="tab"]')].filter(t=>!t.hidden), cur=()=>vis().findIndex(t=>t.getAttribute("aria-selected")==="true");
+ const sync=()=>{const v=vis(), i=cur(); if(i<0) return; const txt=v[i].getAttribute("aria-label")||v[i].querySelector(".lbl-f")?.textContent||v[i].textContent;
+   if(lab.textContent&&lab.textContent!==txt&&!reduce){lab.classList.add("swap"); setTimeout(()=>{lab.textContent=txt; lab.classList.remove("swap")},180)} else lab.textContent=txt;
+};   // never disabled: it wraps round (owner, 2026-11-26)
+ const go=d=>{const v=vis(), t=v[(cur()+d+v.length)%v.length]; if(t) t.click()};   // past States: back to President / Lok Sabha, and the other way
+ rs.querySelector(".prev").addEventListener("click",()=>go(-1)); rs.querySelector(".next").addEventListener("click",()=>go(1));
+ new MutationObserver(sync).observe(nav,{subtree:true,attributes:true,attributeFilter:["aria-selected","hidden"]}); sync()}
 if(reduce) document.querySelectorAll("svg.india .seat-sq").forEach(r=>r.style.transition="none");
 
 // ---------- Race toggle ----------
@@ -3344,7 +3366,7 @@ function show(race,animate){
   document.getElementById("gov-view").hidden=race!=="governors";
   document.getElementById("pdist-view").hidden=race!=="president";   // setUS narrows this down (years in PRES_CD)
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
-  if(!us) document.querySelector('[data-margin="race"]').hidden=true; else document.querySelector('[data-margin="religion"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
+  if(!us){document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true} else document.querySelector('[data-margin="religion"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=race!=="states";
   document.getElementById("ls-view").hidden=true;   // India: Compact only
