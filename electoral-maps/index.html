@@ -140,14 +140,21 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--chip);border-radius:var(--r-out)}
 .stepper button{display:grid;place-items:center;width:29px;height:31px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);cursor:pointer;transition:color .2s,background .2s}
 .stepper button svg{width:11px;height:11px}
-#race-step{display:none} .rstep .win{width:auto;min-width:76px;padding:0 12px;display:grid;place-items:center} .rstep .rlab{font:600 13px/31px var(--sans);color:#fff;white-space:nowrap;transition:opacity .18s var(--ease)} .rstep .rlab.swap{opacity:0}
+#race-step{display:none}
+/* the race stepper's window (owner, 2026-11-26): the picked race in the dark pill, its neighbours peeking out faded on either side, cut off at the edges */
+#race-step .win{width:auto;min-width:76px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:none;box-shadow:none;overflow:hidden}
+.rstep .rlab{font:600 13px/31px var(--sans);color:#fff;white-space:nowrap;padding:0 12px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16)}
+.rstep .rpk{cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;min-width:0;overflow:hidden;font:600 13px/31px var(--sans);color:var(--muted);opacity:.55;white-space:nowrap}
+.rstep .rp{justify-content:flex-end;-webkit-mask-image:linear-gradient(90deg,transparent,#000 85%);mask-image:linear-gradient(90deg,transparent,#000 85%)}
+.rstep .rn{justify-content:flex-start;-webkit-mask-image:linear-gradient(270deg,transparent,#000 85%);mask-image:linear-gradient(270deg,transparent,#000 85%)}
+.rstep .rlab .t,.rstep .rpk span{display:inline-block;will-change:transform}   /* the words slide like a dial, the pill stays (raceStep go) */
 .stepper button:hover:not(:disabled){background:var(--press);color:var(--fg)}   /* arrows grey like the toggle labels, black on hover (owner, 2026-11-09) */
 .stepper button:disabled{color:var(--off);cursor:default}
 .stepper button:focus-visible{outline:2px solid var(--inc);outline-offset:1px}
 .stepper .win{position:relative;width:52px;height:31px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);overflow:hidden}
-.stepper .view{position:absolute;inset:0;perspective:140px;-webkit-mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent);mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent)}
-.stepper .drum{position:absolute;left:0;right:0;top:50%;height:0;transform-style:preserve-3d;transition:transform .6s var(--ease)}
-.stepper .face{position:absolute;left:0;right:0;top:-10px;height:20px;text-align:center;font:600 13px/20px var(--sans);color:#fff;font-variant-numeric:tabular-nums;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.stepper .view{position:absolute;inset:0;perspective:220px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.stepper .drum{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transition:transform .6s var(--ease)}
+.stepper .face{position:absolute;left:-22px;width:44px;top:-10px;height:20px;text-align:center;font:600 13px/20px var(--sans);color:#fff;font-variant-numeric:tabular-nums;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* Panels fade between races */
@@ -526,7 +533,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   <!-- phones (owner, 2026-11-26): the race tabs become a stepper like the year's, bottom right -->
   <div class="stepper rstep" id="race-step" role="group" aria-label="Race">
     <button type="button" class="prev" aria-label="Previous race"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M6.5 2l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <span class="win"><span class="rlab" aria-live="polite"></span></span>
+    <span class="win"><span class="rpk rp" aria-hidden="true"><span></span></span><span class="rlab" aria-live="polite"><span class="t"></span></span><span class="rpk rn" aria-hidden="true"><span></span></span></span>
     <button type="button" class="next" aria-label="Next race"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
   <div class="lsctl" id="controls">
@@ -557,7 +564,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
       <button type="button" data-margin="power" aria-pressed="false" hidden>Representation</button>   <!-- Senate, web: Results / Margins / Representation in one toggle, no All (owner, 2026-11-26) -->
       <button type="button" data-margin="race" aria-pressed="false" hidden>Race</button>   <!-- House 2008 (owner, 2026-11-26) -->
-      <button type="button" data-margin="religion" aria-pressed="false" hidden>Religion</button>   <!-- Lok Sabha 2009 (owner, 2026-11-26) -->
+      <button type="button" data-margin="religion" aria-pressed="false" hidden>Religion</button>
+      <button type="button" data-margin="stseats" aria-pressed="false" hidden>Seat share</button>   <!-- India States: Results / Margins / Seat share in one toggle (owner, 2026-11-26) -->   <!-- Lok Sabha 2009 (owner, 2026-11-26) -->
     </div>
     <div class="subtoggle" id="ls-share" role="group" aria-label="Color the map by">
       <button type="button" data-ls="geo" aria-pressed="true">Seats</button>
@@ -2095,7 +2103,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   const senOne=race==="senate"&&!legOn()&&!fut;   // Senate, web and phones (owner, 2026-11-26): one toggle, Results / Margins / Representation
   document.getElementById("margin-view").hidden=fut||(legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&(sm==="seats"&&SEN_MARGINS[year]||senOne)));
   document.querySelector('[data-margin="race"]').hidden=!(race==="house"&&HOUSE_FACE[year]||senOne&&SEN_FACE[year]); document.querySelector('[data-margin="religion"]').hidden=true;   // Senate Race after Representation
-  document.querySelector('[data-margin="power"]').hidden=!senOne;   // Senate on the web: Representation sits in the Results / Margins toggle
+  document.querySelector('[data-margin="power"]').hidden=!senOne; document.querySelector('[data-margin="stseats"]').hidden=true;   // Senate on the web: Representation sits in the Results / Margins toggle
   paintFaces(race==="house"&&colorMode==="race"&&HOUSE_FACE[year],year);
   usSvg.classList.toggle("race",!!(race==="house"&&colorMode==="race"&&HOUSE_FACE[year]));   // Race: the hovered cell flips light / dark
   // Race: every square plain grey, no party colours, so only the faces show (owner, 2026-11-26); no party keys then
@@ -2333,7 +2341,7 @@ function renderLS(animate){
   const geoNote=document.getElementById("ls-geo"); geoNote.dataset.text??=geoNote.textContent;
   geoNote.textContent=lsMode==="geo"&&LS_GEO[year]?`Each square is one constituency, placed roughly where it lies within its state${year===2004?" (2004 used the constituencies from before the 2008 redrawing; their positions are approximate)":""}.`:geoNote.dataset.text;
   document.querySelectorAll("[data-ls]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ls===lsMode));
-  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true;   // Results / Margins: Seats, years with margins
+  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="stseats"]').hidden=true;   // Results / Margins: Seats, years with margins
   document.querySelector('[data-margin="religion"]').hidden=!(lsMode==="geo"&&LS_MREL[year]); paintRel(lsRelOn(),year,regions);   // Religion: 2009 (owner, 2026-11-26)
   document.getElementById("legend-loksabha").classList.toggle("relig",lsRelOn());
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===lsColor));
@@ -2810,8 +2818,9 @@ function renderST(animate){
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
-  document.getElementById("margin-view").hidden=!cm; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=true;   // Govts.: Results / Margins (owner, 2026-11-22)
-  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===stColor));
+  document.getElementById("margin-view").hidden=false; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=true;
+  document.querySelector('[data-margin="stseats"]').hidden=false; document.getElementById("st-view").hidden=true;   // one toggle: Results / Margins (Govts.) / Seat share (owner, 2026-11-26)
+  document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===(cm?stColor:"stseats")));
   document.getElementById("legend-states").classList.toggle("margins",stMarginsOn());
   document.querySelector("#legend-states .geo-note").hidden=cm;
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
@@ -3249,20 +3258,20 @@ function renderIn(animate,sync){
 // ---------- Year stepper: < year >; the year rolls on a drum like a meter ----------
 const LS_YEARS=IN_YEARS;
 const stepEl=document.getElementById("year"), drum=stepEl.querySelector(".drum"), stepLive=stepEl.querySelector(".sr");
-const STEP_DEG=36, STEP_R=10/Math.tan(STEP_DEG/2*Math.PI/180); // faces 20px tall on a 10-sided drum
+const STEP_DEG=36, STEP_R=22/Math.tan(STEP_DEG/2*Math.PI/180); // faces 44px wide on a 10-sided drum, turning sideways like a wheel (owner, 2026-11-26; was a 20px-tall drum turning up / down)
 let stepYears=null, stepOnPick=null;
 // years: oldest first; onPick(year) runs when an arrow is clicked
 function setStepper(years,year,animate,onPick){
   if(years!==stepYears){
     drum.textContent="";
     years.forEach((y,i)=>{const f=document.createElement("span"); f.className="face"; f.textContent=y;
-      f.style.transform=`rotateX(${(years.length-1-i)*STEP_DEG}deg) translateZ(${STEP_R}px)`; drum.appendChild(f)});
+      f.style.transform=`rotateY(${i*STEP_DEG}deg) translateZ(${STEP_R}px)`;   /* later years round to the right */ drum.appendChild(f)});
     stepYears=years; animate=false;
   }
   stepOnPick=onPick;
   const i=years.indexOf(year), n=years.length;
   if(!animate) drum.style.transition="none";
-  drum.style.transform=`translateZ(${-STEP_R}px) rotateX(${-(n-1-i)*STEP_DEG}deg)`;
+  drum.style.transform=`translateZ(${-STEP_R}px) rotateY(${-i*STEP_DEG}deg)`;   /* a later year turns in from the right, an earlier one from the left */
   if(!animate){void drum.offsetWidth; drum.style.transition=""}
   [...drum.children].forEach((f,k)=>{f.setAttribute("aria-hidden",k!==i); f.style.visibility=Math.abs(k-i)<=2?"":"hidden"});   // 10-sided drum: hide faces that would wrap round onto the front
   stepEl.querySelector(".prev").disabled=i<=0;
@@ -3275,12 +3284,36 @@ stepEl.querySelector(".next").addEventListener("click",()=>stepBy(1));
 // Phones (owner, 2026-11-26): the race stepper, < President >, walks the country's race tabs as the year stepper walks years
 {const rs=document.getElementById("race-step"), lab=rs.querySelector(".rlab"), nav=document.querySelector("nav.toggle")||document.querySelector(".toggle");
  const vis=()=>[...nav.querySelectorAll('[role="tab"]')].filter(t=>!t.hidden), cur=()=>vis().findIndex(t=>t.getAttribute("aria-selected")==="true");
- const sync=()=>{const v=vis(), i=cur(); if(i<0) return; const txt=v[i].getAttribute("aria-label")||v[i].querySelector(".lbl-f")?.textContent||v[i].textContent;
-   if(lab.textContent&&lab.textContent!==txt&&!reduce){lab.classList.add("swap"); setTimeout(()=>{lab.textContent=txt; lab.classList.remove("swap")},180)} else lab.textContent=txt;
+ // (owner, 2026-11-26) a step turns the dial the way it was pressed: next -> the words slide left, the right-hand race
+ // moving into the pill; previous -> they slide right. Picked another way (the tour, a link): the same, by list order
+ let dir=0, spin=0; const T=lab.querySelector(".t");
+ const sync=()=>{const v=vis(), i=cur(), n=v.length; if(i<0) return; const name=t=>t.getAttribute("aria-label")||t.querySelector(".lbl-f")?.textContent||t.textContent, txt=name(v[i]);
+   const win=rs.querySelector(".win"), words=[T,win.querySelector(".rp span"),win.querySelector(".rn span")];
+   const put=()=>{T.textContent=txt; words[1].textContent=name(v[(i-1+n)%n]); words[2].textContent=name(v[(i+1)%n])};   // neighbours peek either side (they wrap)
+   const was=T.textContent; if(!was||was===txt||reduce){put(); dir=0; return}
+   const d=dir||((v.findIndex(t=>name(t)===was)<i)?1:-1), D=46, run=++spin; dir=0;
+   words.forEach(w=>w.getAnimations().forEach(a=>a.cancel()));
+   const out=words.map(w=>w.animate([{transform:"translateX(0)",opacity:1},{transform:`translateX(${-d*D}px)`,opacity:0}],{duration:150,easing:"cubic-bezier(.5,0,.9,.6)",fill:"forwards"}));
+   out[0].finished.then(()=>{if(run!==spin) return; put(); out.forEach(a=>a.cancel());
+     words.forEach(w=>w.animate([{transform:`translateX(${d*D}px)`,opacity:0},{transform:"translateX(0)",opacity:1}],{duration:260,easing:"cubic-bezier(.2,.6,.3,1)"}))}).catch(()=>{});
 };   // never disabled: it wraps round (owner, 2026-11-26)
- const go=d=>{const v=vis(), t=v[(cur()+d+v.length)%v.length]; if(t) t.click()};   // past States: back to President / Lok Sabha, and the other way
+ const go=d=>{const v=vis(), t=v[(cur()+d+v.length)%v.length]; dir=d; if(t) t.click()};   // past States: back to President / Lok Sabha, and the other way
  rs.querySelector(".prev").addEventListener("click",()=>go(-1)); rs.querySelector(".next").addEventListener("click",()=>go(1));
+ rs.querySelector(".rp").addEventListener("click",()=>rs.querySelector(".prev").click()); rs.querySelector(".rn").addEventListener("click",()=>rs.querySelector(".next").click());   // the peeking names step too (owner, 2026-11-26)
  new MutationObserver(sync).observe(nav,{subtree:true,attributes:true,attributeFilter:["aria-selected","hidden"]}); sync()}
+// Phones (owner, 2026-11-26): swipe the year or race stepper left for the next one, right for the previous (like the arrows),
+// and every step gives a small haptic tick. iOS Safari has no vibration API; from iOS 18, toggling a hidden switch-style
+// checkbox through its label makes the phone's own haptic, so that stands in there; Android uses navigator.vibrate.
+{const sw=document.createElement("label"), box=document.createElement("input");
+ box.type="checkbox"; box.setAttribute("switch",""); box.tabIndex=-1; sw.setAttribute("aria-hidden","true");
+ sw.style.cssText="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none"; sw.appendChild(box); document.body.appendChild(sw);
+ const tick=()=>{if(!narrow.matches) return; if(navigator.vibrate) navigator.vibrate(8); else sw.click()};
+ for(const st of [document.getElementById("year"),document.getElementById("race-step")]){
+   st.querySelectorAll(".prev,.next").forEach(b=>b.addEventListener("click",tick));
+   let x0=null, y0=0;
+   st.addEventListener("touchstart",e=>{const t=e.touches[0]; x0=t.clientX; y0=t.clientY},{passive:true});
+   st.addEventListener("touchend",e=>{if(x0==null) return; const t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
+     if(Math.abs(dx)>28&&Math.abs(dx)>Math.abs(dy)*1.3) st.querySelector(dx<0?".next":".prev").click()},{passive:true})}}
 if(reduce) document.querySelectorAll("svg.india .seat-sq").forEach(r=>r.style.transition="none");
 
 // ---------- Race toggle ----------
@@ -3368,7 +3401,7 @@ function show(race,animate){
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
   if(!us){document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true} else document.querySelector('[data-margin="religion"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
-  document.getElementById("st-view").hidden=race!=="states";
+  document.getElementById("st-view").hidden=true;   // merged into Results / Margins / Seat share (owner, 2026-11-26)
   document.getElementById("ls-view").hidden=true;   // India: Compact only
   if(us) usStep(race);
   if(!us){if(race!==inRace) inYear=IN_PICK[race]; inRace=race}
@@ -3394,7 +3427,7 @@ document.querySelectorAll("[data-gov]").forEach(b=>b.addEventListener("click",()
 document.querySelectorAll("[data-sen]").forEach(b=>b.addEventListener("click",()=>{senPicked=true; if(b.dataset.sen!==senMode){senMode=b.dataset.sen; setUS("senate",true)}}));
 document.querySelectorAll("[data-pdist]").forEach(b=>b.addEventListener("click",()=>{const on=b.dataset.pdist==="district";
   if(on!==presDist){presDist=on; setUS("president",true)}}));
-document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(inRace==="states"){if(b.dataset.margin!==stColor){stColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin==="power"){if(senMode!=="power"){senPicked=true; senMode="power"; setUS("senate",true)}}   // Senate Representation
+document.querySelectorAll("[data-margin]").forEach(b=>b.addEventListener("click",()=>{if(countryOf(current)==="india"){if(inRace==="states"){const sh=b.dataset.margin==="stseats"; if(sh?stMode!=="seats":stMode!=="cm"||b.dataset.margin!==stColor){if(sh) stMode="seats"; else {stMode="cm"; stColor=b.dataset.margin} renderIn(true,true)}} else if(b.dataset.margin!==lsColor){lsColor=b.dataset.margin; renderIn(true,true)}} else if(b.dataset.margin==="power"){if(senMode!=="power"){senPicked=true; senMode="power"; setUS("senate",true)}}   // Senate Representation
   else if(usRace==="senate"&&senMode!=="seats"){senPicked=true; senMode="seats"; colorMode=b.dataset.margin; setUS("senate",true)}   // back from Representation
   else if(b.dataset.margin!==colorMode){colorMode=b.dataset.margin; setUS(usRace,true)}}));
 // the year stepper: next to Play on desktop, first in the toggle row on phones (owner, 2026-11-12)
@@ -3691,7 +3724,7 @@ function ttViews(country){const Y=2024;
     ["Lok Sabha results",{race:"loksabha",year:Y,ls:"geo",lm:"results"}],["Lok Sabha margins",{race:"loksabha",year:Y,ls:"geo",lm:"margins"}],
     ["Lok Sabha religion",{race:"loksabha",year:Y,ls:"geo",lm:"religion"}],["Rajya Sabha",{race:"rajyasabha",year:Y}],
     ["State govts. results",{race:"states",year:Y,st:"cm",sm:"results"}],["State govts. margins",{race:"states",year:Y,st:"cm",sm:"margins"}],
-    ["State seat %",{race:"states",year:Y,st:"seats"}]];
+    ["State seat share",{race:"states",year:Y,st:"seats"}]];
   return [
     ["President electoral results",{race:"president",mode:"results",year:Y}],["President electoral margins",{race:"president",mode:"margins",year:Y}],
     ["President district results",{race:"president",mode:"results",year:Y,dist:true}],["President district margins",{race:"president",mode:"margins",year:Y,dist:true}],
