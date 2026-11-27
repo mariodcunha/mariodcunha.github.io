@@ -166,6 +166,8 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 /* hovered side (owner, 2026-11-24): its parts, light ones too, grow 4px upwards; the majority mark with them if it stands on one */
 .bar[data-up="d"] i[data-g="d"],.bar[data-up="r"] i[data-g="r"],.bar[data-up="inc"] i[data-g="inc"],.bar[data-up="india"] i[data-g="india"],.bar[data-up="oth"] i[data-g="oth"],.bar[data-up="nda"] i[data-g="nda"],.bar[data-up="bjp"] i[data-g="bjp"],.bar[data-up="c"] i:is([data-g="inc"],[data-g="india"]),.bar[data-up="b"] i:is([data-g="nda"],[data-g="bjp"]),.bar[data-up="m"] i[data-g="m"],.bar[data-up="t"] i[data-g="t"],.bar[data-up="n"] i[data-g="n"]{height:calc(100% + 4px);margin-top:-4px}
 .bar.up-mark .mark{top:-7px!important}
+/* the rest of the bar goes grey while a part is hovered or locked (owner, 2026-11-26); hovering a grey part colours it and greys the others */
+.bar i:not(.mark){transition:width .8s var(--ease),height .2s var(--ease),margin-top .2s var(--ease),background-color .25s var(--ease),opacity .25s var(--ease)} .bar i.dim{background:var(--fade2)!important}
 .bar i.gap{margin-left:3px} /* white gap where one side (alliance / party) ends and the next begins */
 /* 2026 calls: hatched = the party the poll aggregate (or Cook's rating) has ahead; yellow hatch = toss-up; grey = can't call */
 .hatch-d{background:repeating-linear-gradient(135deg,var(--dem) 0 2.5px,var(--hd2) 2.5px 5px)}
@@ -3412,6 +3414,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   const grow=g=>{part=g; const P=place();
     for(const b of [PLACES.usa.panel.querySelector(".bar"),PLACES.india.panel.querySelector(".bar"),pinned.querySelector(".bar")]) if(b){
       const on=g&&(b.parentNode===pinned||P.panel.contains(b)); if(on) b.dataset.up=g; else delete b.dataset.up;
+      for(const i of b.querySelectorAll("i:not(.mark)")) i.classList.toggle("dim",!!on&&!!i.dataset.g&&!(PARTS[g]||[g]).includes(i.dataset.g));   // the others grey
       const m=b.querySelector(".mark").getBoundingClientRect(), x=m.left+m.width/2;
       b.classList.toggle("up-mark",!!on&&[...b.querySelectorAll("i")].filter(i=>(PARTS[g]||[g]).includes(i.dataset.g)).some(i=>{const r=i.getBoundingClientRect(); return r.width>.5&&x>=r.left-3&&x<=r.right+3}))}};
   // phones and touch screens (owner, 2026-11-26): no hover, so a tap locks at once and the locked part of the bar stays up

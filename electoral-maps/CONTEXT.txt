@@ -3257,6 +3257,7 @@ STATUS / NEXT
   "Results of the <year> Indian general election" winners (the rosters in religion/lok-sabha-YYYY.csv), matched to the
   squares by state + seat name (543 / 543 each year; religion/scripts/reps.py). Checked: Varanasi 2014 Modi, Wayanad 2019 Rahul
   Gandhi, Amethi 2019 Smriti Irani, Rae Bareli 2024 Rahul Gandhi, Faizabad 2024 Awadhesh Prasad.
+- Tally bar greys the rest (owner, 2026-11-26), web and phones, USA and India: whatever part is raised (data-up: the hovered part, else the locked one) keeps its colour and every other part gets .dim (--fade2), set in grow(). Hovering a grey part while locked colours it and greys the others; leaving goes back to the lock.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
