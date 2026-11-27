@@ -3269,7 +3269,7 @@ STATUS / NEXT
 - India States toggle (owner, 2026-11-26), web and phones: ONE toggle, Results / Margins / Seat share (margin-view gets data-margin="stseats"; Results / Margins = Govts. in that colouring, Seat share = stMode "seats"). The Govts. / Seat % group (#st-view) is always hidden. Transition test label: "State seat share".
 - Year stepper drum (owner, 2026-11-26), web and phones: turns sideways like a wheel (rotateY, 10 sides, faces 44px wide, STEP_R = 22/tan 18deg, horizontal fade mask), a later year turning in from the right, an earlier one from the left, matching the race stepper. Was a vertical drum (rotateX).
 - Phone control heights (owner, 2026-11-26): every control 44px, top and bottom (view toggles, both steppers, Play, theme, country picker: 3px frame, 38px buttons / pills; was 48px briefly). Top bar min-height 44px. Rows: steppers 12px off the bottom, toggles 10px above them (lsctl bottom 66px); page bottom padding and the fade 132px.
-- Phone pinned bar (#mini, owner, 2026-11-26): edge to edge (16px each side); the country button no longer pins into it (it stays at the top of the page).
+- Phone pinned bar (#mini, owner, 2026-11-26): edge to edge (16px each side); the country button no longer pins into it (it stays at the top of the page). Its design = the tally exactly as on the page (numbers over names, year over the centre label, full 15px bar, the line under it), only the three big numbers shrunk to the names' 14px (centre label 12.5px).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

@@ -458,16 +458,12 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 var(--edge);
     padding:calc(10px + env(safe-area-inset-top)) 16px 10px 16px;   /* edge to edge: no country button in it (owner, 2026-11-26; was room for it on the right) */transform:translateY(-110%);transition:transform .25s var(--ease)}
   body.stuck #mini{transform:none}
-  #mini .tally{align-items:baseline}
-  #mini .cand{display:flex;align-items:baseline;gap:6px}
-  #mini .cand.r,#mini .cand.nda{flex-direction:row-reverse}
-  #mini .cand b,#mini .cand span{font-size:15px;line-height:18px}
-  #mini .cand small,#mini .cand.oth,#mini .under{display:none}
-  #mini .bar{height:8px;margin-top:6px}
-  #mini .bar .mark{top:-2px;bottom:-2px}
-  /* phones: no room between the names and the country button, so the centre label sits on its own line under the bar */
-  #mini{padding-bottom:26px} #mini .cand.mid{top:calc(100% + 18px);bottom:auto}
-  #mini .cand.mid b,#mini .cand.mid span{font-size:12.5px!important;line-height:15px!important}
+  /* (owner, 2026-11-26) the pinned bar is the tally exactly as on the page (numbers over names, the year over the centre label,
+     the full bar, the line under it), only the three big numbers shrunk to the names' size */
+  #mini .cand.mid{display:grid;white-space:normal;max-width:40%;gap:0}
+  #mini .cand b,#mini .cand.mid b{font-size:14px!important;line-height:17px!important}
+  #mini .cand.mid span{font-size:12.5px!important;line-height:17px!important;font-weight:700}
+  #mini .cand.mid .lk{position:relative} #mini .lk .lock{width:16px;height:16px;margin-top:-8px}   /* the lock by the label, as on the page */
   /* (owner, 2026-11-26) the country button no longer rides along in the pinned bar; it stays at the top of the page */
   @keyframes mini-in{from{transform:translateY(-150%)}}
   /* both maps fit the phone, no side-scroll; their names grow to stay readable at that size (labels: PACK_US, PACK_IN) */
