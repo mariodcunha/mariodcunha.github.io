@@ -3245,7 +3245,10 @@ STATUS / NEXT
   where 6G - 2B > 3, i.e. the flame and its pale core), Buddhist thread ORIGINAL (no tint; owner: low contrast), Muslim dark navy blue (#0b1a4a -> #2a4a9a),
   Christian bright green (#0f9e37 -> #9ff2b0), Sikh silver-grey, Other parchment tan (owner retuned, 2026-11-26). text.rel carries data-r.
   The hover box's emoji stay untinted. LEGEND: .rkeys = a 20px grey tile (--fade) with the tinted emoji, name, and that year's
-  count in bold (zero-count keys hidden). Phones: one key per line (owner's rule: phone legends are always line by line). The Others-parties sentence (.oth-note) is hidden in Religion (owner).
+  count in bold (zero-count keys hidden). Phones: one key per line (owner's rule: phone legends are always line by line). The Others-parties sentence (.oth-note) is hidden in Religion (owner). The blank pad cells (.in-pad: J&K, Ladakh...) take --fade in Religion too, like the seats.
+  PLAY TOUR (owner, 2026-11-26): after Lok Sabha Margins, Religion with Congress + allies locked (lit "c") 2004 -> 2024, then
+  BJP + allies (lit "b") 2024 -> 2004, then Rajya Sabha as before (the next step releases the tour's lock). India's playHere
+  now also matches the Lok Sabha mode and the lock, so pause / resume lands on the right step.
   (The first version plotted each constituency's people by religion from Census 2011; the owner dropped it the same day: same
   map in every year until a new census. Its files went to the Trash.)
 - LOCAL, NOT COMMITTED (2026-11-26): LOK SABHA WINNERS, EVERY YEAR (owner: "like the House race map", no faces). LS_REP now
