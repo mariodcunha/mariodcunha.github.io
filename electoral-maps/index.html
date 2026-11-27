@@ -2209,7 +2209,7 @@ function renderLS(animate){
   const geoNote=document.getElementById("ls-geo"); geoNote.dataset.text??=geoNote.textContent;
   geoNote.textContent=lsMode==="geo"&&LS_GEO[year]?`Each square is one constituency, placed roughly where it lies within its state${year===2004?" (2004 used the constituencies from before the 2008 redrawing; their positions are approximate)":""}.`:geoNote.dataset.text;
   document.querySelectorAll("[data-ls]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ls===lsMode));
-  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]);   // Results / Margins: Seats, years with margins
+  document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true;   // Results / Margins: Seats, years with margins
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===lsColor));
   if(lsMarginsOn()) document.getElementById("ls-note").textContent="Darker shades mean a wider win over the runner-up: full colour is 20 points or more, the lightest is under 5. A party and its allies share one colour.";
 }
@@ -2681,7 +2681,7 @@ function renderST(animate){
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
-  document.getElementById("margin-view").hidden=!cm;   // Govts.: Results / Margins (owner, 2026-11-22)
+  document.getElementById("margin-view").hidden=!cm; document.querySelector('[data-margin="race"]').hidden=true;   // Govts.: Results / Margins (owner, 2026-11-22)
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===stColor));
   document.getElementById("legend-states").classList.toggle("margins",stMarginsOn());
   document.querySelector("#legend-states .geo-note").hidden=cm;
@@ -3227,6 +3227,7 @@ function show(race,animate){
   document.getElementById("gov-view").hidden=race!=="governors";
   document.getElementById("pdist-view").hidden=race!=="president";   // setUS narrows this down (years in PRES_CD)
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
+  if(!us) document.querySelector('[data-margin="race"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=race!=="states";
   document.getElementById("ls-view").hidden=true;   // India: Compact only

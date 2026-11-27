@@ -3223,6 +3223,7 @@ STATUS / NEXT
 - Race faces on phones / touch screens (owner, 2026-11-26): the web's shrink-out / grow-in of ~435 emoji stuttered on
   phones, so there faces only fade, never scale: a face that changes with the year fades out (.2s) and the new one
   fades in (.35s, the page ease); the party filter fades the other side's faces the same way (owner: in place was too sharp). Web keeps the scale animation.
+- Race button is USA House only: India views (Lok Sabha, States/Govts.) reuse the Results / Margins group, so show() and the India renders hide [data-margin=race] (owner, 2026-11-26: no ghost Race toggle after switching from House Race).
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
