@@ -1212,6 +1212,10 @@ function paintAlt(year){
       r.style.fill="var(--fade)"; r.classList.add("on"); if(t) t.setAttribute("class","dk");
       b.setAttribute("class","sface"); b.dataset.p=p==="r"?"r":"d"; b.style.fontSize=(o.width*.8).toFixed(1)+"px"; b.setAttribute("y",(o.y+o.height*.6).toFixed(1));   /* larger (owner, 2026-11-26; was .6 of the half) */
       b.textContent=SEN_FACE[year][k]?.split("|")[i]||"";
+      // phones (owner, 2026-11-26): the face fills its grey cell's width less 2px a side and sits 4px off its bottom, in
+      // screen pixels (k = map units per pixel); emoji are square, so the glyph is as tall as it is wide, centred on y
+      if(narrow.matches){const R=usSvg.getBoundingClientRect(), kk=R.width?usSvg.viewBox.baseVal.width/R.width:0, w0=kk&&b.getBBox().width;
+        if(w0){b.style.fontSize=((o.width*.8)*(o.width-4*kk)/w0).toFixed(2)+"px"; const w=b.getBBox().width; b.setAttribute("y",(o.y+o.height-4*kk-w/2).toFixed(1)); return}}
       // sat low: the gap under the face = the gap above the state code at the tile's top (owner, 2026-11-26)
       const lb=ALT[k][0].t.getBBox(), eb=b.getBBox(); if(lb.height&&eb.height){const pad=lb.y-o.y; b.setAttribute("y",(+b.getAttribute("y")+(o.y+o.height-pad)-(eb.y+eb.height)).toFixed(1))}
       return}
