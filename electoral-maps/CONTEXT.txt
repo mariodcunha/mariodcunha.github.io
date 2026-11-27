@@ -3258,6 +3258,7 @@ STATUS / NEXT
   squares by state + seat name (543 / 543 each year; religion/scripts/reps.py). Checked: Varanasi 2014 Modi, Wayanad 2019 Rahul
   Gandhi, Amethi 2019 Smriti Irani, Rae Bareli 2024 Rahul Gandhi, Faizabad 2024 Awadhesh Prasad.
 - Tally bar greys the rest (owner, 2026-11-26), web and phones, USA and India: whatever part is raised (data-up: the hovered part, else the locked one) keeps its colour and every other part gets .dim (--fade2), set in grow(). Hovering a grey part while locked colours it and greys the others; leaving goes back to the lock.
+- Transition test (owner, 2026-11-26): only with ?transitions in the URL (e.g. index.html?transitions#president/2024/results); never shown otherwise. A two-arrow button (#ttest) after Play runs ttTour(): every pair of map types, USA then India, all in 2024, A -> B, pause, B -> A, pause (TT_PAUSE 3.5s), so each type morphs into every other both ways. USA 15 types = 210 steps (phones 13 = 156, no Senate All / Representation), India 7 types = 42 steps. A caption (#ttest-cap) names each step; press the button again or any other top-bar control to stop. URL updates use replaceState while it runs.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").

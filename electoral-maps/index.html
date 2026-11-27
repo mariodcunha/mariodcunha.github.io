@@ -31,6 +31,10 @@ html.dark .menu{box-shadow:0 0 0 1px #3a3a3a,0 8px 24px rgba(0,0,0,.5)}
 /* the switch: the page cross-fades once (View Transitions); the elements' own transitions sit that one frame out */
 html.theming *,html.theming *::before,html.theming *::after{transition:none!important}
 ::view-transition{pointer-events:none} ::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+/* Transition test (?transitions only): the same chip as the theme button; dark while it runs. A caption names the step */
+#ttest{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer;margin-left:8px} #ttest[hidden]{display:none} #ttest svg{width:16px;height:16px} #ttest:hover{color:var(--fg)} #ttest.on{background:var(--sel);color:#fff}
+#ttest-cap{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);padding:7px 12px;border-radius:var(--r-out);background:var(--sel);color:#fff;font:500 12.5px/1.3 var(--sans);text-align:center;pointer-events:none} #ttest-cap[hidden]{display:none}
+@media (max-width:775px){#ttest-cap{bottom:calc(132px + env(safe-area-inset-bottom))}}   /* phones: just above the pinned controls */
 #theme{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer}
 html.dark #theme{color:var(--muted)} #theme:hover,html.dark #theme:hover{color:var(--fg)} #theme:focus-visible{outline:2px solid var(--dem);outline-offset:2px} #theme svg{width:16px;height:16px}
 *,*::before,*::after{box-sizing:border-box}
@@ -533,6 +537,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   </div>
   <p class="credit-top" style="margin:0">Inspired by<br>@NYTimes</p>
   <div id="play" class="idle" role="group" aria-label="Play through every map"><span class="pthumb" aria-hidden="true"></span><button type="button" id="play-left"></button><button type="button" id="play-right"></button></div>
+  <button type="button" id="ttest" aria-label="Transition test" aria-pressed="false" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 5h10M10 2.5L12.5 5 10 7.5M13.5 11h-10M6 8.5L3.5 11 6 13.5"/></svg></button>   <!-- only with ?transitions (owner, 2026-11-26) -->
+  <div id="ttest-cap" role="status" hidden></div>
   <button type="button" id="theme" aria-pressed="false" aria-label="Dark mode"></button>
   <div class="country">
     <button type="button" id="country-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="country-menu" aria-label="Country">
@@ -3585,6 +3591,47 @@ playRight.addEventListener("click",()=>{
   else {playSpeed=playSpeed%3+1; senMorphMs=800/playSpeed}   // the Seats morph keeps inside a step
   renderPlay()});
 playLeft.addEventListener("click",()=>playPaused?stopPlay():pausePlay());
+// Transition test (owner, 2026-11-26): only with ?transitions in the page URL, never shown otherwise. The two-arrow button by
+// Play walks every pair of map types, USA then India, all in 2024 so only the type changes: A -> B, pause, B -> A, pause,
+// then A -> the next type, and so on, so each type morphs into every other one both ways, at normal speed with a long pause
+// between. The caption names each step. Press the button again (or any other control) to stop.
+var ttLive=false;
+const ttBtn=document.getElementById("ttest"), ttCap=document.getElementById("ttest-cap"), TT_PAUSE=3500;
+let ttRun=0;
+ttBtn.hidden=!new URLSearchParams(location.search).has("transitions");
+function ttViews(country){const Y=2024;
+  if(country==="india") return [
+    ["Lok Sabha results",{race:"loksabha",year:Y,ls:"geo",lm:"results"}],["Lok Sabha margins",{race:"loksabha",year:Y,ls:"geo",lm:"margins"}],
+    ["Lok Sabha religion",{race:"loksabha",year:Y,ls:"geo",lm:"religion"}],["Rajya Sabha",{race:"rajyasabha",year:Y}],
+    ["State govts. results",{race:"states",year:Y,st:"cm",sm:"results"}],["State govts. margins",{race:"states",year:Y,st:"cm",sm:"margins"}],
+    ["State seat %",{race:"states",year:Y,st:"seats"}]];
+  return [
+    ["President electoral results",{race:"president",mode:"results",year:Y}],["President electoral margins",{race:"president",mode:"margins",year:Y}],
+    ["President district results",{race:"president",mode:"results",year:Y,dist:true}],["President district margins",{race:"president",mode:"margins",year:Y,dist:true}],
+    ["House results",{race:"house",mode:"results",year:Y}],["House margins",{race:"house",mode:"margins",year:Y}],["House race",{race:"house",mode:"race",year:Y}],
+    ...(senSeatsOnly.matches?[]:[["Senate all",{race:"senate",mode:"results",year:Y,sen:"all"}],["Senate representation",{race:"senate",mode:"results",year:Y,sen:"power"}]]),   // phones: Seats only
+    ["Senate seats results",{race:"senate",mode:"results",year:Y,sen:"seats"}],["Senate seats margins",{race:"senate",mode:"margins",year:Y,sen:"seats"}],
+    ["Governors results",{race:"governors",mode:"results",year:Y,gov:"gov"}],["Governors margins",{race:"governors",mode:"margins",year:Y,gov:"gov"}],
+    ["State units results",{race:"governors",mode:"results",year:Y,gov:"leg"}],["State units margins",{race:"governors",mode:"margins",year:Y,gov:"leg"}]]}
+// one view, the way its own toggle would draw it (one morph, no year change)
+function ttGo(s){litSet?.(null);
+  if(countryOf(s.race)==="india"){if(s.ls) lsMode=s.ls; if(s.lm) lsColor=s.lm; if(s.sm) stColor=s.sm; if(s.st) stMode=s.st; inYear=IN_PICK[s.race]=s.year;
+    if(s.race!==current) show(s.race,true); else renderIn(true,true); return}
+  colorMode=s.mode; senPicked=true; if(s.sen) senMode=s.sen; usYearPick=s.year; presDist=!!s.dist; govMode=s.gov||"gov";
+  if(s.race!==current) show(s.race,true); else {usStep(s.race); setUS(s.race,true)}}
+function ttUI(on){ttLive=on; ttBtn.classList.toggle("on",on); ttBtn.setAttribute("aria-pressed",on); ttCap.hidden=!on}
+function ttStop(){if(!ttLive) return; ttRun++; ttUI(false)}
+async function ttTour(){const run=++ttRun, wait=()=>new Promise(r=>setTimeout(r,TT_PAUSE)), alive=()=>run===ttRun;
+  stopPlay(); ttUI(true);
+  for(const country of ["usa","india"]){const V=ttViews(country), n=V.length*(V.length-1); let k=0, at=-1;
+    const go=async(i,txt)=>{ttCap.textContent=txt; ttGo(V[i][1]); at=i; await wait()};
+    for(let i=0;i<V.length;i++) for(let j=i+1;j<V.length;j++){
+      if(at!==i){await go(i,`${country==="usa"?"USA":"India"}: ${V[i][0]}`); if(!alive()) return}
+      await go(j,`${country==="usa"?"USA":"India"} ${++k}/${n}: ${V[i][0]} → ${V[j][0]}`); if(!alive()) return;
+      await go(i,`${country==="usa"?"USA":"India"} ${++k}/${n}: ${V[j][0]} → ${V[i][0]}`); if(!alive()) return}}
+  ttUI(false)}
+ttBtn.addEventListener("click",()=>ttLive?ttStop():ttTour());
+document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#ttest,#theme")) ttStop()},true);   // any other control stops it
 renderPlay();
 renderPlay();
 document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,#theme,.country")) pausePlay()},true);
@@ -3677,7 +3724,7 @@ function viewHash(){const r=current; if(!r) return "";
   return "#"+[r,inYear,r==="loksabha"&&lsMarginsOn()&&"margins",r==="loksabha"&&lsRelOn()&&"religion",r==="states"&&stMode,r==="states"&&stMarginsOn()&&"margins",r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
 let urlTimer=0, urlReplace=true;
 function syncURL(){clearTimeout(urlTimer); urlTimer=setTimeout(()=>{const h=viewHash(); if(!h||h===location.hash){urlReplace=false; return}
-  history[urlReplace||playing?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
+  history[urlReplace||playing||ttLive?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
 function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.slice(1)).split("/"), race=countryOf(r0)?r0:"governors";
   const y=+t.find(x=>/^\d{4}$/.test(x))||null, has=v=>t.includes(v);
   if(countryOf(race)==="usa"){
