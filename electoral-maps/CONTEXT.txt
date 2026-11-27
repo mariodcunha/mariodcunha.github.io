@@ -3224,6 +3224,36 @@ STATUS / NEXT
   phones, so there faces only fade, never scale: a face that changes with the year fades out (.2s) and the new one
   fades in (.35s, the page ease); the party filter fades the other side's faces the same way (owner: in place was too sharp). Web keeps the scale animation.
 - Race button is USA House only: India views (Lok Sabha, States/Govts.) reuse the Results / Margins group, so show() and the India renders hide [data-margin=race] (owner, 2026-11-26: no ghost Race toggle after switching from House Race).
+- Under-bar wording (owner, 2026-11-26): "Popular vote x%" on President only; House, Senate (and any other USA map with T.pv) say "Vote share x%" (pvW in setUSNow). The Margins tally aria label says "vote share" too.
+- LOCAL, NOT COMMITTED (2026-11-26): LOK SABHA RELIGION VIEW, every year 2004-2024 (owner; began with 2009). A third button
+  after Results / Margins, "Religion" (data-margin="religion", lsColor "religion", hash #loksabha/YEAR/religion; hidden on every
+  other race). Squares plain --fade grey; each carries an emoji of its WINNER's religion at full opacity (text.rel in the square's
+  ls-cell, paintRel): 🪔 Hindu, 🌙 Muslim, 🎄 Christian, ⚔️ Sikh, 🧵 Buddhist, 📜 Other (Jain, Bathouism, no religion).
+  LS_MREL[year]: letter + source per square: s own words, r press list / cited, w Wikipedia / Wikidata tag, n ASSUMED FROM THE NAME
+  (433-455 of 543 a year; owner's call, caveat in the legend with that year's count), d disputed (shown by name). Built by
+  religion/scripts/mprel.py (+ listy.py to match each year's religion/lok-sabha-YYYY.csv to the squares) into
+  religion/lok-sabha-map.csv. Muslim MPs: 2004 36, 2009 31, 2014 21, 2019 26, 2024 24 (published 35 / 30 / 23 / 26 / 24).
+  Hover (web): "Seat, ST" / winner / "🪔Hindu (assumed from name)", "(Wikipedia)", "(press)", "(own words)", "(disputed, assumed
+  from name)"; Other shows its detail ("📜Jain (Wikipedia)"). Legend: emoji keys (.rkeys) + caveat; party keys hidden (.relig).
+  Tally filter: only the locked group's emoji stay; the others fade out (.45s web, .35s phones).
+  SMOOTH YEAR CHANGES (owner, 2026-11-26, web and phones): an emoji whose seat changes religion with the year shrinks out (.22s,
+  .swap) and the new one grows in (web); phones fade only (no scaling). Seats that come into Religion scale / fade in. Pending
+  swaps are dropped when a newer paint comes (relGen), so fast clicking ends on the right emoji (checked). Reduced motion: instant.
+  TINTED EMOJI (owner, 2026-11-26): every map / legend emoji goes through an SVG duotone filter (hidden <svg> before #loader:
+  #rtl0-5, LIGHT MODE ONLY; dark mode keeps the original emoji (owner; #rtd0-5 still defined, unused); grayscale, then shadows -> highlights in the religion's colour, from the owner's key): Hindu
+  diya LIGHT PINK with its yellow flame kept (rtl0: duotone #c24f86 -> #ffd3e8, plus the original's pixels
+  where 6G - 2B > 3, i.e. the flame and its pale core), Buddhist thread ORIGINAL (no tint; owner: low contrast), Muslim dark navy blue (#0b1a4a -> #2a4a9a),
+  Christian bright green (#0f9e37 -> #9ff2b0), Sikh silver-grey, Other parchment tan (owner retuned, 2026-11-26). text.rel carries data-r.
+  The hover box's emoji stay untinted. LEGEND: .rkeys = a 20px grey tile (--fade) with the tinted emoji, name, and that year's
+  count in bold (zero-count keys hidden).
+  (The first version plotted each constituency's people by religion from Census 2011; the owner dropped it the same day: same
+  map in every year until a new census. Its files went to the Trash.)
+- LOCAL, NOT COMMITTED (2026-11-26): LOK SABHA WINNERS, EVERY YEAR (owner: "like the House race map", no faces). LS_REP now
+  has 2004, 2009, 2014, 2019, 2024, so the seat hover box (web, Results / Margins / Religion) always has the winner on line 2.
+  2009: datameet parliament.csv (cleaned by religion/scripts/names.py). 2014 / 2019 / 2024: Wikipedia
+  "Results of the <year> Indian general election" winners (the rosters in religion/lok-sabha-YYYY.csv), matched to the
+  squares by state + seat name (543 / 543 each year; religion/scripts/reps.py). Checked: Varanasi 2014 Modi, Wayanad 2019 Rahul
+  Gandhi, Amethi 2019 Smriti Irani, Rae Bareli 2024 Rahul Gandhi, Faizabad 2024 Awadhesh Prasad.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
