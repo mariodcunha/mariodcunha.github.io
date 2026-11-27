@@ -3278,6 +3278,7 @@ STATUS / NEXT
 - Phone sticky tally, stuck state (owner, 2026-11-27): main numbers shrink 30 -> 16px (was 14), the bar halves 15 -> 7.5px, all on --hp; the text under the bar is always 12px on phones (stuck or not).
 - Text under the tally bar (owner, 2026-11-27): web 14px (was 13), phones always 12px. The web pinned bar (#mini) keeps its own 12px.
 - Phone country menu fix (2026-11-27): the sticky .head (z-index 15) covered the USA/India menu (z 5), so it looked like it never opened; phones now give .topbar position:relative;z-index:20.
+- Transition test (?transitions) wait (owner, 2026-11-27): the pause after each morph is 0.5s (TT_PAUSE 1500 = ~1s morph + 0.5s); the map animations themselves are unchanged.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
