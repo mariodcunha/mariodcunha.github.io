@@ -3352,7 +3352,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const [code,k]=o, i=LS_NAME[inYear][code]?.split(",")[k]; if(i==null) return off();
     const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
     const mg=lsMarginsOn()?lsMarginOf(inYear,code,k):null; box.textContent=`${LS_NAMES[+i]}, ${st}`+(mg!=null?`, ${mg<0?"−":"+"}${Math.abs(mg).toFixed(1)}`:""); const rep=LS_REP[inYear]?.[code]?.split("|")[k]; if(rep) box.textContent+="\n"+rep;
-    const ro=lsRelOn()&&lsRelOf(inYear,code,k); if(ro) box.textContent+="\n"+`${REL_EMOJI[ro.pick]}${ro.detail?ro.detail[0].toUpperCase()+ro.detail.slice(1):REL_NAMES[ro.pick]} (${REL_SRC[ro.src]})`; /* Religion: the third line (owner, 2026-11-26) */ /* the winner on the next line (2004) */ place(code); box.classList.add("on"); lit(ev.target)});
+    const ro=lsRelOn()&&lsRelOf(inYear,code,k); if(ro) box.textContent+="\n"+`${REL_EMOJI[ro.pick]} ${ro.detail?ro.detail[0].toUpperCase()+ro.detail.slice(1):REL_NAMES[ro.pick]} (${REL_SRC[ro.src]})`; /* Religion: the third line (owner, 2026-11-26) */ /* the winner on the next line (2004) */ place(code); box.classList.add("on"); lit(ev.target)});
   inSvg.addEventListener("pointerleave",off);
 })();
 // House, web (owner, 2026-11-10): hovering a square names its district above the map, e.g. "El Paso, TX 16"
