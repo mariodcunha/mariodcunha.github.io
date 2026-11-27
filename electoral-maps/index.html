@@ -423,7 +423,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .legends{margin-top:auto}
   #in-under{min-height:34px}
   .legends>.legend.off{display:none}
-  .legend.stack,#panel-in .legend{flex-direction:column;align-items:flex-start} .legend.stack .own,.legend.stack .txt,#panel-in .legend .txt{flex-basis:auto}   /* India: always one per line, the page scrolls anyway */
+  .legend.stack,#panel-in .legend,#panel-us .legend{flex-direction:column;align-items:flex-start} .legend.stack .own,.legend.stack .txt,#panel-in .legend .txt,#panel-us .legend>*{flex-basis:auto}   /* phones: one per line, USA and India, every map and year (owner, 2026-11-26); the page scrolls anyway */
   .credit{display:none}
   .credit-top{display:block;font-size:12px;line-height:15px;color:var(--muted)}
   #panel-us.pct #need{display:none}
@@ -2145,7 +2145,7 @@ function stackLegend(){
   const lg=document.querySelector("#panel-us .legend:not(.off)"), root=document.documentElement;
   if(!lg||document.getElementById("panel-us").hidden) return;
   lg.classList.toggle("stack",narrow.matches);
-  if(narrow.matches&&root.scrollHeight>root.clientHeight) lg.classList.remove("stack");
+  // (owner, 2026-11-26) always one per line now, even when the page then scrolls
 }
 addEventListener("resize",stackLegend);
 
