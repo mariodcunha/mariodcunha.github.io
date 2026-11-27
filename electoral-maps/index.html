@@ -470,6 +470,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .head{position:sticky;top:0;z-index:15;background:var(--bg);margin:-20px -16px 0;padding:calc(20px + (env(safe-area-inset-top) - 10px)*var(--hp,0)) 16px calc(8px*var(--hp,0));
     gap:calc(9px - 3px*var(--hp,0));box-shadow:0 1px 0 rgba(0,0,0,calc(.08*var(--hp,0)))}
   html.dark .head{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
+  .topbar{position:relative;z-index:20}   /* the country menu drops over the tally: the sticky .head (z 15) was covering it, so taps went to the numbers (fix, 2026-11-27) */
   .head .tally .cand b{font-size:calc(30px - 14px*var(--hp,0))!important;line-height:calc(30px - 14px*var(--hp,0))!important}   /* stuck: 16px (owner, 2026-11-27; was 14) */
   .head .bar{height:calc(15px - 7.5px*var(--hp,0))}   /* stuck: the bar half as tall (owner, 2026-11-27) */
   .head .under,.head .need{font-size:12px}   /* phones: the line under the bar always 12px, stuck or not (owner, 2026-11-27) */
