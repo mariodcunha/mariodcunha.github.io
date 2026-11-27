@@ -161,6 +161,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 
 /* Panels fade between races */
 .panel{display:grid;gap:18px;transition:opacity .2s ease,transform .2s ease}
+.head{display:grid;gap:9px}   /* the gap between the labels and the bar halved, 18 -> 9px, web and phones (owner, 2026-11-27); the tally + its bar, one block (phones: sticky, see the phone rules) */
 .panel.out{opacity:0;transform:translateY(6px)}
 .panel.in{animation:panelIn .38s var(--ease) both}
 @keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -213,7 +214,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #mini .cand.mid b,#mini .cand.mid span{font-size:15px!important;line-height:18px!important;font-weight:700}
 @media (max-width:775px){.cand.mid{max-width:40%} .cand.mid span{font-size:12.5px;line-height:17px}}   /* clears the winner's check; narrower phones wrap */
 .bar .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;box-shadow:0 0 0 1px var(--bg);transition:left .8s var(--ease)}
-.under{position:relative;min-height:30px;font-size:13px}
+.under{position:relative;min-height:30px;font-size:14px}   /* web: the line under the bar 14px (owner, 2026-11-27; was 13); phones 12px */
 .gain{position:absolute;top:0;font-weight:500;transition:opacity .25s;white-space:pre-line}
 .gain.d{left:0;text-align:left;color:var(--dem)} .gain.r{right:0;text-align:right;color:var(--rep)}
 .gain.d .check{background:var(--dem);margin:0 0 0 4px} .gain.r .check{margin-right:4px}   /* popular-vote winner (President) */   /* every line: blue flush left, red flush right */
@@ -223,7 +224,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .cand small{display:none}   /* India's party tallies sit below the bar, like the USA's notes (renderIn); these stay as their source */
 .gain:empty{display:none} #in-total-oth{white-space:nowrap}   /* Others: placed by placeOth */
 .under.split .gain:not(.d):not(.r){position:absolute}   /* Chief Minister: placed too */
-.need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:13px;font-weight:500;color:var(--fg);transition:left .8s var(--ease)}
+.need{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:14px;font-weight:500;color:var(--fg);transition:left .8s var(--ease)}
 .need small{display:block;font-size:9px;font-weight:600;letter-spacing:.06em}
 .need small.wrap{white-space:nowrap;letter-spacing:0}  /* long label (50-50 Senate): one line; two centred lines on phones */
 @media (max-width:775px){.need small.wrap{white-space:normal;width:200px}}
@@ -460,6 +461,18 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #mini{display:block;position:fixed;z-index:30;top:0;left:0;right:0;background:var(--bg);box-shadow:0 1px 0 var(--edge);
     padding:calc(10px + env(safe-area-inset-top)) 16px 10px 16px;   /* edge to edge: no country button in it (owner, 2026-11-26; was room for it on the right) */transform:translateY(-110%);transition:transform .25s var(--ease)}
   body.stuck #mini{transform:none}
+  /* (owner, 2026-11-26) no drop-down bar on phones any more: the tally itself (.head) scrolls up, sticks at the top and
+     shrinks as the page goes on scrolling (--hp 0 -> 1 over the first 16px once stuck, set in headStick; it sticks as soon as
+     the 20px of room above the centre label (padding, offset by a -20px margin so nothing moves) meets the top edge): the numbers
+     30 -> 14px, the gap between the labels and the bar 18 -> 6px, a little room above it; the space it gives up is kept
+     below it (margin), so the page never jumps */
+  #mini{display:none!important}
+  .head{position:sticky;top:0;z-index:15;background:var(--bg);margin:-20px -16px 0;padding:calc(20px + (env(safe-area-inset-top) - 10px)*var(--hp,0)) 16px calc(8px*var(--hp,0));
+    gap:calc(9px - 3px*var(--hp,0));box-shadow:0 1px 0 rgba(0,0,0,calc(.08*var(--hp,0)))}
+  html.dark .head{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
+  .head .tally .cand b{font-size:calc(30px - 14px*var(--hp,0))!important;line-height:calc(30px - 14px*var(--hp,0))!important}   /* stuck: 16px (owner, 2026-11-27; was 14) */
+  .head .bar{height:calc(15px - 7.5px*var(--hp,0))}   /* stuck: the bar half as tall (owner, 2026-11-27) */
+  .head .under,.head .need{font-size:12px}   /* phones: the line under the bar always 12px, stuck or not (owner, 2026-11-27) */
   /* (owner, 2026-11-26) the pinned bar is the tally exactly as on the page (numbers over names, the year over the centre label,
      the full bar, the line under it), only the three big numbers shrunk to the names' size */
   #mini .cand.mid{display:grid;white-space:normal;max-width:40%;gap:0}
@@ -596,6 +609,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 
   <!-- President, House, Senate and Governors share this panel so the map morphs between them -->
   <section class="panel" id="panel-us" role="tabpanel">
+    <div class="head">   <!-- the tally and its bar; phones: sticks at the top and shrinks as the page scrolls (owner, 2026-11-26) -->
     <div class="tally" id="us-tally">
       <div class="cand d"><b id="num-d">0</b><span id="name-d"></span></div>
       <div class="cand mid"><b id="mid-year"></b><span class="lk"><svg class="lock d" viewBox="0 0 16 16" aria-hidden="true"><path class="sh" d="M5 8V4.9a3 3 0 0 1 6 0V8"/><rect x="2.5" y="7" width="11" height="8" rx="2"/></svg><span id="mid-label"></span><svg class="lock r" viewBox="0 0 16 16" aria-hidden="true"><path class="sh" d="M5 8V4.9a3 3 0 0 1 6 0V8"/><rect x="2.5" y="7" width="11" height="8" rx="2"/></svg></span></div>
@@ -604,6 +618,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <div class="barwrap">
       <div class="bar" id="us-bar" aria-hidden="true"><i id="bar-d" data-g="d" style="background:var(--dem)"></i><i id="bar-dp" data-g="d" class="hatch-d"></i><i id="bar-m" data-g="m"></i><i id="bar-t" data-g="t" class="hatch-t"></i><i id="bar-n" data-g="n" class="hatch-n"></i><i id="bar-rp" data-g="r" class="hatch-r"></i><i id="bar-r" data-g="r" style="background:var(--rep)"></i><span class="mark" id="mark"></span></div>
       <div class="under"><span class="gain d" id="under-d"></span><span class="gain" id="under-m" style="color:var(--muted)"></span><span class="gain r" id="under-r"></span><span class="need" id="need"></span></div>
+    </div>
     </div>
     <div class="subtoggle" id="pres-view" role="group" aria-label="Map layout" hidden>
       <button type="button" data-pres="map" aria-pressed="false">Map</button>
@@ -644,6 +659,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 
   <!-- Lok Sabha, Rajya Sabha and States share this panel so the map morphs between them -->
   <section class="panel" id="panel-in" role="tabpanel" hidden>
+    <div class="head">   <!-- the tally and its bar; phones: sticks at the top and shrinks as the page scrolls (owner, 2026-11-26) -->
     <div class="tally" id="in-tally">
       <div class="cand india"><b id="in-n-india">0</b><span><em id="in-bloc">INDIA</em><i class="check" id="in-check-india">✓</i></span><small id="in-sub-india"></small></div>
       <div class="cand mid"><b id="in-mid-year"></b><span class="lk"><svg class="lock d" viewBox="0 0 16 16" aria-hidden="true"><path class="sh" d="M5 8V4.9a3 3 0 0 1 6 0V8"/><rect x="2.5" y="7" width="11" height="8" rx="2"/></svg><span id="in-mid-label"></span><svg class="lock r" viewBox="0 0 16 16" aria-hidden="true"><path class="sh" d="M5 8V4.9a3 3 0 0 1 6 0V8"/><rect x="2.5" y="7" width="11" height="8" rx="2"/></svg></span></div>
@@ -653,6 +669,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <div class="barwrap">
       <div class="bar" aria-hidden="true"><i id="in-b-inc" data-g="inc" style="background:var(--inc)"></i><i id="in-b-india" data-g="india" style="background:var(--india)"></i><i id="in-b-vac" data-g="m" class="gap" style="background:var(--house)"></i><i id="in-b-oth" data-g="oth" style="background:var(--oth)"></i><i id="in-b-nda" data-g="nda" class="gap" style="background:var(--nda)"></i><i id="in-b-bjp" data-g="bjp" style="background:var(--bjp)"></i><span class="mark" id="in-mark" style="left:50.09%"></span></div>
       <div class="under" id="in-under"><span class="gain d" id="in-total" style="color:var(--muted)"></span><span class="gain" id="in-total-oth" style="color:var(--oth)"></span><span class="gain r" id="in-total-r" style="color:var(--bjp)"></span><span class="need" id="in-need" style="left:50.09%">272</span></div>
+    </div>
     </div>
     <div class="subtoggle" id="ls-view" role="group" aria-label="India map layout" hidden>
       <button type="button" data-lsv="map" aria-pressed="false">Map</button>
@@ -3795,6 +3812,17 @@ function stickMini(){
   if(stuck&&!document.body.classList.contains("stuck")) syncMini();
   document.body.classList.toggle("stuck",stuck);
 }
+// Phones (owner, 2026-11-26): the tally (.head) sticks at the top; once there, the next 50px of scroll shrink it (--hp 0..1).
+// Whatever height it loses goes back as margin below it, so the map doesn't move under the finger.
+(function headStick(){const D=16; let raf=0, H0=new WeakMap();
+  const run=()=>{raf=0; for(const h of document.querySelectorAll(".panel .head")){
+    const pn=h.parentElement; if(!narrow.matches||pn.hidden){h.style.removeProperty("--hp"); h.style.marginBottom=""; continue}
+    const start=pn.getBoundingClientRect().top+scrollY+parseFloat(getComputedStyle(h).marginTop),   /* the panel is a flex box, so the head's -20px margin doesn't collapse */ p=Math.min(1,Math.max(0,(scrollY-start)/D));
+    if(p===0||!H0.has(h)){h.style.setProperty("--hp",0); H0.set(h,h.offsetHeight)}
+    h.style.setProperty("--hp",p.toFixed(3)); h.style.marginBottom=p?Math.max(0,H0.get(h)-h.offsetHeight)+"px":""}};
+  const go=()=>{if(!raf) raf=requestAnimationFrame(run)};
+  addEventListener("scroll",go,{passive:true}); addEventListener("resize",go); narrow.addEventListener?.("change",go);
+  new MutationObserver(go).observe(document.querySelector("main"),{subtree:true,attributes:true,attributeFilter:["hidden"]}); go()})();
 new MutationObserver(()=>{if(document.body.classList.contains("stuck")) syncMini()})
   .observe(document.querySelector("main"),{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["style","hidden"]});
 addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",stickMini); stickMini();
