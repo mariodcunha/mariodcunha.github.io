@@ -3271,6 +3271,7 @@ STATUS / NEXT
 - Phone control heights (owner, 2026-11-26): every control 44px, top and bottom (view toggles, both steppers, Play, theme, country picker: 3px frame, 38px buttons / pills; was 48px briefly). Top bar min-height 44px. Rows: steppers 12px off the bottom, toggles 10px above them (lsctl bottom 66px); page bottom padding and the fade 132px.
 - Phone pinned bar (#mini, owner, 2026-11-26): edge to edge (16px each side); the country button no longer pins into it (it stays at the top of the page). Its design = the tally exactly as on the page (numbers over names, year over the centre label, full 15px bar, the line under it), only the three big numbers shrunk to the names' 14px (centre label 12.5px).
 - Web control sizes (owner, 2026-11-26), USA and India: every button 32px tall (race tabs and view toggles: 12px a side, text centred; year arrows 30 x 32; Play 32 x 32; country face 32px), so every group with its 3px frame is 38px, and the theme button 38 x 38. The short-label top bar (when it would wrap) still drops the sides to 8px. Phones keep their 44px controls.
+- Country menu (owner, 2026-11-26): the picked country's mark is the tally winner's round check badge (12px circle, drawn white tick), in --sel grey, not a text ✓.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
