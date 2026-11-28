@@ -317,7 +317,6 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #about{max-width:min(560px,calc(100% - 32px));padding:24px 24px 20px;border:1px solid var(--rule);border-radius:var(--r-out);background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans);box-shadow:0 12px 40px rgba(0,0,0,.18)}
 #about a{color:inherit;text-decoration:underline;text-underline-offset:2px} #about::backdrop{background:rgba(0,0,0,.45)} #about h2{margin:0 0 12px;font-size:20px} #about p{margin:0 0 12px} #about p:last-of-type{margin-bottom:16px}
 #about .close{position:absolute;top:12px;right:12px;width:32px;height:32px;border:0;border-radius:50%;background:var(--chip);color:var(--fg);font-size:18px;line-height:32px;cursor:pointer}
-.credit-top{display:none}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
 
@@ -486,9 +485,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .legends>.legend.off{display:none}
   .legend.stack,#panel-in .legend,#panel-us .legend{flex-direction:column;align-items:flex-start} .legend.stack .own,.legend.stack .txt,#panel-in .legend .txt,#panel-us .legend>*{flex-basis:auto}   /* phones: one per line, USA and India, every map and year (owner, 2026-11-26); the page scrolls anyway */
   .credit{font-size:12px}   /* phones too now, for About (owner, 2026-11-27) */
-  .credit-top{display:block;font-size:12px;line-height:15px;color:var(--muted)}
-  .credit-top.about{background:none;border:0;padding:0;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;align-self:center}
-  .credit .about{display:none} .credit{justify-content:flex-end}   /* phones: About sits top left; the footer keeps the NYT credit */
+  #play{margin-left:0} .topbar>.country{margin-left:auto}   /* phones: Play and the theme switch top left, the country menu top right (owner, 2026-11-27) */
   #about{margin:auto 0 0;width:100%;max-width:100%;max-height:85vh;max-height:85dvh;overflow:auto;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:28px 20px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.2)}   /* a bottom sheet */
   #about[open]{animation:sheet-up .28s cubic-bezier(.2,.8,.2,1)} @keyframes sheet-up{from{transform:translateY(100%)}to{transform:none}}
   @media (prefers-reduced-motion:reduce){#about[open]{animation:none}}
@@ -652,7 +649,6 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
     </div>
   </div>
-  <button type="button" class="credit-top about" id="about-open-top">About</button>   <!-- phones: About, a bottom sheet (owner, 2026-11-27; was "Inspired by @NYTimes") -->
   <div id="play" class="idle" role="group" aria-label="Play through every map"><span class="pthumb" aria-hidden="true"></span><button type="button" id="play-left"></button><button type="button" id="play-right"></button></div>
   <div id="ttest" class="idle" role="group" aria-label="Transition test" hidden><span class="pthumb" aria-hidden="true"></span><button type="button" id="tt-left"></button><button type="button" id="tt-right"></button></div>   <!-- only with ?transitions (owner, 2026-11-26) -->
   <div id="ttest-cap" role="status" hidden></div>
@@ -774,7 +770,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       </div>
     </div>
   </section>
-  <footer class="credit"><button type="button" class="about" id="about-open">About</button><span>Inspired by DataViz from the <a href="https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html" target="_blank" rel="noopener">New York Times</a></span></footer>
+  <footer class="credit"><button type="button" class="about" id="about-open">About</button><span>Inspired by <a href="https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html" target="_blank" rel="noopener">The New York Times</a></span></footer>
   <dialog id="about" aria-labelledby="about-h">
     <button type="button" class="close" id="about-close" aria-label="Close">×</button>
     <h2 id="about-h">About</h2>
@@ -785,7 +781,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
 </main>
 <script>
 // About (owner, 2026-11-27): a modal; Esc, the × and a click outside it close it
-{const d=document.getElementById("about"); ["about-open","about-open-top"].forEach(id=>document.getElementById(id).addEventListener("click",()=>d.showModal()));
+{const d=document.getElementById("about"); document.getElementById("about-open").addEventListener("click",()=>d.showModal());
   document.getElementById("about-close").addEventListener("click",()=>d.close());
   d.addEventListener("click",e=>{const r=d.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) d.close()})}
 // Winners by year: dem = states won by the Democrat; me2 / ne2 = Maine's and Nebraska's 2nd districts
