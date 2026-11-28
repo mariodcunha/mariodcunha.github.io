@@ -32,9 +32,21 @@ html.dark .menu{box-shadow:0 0 0 1px #3a3a3a,0 8px 24px rgba(0,0,0,.5)}
 html.theming *,html.theming *::before,html.theming *::after{transition:none!important}
 ::view-transition{pointer-events:none} ::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
 /* Transition test (?transitions only): the same chip as the theme button; dark while it runs. A caption names the step */
-#ttest{display:grid;place-items:center;flex:none;width:37px;height:37px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer;margin-left:8px} #ttest[hidden]{display:none} #ttest svg{width:16px;height:16px} #ttest:hover{color:var(--fg)} #ttest.on{background:var(--sel);color:#fff}
+/* Transition test (owner, 2026-11-27): the same control as Play: idle, its two-arrow icon starts it; running, the right half is the speed (1x/2x/3x) and the left half pauses; paused, the left half stops and the right resumes */
+#ttest[hidden]{display:none} html.dark #ttest.idle #tt-right{color:var(--muted)} html.dark #ttest.idle #tt-right:hover{color:var(--fg)}
+#ttest{position:relative;margin-left:8px;flex:none;display:inline-flex;padding:3px;background:var(--chip);border-radius:var(--r-out)}
+#ttest .pthumb{position:absolute;top:3px;bottom:3px;right:3px;width:32px;border-radius:var(--r-in);background:var(--sel);box-shadow:0 1px 3px rgba(0,0,0,.16);opacity:0;transition:transform .3s var(--ease),opacity .2s}
+#ttest button{position:relative;z-index:1;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--r-in);background:none;color:var(--muted);font:600 13px/1 var(--sans);cursor:pointer;transition:color .25s,width .3s var(--ease),margin .3s var(--ease),opacity .2s}
+#ttest button svg{width:14px;height:14px}
+#ttest button:hover{color:var(--fg)} #ttest button.on,#ttest button.on:hover{color:#fff}
+#ttest button:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+#ttest.idle #tt-right{color:var(--sel)} #ttest.idle #tt-right:hover{color:var(--fg)}   /* idle: the same dark grey as the playing thumb (owner, 2026-11-09) */
+#ttest.idle #tt-left{width:0;opacity:0;visibility:hidden}
+#ttest:not(.idle) #tt-left{margin-right:2px}
+#ttest:not(.idle) .pthumb{opacity:1}
+#ttest.paused .pthumb{transform:translateX(-34px)}
 #ttest-cap{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);padding:7px 12px;border-radius:var(--r-out);background:var(--sel);color:#fff;font:500 12.5px/1.3 var(--sans);text-align:center;pointer-events:none} #ttest-cap[hidden]{display:none}
-@media (max-width:775px){#ttest-cap{bottom:calc(124px + env(safe-area-inset-bottom))}}   /* phones: just above the pinned controls */
+@media (max-width:775px){#ttest-cap{bottom:calc(124px + env(safe-area-inset-bottom))} .topbar:has(#ttest:not([hidden])) #play{display:none}}   /* phones: just above the pinned controls; with ?transitions the test control takes Play's place, so the row still fits on one line */
 #theme{display:grid;place-items:center;flex:none;width:38px;height:38px;padding:0;border:0;border-radius:var(--r-out);background:var(--chip);color:var(--sel);cursor:pointer}
 html.dark #theme{color:var(--muted)} #theme:hover,html.dark #theme:hover{color:var(--fg)} #theme:focus-visible{outline:2px solid var(--dem);outline-offset:2px} #theme svg{width:16px;height:16px}
 *,*::before,*::after{box-sizing:border-box}
@@ -183,7 +195,18 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .bar.up-mark .mark{top:-7px!important}
 /* the rest of the bar goes grey while a part is hovered or locked (owner, 2026-11-26); hovering a grey part colours it and greys the others */
 .bar i:not(.mark){transition:width .8s var(--ease),height .2s var(--ease),margin-top .2s var(--ease),background-color .25s var(--ease),opacity .25s var(--ease)} .bar i.dim{background:var(--fade2)!important}
-.bar i.gap{margin-left:3px} /* white gap where one side (alliance / party) ends and the next begins */
+.bar i.gap{margin-left:3px}
+/* House Race 2008, the diversity bar (owner, 2026-11-27): non-white seats dark brown at each party's end, white seats a light
+   skin tone in the middle (the white gap still splits the parties); dark mode a touch lighter so the brown reads on the dark page */
+:root{--skin-dk:#9a623d;--skin-lt:#efc9a4} html.dark{--skin-dk:#a86f47;--skin-lt:#e3bb93}
+.bar.div i[data-g="d"]:not(.hatch-d),.bar.div i[data-g="r"]:not(.hatch-r){background:var(--skin-dk)!important} .bar.div i.hatch-d,.bar.div i.hatch-r{background:var(--skin-lt)!important;box-shadow:none!important}   /* by class, not id, so the pinned copy (#mini, no ids) matches too (2026-11-27) */
+.legend .skin{display:none!important} #legend-house.race .skin,#legend-senate.race .skin{display:inline-flex!important} #legend-house.race .skin.nc:not(.on){display:none!important}
+#legend-house.race #proj-house>span:not(.txt),#legend-senate.race #proj-senate>span:not(.txt){display:none!important}   /* Race legends: non-white / white keys, no blue / red (owner, 2026-11-27) */
+/* India Religion (owner, 2026-11-27): Hindu a pink like the emoji tint, 3:1 on white; non-Hindu a dark teal, darker than the pink. Dark mode: provisional */
+:root{--rel-h:#e8649c;--rel-nh:#1a8582;--rel-h-lt:#f5b5cf;--rel-nh-lt:#94cfcb} html.dark{--rel-h:#a35328;--rel-nh:#c3cc72;--rel-h-lt:#6b3c22;--rel-nh-lt:#4d5228}   /* dark mode (owner, 2026-11-27): Hindu vs non-Hindu at least 3:1 against each other (3.2:1, olive a little less bright, terracotta a touch deeper to keep it; Others back to the earlier dim #6b3c22 / #4d5228, which stand apart from the alliances better), each readable on the page; Hindu the diya emoji's terracotta (2026-11-27; was a paler #c8935a), non-Hindu olive (readable as text on the dark page, which a deep navy is not); Others dimmer tints */
+.tally.relc .cand:not(.mid) b,.tally.relc .cand:not(.mid) span{color:var(--rel-nh)!important} .tally.relc .check{background:var(--rel-nh)!important}
+html.dark .tally.relc .check::after{filter:invert(1) brightness(.1)}   /* dark mode: the light olive badge takes a dark tick (the white one vanished) */ #legend-loksabha .rkeys b{display:none}   /* no counts on the religion keys (owner, 2026-11-27) */ #legend-loksabha .hk{display:none} #legend-loksabha.relig .hk{display:inline-flex}
+.tally.racec .cand.d b,.tally.racec .cand.d span,.tally.racec .cand.r b,.tally.racec .cand.r span{color:var(--skin-dk)!important} .tally.racec .check{background:var(--skin-dk)!important} .bar.div i.dim[data-g]:not(.x-){background:var(--fade2)!important}   /* filtering: the other side greys here too (the ids out-rank the skin tones; owner, 2026-11-27) */ .bar.div+.under .gain{color:var(--muted)!important}   /* the line under it grey (owner, 2026-11-27) */ /* white gap where one side (alliance / party) ends and the next begins */
 /* 2026 calls: hatched = the party the poll aggregate (or Cook's rating) has ahead; yellow hatch = toss-up; grey = can't call */
 .hatch-d{background:repeating-linear-gradient(135deg,var(--dem) 0 2.5px,var(--hd2) 2.5px 5px)}
 .hatch-r{background:repeating-linear-gradient(135deg,var(--rep) 0 2.5px,var(--hr2) 2.5px 5px)}
@@ -234,8 +257,8 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .mapwrap.us,.mapwrap.in{position:relative}
 .hover-name{position:absolute;left:0;right:0;top:0;z-index:2;text-align:center;white-space:pre-line;font:500 13px/1.2 var(--sans);color:var(--muted);pointer-events:none;opacity:0;transition:opacity .15s}
 .hover-name.on{opacity:1}
-#map-india text.rel{font-size:16px;opacity:0;pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease);transform-box:fill-box;transform-origin:center;transform:scale(.4)} #map-india.rel text.rel.on{opacity:1;transform:none}   /* Lok Sabha Religion (owner, 2026-11-26) */
-#map-india.rel text.rel.on.swap{opacity:0!important;transform:scale(.4);transition-duration:.22s}   /* a year change: an emoji that changes shrinks out, the new one grows in; filters fade with the same ease (owner, 2026-11-26) */
+#map-india text.rel{font-size:16px;opacity:0;pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease);transform-box:fill-box;transform-origin:center} #map-india.rel text.rel.on{opacity:1}   /* Lok Sabha Religion (owner, 2026-11-26); switching maps: fade only, no grow-in (owner, 2026-11-27) */
+#map-india.rel text.rel.on.swap{opacity:0!important;transform:scale(.4);transition-duration:.22s}   /* a year change: an emoji that changes shrinks out, the new one grows in (owner, 2026-11-26; kept for years only, 2026-11-27) */
 @media (max-width:775px),(hover:none){#map-india text.rel,#map-india text.rel.on.swap{transform:none!important;transition:opacity .35s var(--ease)} #map-india.rel text.rel.on.swap{transition-duration:.2s}}   /* phones: fade only, no scaling (smoother with ~540 emoji) */
 @media (prefers-reduced-motion:reduce){#map-india text.rel{transition:none!important;transform:none!important}}
 #map-india.rel.lit-inc text.rel:not([data-p="inc"]){opacity:0} #map-india.rel.lit-india text.rel:not([data-p="india"]){opacity:0} #map-india.rel.lit-oth text.rel:not([data-p="oth"]){opacity:0} #map-india.rel.lit-nda text.rel:not([data-p="nda"]){opacity:0} #map-india.rel.lit-bjp text.rel:not([data-p="bjp"]){opacity:0} #map-india.rel.lit-c text.rel:not([data-p="inc"],[data-p="india"]){opacity:0} #map-india.rel.lit-b text.rel:not([data-p="nda"],[data-p="bjp"]){opacity:0}   /* a tally filter: only the locked group's seats keep their emoji (data-p = the winner's group) */
@@ -243,8 +266,8 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 #legend-loksabha.relig .base,#legend-loksabha.relig .oth-note{display:none} #map-india.rel .in-pad rect{fill:var(--fade)!important}   /* Religion: the blank pad cells (J&K, Ladakh...) the same light grey as the seat squares (owner) */ #legend-loksabha .rkeys{display:none} #legend-loksabha.relig .rkeys{display:flex;flex-wrap:wrap;gap:6px 18px} @media (max-width:775px){#legend-loksabha.relig .rkeys{flex-direction:column;flex-wrap:nowrap;align-items:flex-start;gap:6px}}   /* phones: legends line by line, always (owner, 2026-11-26) */ #legend-loksabha .rkeys .rk{display:grid;place-items:center;width:20px;height:20px;border-radius:4px;background:var(--fade);font-style:normal;font-size:13px;line-height:1} #legend-loksabha .rkeys .rk em{font-style:normal} #legend-loksabha .rkeys b{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums} #legend-loksabha .rkeys span[data-n="0"]{display:none}
 #map-us text.face{font-size:15px!important;opacity:0;pointer-events:none;transition:opacity .3s} #map-us text.face.on{opacity:1!important;fill:initial!important}
 #map-us.lit-d text.face.on:not([data-p="d"]),#map-us.lit-r text.face.on:not([data-p="r"]){opacity:0!important}   /* a party filtered: the other side's faces go, leaving plain grey squares like any other view (owner, 2026-11-26) */
-#map-us text.face{transition:opacity .45s var(--ease),transform .45s var(--ease);transform-box:fill-box;transform-origin:center}
-#map-us text.face:not(.on),#map-us text.face.on.swap{transform:scale(.4)} #map-us text.face.on.swap{opacity:0!important;transition-duration:.22s}   /* a year change: a face that changes shrinks out and the new one grows in, a face that comes or goes the same way, in step with the squares (owner, 2026-11-26) */
+#map-us text.face{transition:opacity .45s var(--ease),transform .45s var(--ease);transform-box:fill-box;transform-origin:center}   /* switching maps: fade only, no grow-in (owner, 2026-11-27) */
+#map-us text.face.on.swap{opacity:0!important;transform:scale(.4);transition-duration:.22s}   /* a year change: a face that changes shrinks out and the new one grows in (owner, 2026-11-26; kept for years only, 2026-11-27) */
 /* phones and touch screens (owner, 2026-11-26): scaling ~435 emoji at once is too heavy there and stutters, so faces only
    fade, quickly, and a changed face swaps in place (paintFaces) */
 @media (max-width:775px),(hover:none){#map-us text.face,#map-us text.face:not(.on){transform:none!important;transition:opacity .35s var(--ease)} #map-us text.face.on.swap{transform:none!important;transition:opacity .2s var(--ease)}}
@@ -293,8 +316,8 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 #map-us.race .sq.hov{stroke-width:1px!important}
 /* Senate Race (owner, 2026-11-26): the faces always show (not only on hover, unlike the leads); a party filtered: the other side's go;
    the hovered seat flips light / dark like the House's, instantly */
-#map-us .alt-grid text.sface{opacity:1!important;fill:initial!important;dominant-baseline:central;pointer-events:none}
-#map-us.lit-d .alt-grid text.sface:not([data-p="d"]),#map-us.lit-r .alt-grid text.sface:not([data-p="r"]){opacity:0!important}
+#map-us .alt-grid text.sface{opacity:1!important;transition:opacity .35s var(--ease);fill:initial!important;dominant-baseline:central;pointer-events:none}
+#map-us.sfade .alt-grid text.sface,#map-us.lit-d .alt-grid text.sface:not([data-p="d"]),#map-us.lit-r .alt-grid text.sface:not([data-p="r"]){opacity:0!important}
 #map-us.srace .alt-st rect.hov{fill:#7a7a7a!important;transition:none!important} html.dark #map-us.srace .alt-st rect.hov{fill:#a3a3a3!important}
 #map-us.srace .alt-st rect.hov+text:not(.sface){fill:#fff!important;opacity:1!important;transition:none!important} html.dark #map-us.srace .alt-st rect.hov+text:not(.sface){fill:#1a1a1a!important}   /* the state code inverts with its seat */
 #map-us.srace .alt-st rect.hov-off{transition:none!important}
@@ -410,6 +433,17 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     padding:4px max(16px,calc((100% - 1100px)/2 + 16px)) 10px;transform:translateY(-100%);opacity:0;visibility:hidden;
     transition:transform .25s var(--ease),opacity .2s,visibility 0s .25s}
   body.stuck #mini{transform:none;opacity:1;visibility:visible;transition:transform .25s var(--ease),opacity .2s}
+  /* (owner, 2026-11-27) web as phones: no drop-down #mini any more. The tally itself (.head) scrolls up to the top bar, sticks just
+     under it and shrinks as the page goes on scrolling (--hp 0 -> 1 over 60px, headStick): numbers to 22px, names to 14px, the bar
+     half as tall, the line under it 12px, the gaps tighter; the space it gives up is kept below it (margin), so nothing jumps */
+  #mini{display:none!important}
+  .head{position:sticky;top:var(--tbh,57px);z-index:25;background:var(--bg);padding:calc(6px*var(--hp,0)) 0 calc(8px*var(--hp,0));gap:calc(9px - 3px*var(--hp,0))}
+  .head::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,calc(.08*var(--hp,0)))}
+  html.dark .head::before{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
+  .head .tally .cand b{font-size:calc(clamp(30px,5.5vw,46px) - (clamp(30px,5.5vw,46px) - 22px)*var(--hp,0))}
+  .head .tally .cand>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 14px)*var(--hp,0))}
+  .head .bar{height:calc(15px - 7px*var(--hp,0))}
+  .head .under,.head .need{font-size:calc(14px - 2px*var(--hp,0))}
   #mini .tally{align-items:baseline}
   #mini .cand{display:flex;align-items:baseline;gap:8px}
   #mini .cand.r,#mini .cand.nda{flex-direction:row-reverse}
@@ -455,6 +489,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #race-step,.lsctl #year{height:44px} #race-step button,.lsctl #year button{height:38px} #race-step .win,.lsctl #year .win{height:38px}
   .rstep .rlab,.rstep .rpk{line-height:38px}
   #play button{width:38px;height:38px} #play .pthumb{width:38px} #play.paused .pthumb{transform:translateX(-40px)}
+  #ttest button{width:38px;height:38px} #ttest .pthumb{width:38px} #ttest.paused .pthumb{transform:translateX(-40px)}
   #theme{width:44px;height:44px} .country>button .face{height:38px}
   body::after{content:"";position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(132px + env(safe-area-inset-bottom));
     background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),var(--bg) 22px);pointer-events:none}
@@ -562,7 +597,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     </div>
     <div class="subtoggle" id="sen-view" role="group" aria-label="Size the Senate circles by" hidden>
       <button type="button" data-sen="all" aria-pressed="false">All</button>
-      <button type="button" data-sen="power" aria-pressed="false">Representation</button>
+      <button type="button" data-sen="power" aria-pressed="false">Population</button>
       <button type="button" data-sen="seats" aria-pressed="true">Seats</button>
     </div>
     <div class="subtoggle" id="gov-view" role="group" aria-label="State offices" hidden>
@@ -580,7 +615,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
     <div class="subtoggle" id="margin-view" role="group" aria-label="Color the map by" hidden>
       <button type="button" data-margin="results" aria-pressed="true">Results</button>
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
-      <button type="button" data-margin="power" aria-pressed="false" hidden>Representation</button>   <!-- Senate, web: Results / Margins / Representation in one toggle, no All (owner, 2026-11-26) -->
+      <button type="button" data-margin="power" aria-pressed="false" hidden>Population</button>   <!-- Senate, web: Results / Margins / Representation in one toggle, no All (owner, 2026-11-26) -->
       <button type="button" data-margin="race" aria-pressed="false" hidden>Race</button>   <!-- House 2008 (owner, 2026-11-26) -->
       <button type="button" data-margin="religion" aria-pressed="false" hidden>Religion</button>
       <button type="button" data-margin="stseats" aria-pressed="false" hidden>Seat share</button>   <!-- India States: Results / Margins / Seat share in one toggle (owner, 2026-11-26) -->   <!-- Lok Sabha 2009 (owner, 2026-11-26) -->
@@ -593,7 +628,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   </div>
   <p class="credit-top" style="margin:0">Inspired by<br>@NYTimes</p>
   <div id="play" class="idle" role="group" aria-label="Play through every map"><span class="pthumb" aria-hidden="true"></span><button type="button" id="play-left"></button><button type="button" id="play-right"></button></div>
-  <button type="button" id="ttest" aria-label="Transition test" aria-pressed="false" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 5h10M10 2.5L12.5 5 10 7.5M13.5 11h-10M6 8.5L3.5 11 6 13.5"/></svg></button>   <!-- only with ?transitions (owner, 2026-11-26) -->
+  <div id="ttest" class="idle" role="group" aria-label="Transition test" hidden><span class="pthumb" aria-hidden="true"></span><button type="button" id="tt-left"></button><button type="button" id="tt-right"></button></div>   <!-- only with ?transitions (owner, 2026-11-26) -->
   <div id="ttest-cap" role="status" hidden></div>
   <button type="button" id="theme" aria-pressed="false" aria-label="Dark mode"></button>
   <div class="country">
@@ -634,12 +669,14 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="txt"><span id="p-ev">Each square is one House seat, in the colour of the state's winner (Maine and Nebraska by district). DC's three electoral votes are drawn on their own. The totals also count each state's two senator votes, which go to the statewide winner and are not drawn. </span><em id="p-note"></em></span>
       </div>
       <div class="legend" id="legend-house">
+        <span class="skin"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--skin-dk)"/></svg>Non-white</span><span class="skin"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--skin-lt)"/></svg>White</span><span class="skin nc" id="h-nc"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--house)"/></svg><em></em></span>   <!-- Race: the bar's keys, no party colours (owner, 2026-11-27) -->
         <span class="proj" id="house-keys"><span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--dem)"/></svg>Democrats</span><span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rep)"/></svg>Republicans</span></span>
         <span class="txt">Each square is one district. <em id="h-note"></em></span>   <!-- one paragraph (owner, 2026-11-22) -->
         <span class="proj" id="proj-house"></span>
         <span id="leg-vacant" hidden><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--house)"/></svg>Vacant (NC-9 result not certified)</span>
       </div>
       <div class="legend" id="legend-senate">
+        <span class="skin"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--skin-dk)"/></svg>Non-white</span><span class="skin"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--skin-lt)"/></svg>White</span>   <!-- Race: the bar's keys (owner, 2026-11-27) -->
         <span class="base kd"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--dem)"/></svg>Democrats (or caucused)</span>
         <span class="base kr"><svg viewBox="0 0 14 14"><rect x=".5" y=".5" width="13" height="13" rx="6.5" fill="var(--rep)"/></svg>Republican</span>
         <span class="own"><svg viewBox="0 0 14 14"><rect data-keep width="14" height="14" fill="var(--house)"/></svg><em id="sen-sq">House districts – each represents a roughly similar number of people (about 760,000)</em></span>
@@ -685,6 +722,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--oth)"/></svg>Others</span>
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
+        <span class="hk"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rel-h)"/></svg>Hindu</span><span class="hk"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rel-nh)"/></svg>Non-Hindu</span>   <!-- Religion: the bar's keys (owner, 2026-11-27) -->
         <span class="rkeys"><span data-r="0"><i class="rk"><em>🪔</em></i>Hindu<b></b></span><span data-r="1"><i class="rk"><em>🌙</em></i>Muslim<b></b></span><span data-r="2"><i class="rk"><em>🎄</em></i>Christian<b></b></span><span data-r="3"><i class="rk"><em>⚔️</em></i>Sikh<b></b></span><span data-r="4"><i class="rk"><em>🧵</em></i>Buddhist<b></b></span><span data-r="5"><i class="rk"><em>📜</em></i>Other<b></b></span></span>   <!-- Religion keys: the map's grey tile + emoji, name, that year's count (owner, 2026-11-26) -->
         <span class="txt"><span id="ls-note">Each square is one seat</span> <span class="geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span> <span class="oth-note">Others are those parties that did not align with either of the left or right alliances.</span></span>   <!-- one paragraph (owner, 2026-11-22) -->
       </div>
@@ -1223,9 +1261,9 @@ function legLegend(year){
 // Seats-view colours (owner, 2026-10-16): every year 2008-2026 from SEN_HIST (2026 = the seats not up plus the poll calls).
 // The 2026 calls are flat here, not hatched: light blue / light red = leaning, yellow = toss-up (owner, 2026-10-16)
 const ALT_PROJ={D:"var(--likd)",R:"var(--likr)",T:"var(--toss)",N:"url(#hn)"};
-const senRaceOn=year=>usRace==="senate"&&senMode==="seats"&&colorMode==="race"&&!!SEN_FACE[year];   // Senate Race (owner, 2026-11-26)
-function paintAlt(year){
-  const race=senRaceOn(year); usSvg.classList.toggle("srace",race);
+const senRaceOn=(year,race=usRace)=>race==="senate"&&senMode==="seats"&&colorMode==="race"&&!!SEN_FACE[year];   // Senate Race (owner, 2026-11-26)
+function paintAlt(year,to=usRace){   /* to: the race being drawn (usRace is still the old one while switching in) */
+  const race=senRaceOn(year,to); usSvg.classList.toggle("srace",race);
   for(const k in ALT) ALT[k].forEach(({r,t,b,o},j)=>{const {p,m,i}=senPairs(year,k)[j]||{};   // every year 2008-2026
     b.dataset.fs??=b.style.fontSize; b.dataset.y??=b.getAttribute("y");
     if(race&&p){   // Race: plain grey (light / dark with the theme), the senator's face where the lead goes
@@ -1909,9 +1947,13 @@ function setUSRoute(race,animate,year){
   ++usStage; const base=r=>["president","house","governors"].includes(r), big=m=>m==="power"||m==="seats"; rmClear(); rmRun++;
   // Senate Seats in Margins -> All / Representation (owner, 2026-11-10): the tiles start fading to their Results colours (the
   // .45s fill transition) and 120ms later begin morphing into the circles, the fade finishing on the way. colorMode itself stays, so Seats comes back in Margins.
-  if(animate&&!reduce&&race==="senate"&&usRace==="senate"&&senPrev==="seats"&&senMode!=="seats"&&marginsOn()&&SEN_MARGINS[year]){
-    const stage=usStage, keep=colorMode; colorMode="results"; paintAlt(year); colorMode=keep;
-    setTimeout(()=>{if(stage===usStage) setUSNow(race,animate,year)},120); return}   // overlaps the fade: the morph starts while the colours finish (owner, 2026-11-10; was 450)
+  // Race -> Representation (owner, 2026-11-27): the same, the greys fading back to the Results colours (faces gone) as the morph sets off
+  const fromRace=colorMode==="race"&&!!SEN_FACE[year];
+  if(animate&&!reduce&&race==="senate"&&usRace==="senate"&&senPrev==="seats"&&senMode!=="seats"&&(marginsOn()&&SEN_MARGINS[year]||fromRace)){
+    const stage=usStage, tint=()=>{usSvg.classList.remove("sfade"); const keep=colorMode; colorMode="results"; paintAlt(year); colorMode=keep};
+    if(fromRace){usSvg.classList.add("sfade");   // the faces fade out first, then the greys turn to the Results colours, then the morph
+      setTimeout(()=>{if(stage!==usStage) return void usSvg.classList.remove("sfade"); tint(); setTimeout(()=>{if(stage===usStage) setUSNow(race,animate,year)},250)},320); return}
+    tint(); setTimeout(()=>{if(stage===usStage) setUSNow(race,animate,year)},120); return}   // overlaps the fade: the morph starts while the colours finish (owner, 2026-11-10; was 450)
   if(animate&&!reduce&&(usRace==="senate"&&big(senPrev)&&base(race)||race==="senate"&&big(senMode)&&base(usRace))) return repSwap(race,year);
   return setUSNow(race,animate,year);
 }
@@ -2075,13 +2117,27 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   usSvg.classList.toggle("president",race==="president");
   usSvg.classList.toggle("governors",race==="governors");
   usSvg.classList.toggle("seats",race==="senate"&&sm==="seats");
-  if(race==="senate") paintAlt(year);
+  // Representation -> Race (owner, 2026-11-27): the circles morph into the seats in Results colours, as Representation -> Results
+  // does, and soon after the seats fade to the Race greys and the faces fade in
+  const raceIn=race==="senate"&&morph&&sm==="seats"&&colorMode==="race"&&!!SEN_FACE[year];
+  if(race==="senate"&&raceIn){colorMode="results"; paintAlt(year,race); colorMode="race"; const st=usStage;
+    setTimeout(()=>{if(st!==usStage||usRace!=="senate"||senMode!=="seats"||colorMode!=="race") return;
+      usSvg.classList.add("sfade"); paintAlt(year,"senate"); usSvg.getBoundingClientRect(); requestAnimationFrame(()=>usSvg.classList.remove("sfade"))},senMorphMs+80)}
+  else if(race==="senate") paintAlt(year,race);   // Race faces show on the way in from another map too (fix, 2026-11-27)
   if(morph) senMorph(fromCircles);
   senPrev=race==="senate"?senMode:null;
   if(mapOnly) return;   // a step on the way (setUS): the map only
   usSvg.setAttribute("aria-label",T.label);
+  // House Race 2008: the big numbers are the diversity score; under the bar, the seats won (owner, 2026-11-27)
+  const dv=race==="house"&&colorMode==="race"&&DIV_YEARS.has(year)&&HOUSE_FACE[year]&&divScore(year)||race==="senate"&&sm==="seats"&&colorMode==="race"&&!!SEN_FACE[year]&&divSen(year);   // Senate Race too
+  document.getElementById("us-bar").classList.toggle("div",!!dv);   // the bar in skin tones (below)
+  document.getElementById("legend-house").classList.toggle("race",race==="house"&&colorMode==="race"&&!!HOUSE_FACE[year]);
+  {const nc=document.getElementById("h-nc"), n=dv&&race==="house"&&y26?T.tot-dv.d.n-dv.r.n:0; nc.classList.toggle("on",n>0); nc.querySelector("em").textContent=`Not called yet (${n})`}   // 2026: leading and no-result seats, the bar's grey middle
+  if(dv){T.pv=null; T.seg={d:dv.d.nw,D:dv.d.n-dv.d.nw,R:dv.r.n-dv.r.nw,r:dv.r.nw};   // bar: each party's non-white seats at its own end, dark brown; the white seats light, in the middle (owner, 2026-11-27)
+    const u=p=>`${dv[p].n} seats${narrow.matches?"\n":", "}${dv[p].nw} non-white`;   /* phones: two lines, clear of the 218 mark */ T.ud=u("d"); T.ur=u("r");
+    countToPct(document.getElementById("num-d"),dv.d.pct,animate); countToPct(document.getElementById("num-r"),dv.r.pct,animate)} else {
   (T.vote?countToPct:countTo)(document.getElementById("num-d"),T.d,animate);
-  (T.vote?countToPct:countTo)(document.getElementById("num-r"),T.r,animate);
+  (T.vote?countToPct:countTo)(document.getElementById("num-r"),T.r,animate)}
   document.getElementById("name-d").innerHTML=nameHTML(T.nd,T.ctl==="d",true);
   document.getElementById("name-r").innerHTML=nameHTML(T.nr,T.ctl==="r");
   // bar: held (solid) and leaning (hatched) per side, toss-ups and unpolled races in between; a white gap
@@ -2092,17 +2148,20 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // widen the white gap between the sides
   // 2028 (owner, 2026-11-12): the Likely segments are solid light blue / light red, the maps' "waiting" colours, not hatched
   [["bar-dp",ALT_PROJ.D],["bar-rp",ALT_PROJ.R]].forEach(([id,c])=>{const e=document.getElementById(id); e.style.background=fut?c:""; e.style.boxShadow=fut?"none":""});
-  document.getElementById("bar-m").style.background=T.vote?"var(--house)":fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?PARTY_FILL.i:(race==="house"||race==="governors")&&y26?"var(--house)":"";
+  document.getElementById("bar-m").style.background=T.vote?"var(--house)":fut&&race==="senate"&&!legReal(year)?SEN_FILL.u:fut?"var(--house)":legReal(year)?LEG_FILL.c:race==="governors"&&!y26&&c.i?PARTY_FILL.i:(race==="house"||race==="governors")&&y26?"var(--house)":race==="house"&&c.v?"var(--house)":"";   // a vacant House seat (2018: NC-9): the Vacant key's grey, not a see-through sliver that read as a wide gap (owner, 2026-11-27)
   let prev=null;
   for(const [id,g] of [["bar-d","d"],["bar-dp","D"],["bar-m","m"],["bar-t","T"],["bar-n","N"],["bar-rp","R"],["bar-r","r"]]){
-    const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%";
-    const grp=fut||race==="senate"||race==="governors"||(race==="house"&&y26)?g:e.dataset.g;   // 2028 too: solid | light gap (owner, 2026-11-12)   // Senate and Governors: a white gap between every segment, solid and light too
+    const e=document.getElementById(id), w=seg[g]||0; e.style.width=w/T.tot*100+"%"; e.style.minWidth=g==="m"&&race==="house"&&c.v&&!y26&&w>0?"10px":"";   // the vacant seat wide enough to see between its white gaps
+    const grp=fut||race==="senate"||race==="governors"||(race==="house"&&y26)||dv?g:e.dataset.g;   /* dv: the diversity bar gaps between non-white and white too (owner, 2026-11-27) */   // 2028 too: solid | light gap (owner, 2026-11-12)   // Senate and Governors: a white gap between every segment, solid and light too
     const on=w>1e-6;   // a rounding crumb is no segment: it would double the gap
     e.classList.toggle("gap",on&&prev!==null&&prev!==grp); if(on) prev=grp;
   }
   document.getElementById("us-tally").classList.toggle("pct",!!T.pct);
+  // House and Senate Race (owner, 2026-11-27): the big numbers and party names in the bar's dark brown, not blue / red
+  document.getElementById("us-tally").classList.toggle("racec",colorMode==="race"&&(race==="house"&&!!HOUSE_FACE[year]||race==="senate"&&sm==="seats"&&!!SEN_FACE[year]));
   panel.classList.toggle("pct",!!T.pct);   // phones: no room for the 50% label between the two notes
   const mark=document.getElementById("mark"), need=document.getElementById("need");
+  if((race==="house"||race==="senate"&&sm==="seats")&&colorMode==="race") T.mark=null;   // House / Senate Race: no majority line (owner, 2026-11-27)
   mark.style.opacity=need.style.opacity=T.mark==null?0:1;
   if(T.mark!=null){mark.style.left=need.style.left=T.mark+"%"; need.innerHTML=T.need}
   const ud=document.getElementById("under-d"), ur=document.getElementById("under-r");
@@ -2122,7 +2181,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.querySelectorAll("[data-pdist]").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.pdist==="district")===presDist));
   document.getElementById("g-note").textContent=race==="governors"&&marginsOn()&&GOV_MARGINS[year]?GOV_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
   const sRace=race==="senate"&&sm==="seats"&&colorMode==="race"&&!!SEN_FACE[year]; document.getElementById("legend-senate").classList.toggle("race",sRace);   // Senate Race: no party keys
-  document.getElementById("sen-note").textContent=sRace?"Race: each senator as an emoji: gender, hair and skin tone, the tone checked against their stated background. A rough stand-in: emoji have five skin tones and no eye colours.":legOn()?"Placeholder: these are the Senate seats results for this year; state legislature results are not added yet.":race==="senate"&&sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]?SEN_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
+  document.getElementById("sen-note").textContent=sRace?"Race: each senator as an emoji: gender, hair and skin tone, the tone checked against their stated background. A rough stand-in: emoji have five skin tones and no eye colours."+" The big numbers are each side's racial diversity: the share of its senators who are not white (any emoji skin tone darker than the lightest; Middle Eastern Americans count as white, as the Census counted them through 2020). Independents count with the Democrats, with whom they caucus.":legOn()?"Placeholder: these are the Senate seats results for this year; state legislature results are not added yet.":race==="senate"&&sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]?SEN_NOTE+(y26?" 2026 margins use current counts and may change.":""):"";
   // the toggle shows only where there are shades to switch to: not 2026, not Senate All / Representation, not Senate on phones
   document.getElementById("gov-view").hidden=!statesTab;
   document.querySelectorAll("[data-gov]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gov===govMode));
@@ -2133,14 +2192,18 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   paintFaces(race==="house"&&colorMode==="race"&&HOUSE_FACE[year],year);
   usSvg.classList.toggle("race",!!(race==="house"&&colorMode==="race"&&HOUSE_FACE[year]));   // Race: the hovered cell flips light / dark
   // Race: every square plain grey, no party colours, so only the faces show (owner, 2026-11-26); no party keys then
-  document.getElementById("h-note").textContent=race==="house"&&colorMode==="race"?"Race: each district's winner as an emoji, from their published photo: gender, hair and skin tone, the tone checked against their stated background. A rough stand-in: emoji have five skin tones and no eye colours.":race==="house"&&marginsOn()&&HOUSE_MARGINS[year]?"Darker shades mean a wider win in that district: full colour is 20 points or more, the lightest is under 4."+(y26?" Leading and no-result seats stay as in Results. 2026 margins use current counts and may change.":c.v?" The vacant seat stays grey.":""):"";
+  document.getElementById("h-note").textContent=race==="house"&&colorMode==="race"?"Race: each district's winner as an emoji, from their published photo: gender, hair and skin tone, the tone checked against their stated background. A rough stand-in: emoji have five skin tones and no eye colours."+(DIV_YEARS.has(year)?" The big numbers are each party's racial diversity: the share of the seats it won that went to a non-white winner (any emoji skin tone darker than the lightest; Middle Eastern Americans count as white, as the Census counted them through 2020). Each party's score is out of its own seats won, so a party with more seats needs more non-white members for the same score.":""):race==="house"&&marginsOn()&&HOUSE_MARGINS[year]?"Darker shades mean a wider win in that district: full colour is 20 points or more, the lightest is under 4."+(y26?" Leading and no-result seats stay as in Results. 2026 margins use current counts and may change.":c.v?" The vacant seat stays grey.":""):"";
   const mOn={house:marginsOn()&&HOUSE_MARGINS[year],president:marginsOn(),governors:marginsOn()&&GOV_MARGINS[year],senate:sm==="seats"&&marginsOn("senate")&&SEN_MARGINS[year]};
   for(const r in mOn) document.getElementById("legend-"+r).classList.toggle("margins",!!mOn[r]);
   // the centre of the tally: the year on the stepper and the view. Phones have no Senate Seats margins, so no results / margins there
   const rm=on=>on?"margins":"results";
   document.getElementById("mid-year").textContent=year;
-  document.getElementById("mid-label").textContent=legOn()?(fut?"State units projection":legReal(year)?"State units "+rm(marginsOn()):"State units"):race==="president"?(fut?"President projection":usDist?(narrow.matches?"By district ":"President by district ")+rm(marginsOn()):"President "+rm(marginsOn())):race==="house"?(fut?"House projection":colorMode==="race"?"House by race":"House "+rm(marginsOn()&&HOUSE_MARGINS[year])):
-    race==="governors"?(fut?"Governors projection":"Governors "+rm(marginsOn()&&GOV_MARGINS[year])):fut?"Senate projection":sm==="all"?"Senate":sm==="seats"?(narrow.matches?"Senate ":"Senate seats ")+(colorMode==="race"&&SEN_FACE[year]?"by race":rm(marginsOn("senate")&&SEN_MARGINS[year])):"Senate representation";
+  // Titles in Title Case, new wording (owner, 2026-11-27): President Results / Margins / Results by District / Margins by District;
+  // House Results / Margins / Racial Diversity; Senate Results / Margins / Representation / Racial Diversity; Governors Results /
+  // Margins; State Unit Results / Margins. The same on phones (they wrap onto two lines under the year)
+  const RM=on=>on?"Margins":"Results";
+  document.getElementById("mid-label").textContent=legOn()?(fut?"State Unit Projection":legReal(year)?"State Unit "+RM(marginsOn()):"State Units"):race==="president"?(fut?"President Projection":"President "+RM(marginsOn())+(usDist?" by District":"")):race==="house"?(fut?"House Projection":colorMode==="race"?"House rep. by Race":"House "+RM(marginsOn()&&HOUSE_MARGINS[year])):
+    race==="governors"?(fut?"Governors Projection":"Governors "+RM(marginsOn()&&GOV_MARGINS[year])):fut?"Senate Projection":sm==="all"?"Senate":sm==="seats"?(colorMode==="race"&&SEN_FACE[year]?"Senate rep. by Race":"Senate "+RM(marginsOn("senate")&&SEN_MARGINS[year])):"Senate rep. by Population";
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===(race==="senate"&&sm==="power"?"power":colorMode)));
   document.getElementById("leg-vacant").hidden=!c.v||y26||fut;
   document.getElementById("house-keys").hidden=y26||fut||colorMode==="race";   // Race: no party keys (owner, 2026-11-26)
@@ -2168,6 +2231,13 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
     fut&&r==="governors"&&race==="governors"&&!legOn()?`<span class="kd"><i class="sw" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${g26.D})</span><span class="kt"><i class="sw" style="background:var(--house)"></i>Toss-up (${g26.v})</span><span class="kr"><i class="sw" style="background:${ALT_PROJ.R}"></i>Likely Republican (${g26.R})</span>`:
     fut&&r==="senate"&&race==="senate"&&!legOn()?`<span class="kd"><i class="sw c" style="background:${ALT_PROJ.D}"></i>Likely Democrat (${c.D})</span><span class="kt"><i class="sw c" style="background:${SEN_FILL.u}"></i>Toss-up (${c.u})</span><span class="kr"><i class="sw c" style="background:${ALT_PROJ.R}"></i>Likely Republican (${c.R})</span>`:""});
   if(race==="senate") legShape("senate",senMode==="seats"?"r2":"c");   // the projected keys just written take the shape too
+  // House / Senate Race (owner, 2026-11-27): the notes run as one paragraph (e.g. "Every 2026 race is called. ... Race: each senator as an emoji ..."),
+  // not one block each: the later ones are copied onto the end of the first and hidden; undone on every render first
+  for(const id of ["legend-house","legend-senate"]){const tx=[...document.getElementById(id).querySelectorAll(".txt")];
+    tx.forEach(t=>{t.style.display=""; t.querySelector(":scope > .joined")?.remove()});
+    if(colorMode!=="race"||id!=="legend-"+race) continue;
+    const vis=tx.filter(t=>t.textContent.trim()&&getComputedStyle(t).display!=="none"); if(vis.length<2) continue;
+    vis.slice(1).forEach(t=>{const j=document.createElement("span"); j.className="joined"; j.textContent=" "+t.textContent; vis[0].append(j); t.style.display="none"})}
     panel.setAttribute("aria-labelledby","tab-"+race);
   usRace=race;
   usSvg.classList.toggle("leg",legReal(year)); if(legReal(year)) paintLeg(year);   // Legislatures 2024 / 2026: bars / triangles over the tiles
@@ -2332,6 +2402,7 @@ const LS_NAME={2004:{AN:"31",AP:"0,544,274,534,107,363,629,511,456,715,378,135,4
 const LS_GEO={2004:{AN:"4",AP:"343423443341434424144414444444144444444414",AR:"00",AS:"04242404244444",BR:"1333033343333313330033133133133033331044",CH:"4",CG:"00000004000",DN:"2",DM:"4",GA:"04",GJ:"04044400400400040440040404",HR:"4404444444",HP:"4440",JK:"222344",JH:"04334323344434",KA:"0440040400000040000020404024",KL:"22222232212222222222",LD:"1",MP:"04004000000000400000000004000",MH:"400101000443411130400013011444443100331443343113",MN:"24",ML:"14",MZ:"1",NL:"1",DL:"4444440",OD:"301100101111110411400",PY:"3",PB:"0014011114111",RJ:"0044000004040000000000000",SK:"2",TN:"333333333344244333433334333332444332432",TR:"22",UP:"22222202222220142002222240400222222222022022222422424224222242202222222222224222",UK:"02004",WB:"222244244244222222222222222222122222222222"},2009:{AN:"0",AP:"244441444442444134444444444444424244444224",AR:"44",AS:"01444404220404",BR:"1004011001012211110001112211011210011241",CH:"4",CG:"40000000000",DN:"0",DM:"0",GA:"04",GJ:"04400040000444440040004004",HR:"4444424444",HP:"0400",JK:"332344",JH:"20030003200402",KA:"4040004400000000000220002044",KL:"24444233244444344424",LD:"4",MP:"00004020000444440404040044040",MH:"404441100024310011034410113444310344331444342412",MN:"44",ML:"34",MZ:"4",NL:"2",DL:"4444444",OD:"242224442222222222244",PY:"4",PB:"4444011444411",RJ:"4444040444244444444404404",SK:"2",TN:"332332343333223424233222323342443342433",TR:"22",UP:"22224044121012044444222222022142244242024022220122444200222444424222222202222222",UK:"44444",WB:"223204244444233333223222333323332222233333"},2014:{AN:"0",TS:"22222222012242224",AP:"1101211111112211022211212",AR:"04",AS:"00000402220442",BR:"0004340001000101132330010000021310011000",CH:"0",CG:"00000040000",DN:"0",DM:"0",DL:"0000000",GA:"00",GJ:"00000000000000000000000000",HR:"0000224000",HP:"0000",JK:"220200",JH:"00330000000000",KA:"0444004400000044000240002004",KL:"24244233222424344324",LD:"3",MP:"00004000000000000000000004000",MH:"000101100000110014000410111010010100331110301113",MN:"44",ML:"14",MZ:"4",NL:"1",OD:"222220222222222222222",PY:"1",PB:"0014412422211",RJ:"0000000000000000000000000",SK:"2",TN:"222222222122222222222222222222222222220",TR:"22",UP:"00000000000000000000000020000000000000000002220000004020000014000000000000001000",UK:"00000",WB:"222202224444222222222022222222222222222222"},2019:{AN:"4",AP:"2222222222222222222222222",AR:"00",AS:"00000444220000",BR:"1004011001011101111110010000011111111000",CH:"0",CG:"40000000400",DN:"2",DM:"0",DL:"0000000",GA:"04",GJ:"00000000000000000000000000",HR:"0000000000",HP:"0000",JK:"330300",JH:"00300100000004",KA:"0000000000000000000340002000",KL:"44444433444444324344",LD:"3",MP:"00000000000000000000000004000",MH:"000102100010120011400010111010030100031110301131",MN:"10",ML:"14",MZ:"2",NL:"1",OD:"002220002220220222402",PY:"4",PB:"0044444444211",RJ:"0000000000000010000000000",SK:"2",TN:"334333343343233333333323342344312343334",TS:"00222022044242222",TR:"00",UP:"02220002200022000200000000000000000000000000200000000220022004000000200200001010",UK:"00000",WB:"000002002404220020202002222222222000022222"},2024:{AP:"1110210111111111011211212",AR:"00",AS:"00040041410000",BR:"1014011001011101112410010033011110133343",CG:"40000000000",GA:"04",GJ:"04000000000000000000000000",HR:"4040444000",HP:"0000",JK:"23300",JH:"00330100044003",KA:"4444040140000000400400001004",KL:"44444433340444344344",MP:"00000000000000000000000000000",MH:"400434104303314033444433311014333344331330021014",MN:"44",ML:"42",MZ:"2",NL:"4",OD:"000000000000000000400",PB:"4334422444324",RJ:"4404440300444030000000003",SK:"1",TN:"334333333343333433433333333344333343434",TS:"00444004004442004",TR:"00",UP:"34233003131003330300040330000000040300033033330003004330333334030333333300301334",WB:"030003003304333033333303333333333303333300",UK:"00000",AN:"0",CH:"4",DM:"2",DN:"0",DL:"0000000",LD:"4",PY:"4",LA:"2"}};
 let lsMode="geo";   // "geo" Results (one square per constituency), "seat" Seat share (counts only), "vote" Vote share
 let inOth="";   // this view's "Others N", for the line under the bar
+let inRel=null;   // Religion: {c,o,b} seats and non-Hindu seats per side, for the line under the bar
 function renderLS(animate){
   const year=inYear, vote=lsMode==="vote";
   if(lsColor==="religion"&&!LS_MREL[year]) lsColor="results";   // Religion: years with LS_MREL only (2009)
@@ -2355,7 +2426,19 @@ function renderLS(animate){
   document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${f(shares[0])}</span><span><i> · </i>Allies ${f(shares[1])}</span>`;
   document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(shares[4])}</span><span><i> · </i>Allies ${f(shares[3])}</span>`;
   document.getElementById("ls-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("in-mark").style.opacity=document.getElementById("in-need").style.opacity=bv?0:1;
+  document.getElementById("in-mark").style.opacity=document.getElementById("in-need").style.opacity=bv||lsRelOn()?0:1;   // Religion: no 272 line (owner, 2026-11-27)
+  // Religion, like the USA's Race (owner, 2026-11-27): the big numbers are each side's share of its seats won by a non-Hindu MP;
+  // the bar is each side's non-Hindu seats (dark teal) at its own end, its Hindu seats (pink) inward; Others grey in the middle
+  const rl=lsRelOn(), BG={inc:"var(--inc)",india:"var(--india)",oth:"var(--oth)",nda:"var(--nda)",bjp:"var(--bjp)"};
+  document.getElementById("in-tally").classList.toggle("relc",!!rl);
+  if(rl){const R={c:{n:0,nh:0},o:{n:0,nh:0},b:{n:0,nh:0}};
+    for(const code in regions){const geo=LS_GEO[year]?.[code]; if(!geo) continue; [...geo].forEach((d,k)=>{const g=LS_GROUPS[+d], s=g==="inc"||g==="india"?"c":g==="oth"?"o":"b", o=lsRelOf(year,code,k);
+      R[s].n++; if(o&&o.pick!==0) R[s].nh++})}
+    const W={inc:R.c.nh,india:R.c.n-R.c.nh,oth:R.o.n,nda:R.b.n-R.b.nh,bjp:R.b.nh}, T=R.c.n+R.o.n+R.b.n;
+    W.oth=R.o.n-R.o.nh; const vac=document.getElementById("in-b-vac"); vac.style.width=R.o.nh/T*100+"%"; vac.style.background="var(--rel-nh-lt)"; vac.dataset.g="oth";   // Others: non-Hindu then Hindu, in lighter tints (owner, 2026-11-27; was grey)
+    for(const g of LS_GROUPS){const e=document.getElementById("in-b-"+g); e.style.width=W[g]/T*100+"%"; e.style.background=g==="oth"?"var(--rel-h-lt)":g==="inc"||g==="bjp"?"var(--rel-nh)":"var(--rel-h)"}
+    const P=x=>x.n?x.nh/x.n*100:0; countToPct(document.getElementById("in-n-india"),P(R.c),animate); countToPct(document.getElementById("in-n-nda"),P(R.b),animate); countToPct(document.getElementById("in-n-oth"),P(R.o),animate);
+    inRel=R} else {inRel=null; for(const g of LS_GROUPS) document.getElementById("in-b-"+g).style.background=BG[g]; const vac=document.getElementById("in-b-vac"); vac.style.background="var(--house)"; vac.dataset.g="m"}
   document.getElementById("in-check-nda").style.display=!bv&&LS_META[year].gov==="nda"?"":"none";
   document.getElementById("in-check-india").style.display=!bv&&LS_META[year].gov==="upa"?"":"none";
   document.getElementById("ls-note").textContent=(vote
@@ -3201,11 +3284,14 @@ function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth")
   const on=[...document.querySelectorAll("#panel-in .bar i")].filter(e=>parseFloat(e.style.width)>0), gaps=3*(on.length-1);
   // the widths as drawn: a bar over 100% with its gaps shrinks to fit, one under 100% (Chief Minister, states with no one in office) doesn't
   const sum=on.reduce((t,e)=>t+parseFloat(e.style.width),0)/100*W, k=sum+gaps>W?(W-gaps)/sum:1;
-  let x=0, gL=0, gR=0; for(const e of on){const w=parseFloat(e.style.width)/100*W*k; if(e.id==="in-b-oth"){gL=x; gR=x+w} x+=w+3}
+  let x=0, gL=0, gR=0, ov=false; for(const e of on){const w=parseFloat(e.style.width)/100*W*k;
+    if(e.id==="in-b-vac"&&inRel){gL=x; gR=x+w; ov=true}   // Religion: Others' light-teal part starts it (owner, 2026-11-27)
+    if(e.id==="in-b-oth"){if(!ov) gL=x; gR=x+w} x+=w+3}
   const pad=8, tw=o.offsetWidth, lo=$("in-total").offsetWidth+pad, hi=W-$("in-total-r").offsetWidth-pad;
   const mark=$("in-need").style.opacity!=="0", c=(mark?.5009:.5)*W, half=mark?$("in-need").offsetWidth/2+pad:0, a=c-half, b=c+half;
   if(!mark&&inRace==="loksabha"){const ph=narrow.matches; o.style.textAlign=ph?"right":"";   // phones: flush with the green's right end (owner, 2026-11-07)
-    o.style.left=Math.max(lo,Math.min(ph?gR-tw:gL,hi-tw))+"px"; return}
+    const toR=ph||inRel&&gL<lo;   // Religion: if the start of Others is crowded by the left note, the label ends with Others instead (owner, 2026-11-27)
+    if(toR) o.style.textAlign="right"; o.style.left=Math.max(lo,Math.min(toR?gR-tw:gL,hi-tw))+"px"; return}
   // Chief Minister on phones: ends with the green; only if that comes within 2px of the left note, starts at the green's right end; if it hits the right note, starts with the green (owner, 2026-11-07)
   if(cm&&narrow.matches){const l=lo-pad+2; o.style.left=Math.max(l,Math.min(gR-tw<l?gR:gR>hi?gL:gR-tw,hi-tw))+"px"; return}
   if(inRace==="states"&&narrow.matches){o.style.textAlign="right"; o.style.left=gR-tw+"px"; if(gR-tw<lo-pad+2) o.style.top="17px"; return}   // Seat share on phones: both lines flush with the green's right end, every year; a line lower if the Congress line reaches it (owner, 2026-11-07)
@@ -3252,7 +3338,10 @@ function renderIn(animate,sync){
   if(!cm){const two=id=>{const c=document.getElementById(id).children; return c[0].textContent+(narrow.matches?"\n":" · ")+c[1].lastChild.textContent}, tl=document.getElementById("in-total");
     document.getElementById("in-total-oth").textContent=inOth;
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
-  if(narrow.matches){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(/ \(.*/,""):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies; Chief Minister one, like its notes
+  if(race==="loksabha"&&inRel){const u=x=>`${x.n} seats${narrow.matches?"\n":", "}${x.nh} non-Hindu`, $=id=>document.getElementById(id);   // Religion: seats and non-Hindu seats, grey (owner, 2026-11-27)
+    $("in-total").textContent=u(inRel.c); $("in-total-r").textContent=u(inRel.b); $("in-total-oth").textContent=inRel.o.n?(narrow.matches?"Oth.\n":"Others ")+(inRel.o.nh/inRel.o.n*100).toFixed(1)+"%":"";   // Others: just its non-Hindu share (owner, 2026-11-27)
+    for(const id of ["in-total","in-total-oth","in-total-r"]) $(id).style.color="var(--muted)"} else {document.getElementById("in-total-oth").style.color="var(--oth)"; document.getElementById("in-total-r").style.color="var(--bjp)"}
+  if(narrow.matches&&!(race==="loksabha"&&inRel)){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(/ \(.*/,""):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies; Chief Minister one, like its notes
   placeOth();
   AP_ONE=inYear<=2014;   // names only: 2014 and before, Telangana's block is called AP too (owner, 2026-11-09)
   // AP and Telangana always keep their own blocks (owner, 2026-11-09: no joined block); IN_TIGHT_AP1 kept, unused
@@ -3273,7 +3362,7 @@ function renderIn(animate,sync){
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha vote share":lsRelOn()?"Lok Sabha by religion":lsMarginsOn()?"Lok Sabha margins":lsMode==="seat"?"Lok Sabha seat share":"Lok Sabha seats"):race==="rajyasabha"?(RS_PCT.has(inYear)?"Rajya Sabha seat share":"Rajya Sabha"):cm?(stMarginsOn()?"State Govts. margins":"State Govts."):"State seat share";
+  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha Vote Share":lsRelOn()?"Lok Sabha rep. by Religion":lsMarginsOn()?"Lok Sabha Margins":lsMode==="seat"?"Lok Sabha Seat Share":"Lok Sabha Results"):race==="rajyasabha"?"Rajya Sabha Seat Share":cm?(stMarginsOn()?"State Govt. Margins":"State Govt. Results"):"States' Seat Share";   // Title Case, owner's wording (2026-11-27)
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear; litSync?.();
@@ -3370,6 +3459,26 @@ document.querySelectorAll(".subtoggle").forEach(g=>{if(g.closest("#mini")) retur
   new MutationObserver(sync).observe(g,{subtree:true,attributes:true,attributeFilter:["aria-pressed"]});
   const ro=new ResizeObserver(sync); ro.observe(g); g.querySelectorAll("button").forEach(b=>ro.observe(b));
   sync()});
+// Racial diversity score (owner, 2026-11-27; House Race, every year): each party's share of the seats it won that went to a
+// non-white winner, so it is scaled to that party's own seats (2 of 10 is 20%, 5 of 100 is 5%). Read from the face emoji:
+// any skin tone darker than the lightest (🏼 🏽 🏾 🏿) counts as non-white, except Darrell Issa (CA-49, Lebanese American;
+// the Census counts Middle Eastern ancestry as white). Counted per district, once each.
+// Every House Race year (owner, 2026-11-27; was 2008 only). Counted white despite a medium-light emoji: Middle Eastern Americans, as the
+// Census counted them through 2020 (Issa, Bice, Tlaib, Hamadeh, Hamawy, Ansari), and members whose emoji tone runs tan but who are white
+// (D'Esposito, Mast, Perry, Garamendi, Gluesenkamp Perez, Maloy, Powell)
+const DIV_YEARS=new Set(Object.keys(HOUSE_FACE).map(Number)), DIV={}, DIV_WHITE=new Set(["Darrell Issa","Stephanie Bice","Rashida Tlaib","Abraham Hamadeh","Adam Hamawy","Yassamin Ansari",
+  "Anthony D'Esposito","Brian Mast","Scott Perry","John Garamendi","Marie Gluesenkamp Perez","Celeste Maloy","Denise Powell","Abdul El-Sayed"]);
+// Senate Race, every year (owner, 2026-11-27): the same score from each senator's emoji; independents (Sanders, King, Sinema) on the
+// Democrats' side, as the tally counts them
+function divSen(y){const key="s"+y; if(DIV[key]) return DIV[key]; const o={d:{n:0,nw:0},r:{n:0,nw:0}};
+  for(const k in ALT) senPairs(y,k).forEach(({p,i})=>{const side=/^[di]$/.test(p)?"d":p==="r"?"r":null; if(!side) return;
+    const f=SEN_FACE[y]?.[k]?.split("|")[i]||"", nm=SEN_REP[y]?.[k]?.split("|")[i]; o[side].n++; if(/[\u{1F3FC}-\u{1F3FF}]/u.test(f)&&!DIV_WHITE.has(nm)) o[side].nw++});
+  for(const p in o) o[p].pct=o[p].n?o[p].nw/o[p].n*100:0; return DIV[key]=o}
+function divScore(y){if(DIV[y]) return DIV[y]; const o={d:{n:0,nw:0},r:{n:0,nw:0}}, seen=new Set();
+  for(const k in HSQ){const ds=HOUSE_MAPS[HOUSE_MAP_OF[y]]?.[k]?.split(","), fl=HOUSE_FACE[y]?.[k]?.split("|"), nm=HOUSE_REP[y]?.[k]?.split("|"); if(!ds) continue;
+    ds.forEach((d,j)=>{if(seen.has(k+d)) return; seen.add(k+d); const p=HOUSE_COL[y][k][j], f=fl?.[+d-1]; if(!o[p]||!f) return;
+      o[p].n++; if(/[\u{1F3FC}-\u{1F3FF}]/u.test(f)&&!DIV_WHITE.has(nm?.[+d-1])) o[p].nw++})}
+  for(const p in o) o[p].pct=o[p].n?o[p].nw/o[p].n*100:0; return DIV[y]=o}
 // Race view: an emoji on each district square that has a face (HOUSE_FACE), in the square's own group so it moves with it
 const FACES=new Map();   // square -> its <text>
 const SWAP=new Map();   // face -> its pending swap (a year change mid-fade takes the newest)
@@ -3579,7 +3688,10 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
   litSync=()=>{if(lock==="oth") paint()};   // India's bar changed: Others may lean the other way now
   litSet=g=>{if(g===lock) return; over=quiet=null; lock=g; grow(lock); paint()};   // the tour locks a side, or none (owner, 2026-11-26)
   litGet=()=>lock;
-  const side=(root,x,y)=>{
+  // Religion (owner, 2026-11-27): three filters only, each alliance whole and Others: Congress or its allies -> the INDIA / UPA
+  // alliance (c), BJP or its allies -> the NDA (b), so the bar never splits a side
+  const side=(root,x,y)=>{const g=side0(root,x,y); return root===PLACES.india.panel&&lsRelOn()?{inc:"c",india:"c",nda:"b",bjp:"b"}[g]||g:g};
+  const side0=(root,x,y)=>{
     const bar=root.querySelector(".bar"); if(!bar) return null;
     const B=bar.getBoundingClientRect(), P=8, sides=place().sides, has=(r,p)=>r&&r.width&&x>=r.left-p&&x<=r.right+p;
     const U=Math.max(B.bottom+24,(root.querySelector(".under")?.getBoundingClientRect().bottom||0)+4);   // the line(s) under the bar: two on phones
@@ -3610,9 +3722,18 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
 })();
 document.querySelectorAll("[data-pres]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.pres!==presMode){presMode=b.dataset.pres; setUS(usRace,true)}}));
 document.querySelectorAll("[data-lsv]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lsv!==lsView){lsView=b.dataset.lsv; if(inRace) renderIn(true,true)}}));
+// Each map remembers its own sub-toggles (owner, 2026-11-27): leave House on Race, look at President District Margins, come back to
+// House and it is on Race again, not Results. Per map, USA and India, web and phones (the phone stepper clicks these tabs too).
+// Replaces "States always opens on Governors" (2026-11-17): States now reopens on Governors or State units, as it was left.
+const SUB={}, subOf=r=>r==="president"?{colorMode,presDist}:r==="house"?{colorMode}:r==="senate"?{colorMode,senMode}:r==="governors"?{colorMode,govMode}:
+  r==="loksabha"?{lsColor,lsMode}:r==="states"?{stColor,stMode}:null;
+function subSave(){if(current&&subOf(current)) SUB[current]=subOf(current)}
+function subLoad(r){const m=SUB[r]; if(!m) return;
+  if("colorMode" in m) colorMode=m.colorMode; if("presDist" in m) presDist=m.presDist; if("govMode" in m) govMode=m.govMode;
+  if("senMode" in m){senMode=m.senMode; senPicked=true; senKeep=null}
+  if("lsColor" in m){lsColor=m.lsColor; lsMode=m.lsMode} if("stColor" in m){stColor=m.stColor; stMode=m.stMode}}
 tabs.forEach(t=>{
-  t.addEventListener("click",()=>{if(t.dataset.race==="governors"&&current!=="governors") govMode="gov";   // States always opens on Governors (owner, 2026-11-17)
-    show(t.dataset.race,true)});
+  t.addEventListener("click",()=>{const r=t.dataset.race; if(r===current) return; subSave(); subLoad(r); show(r,true)});
   t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
     if(d){const v=visibleTabs(),n=v[(v.indexOf(t)+d+v.length)%v.length];n.focus();n.click()}});
 });
@@ -3634,6 +3755,7 @@ function openMenu(open){
 // Picking a country always opens its default: USA = States, Governors 2026 in Margins (owner, 2026-11-12), India = Lok Sabha 2024 Margins (owner,
 // 2026-11-22; was State Chief Ministers 2026, then Lok Sabha 2024 Results), every India view back on its default year
 function choose(country){openMenu(false);cBtn.focus(); if(country===countryOf(current)) return;
+  subSave(); delete SUB[country==="usa"?"governors":"loksabha"];   // the country opens on its default view; its other maps keep what they were left on
   if(country==="usa"){usYearPick=2026; colorMode="margins"; govMode="gov"} else {Object.assign(IN_PICK,IN_DEFAULT); lsMode="geo"; lsColor="margins"; stMode="cm"; stColor="results"}
   show(country==="usa"?"governors":"loksabha",true)}
 cBtn.addEventListener("click",()=>openMenu(!cMenu.classList.contains("open")));
@@ -3744,9 +3866,10 @@ playLeft.addEventListener("click",()=>playPaused?stopPlay():pausePlay());
 // then A -> the next type, and so on, so each type morphs into every other one both ways, at normal speed with a long pause
 // between. The caption names each step. Press the button again (or any other control) to stop.
 var ttLive=false;
-const ttBtn=document.getElementById("ttest"), ttCap=document.getElementById("ttest-cap"), TT_PAUSE=1000+500;   /* about 1s for the morph itself, then a 0.5s wait (owner, 2026-11-27; was a 1s wait; 2026-11-26: was 3.5s, then 2.5s) */
-let ttRun=0;
-ttBtn.hidden=!new URLSearchParams(location.search).has("transitions");
+const ttBox=document.getElementById("ttest"), ttLeft=document.getElementById("tt-left"), ttRight=document.getElementById("tt-right"), ttCap=document.getElementById("ttest-cap"), TT_PAUSE=1000+500;   /* about 1s for the morph itself, then a 0.5s wait (owner, 2026-11-27; was a 1s wait; 2026-11-26: was 3.5s, then 2.5s); at 2x / 3x the whole step shortens */
+const TT_ICON='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 5h10M10 2.5L12.5 5 10 7.5M13.5 11h-10M6 8.5L3.5 11 6 13.5"/></svg>';
+let ttRun=0, ttSpeed=1, ttPaused=false, ttTimer=null;
+ttBox.hidden=!new URLSearchParams(location.search).has("transitions");
 function ttViews(country){const Y=2024;
   if(country==="india") return [
     ["Lok Sabha results",{race:"loksabha",year:Y,ls:"geo",lm:"results"}],["Lok Sabha margins",{race:"loksabha",year:Y,ls:"geo",lm:"margins"}],
@@ -3768,19 +3891,35 @@ function ttGo(s){litSet?.(null);
     if(s.race!==current) show(s.race,true); else renderIn(true,true); return}
   colorMode=s.mode; senPicked=true; if(s.sen) senMode=s.sen; usYearPick=s.year; presDist=!!s.dist; govMode=s.gov||"gov";
   if(s.race!==current) show(s.race,true); else {usStep(s.race); setUS(s.race,true)}}
-function ttUI(on){ttLive=on; ttBtn.classList.toggle("on",on); ttBtn.setAttribute("aria-pressed",on); ttCap.hidden=!on}
-function ttStop(){if(!ttLive) return; ttRun++; ttUI(false)}
-async function ttTour(){const run=++ttRun, wait=()=>new Promise(r=>setTimeout(r,TT_PAUSE)), alive=()=>run===ttRun;
+function ttUI(on){ttLive=on; if(!on){ttPaused=false; ttSpeed=1; senMorphMs=800} renderTT(); ttCap.hidden=!on}
+function renderTT(){
+  ttBox.classList.toggle("idle",!ttLive); ttBox.classList.toggle("paused",ttPaused);
+  ttLeft.innerHTML=ttPaused?PLAY_ICON.stop:PLAY_ICON.pause; ttLeft.setAttribute("aria-label",ttPaused?"Stop":"Pause");
+  ttLeft.classList.toggle("on",ttPaused); ttRight.classList.toggle("on",ttLive&&!ttPaused);
+  if(!ttLive){ttRight.innerHTML=TT_ICON; ttRight.setAttribute("aria-label","Transition test")}
+  else if(ttPaused){ttRight.innerHTML=PLAY_ICON.play; ttRight.setAttribute("aria-label","Resume")}
+  else {ttRight.textContent=ttSpeed+"x"; ttRight.setAttribute("aria-label",`Speed ${ttSpeed}x`)}}
+function ttStop(){if(!ttLive) return; ttRun++; clearTimeout(ttTimer); ttUI(false)}
+function ttPause(){if(ttLive&&!ttPaused){ttPaused=true; renderTT()}}
+// one country only (owner, 2026-11-27): the one on show when it starts; waits in tour time, so pause holds it and a new speed takes hold at once
+async function ttTour(){const run=++ttRun, alive=()=>run===ttRun;
+  const wait=()=>new Promise(r=>{let ms=TT_PAUSE, last=performance.now(); const tick=()=>{if(!alive()) return; const t=performance.now(); if(!ttPaused) ms-=(t-last)*ttSpeed; last=t; if(ms<=0) r(); else ttTimer=setTimeout(tick,40)}; tick()});
   stopPlay(); ttUI(true);
-  for(const country of ["usa","india"]){const V=ttViews(country), n=V.length*(V.length-1); let k=0, at=-1;
-    const go=async(i,txt)=>{ttCap.textContent=txt; ttGo(V[i][1]); at=i; await wait()};
-    for(let i=0;i<V.length;i++) for(let j=i+1;j<V.length;j++){
-      if(at!==i){await go(i,`${country==="usa"?"USA":"India"}: ${V[i][0]}`); if(!alive()) return}
-      await go(j,`${country==="usa"?"USA":"India"} ${++k}/${n}: ${V[i][0]} → ${V[j][0]}`); if(!alive()) return;
-      await go(i,`${country==="usa"?"USA":"India"} ${++k}/${n}: ${V[j][0]} → ${V[i][0]}`); if(!alive()) return}}
+  const country=countryOf(current), V=ttViews(country), n=V.length*(V.length-1), C=country==="usa"?"USA":"India"; let k=0, at=-1;
+  const go=async(i,txt)=>{ttCap.textContent=txt; ttGo(V[i][1]); at=i; await wait()};
+  for(let i=0;i<V.length;i++) for(let j=i+1;j<V.length;j++){
+    if(at!==i){await go(i,`${C}: ${V[i][0]}`); if(!alive()) return}
+    await go(j,`${C} ${++k}/${n}: ${V[i][0]} → ${V[j][0]}`); if(!alive()) return;
+    await go(i,`${C} ${++k}/${n}: ${V[j][0]} → ${V[i][0]}`); if(!alive()) return}
   ttUI(false)}
-ttBtn.addEventListener("click",()=>ttLive?ttStop():ttTour());
-document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#ttest,#theme")) ttStop()},true);   // any other control stops it
+ttRight.addEventListener("click",()=>{
+  if(!ttLive) return void ttTour();
+  if(ttPaused) ttPaused=false; else {ttSpeed=ttSpeed%3+1; senMorphMs=800/ttSpeed}
+  renderTT()});
+ttLeft.addEventListener("click",()=>ttPaused?ttStop():ttPause());
+document.querySelector(".topbar").addEventListener("click",e=>{if(!e.target.closest("button,li")||e.target.closest("#ttest,#theme")) return; if(e.target.closest("#play,.country")) ttStop(); else ttPause()},true);   // like Play: another control pauses it; Play or a new country stops it
+document.querySelector(".topbar").addEventListener("keydown",e=>{if(/^Arrow/.test(e.key)&&!e.target.closest("#ttest,#theme,#play,.country")) ttPause()},true);
+renderTT();
 renderPlay();
 renderPlay();
 document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("button,li")&&!e.target.closest("#play,#theme,.country")) pausePlay()},true);
@@ -3817,8 +3956,10 @@ function stickMini(){
 // Whatever height it loses goes back as margin below it, so the map doesn't move under the finger.
 (function headStick(){const D=16; let raf=0, H0=new WeakMap();
   const run=()=>{raf=0; for(const h of document.querySelectorAll(".panel .head")){
-    const pn=h.parentElement; if(!narrow.matches||pn.hidden){h.style.removeProperty("--hp"); h.style.marginBottom=""; continue}
-    const start=pn.getBoundingClientRect().top+scrollY+parseFloat(getComputedStyle(h).marginTop),   /* the panel is a flex box, so the head's -20px margin doesn't collapse */ p=Math.min(1,Math.max(0,(scrollY-start)/D));
+    const pn=h.parentElement; if(pn.hidden){h.style.removeProperty("--hp"); h.style.marginBottom=""; continue}
+    // web (owner, 2026-11-27): sticks under the pinned top bar and shrinks over 60px; phones: at the very top, over 16px
+    const tb=narrow.matches?0:document.querySelector(".topbar").offsetHeight; if(!narrow.matches) document.documentElement.style.setProperty("--tbh",tb+"px");
+    const start=pn.getBoundingClientRect().top+scrollY+parseFloat(getComputedStyle(h).marginTop)-tb,   /* the panel is a flex box, so the head's -20px margin doesn't collapse */ p=Math.min(1,Math.max(0,(scrollY-start)/(narrow.matches?D:60)));
     if(p===0||!H0.has(h)){h.style.setProperty("--hp",0); H0.set(h,h.offsetHeight)}
     h.style.setProperty("--hp",p.toFixed(3)); h.style.marginBottom=p?Math.max(0,H0.get(h)-h.offsetHeight)+"px":""}};
   const go=()=>{if(!raf) raf=requestAnimationFrame(run)};
@@ -3831,8 +3972,8 @@ addEventListener("scroll",stickMini,{passive:true}); addEventListener("resize",s
 document.fonts?.ready.then(()=>{const t=tabs.find(t=>t.dataset.race===current);if(t)moveThumb(t,false);
   PACK_US.cache={}; if(countryOf(current)==="usa") setUS(usRace,false)});
 // Short labels: P / H / S / G, LS / RS, R / M ... for the buttons not selected, only when the full top bar would wrap
-{const SHORT2={"gov:leg":"U","gov:gov":"G","pdist:district":"D","pdist:electoral":"E","st:seats":"%","st:cm":"G","margin:power":"Rep."}, SHORT={president:"P",house:"H",senate:"S",governors:"St",loksabha:"LS",rajyasabha:"RS",
-   "margin:results":"R","margin:margins":"M","margin:power":"Rep.","sen:power":"Rep.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"Govts.","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
+{const SHORT2={"gov:leg":"U","gov:gov":"G","pdist:district":"D","pdist:electoral":"E","st:seats":"%","st:cm":"G","margin:power":"Pop."}, SHORT={president:"P",house:"H",senate:"S",governors:"St",loksabha:"LS",rajyasabha:"RS",
+   "margin:results":"R","margin:margins":"M","margin:power":"Pop.","sen:power":"Pop.","ls:seat":"Seat %","ls:vote":"Vote %","st:seats":"Seat %","st:cm":"Govts.","gov:gov":"Gov.","gov:leg":"Units","pdist:electoral":"Elec.","pdist:district":"Dist."};
  const bar=document.querySelector(".topbar");
  bar.querySelectorAll(".toggle button,.subtoggle button").forEach(b=>{
    const d=b.dataset, key=d.race||Object.keys(d).map(k=>k+":"+d[k])[0], sh=SHORT[key];
