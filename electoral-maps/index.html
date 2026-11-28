@@ -203,7 +203,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 /* Stuck tally (owner, 2026-11-27): number first, then its name, side by side (mirrored on the right, so the numbers stay at the
    outer edges); the centre too on the web (year, then the title), stacked on phones where it is narrow. Web and phones */
 .head.flat .tally .cand:not(.mid):not(.oth){display:flex;align-items:baseline;gap:8px} .head.flat .tally .cand.r,.head.flat .tally .cand.nda{flex-direction:row-reverse}
-@media (min-width:776px){.head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em}}
+.head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap;max-width:none}   /* the year beside the title, never above it, phones too (owner, 2026-11-27); a title that doesn't fit shortens or goes (fitMid) */
 .legend .skin{display:none!important} #legend-house.race .skin,#legend-senate.race .skin{display:inline-flex!important} #legend-house.race .skin.nc:not(.on){display:none!important}
 #legend-house.race #proj-house>span:not(.txt),#legend-senate.race #proj-senate>span:not(.txt){display:none!important}   /* Race legends: non-white / white keys, no blue / red (owner, 2026-11-27) */
 /* India Religion (owner, 2026-11-27): Hindu a pink like the emoji tint, 3:1 on white; non-Hindu a dark teal, darker than the pink. Dark mode: provisional */
@@ -444,8 +444,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .head{position:sticky;top:var(--tbh,57px);z-index:25;background:var(--bg);padding:calc(6px*var(--hp,0)) 0 calc(8px*var(--hp,0));gap:calc(9px - 3px*var(--hp,0))}
   .head::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,calc(.08*var(--hp,0)))}
   html.dark .head::before{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
-  .head .tally .cand b{font-size:calc(clamp(30px,5.5vw,46px) - (clamp(30px,5.5vw,46px) - 22px)*var(--hp,0))}
-  .head .tally .cand>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 14px)*var(--hp,0))}
+  .head .tally .cand b{font-size:calc(clamp(30px,5.5vw,46px) - (clamp(30px,5.5vw,46px) - 20px)*var(--hp,0))}
+  .head .tally .cand:not(.mid)>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 20px)*var(--hp,0))}   /* stuck: number and name both 20px (owner, 2026-11-27) */
   .head .bar{height:calc(15px - 7px*var(--hp,0))}
   .head .under,.head .need{font-size:calc(14px - 2px*var(--hp,0))}
   #mini .tally{align-items:baseline}
@@ -511,6 +511,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   html.dark .head{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
   .topbar{position:relative;z-index:20}   /* the country menu drops over the tally: the sticky .head (z 15) was covering it, so taps went to the numbers (fix, 2026-11-27) */
   .head .tally .cand b{font-size:calc(30px - 14px*var(--hp,0))!important;line-height:calc(30px - 14px*var(--hp,0))!important}   /* stuck: 16px (owner, 2026-11-27; was 14) */
+  .head .tally .cand:not(.mid)>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 16px)*var(--hp,0))!important}   /* stuck: the name 16px too, the number's size (owner, 2026-11-27) */
   .head .bar{height:calc(15px - 7.5px*var(--hp,0))}   /* stuck: the bar half as tall (owner, 2026-11-27) */
   .head .under,.head .need{font-size:12px}   /* phones: the line under the bar always 12px, stuck or not (owner, 2026-11-27) */
   /* (owner, 2026-11-26) the pinned bar is the tally exactly as on the page (numbers over names, the year over the centre label,
@@ -2206,8 +2207,8 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // House Results / Margins / Racial Diversity; Senate Results / Margins / Representation / Racial Diversity; Governors Results /
   // Margins; State Unit Results / Margins. The same on phones (they wrap onto two lines under the year)
   const RM=on=>on?"Margins":"Results";
-  document.getElementById("mid-label").textContent=legOn()?(fut?"State Unit Projection":legReal(year)?"State Unit "+RM(marginsOn()):"State Units"):race==="president"?(fut?"President Projection":"President "+RM(marginsOn())+(usDist?" by District":"")):race==="house"?(fut?"House Projection":colorMode==="race"?"House rep. by Race":"House "+RM(marginsOn()&&HOUSE_MARGINS[year])):
-    race==="governors"?(fut?"Governors Projection":"Governors "+RM(marginsOn()&&GOV_MARGINS[year])):fut?"Senate Projection":sm==="all"?"Senate":sm==="seats"?(colorMode==="race"&&SEN_FACE[year]?"Senate rep. by Race":"Senate "+RM(marginsOn("senate")&&SEN_MARGINS[year])):"Senate rep. by Population";
+  setMid(document.getElementById("mid-label"),legOn()?(fut?"State Unit Projection":legReal(year)?"State Unit "+RM(marginsOn()):"State Units"):race==="president"?(fut?"President Projection":"President "+RM(marginsOn())+(usDist?" by District":"")):race==="house"?(fut?"House Projection":colorMode==="race"?"House rep. by Race":"House "+RM(marginsOn()&&HOUSE_MARGINS[year])):
+    race==="governors"?(fut?"Governors Projection":"Governors "+RM(marginsOn()&&GOV_MARGINS[year])):fut?"Senate Projection":sm==="all"?"Senate":sm==="seats"?(colorMode==="race"&&SEN_FACE[year]?"Senate rep. by Race":"Senate "+RM(marginsOn("senate")&&SEN_MARGINS[year])):"Senate rep. by Population");
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===(race==="senate"&&sm==="power"?"power":colorMode)));
   document.getElementById("leg-vacant").hidden=!c.v||y26||fut;
   document.getElementById("house-keys").hidden=y26||fut||colorMode==="race";   // Race: no party keys (owner, 2026-11-26)
@@ -3372,7 +3373,7 @@ function renderIn(animate,sync){
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  document.getElementById("in-mid-label").textContent=race==="loksabha"?(lsMode==="vote"?"Lok Sabha Vote Share":lsRelOn()?"Lok Sabha rep. by Religion":lsMarginsOn()?"Lok Sabha Margins":lsMode==="seat"?"Lok Sabha Seat Share":"Lok Sabha Results"):race==="rajyasabha"?"Rajya Sabha Seat Share":cm?(stMarginsOn()?"State Govt. Margins":"State Govt. Results"):"States' Seat Share";   // Title Case, owner's wording (2026-11-27)
+  setMid(document.getElementById("in-mid-label"),race==="loksabha"?(lsMode==="vote"?"Lok Sabha Vote Share":lsRelOn()?"Lok Sabha rep. by Religion":lsMarginsOn()?"Lok Sabha Margins":lsMode==="seat"?"Lok Sabha Seat Share":"Lok Sabha Results"):race==="rajyasabha"?"Rajya Sabha Seat Share":cm?(stMarginsOn()?"State Govt. Margins":"State Govt. Results"):"States' Seat Share");   // Title Case, owner's wording (2026-11-27)
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear; litSync?.();
@@ -3964,6 +3965,23 @@ function stickMini(){
 }
 // Phones (owner, 2026-11-26): the tally (.head) sticks at the top; once there, the next 50px of scroll shrink it (--hp 0..1).
 // Whatever height it loses goes back as margin below it, so the map doesn't move under the finger.
+// Centre title, three sizes (owner, 2026-11-27): the full title if it fits on one line, else the short form ("Pres. Results by
+// Dist.", "LS rep. by Religion"), else none at all (just the year). Re-checked whenever the title changes, the width changes or
+// the tally sticks / unsticks. data-full keeps the full title.
+function midShort(t){const MID_SHORT=[[/^President /,"Pres. "],[/ by District$/," by Dist."],[/^House /,"Hou. "],[/ by Population$/," by Popu."],[/^Senate$/,"Sen."],[/^Senate /,"Sen. "],
+  [/^Governors /,"Gov. "],[/^State Unit /,"State "],[/^State Units$/,"States"],[/^Lok Sabha /,"LS "],[/^Rajya Sabha/,"RS"],[/^State Govt\. /,"State "],[/^States' /,"Sta. "]];   // inside the function: the first render can run before this point of the script
+  for(const [r,v] of MID_SHORT) t=t.replace(r,v); return t}
+function fitMid(el){if(!el||!el.offsetParent) return; const full=el.dataset.full??el.textContent; el.dataset.full=full;
+  // fits: one line, and clear of the side groups' number + name (8px either side): stuck, each number sits beside its name, so a
+  // title that would squeeze them gives way to the year alone (owner, 2026-11-27)
+  const tl=el.closest(".tally"), ends=sel=>[...(tl.querySelector(sel)?.children||[])].filter(c=>c.offsetParent&&c.tagName!=="SMALL").map(c=>c.getBoundingClientRect()).filter(r=>r.width);
+  const clear=()=>{const m=el.closest(".cand.mid").getBoundingClientRect(), L=ends(".cand.d,.cand.india"), R=ends(".cand.r,.cand.nda");
+    return (!L.length||m.left>=Math.max(...L.map(r=>r.right))+8)&&(!R.length||m.right<=Math.min(...R.map(r=>r.left))-8)};
+  el.textContent="X"; const one=el.offsetHeight*1.4, fits=t=>{el.textContent=t; return el.offsetHeight<=one&&clear()};
+  if(fits(full)) return; const sh=midShort(full); if(sh!==full&&fits(sh)) return; el.textContent=""}
+function setMid(el,t){el.dataset.full=t; el.textContent=t; fitMid(el)}
+const fitMids=()=>{for(const id of ["mid-label","in-mid-label"]){const e=document.getElementById(id); if(e.dataset.full!=null){e.textContent=e.dataset.full; fitMid(e)}}};
+addEventListener("resize",()=>requestAnimationFrame(fitMids));
 (function headStick(){const D=16; let raf=0, H0=new WeakMap();
   const run=()=>{raf=0; for(const h of document.querySelectorAll(".panel .head")){
     const pn=h.parentElement; if(pn.hidden){h.style.removeProperty("--hp"); h.style.marginBottom=""; continue}
@@ -3971,7 +3989,8 @@ function stickMini(){
     const tb=narrow.matches?0:document.querySelector(".topbar").offsetHeight; if(!narrow.matches) document.documentElement.style.setProperty("--tbh",tb+"px");
     const start=pn.getBoundingClientRect().top+scrollY+parseFloat(getComputedStyle(h).marginTop)-tb,   /* the panel is a flex box, so the head's -20px margin doesn't collapse */ p=Math.min(1,Math.max(0,(scrollY-start)/(narrow.matches?D:60)));
     if(p===0||!H0.has(h)){h.style.setProperty("--hp",0); H0.set(h,h.offsetHeight)}
-    h.style.setProperty("--hp",p.toFixed(3)); h.classList.toggle("flat",p>=.5);   // half-way stuck: each number moves beside its name (owner, 2026-11-27)
+    if(innerWidth<350){h.style.setProperty("--hp",1); h.style.marginBottom=""; h.classList.add("flat"); if(h._bk!==3){h._bk=3; fitMids()} continue}   // under 350px wide: always the compact (stuck) look (owner, 2026-11-27)
+    h.style.setProperty("--hp",p.toFixed(3)); h.classList.toggle("flat",p>=.5); const bk=p>=1?2:p>=.5?1:0; if(h._bk!==bk){h._bk=bk; fitMids()}   // re-fit the title as it reaches half-way and fully stuck, and on the way back   // half-way stuck: each number moves beside its name (owner, 2026-11-27)
     h.style.marginBottom=p?Math.max(0,H0.get(h)-h.offsetHeight)+"px":""}};
   const go=()=>{if(!raf) raf=requestAnimationFrame(run)};
   addEventListener("scroll",go,{passive:true}); addEventListener("resize",go); narrow.addEventListener?.("change",go);
