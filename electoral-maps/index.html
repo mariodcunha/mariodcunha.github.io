@@ -3434,39 +3434,13 @@ stepEl.querySelector(".next").addEventListener("click",()=>stepBy(1));
  rs.querySelector(".prev").addEventListener("click",()=>go(-1)); rs.querySelector(".next").addEventListener("click",()=>go(1));
  rs.querySelector(".rp").addEventListener("click",()=>rs.querySelector(".prev").click()); rs.querySelector(".rn").addEventListener("click",()=>rs.querySelector(".next").click());   // the peeking names step too (owner, 2026-11-26)
  new MutationObserver(sync).observe(nav,{subtree:true,attributes:true,attributeFilter:["aria-selected","hidden"]}); sync()}
-// Phones (owner, 2026-11-26): swipe the year or race stepper left for the next one, right for the previous (like the arrows),
-// and every step gives a small haptic tick. iOS Safari has no vibration API; from iOS 18, toggling a hidden switch-style
-// checkbox through its label makes the phone's own haptic, so that stands in there; Android uses navigator.vibrate.
-// (owner, 2026-11-26) iOS: the known-working form of the trick, a fresh hidden switch each time, put in <head>, clicked
-// through its label inside the tap, then removed (a single switch parked off-screen in <body> gave no haptic)
-// (owner, 2026-11-27) iOS gave no tick from a switch flipped by script: it only answers a real tap on the switch's label. So on
-// iPhones, the moment a finger lands on a stepper arrow, a peeking name or a toggle button, a see-through <label> for a hidden
-// switch is laid exactly over that control; the tap then lands on the label (a real tap: the switch flips, the phone ticks) and
-// the label passes the click on to the control. A swipe never makes a click, so the label just clears. Android: navigator.vibrate.
-{const HAPT='#year .prev,#year .next,#race-step .prev,#race-step .next,#race-step .rp,#race-step .rn,.subtoggle button,.toggle button';
- const iosTick=()=>{const l=document.createElement("label"), i=document.createElement("input");
-   l.setAttribute("aria-hidden","true"); l.style.display="none"; i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i);
-   document.head.appendChild(l); l.click(); l.remove()};
- const vib=typeof navigator.vibrate==="function", ios=!vib&&"ontouchstart" in window||new URLSearchParams(location.search).has("ioshaptic");   // ?ioshaptic: test the iPhone path elsewhere
- const tick=()=>{if(!narrow.matches) return; if(vib) navigator.vibrate(8); else iosTick()};   // swipes (no tap to borrow); the best try there
- if(vib) document.addEventListener("click",e=>{if(narrow.matches&&e.isTrusted&&e.target.closest(HAPT)) navigator.vibrate(8)},true);
- if(ios){const sw=document.createElement("input"), lab=document.createElement("label"); let tgt=null, clr=0;
-   sw.type="checkbox"; sw.setAttribute("switch",""); sw.id="hapt-sw"; sw.tabIndex=-1; sw.setAttribute("aria-hidden","true");
-   sw.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;margin:0";
-   lab.htmlFor="hapt-sw"; lab.setAttribute("aria-hidden","true"); lab.style.cssText="position:fixed;z-index:9999;left:0;top:0;width:0;height:0;pointer-events:none;-webkit-tap-highlight-color:transparent";
-   document.body.append(sw,lab);
-   const off=()=>{tgt=null; lab.style.pointerEvents="none"; lab.style.width=lab.style.height="0"};
-   document.addEventListener("touchstart",e=>{const c=e.target.closest?.(HAPT); if(!c||c.disabled||e.touches.length>1) return;
-     const r=c.getBoundingClientRect(); tgt=c; clearTimeout(clr);
-     Object.assign(lab.style,{left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px",pointerEvents:"auto"})},{capture:true,passive:true});
-   document.addEventListener("touchend",()=>{clearTimeout(clr); clr=setTimeout(off,600)},{capture:true,passive:true});   // no click came (a swipe): clear
-   document.addEventListener("touchcancel",off,{capture:true,passive:true});
-   lab.addEventListener("click",()=>{const c=tgt; off(); if(c) setTimeout(()=>c.click(),0)})}   // the switch flips itself (the tick), then the control acts
- for(const st of [document.getElementById("year"),document.getElementById("race-step")]){
+// Phones (owner, 2026-11-26): swipe the year or race stepper left for the next one, right for the previous (like the arrows).
+// Haptics removed (owner, 2026-11-27): the iPhone tap-through label made taps feel sluggish. Swipes stay.
+{for(const st of [document.getElementById("year"),document.getElementById("race-step")]){
    let x0=null, y0=0;
    st.addEventListener("touchstart",e=>{const t=e.touches[0]; x0=t.clientX; y0=t.clientY},{passive:true});
    st.addEventListener("touchend",e=>{if(x0==null) return; const t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
-     if(Math.abs(dx)>28&&Math.abs(dx)>Math.abs(dy)*1.3){st.querySelector(dx<0?".next":".prev").click(); tick()}},{passive:true})}}
+     if(Math.abs(dx)>28&&Math.abs(dx)>Math.abs(dy)*1.3) st.querySelector(dx<0?".next":".prev").click()},{passive:true})}}
 if(reduce) document.querySelectorAll("svg.india .seat-sq").forEach(r=>r.style.transition="none");
 
 // ---------- Race toggle ----------

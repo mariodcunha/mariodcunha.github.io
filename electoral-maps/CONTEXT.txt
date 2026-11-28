@@ -3322,6 +3322,7 @@ STATUS / NEXT
 - Religion legend: the emoji keys stand alone at the old square's size (18px emoji in a 20px box), no grey square (owner, 2026-11-27).
 - Light-mode emoji tints (owner, 2026-11-27): Buddhist a mid green (#rtlb; first too faint, darkened), Other 🌿 a sharper, darker, greener green (#rtlo), the Christmas tree (#rtl2) less neon but still bright. Dark mode unchanged.
 - Religion, every year (owner, 2026-11-27): the 2004 look for all years (.rel04 whenever Religion is on): dark mode = light palette with the brighter teal, tinted emoji, lime moon. The seat hover box's emoji takes the same tint as the map (filter copied from a map emoji of that religion).
+- Haptics removed altogether (owner, 2026-11-27): the iPhone tap-through label worked but made taps sluggish; no vibrate / switch code left. Stepper swipes stay.
 - Possible next steps: per-state numbers on hover/tap (the owner removed the
   label hover earlier, so ask first).
 - Page <title> is "Electoral Maps" (was "USA Electoral 2024").
