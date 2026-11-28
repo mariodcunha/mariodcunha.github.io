@@ -204,6 +204,7 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
    outer edges); the centre too on the web (year, then the title), stacked on phones where it is narrow. Web and phones */
 .head.flat .tally .cand:not(.mid):not(.oth){display:flex;align-items:baseline;gap:8px} .head.flat .tally .cand.r,.head.flat .tally .cand.nda{flex-direction:row-reverse}
 .head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap;max-width:none}   /* the year beside the title, never above it, phones too (owner, 2026-11-27); a title that doesn't fit shortens or goes (fitMid) */
+@media (max-width:775px){.legend.two{display:grid!important;grid-template-columns:1fr 1fr;gap:8px 16px;align-items:center} .legend.two .rkeys{display:contents!important}}   /* phones: 6+ keys in two columns (legendCols) */
 .legend .skin{display:none!important} #legend-house.race .skin,#legend-senate.race .skin{display:inline-flex!important} #legend-house.race .skin.nc:not(.on){display:none!important}
 #legend-house.race #proj-house>span:not(.txt),#legend-senate.race #proj-senate>span:not(.txt){display:none!important}   /* Race legends: non-white / white keys, no blue / red (owner, 2026-11-27) */
 /* India Religion (owner, 2026-11-27): Hindu a pink like the emoji tint, 3:1 on white; non-Hindu a dark teal, darker than the pink. Dark mode: provisional */
@@ -3981,7 +3982,22 @@ function fitMid(el){if(!el||!el.offsetParent) return; const full=el.dataset.full
   if(fits(full)) return; const sh=midShort(full); if(sh!==full&&fits(sh)) return; el.textContent=""}
 function setMid(el,t){el.dataset.full=t; el.textContent=t; fitMid(el)}
 const fitMids=()=>{for(const id of ["mid-label","in-mid-label"]){const e=document.getElementById(id); if(e.dataset.full!=null){e.textContent=e.dataset.full; fitMid(e)}}};
-addEventListener("resize",()=>requestAnimationFrame(fitMids));
+addEventListener("resize",()=>requestAnimationFrame(fitMids)); document.fonts?.ready.then(()=>fitMids());   // and once the web fonts are in: widths change
+// Phones (owner, 2026-11-27): a legend with 6 or more keys splits into two columns, the first taking the extra one (6 -> 3 + 3,
+// 9 -> 5 + 4; 5 or fewer stay one column); its sentences run full width below. Keys inside wrappers (.proj, .rkeys) count one by one.
+(function legendCols(){let raf=0;
+  const keys=el=>[...el.children].flatMap(c=>{const cs=getComputedStyle(c); if(cs.display==="none"||c.hidden) return [];
+    if(cs.display==="contents"||c.classList.contains("rkeys")) return keys(c); return c.classList.contains("txt")||c.classList.contains("own")&&!c.querySelector("svg")||!c.textContent.trim()?[{t:c}]:[{k:c}]});
+  const run=()=>{raf=0; for(const L of document.querySelectorAll(".legends .legend")){
+    L.querySelectorAll("[data-gp]").forEach(e=>{e.style.gridRow=e.style.gridColumn=""; delete e.dataset.gp}); L.classList.remove("two");
+    if(!narrow.matches||L.classList.contains("off")||!L.offsetParent) continue;
+    const all=keys(L), K=all.filter(x=>x.k).map(x=>x.k); if(K.length<6) continue;
+    const rows=Math.ceil(K.length/2); L.classList.add("two");
+    K.forEach((e,i)=>{e.dataset.gp=1; e.style.gridColumn=i<rows?"1":"2"; e.style.gridRow=String(i<rows?i+1:i-rows+1)});
+    all.filter(x=>x.t).forEach((x,j)=>{x.t.dataset.gp=1; x.t.style.gridColumn="1 / -1"; x.t.style.gridRow=String(rows+1+j)})}};
+  const go=()=>{if(!raf) raf=requestAnimationFrame(run)};
+  for(const g of document.querySelectorAll(".legends")) new MutationObserver(go).observe(g,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["class","hidden"]});
+  addEventListener("resize",go); narrow.addEventListener?.("change",go); go()})();
 (function headStick(){const D=16; let raf=0, H0=new WeakMap();
   const run=()=>{raf=0; for(const h of document.querySelectorAll(".panel .head")){
     const pn=h.parentElement; if(pn.hidden){h.style.removeProperty("--hp"); h.style.marginBottom=""; continue}
