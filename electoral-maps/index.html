@@ -2554,9 +2554,10 @@ document.querySelectorAll("[data-ls]").forEach(b=>b.addEventListener("click",()=
 // States steps through every third year 2004-2025 (owner, 2026-11-07; was every year 2004-2026): assemblies and chief
 // ministers follow their own calendars, so each year is a snapshot (the other India views stop at Lok Sabha years).
 // ST / CM keep data for every year; only these are on the stepper.
-const ST_YEARS=[2004,2006,2009,2011,2014,2016,2019,2021,2024,2026];   // the Lok Sabha years and the midpoints between them (owner, 2026-11-09; was every third year 2004-2025)
+const ST_YEARS=[2004,2006,2009,2011,2014,2016,2019,2021,2024,2026,2027];   // 2027 (owner, 2026-11-27): 2026 as it stands, the states voting in 2027 grey
+const ST_DUE={2027:new Set("PB GA MN UK UP HP GJ".split(" "))};   // assemblies elected in 2027: grey on the map and in the bar   // the Lok Sabha years and the midpoints between them (owner, 2026-11-09; was every third year 2004-2025)
 const blocOf=y=>LS_META[y]?.bloc||(y>=2023?"INDIA":"UPA");   // the INDIA bloc formed in July 2023
-const stWhen=y=>y===2026?"October 2026":`the end of ${y}`;   // 2026: as of now, not year end
+const stWhen=y=>y===2026?"October 2026":y===2027?"2027, before its elections":`the end of ${y}`;   // 2026: as of now, not year end
 const ST={2004:{AP:[2,47,30,30,185],AR:[9,0,15,2,34],AS:[8,2,42,3,71],JH:[32,8,9,21,11],BR:[35,47,34,115,12],CG:[50,0,2,1,37],DL:[20,0,2,1,47],GA:[17,0,6,1,16],GJ:[127,2,2,0,51],HR:[6,0,61,2,21],HP:[16,0,9,0,43],JK:[1,0,50,16,20],KA:[79,5,74,1,65],KL:[0,0,51,27,62],MP:[173,1,17,1,38],MH:[54,62,31,72,69],MN:[4,3,30,3,20],ML:[2,0,22,14,22],MZ:[0,21,7,0,12],NL:[7,23,9,0,21],OD:[32,61,12,4,38],PY:[1,3,6,7,13],PB:[3,41,11,0,62],RJ:[120,2,22,0,56],SK:[0,0,31,0,1],TN:[4,132,15,53,30],TR:[0,0,47,0,13],UP:[88,2,288,0,25],UK:[19,0,14,1,36],WB:[0,60,208,0,26],CH:null,DD:null,LD:null,AN:null},
   2009:{AP:[2,10,119,7,156],AR:[3,0,5,10,42],AS:[10,24,38,1,53],BR:[55,88,90,1,9],CG:[50,0,2,0,38],DL:[23,0,4,0,43],GA:[14,0,7,3,16],GJ:[117,1,2,3,59],HR:[4,32,14,0,40],HP:[41,0,4,0,23],JK:[11,0,31,28,17],JH:[18,2,29,18,14],KA:[110,0,34,0,80],KL:[0,0,101,15,24],MP:[143,0,16,0,71],MH:[46,44,54,62,82],MN:[0,0,25,5,30],ML:[1,0,19,15,25],MZ:[0,0,8,0,32],NL:[2,0,33,2,23],OD:[6,0,110,4,27],PY:[0,0,13,7,10],PB:[19,49,5,0,44],RJ:[78,1,25,0,96],SK:[0,0,32,0,0],TN:[0,0,102,98,34],TR:[0,0,50,0,10],UP:[51,11,319,0,22],UK:[34,0,15,0,21],WB:[0,0,243,30,21],CH:null,DD:null,LD:null,AN:null},
   2014:{AS:[5,0,43,0,78],BR:[91,3,122,23,4],CG:[49,0,2,0,39],GA:[21,0,10,0,9],HP:[26,0,6,0,36],KA:[40,0,62,0,122],KL:[0,0,67,35,38],MP:[165,0,7,0,58],MN:[0,5,12,1,42],ML:[0,2,27,2,29],MZ:[0,0,6,0,34],NL:[1,38,9,4,8],PY:[0,15,8,0,7],PB:[12,56,3,0,46],RJ:[163,4,12,0,21],TN:[0,32,197,0,5],TR:[0,0,50,0,10],UP:[47,1,317,10,28],UK:[31,0,7,0,32],WB:[0,0,252,0,42],AP:[4,102,69,0,0],TS:[5,15,78,0,21],AR:[11,0,7,0,42],GJ:[115,0,4,2,61],HR:[47,1,27,0,15],JK:[25,0,35,15,12],JH:[37,0,19,19,6],MH:[122,64,19,41,42],OD:[10,0,121,0,16],SK:[0,0,32,0,0],DL:null,CH:null,DD:null,LD:null,AN:null},
@@ -2979,10 +2980,12 @@ const CM={
   2026:cmGroups({bjp:"AR AS BR CG DL GA GJ HR MP MH MN OD RJ TR UP UK WB",nda:"AP ML NL PY SK",oth:"MZ PB TN",india:"JK JH",inc:"TS HP KA KL"})};
 let stMode="cm";   // States opens on Chief Ministers (owner, 2026-11-09)
 function renderST(animate){
-  const year=inYear, cm=stMode==="cm", N=[0,0,0,0,0], L=[0,0,0,0,0], data=ST[year];
+  const year=inYear, cm=stMode==="cm", N=[0,0,0,0,0], L=[0,0,0,0,0], data=ST[year], due=ST_DUE[year];
+  let dueN=0;   // 2027: MLAs in the grey states
   // from 2019 Ladakh is a UT with no legislature: it stays grey rather than taking J&K's colour
   const cmData=year>=2019?{...CM[year],LA:null}:CM[year];
   if(cm) for(const code in CM[year]){
+    if(due?.has(code)){regionRects(ST_RECTS,code,cmData).forEach(r=>{const d=ST_DOT.get(r); d.style.fill=d.style.stroke="var(--seat-empty)"}); continue}
     const i=LS_GROUPS.indexOf(CM[year][code]), rects=regionRects(ST_RECTS,code,cmData);
     N[i]++; L[i]+=rects.length;
     const mg=stMarginsOn()?ST_MARGIN[year][code]:undefined, col=stMarginsOn()&&mg!=null?lsShade(i,mg):LS_FILL[LS_GROUPS[i]];
@@ -2991,14 +2994,16 @@ function renderST(animate){
   else for(const code in data){
     const g=data[code]; if(!g) continue;
     const rects=regionRects(ST_RECTS,code,data);
+    if(due?.has(code)){dueN+=g.reduce((a,b)=>a+b,0); rects.forEach(r=>ST_DOT.get(r).style.fill="var(--seat-empty)"); continue}
     g.forEach((v,i)=>N[i]+=v);
     let k=0; stSquares(g,rects.length).forEach((n,i)=>{for(let j=0;j<n;j++) ST_DOT.get(rects[k++]).style.fill=LS_FILL[LS_GROUPS[i]]});
   }
   if(cm) ST_DOT.forEach(d=>{if(!d.style.stroke) d.style.stroke="var(--seat-empty)"});
-  const tot=N.reduce((a,b)=>a+b,0);
+  const tot=N.reduce((a,b)=>a+b,0)+dueN;   // 2027: shares of every MLA, the grey states' included, so the bar reaches the grey
   // Chief Minister view: the bar shows the share of Lok Sabha seats in states each side leads (like US Governors)
   LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=(cm?L[i]/543:N[i]/tot)*100+"%");
   // states with no chief minister are grey on the map, so they're grey in the bar too, and it reaches both margins (owner, 2026-11-07)
+  if(!cm&&dueN) document.getElementById("in-b-vac").style.width=dueN/tot*100+"%";
   if(cm) document.getElementById("in-b-vac").style.width=Math.max(0,543-L.reduce((a,b)=>a+b,0))/543*100+"%";
   // Seat share: each side's share of all MLAs, not a count (owner, 2026-11-07); Chief Minister counts states
   const put=(id,v)=>{const n=document.getElementById(id); cm?countTo(n,v,animate):countToPct(n,v/tot*100,animate)}, f=v=>cm?v:(v/tot*100).toFixed(1)+"%";
@@ -3014,7 +3019,7 @@ function renderST(animate){
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   const pv=cm&&stMarginsOn()&&ST_PV[year];   // Margins: the pooled vote up top and in the bar; the governments and population under it
   if(pv){const P=v=>v.toFixed(1)+"%", gv=(n,v)=>`${n} govts,${narrow.matches?"\n":" "}covers ${pct(v)}% population`;
-    LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=pv[i]+"%"); document.getElementById("in-b-vac").style.width="0%";
+    LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=pv[i]+"%"); document.getElementById("in-b-vac").style.width=(pv[5]||0)+"%";   // 2027: the grey states' share
     countToPct(document.getElementById("in-n-nda"),pv[0]+pv[1],animate); countToPct(document.getElementById("in-n-oth"),pv[2],animate); countToPct(document.getElementById("in-n-india"),pv[3]+pv[4],animate);
     document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${P(pv[0])}</span><span><i> · </i>Allies ${P(pv[1])}</span>`;
     document.getElementById("in-sub-india").innerHTML=`<span>Congress ${P(pv[4])}</span><span><i> · </i>Allies ${P(pv[3])}</span>`;
@@ -3029,8 +3034,8 @@ function renderST(animate){
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
   document.getElementById("st-leg-bloc").textContent=`Congress allies (${blocOf(year)})`;
   document.getElementById("st-note").textContent=cm
-    ?(stMarginsOn()?"The big numbers and the bar pool every state's latest assembly vote by alliance, each state weighted by its Lok Sabha seats; under the bar, the governments each side runs and the population they cover. Darker shades mean a wider lead in vote share for the government's alliance over the strongest rival, in the state election behind it: full colour is 20 points or more, the lightest is under 5 (or behind). A party and its allies share one colour. ":"")+`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
-    :`Each state's circles are split by its assembly seats, from its latest election up to ${stWhen(year)}, grouped by each party's alliance then. States vote on their own calendars: this is a snapshot of every assembly.`;
+    ?(stMarginsOn()?"The big numbers and the bar pool every state's latest assembly vote by alliance, each state weighted by its Lok Sabha seats; under the bar, the governments each side runs and the population they cover. Darker shades mean a wider lead in vote share for the government's alliance over the strongest rival, in the state election behind it: full colour is 20 points or more, the lightest is under 5 (or behind). A party and its allies share one colour. ":"")+(ST_DUE[year]?"Grey: Punjab, Goa, Manipur, Uttarakhand, Uttar Pradesh, Himachal Pradesh and Gujarat, which elect new assemblies in 2027. ":"")+`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
+    :(ST_DUE[year]?"Grey: Punjab, Goa, Manipur, Uttarakhand, Uttar Pradesh, Himachal Pradesh and Gujarat, which elect new assemblies in 2027. ":"")+`Each state's circles are split by its assembly seats, from its latest election up to ${stWhen(year)}, grouped by each party's alliance then. States vote on their own calendars: this is a snapshot of every assembly.`;
   inSvg.setAttribute("aria-label",cm?`Chief ministers in ${stWhen(year)} by alliance, each state sized by its Lok Sabha seats`
     :`State assemblies in ${stWhen(year)} by alliance, drawn on the Lok Sabha seat squares`);
 }
@@ -3053,6 +3058,7 @@ const ST_MARGIN={2004:{AP:6.1,AR:29.69,AS:19.74,BR:13.22,CG:2.55,DL:12.91,GA:-2.
 // alliance, [BJP, NDA allies, Others, Congress allies, Congress] %, each state weighted by its Lok Sabha seats (no vote totals after 2013);
 // parties grouped by their alliance that year, as on the map; independents and untabled parties count as Others. st-build/pv.py.
 const ST_PV={2004:[18.2,13.4,34.7,9.6,24.1],2006:[18.1,5.9,43.5,8.8,23.6],2009:[17.4,6.1,45.8,7.5,23.2],2011:[17.7,4.5,44.7,8.5,24.6],2014:[19.8,7.5,46.2,5.4,21.1],2016:[21.7,7.2,41.9,9.5,19.7],2019:[26.5,7.0,37.4,10.2,18.9],2021:[28.6,6.3,37.3,8.9,19.0],2024:[30.5,9.4,20.6,22.0,17.6],2026:[31.4,11.1,22.1,17.8,17.6]};
+ST[2027]=ST[2026]; CM[2027]=CM[2026]; ST_MARGIN[2027]=ST_MARGIN[2026]; ST_PV[2027]=[21.5,9.9,16.4,13,14.6,24.6];   // 2027: 2026 data; ST_DUE states grey (ST_PV: pv.py without them, their Lok Sabha weight, 132 of 537, as the grey share)
 let stColor="results";
 const stMarginsOn=()=>inRace==="states"&&stMode==="cm"&&!!ST_MARGIN[inYear]&&stColor==="margins";
 document.getElementById("legend-states").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
@@ -3060,7 +3066,7 @@ document.getElementById("legend-states").insertAdjacentHTML("afterbegin",[[4,"va
 
 // ---------- Rajya Sabha: grey Lok Sabha map with one circle per elected seat (like the Senate view) ----------
 // Elected seats by state at 31 Dec, [BJP, NDA allies, not aligned, Congress allies, INC, vacant] (see CONTEXT.txt)
-const RS_YEARS=ST_YEARS;   // the States years (owner, 2026-11-13): 2006, 2011, 2016, 2021 and 2026 added (see CONTEXT.txt)
+const RS_YEARS=ST_YEARS.filter(y=>y<=2026);   // not 2027 (States only)   // the States years (owner, 2026-11-13): 2006, 2011, 2016, 2021 and 2026 added (see CONTEXT.txt)
 const RS={2004:{AP:[0,9,1,0,8,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,1,2,8,2,0],CG:[1,0,0,0,4,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,5,0,0,0],HP:[2,0,0,0,1,0],JK:[0,0,1,1,2,0],JH:[4,0,0,1,1,0],KA:[2,0,2,0,8,0],KL:[0,0,4,2,3,0],MP:[6,0,0,0,5,0],MH:[4,4,1,5,5,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,1,0,0,0,0],NL:[0,1,0,0,0,0],OD:[3,5,1,0,1,0],PY:[0,0,0,0,1,0],PB:[0,2,0,0,5,0],RJ:[4,0,0,0,6,0],SK:[0,0,1,0,0,0],TN:[0,12,0,3,3,0],TR:[0,0,1,0,0,0],UP:[8,0,22,0,1,0],UK:[1,0,0,0,2,0],WB:[0,1,15,0,0,0]},
   2006:{AP:[0,0,8,0,10,0],AR:[0,0,0,0,1,0],AS:[1,0,1,0,5,0],BR:[3,5,0,7,1,0],CG:[2,0,0,0,3,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,4,0,1,0],HP:[1,0,0,0,2,0],JK:[0,0,1,1,2,0],JH:[4,1,0,0,1,0],KA:[2,0,4,0,6,0],KL:[0,0,4,1,4,0],MP:[8,0,0,0,3,0],MH:[2,4,3,5,5,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,1,0,0,0,0],NL:[0,1,0,0,0,0],OD:[3,4,1,0,2,0],PY:[0,0,0,0,1,0],PB:[0,3,0,0,4,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,12,3,3,0],TR:[0,0,1,0,0,0],UP:[6,0,24,0,1,0],UK:[0,0,0,0,3,0],WB:[0,0,16,0,0,0]},
   2009:{AP:[0,0,4,0,14,0],AR:[0,0,0,0,1,0],AS:[0,2,1,0,4,0],BR:[3,7,5,0,1,0],CG:[3,0,0,0,2,0],DL:[0,0,0,0,3,0],GA:[0,0,0,0,1,0],GJ:[8,0,0,0,3,0],HR:[0,0,1,0,4,0],HP:[1,0,0,0,2,0],JK:[0,0,0,2,2,0],JH:[2,0,1,1,2,0],KA:[4,0,3,0,5,0],KL:[0,0,5,1,3,0],MP:[9,0,0,0,2,0],MH:[2,4,2,5,6,0],MN:[0,0,0,0,1,0],ML:[0,0,0,1,0,0],MZ:[0,0,1,0,0,0],NL:[0,0,1,0,0,0],OD:[3,0,4,0,3,0],PY:[0,0,0,0,1,0],PB:[0,3,0,0,4,0],RJ:[6,0,0,0,4,0],SK:[0,0,1,0,0,0],TN:[0,0,9,5,4,0],TR:[0,0,1,0,0,0],UP:[4,1,26,0,0,0],UK:[1,0,0,0,2,0],WB:[0,0,14,2,0,0]},
