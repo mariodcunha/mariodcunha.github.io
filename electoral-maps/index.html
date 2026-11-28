@@ -214,6 +214,9 @@ html.dark .tally.relc .check::after{filter:invert(1) brightness(.1)}   /* dark m
 html.dark #panel-in.rel04{--rel-h:#e8649c;--rel-nh:#2bb3ac;--rel-h-lt:#e19dba;--rel-nh-lt:#7cb9b5}   /* dark (owner, 2026-11-27): teal brighter, Others' tints a touch darker */ html.dark #panel-in.rel04 .tally.relc .check::after{filter:none} html.dark #panel-in.rel04 #map-india text.rel[data-r="0"],html.dark #panel-in.rel04 #legend-loksabha .rkeys [data-r="0"] .rk em{filter:url(#rtl0)} html.dark #panel-in.rel04 #map-india text.rel[data-r="1"],html.dark #panel-in.rel04 #legend-loksabha .rkeys [data-r="1"] .rk em{filter:url(#rtl1d)} html.dark #panel-in.rel04 #map-india text.rel[data-r="2"],html.dark #panel-in.rel04 #legend-loksabha .rkeys [data-r="2"] .rk em{filter:url(#rtl2)} html.dark #panel-in.rel04 #map-india text.rel[data-r="3"],html.dark #panel-in.rel04 #legend-loksabha .rkeys [data-r="3"] .rk em{filter:url(#rtl3) url(#rgd)} html.dark #panel-in.rel04 #map-india text.rel[data-r="5"],html.dark #panel-in.rel04 #legend-loksabha .rkeys [data-r="5"] .rk em{filter:url(#rtl5) url(#rgd)} 
 /* Sikh, Buddhist, Other (owner, 2026-11-27): a green tinge on top: light mode a deeper one (#rgl), dark mode a brighter one (#rgd) */
 #panel-in #map-india text.rel[data-r="3"],#panel-in #legend-loksabha .rkeys [data-r="3"] .rk em{filter:url(#rtl3) url(#rgl)} #panel-in #map-india text.rel[data-r="4"],#panel-in #legend-loksabha .rkeys [data-r="4"] .rk em{filter:url(#rtlb)} #panel-in #map-india text.rel[data-r="5"],#panel-in #legend-loksabha .rkeys [data-r="5"] .rk em{filter:url(#rtlo)} html.dark #panel-in #map-india text.rel[data-r="3"],html.dark #panel-in #legend-loksabha .rkeys [data-r="3"] .rk em{filter:url(#rgd)} html.dark #panel-in #map-india text.rel[data-r="4"],html.dark #panel-in #legend-loksabha .rkeys [data-r="4"] .rk em{filter:url(#rgd)} html.dark #panel-in #map-india text.rel[data-r="5"],html.dark #panel-in #legend-loksabha .rkeys [data-r="5"] .rk em{filter:url(#rgd)}
+#in-under .plab{white-space:nowrap} #legend-loksabha .pkeys{display:none} #legend-loksabha.party .pkeys{display:flex;flex-wrap:wrap;gap:6px 16px} #legend-loksabha.party .base,#legend-loksabha.party .oth-note{display:none}
+#legend-loksabha .pkeys>span{display:inline-flex;gap:6px;align-items:center} #legend-loksabha .pkeys .rk{display:grid;place-items:center;width:20px;height:20px;font-style:normal;font-size:18px;line-height:1} #legend-loksabha .pkeys .rk em{font-style:normal}
+@media (max-width:775px){#legend-loksabha.party .pkeys{flex-direction:column;flex-wrap:nowrap;align-items:flex-start} .legend.two .pkeys{display:contents!important}}
 #legend-loksabha .rkeys b{display:none}   /* no counts on the religion keys (owner, 2026-11-27) */ #legend-loksabha .hk{display:none} #legend-loksabha.relig .hk{display:inline-flex}
 .tally.racec .cand.d b,.tally.racec .cand.d span,.tally.racec .cand.r b,.tally.racec .cand.r span{color:var(--skin-dk)!important} .tally.racec .check{background:var(--skin-dk)!important} .bar.div i.dim[data-g]:not(.x-){background:var(--fade2)!important}   /* filtering: the other side greys here too (the ids out-rank the skin tones; owner, 2026-11-27) */ .bar.div+.under .gain{color:var(--muted)!important}   /* the line under it grey (owner, 2026-11-27) */ /* white gap where one side (alliance / party) ends and the next begins */
 /* 2026 calls: hatched = the party the poll aggregate (or Cook's rating) has ahead; yellow hatch = toss-up; grey = can't call */
@@ -628,6 +631,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-margin="margins" aria-pressed="false">Margins</button>
       <button type="button" data-margin="power" aria-pressed="false" hidden>Population</button>   <!-- Senate, web: Results / Margins / Representation in one toggle, no All (owner, 2026-11-26) -->
       <button type="button" data-margin="race" aria-pressed="false" hidden>Race</button>   <!-- House 2008 (owner, 2026-11-26) -->
+      <button type="button" data-margin="party" aria-pressed="false" hidden>Party</button>   <!-- Lok Sabha 2004: party symbols (owner, 2026-11-27) -->
       <button type="button" data-margin="religion" aria-pressed="false" hidden>Religion</button>
       <button type="button" data-margin="stseats" aria-pressed="false" hidden>Seat share</button>   <!-- India States: Results / Margins / Seat share in one toggle (owner, 2026-11-26) -->   <!-- Lok Sabha 2009 (owner, 2026-11-26) -->
     </div>
@@ -734,6 +738,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--nda)"/></svg>BJP allies (NDA)</span>
         <span class="base"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--bjp)"/></svg>BJP</span>
         <span class="hk"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rel-h)"/></svg>Hindu</span><span class="hk"><svg viewBox="0 0 14 14"><rect width="14" height="14" fill="var(--rel-nh)"/></svg>Non-Hindu</span>   <!-- Religion: the bar's keys (owner, 2026-11-27) -->
+        <span class="pkeys" id="ls-pkeys"></span>   <!-- Party view keys, filled in renderLS (owner, 2026-11-27) -->
         <span class="rkeys"><span data-r="0"><i class="rk"><em>🪔</em></i>Hindu<b></b></span><span data-r="1"><i class="rk"><em>🌙</em></i>Muslim<b></b></span><span data-r="2"><i class="rk"><em>🎄</em></i>Christian<b></b></span><span data-r="3"><i class="rk"><em>⚔️</em></i>Sikh<b></b></span><span data-r="4"><i class="rk"><em>🧵</em></i>Buddhist<b></b></span><span data-r="5"><i class="rk"><em>🌿</em></i>Other<b></b></span></span>   <!-- Religion keys: the map's grey tile + emoji, name, that year's count (owner, 2026-11-26) -->
         <span class="txt"><span id="ls-note">Each square is one seat</span> <span class="geo-note" id="ls-geo">The squares show how many seats each party won in a state, not where: their position inside a state is not geographic. Congress squares gathered at the bottom of Gujarat, for example, do not mean south Gujarat is a Congress stronghold.</span> <span class="oth-note">Others are those parties that did not align with either of the left or right alliances.</span></span>   <!-- one paragraph (owner, 2026-11-22) -->
       </div>
@@ -2203,7 +2208,7 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   document.querySelectorAll("[data-gov]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gov===govMode));
   const senOne=race==="senate"&&!legOn()&&!fut;   // Senate, web and phones (owner, 2026-11-26): one toggle, Results / Margins / Representation
   document.getElementById("margin-view").hidden=fut||(legOn()?!legReal(year):!(race==="president"||race==="house"&&HOUSE_MARGINS[year]||race==="governors"&&GOV_MARGINS[year]||race==="senate"&&(sm==="seats"&&SEN_MARGINS[year]||senOne)));
-  document.querySelector('[data-margin="race"]').hidden=!(race==="house"&&HOUSE_FACE[year]||senOne&&SEN_FACE[year]); document.querySelector('[data-margin="religion"]').hidden=true;   // Senate Race after Representation
+  document.querySelector('[data-margin="race"]').hidden=!(race==="house"&&HOUSE_FACE[year]||senOne&&SEN_FACE[year]); document.querySelector('[data-margin="religion"]').hidden=document.querySelector('[data-margin="party"]').hidden=true;   // Senate Race after Representation
   document.querySelector('[data-margin="power"]').hidden=!senOne; document.querySelector('[data-margin="stseats"]').hidden=true;   // Senate on the web: Representation sits in the Results / Margins toggle
   paintFaces(race==="house"&&colorMode==="race"&&HOUSE_FACE[year],year);
   usSvg.classList.toggle("race",!!(race==="house"&&colorMode==="race"&&HOUSE_FACE[year]));   // Race: the hovered cell flips light / dark
@@ -2339,6 +2344,31 @@ const lsMarginsOn=()=>inRace==="loksabha"&&lsMode==="geo"&&!!LS_MARGIN[inYear]&&
 // Religion (owner, 2026-11-26): each seat's emoji = its winner's religion (LS_MREL), mostly guessed from the name. The emoji's
 // opacity is always full (owner, 2026-11-26; was the Margins bands). Squares plain light grey.
 const lsRelOn=()=>inRace==="loksabha"&&lsMode==="geo"&&!!LS_MREL[inYear]&&lsColor==="religion";
+// Party view (owner, 2026-11-27; 2004 for now): each seat's winning party as its election symbol in emoji. BJP's lotus tinted the NDA
+// orange, Congress's hand the Congress blue, TRS's car pink; parties that share a symbol get their own tint (SP / TDP bicycle, Shiv Sena
+// / JMM bow, BSP / AGP elephant); the rest keep the emoji's own colours. Parties with 3 or fewer seats in all of 2004-2024 share 🌐.
+const PARTY_YEARS=new Set();   // Party view parked (owner, 2026-11-27): put 2004 back here to bring the toggle back
+const lsPartyOn=()=>inRace==="loksabha"&&lsMode==="geo"&&PARTY_YEARS.has(inYear)&&lsColor==="party";
+const PARTY_EMOJI={BJP:"🪷",INC:"✋",AITC:"🌷",SP:"🚲",DMK:"☀️","CPI(M)":"☭",SHS:"🏹","JD(U)":"➡️",BJD:"🐚",BSP:"🐘",AIADMK:"🍃",TDP:"🚲",RJD:"🏮",YSRCP:"🌀",
+  NCP:"⏰",TRS:"🚗","Ind.":"🎗️",CPI:"🌾",SAD:"⚖️",LJP:"🏠",JMM:"🏹","JD(S)":"👩‍🌾",IUML:"🪜",JKNC:"🚜",RLD:"🚰","SS(UBT)":"🔥",RSP:"🪏",AAP:"🧹","NCP(SP)":"📯",
+  PMK:"🥭",AIMIM:"🪁",MDMK:"🪀",AIFB:"🦁",AIUDF:"🔐","LJP(RV)":"🚁",AGP:"🐘",JKPDP:"🖋️",NPF:"🐓","KC(M)":"🍃",VCK:"🏺"};
+const PARTY_NAME={BJP:"BJP",INC:"Congress",AITC:"Trinamool",SP:"Samajwadi",DMK:"DMK","CPI(M)":"CPI(M)",SHS:"Shiv Sena","JD(U)":"JD(U)",BJD:"BJD",BSP:"BSP",AIADMK:"AIADMK",
+  TDP:"TDP",RJD:"RJD",YSRCP:"YSRCP",NCP:"NCP",TRS:"TRS (BRS)","Ind.":"Independent",CPI:"CPI",SAD:"Akali Dal",LJP:"LJP",JMM:"JMM","JD(S)":"JD(S)",IUML:"IUML",JKNC:"National Conf.",
+  RLD:"RLD","SS(UBT)":"SS (UBT)",RSP:"RSP",AAP:"AAP","NCP(SP)":"NCP (SP)",PMK:"PMK",AIMIM:"AIMIM",MDMK:"MDMK",AIFB:"Forward Bloc",AIUDF:"AIUDF","LJP(RV)":"LJP (RV)",AGP:"AGP",
+  JKPDP:"PDP",NPF:"NPF","KC(M)":"Kerala Cong. (M)",VCK:"VCK"};
+// (owner, 2026-11-27) each party's colour now follows its side: Congress blue, BJP orange; Congress's allies in blues, dark blues and
+// purples (TRS keeps a pinkish purple: its pink car), the BJP's allies in oranges, reds and yellows, the non-aligned in greens. The same
+// colour tints the party's emoji (a monochrome tint) and fills its part of the bar. Shades go out by seats, biggest party first.
+const PARTY_SHADES={inc:["#1f93e6"],bjp:["#f26a1b"],india:["#2f5fc4","#5b8fe6","#6a4fc8","#1e3f8f","#8f6fe0","#3f7fd0","#4b3a9e","#7aa7f0","#5a2f9a","#2b6db0","#9a86e8","#33509e"],
+  nda:["#d9480f","#f2a100","#c92a2a","#ff8f2e","#e8590c","#e6b800","#a83232","#f76707","#d9a400","#b84a1a"],
+  oth:["#2b8a3e","#66a80f","#0b7a5e","#40c057","#5c940d","#12b886","#2f9e44","#82c91e","#087f5b","#74b816","#37b24d","#099268","#4c7a2a","#3fae6a"]};
+const partyKey=p=>p&&PARTY_EMOJI[p]?p:"OTH", partyEmoji=p=>PARTY_EMOJI[p]||"🌐", partyName=p=>p==="OTH"?"Other parties":PARTY_NAME[p]||p;
+let PCOL={};   // "group:party" -> colour, for the year on show (filled in renderLS)
+const tintOf=c=>{if(!c) return "none"; const id="pt-"+c.slice(1); if(!document.getElementById(id)){   // a monochrome tint: dark -> the colour -> a pale tint
+    const h=c.match(/\w\w/g).map(x=>parseInt(x,16)/255), lo=h.map(v=>(v*.55).toFixed(3)), hi=h.map(v=>(v+(1-v)*.55).toFixed(3)), d=document.querySelector("svg defs");
+    const f=document.createElementNS("http://www.w3.org/2000/svg","filter"); f.id=id; f.setAttribute("color-interpolation-filters","sRGB");
+    f.innerHTML=`<feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${lo[0]} ${h[0].toFixed(3)} ${hi[0]}"/><feFuncG type="table" tableValues="${lo[1]} ${h[1].toFixed(3)} ${hi[1]}"/><feFuncB type="table" tableValues="${lo[2]} ${h[2].toFixed(3)} ${hi[2]}"/></feComponentTransfer>`; d.appendChild(f)}
+  return `url(#${id})`};
 const REL_NAMES=["Hindu","Muslim","Christian","Sikh","Buddhist","Other"], REL_EMOJI=["🪔","🌙","🎄","⚔️","🧵","🌿"], REL_OP=[.3,.47,.65,.82,1];
 const REL_SRC={s:"own words",r:"press",w:"Wikipedia",n:"assumed from name",d:"disputed, assumed from name"};
 // the tint each religion's emoji has on the map (light / dark), for emoji shown outside the map (the hover label) (owner, 2026-11-27)
@@ -2351,12 +2381,12 @@ function paintRel(on,year,regions){
   const g=++relGen;
   for(const code in regions) lsRegionRects(code,regions).forEach((r,k)=>{const d=ST_DOT.get(r); if(!d) return; let t=REL_TXT.get(d);
     if(t&&REL_SWAP.has(t)){clearTimeout(REL_SWAP.get(t)); REL_SWAP.delete(t); t.classList.remove("swap")}
-    const o=on&&lsRelOf(year,code,k);
+    const pm=on&&lsPartyOn(), pk=pm&&partyKey(LS_PARTY[year]?.[code]?.split("|")[k]), o=pm?pk&&{pick:""}:on&&lsRelOf(year,code,k);   // Party view: the party's emoji instead
     if(!o){if(t) t.classList.remove("on"); return}
     let fresh=false; if(!t){t=el("text",{class:"rel","text-anchor":"middle","dominant-baseline":"central","aria-hidden":"true"},d.parentNode); REL_TXT.set(d,t); fresh=!reduce}
     t.setAttribute("x",d.x.baseVal.value+d.width.baseVal.value/2); t.setAttribute("y",d.y.baseVal.value+d.height.baseVal.value*.54);
     t.dataset.p=d.dataset.p||"";   // the winner's group, for the tally filter: at once, so filters stay right mid-swap
-    const e=REL_EMOJI[o.pick], put=()=>{if(relGen!==g) return; t.textContent=e; t.dataset.r=o.pick; t.classList.remove("swap"); t.classList.add("on")};
+    const e=pm?partyEmoji(pk):REL_EMOJI[o.pick], tint=pm?tintOf(PCOL[(d.dataset.p||"")+":"+pk]):"", put=()=>{if(relGen!==g) return; t.textContent=e; t.dataset.r=o.pick; t.style.filter=tint; t.classList.remove("swap"); t.classList.add("on")};
     if(on&&inSvg.classList.contains("rel")&&t.classList.contains("on")&&t.textContent!==e&&!reduce){t.classList.add("swap"); REL_SWAP.set(t,setTimeout(()=>{REL_SWAP.delete(t); put()},220))}
     else if(fresh) requestAnimationFrame(()=>requestAnimationFrame(put));   // a new emoji: its small, clear start first, then in
     else put()});
@@ -2422,21 +2452,32 @@ const LS_NAME={2004:{AN:"31",AP:"0,544,274,534,107,363,629,511,456,715,378,135,4
 const LS_GEO={2004:{AN:"4",AP:"343423443341434424144414444444144444444414",AR:"00",AS:"04242404244444",BR:"1333033343333313330033133133133033331044",CH:"4",CG:"00000004000",DN:"2",DM:"4",GA:"04",GJ:"04044400400400040440040404",HR:"4404444444",HP:"4440",JK:"222344",JH:"04334323344434",KA:"0440040400000040000020404024",KL:"22222232212222222222",LD:"1",MP:"04004000000000400000000004000",MH:"400101000443411130400013011444443100331443343113",MN:"24",ML:"14",MZ:"1",NL:"1",DL:"4444440",OD:"301100101111110411400",PY:"3",PB:"0014011114111",RJ:"0044000004040000000000000",SK:"2",TN:"333333333344244333433334333332444332432",TR:"22",UP:"22222202222220142002222240400222222222022022222422424224222242202222222222224222",UK:"02004",WB:"222244244244222222222222222222122222222222"},2009:{AN:"0",AP:"244441444442444134444444444444424244444224",AR:"44",AS:"01444404220404",BR:"1004011001012211110001112211011210011241",CH:"4",CG:"40000000000",DN:"0",DM:"0",GA:"04",GJ:"04400040000444440040004004",HR:"4444424444",HP:"0400",JK:"332344",JH:"20030003200402",KA:"4040004400000000000220002044",KL:"24444233244444344424",LD:"4",MP:"00004020000444440404040044040",MH:"404441100024310011034410113444310344331444342412",MN:"44",ML:"34",MZ:"4",NL:"2",DL:"4444444",OD:"242224442222222222244",PY:"4",PB:"4444011444411",RJ:"4444040444244444444404404",SK:"2",TN:"332332343333223424233222323342443342433",TR:"22",UP:"22224044121012044444222222022142244242024022220122444200222444424222222202222222",UK:"44444",WB:"223204244444233333223222333323332222233333"},2014:{AN:"0",TS:"22222222012242224",AP:"1101211111112211022211212",AR:"04",AS:"00000402220442",BR:"0004340001000101132330010000021310011000",CH:"0",CG:"00000040000",DN:"0",DM:"0",DL:"0000000",GA:"00",GJ:"00000000000000000000000000",HR:"0000224000",HP:"0000",JK:"220200",JH:"00330000000000",KA:"0444004400000044000240002004",KL:"24244233222424344324",LD:"3",MP:"00004000000000000000000004000",MH:"000101100000110014000410111010010100331110301113",MN:"44",ML:"14",MZ:"4",NL:"1",OD:"222220222222222222222",PY:"1",PB:"0014412422211",RJ:"0000000000000000000000000",SK:"2",TN:"222222222122222222222222222222222222220",TR:"22",UP:"00000000000000000000000020000000000000000002220000004020000014000000000000001000",UK:"00000",WB:"222202224444222222222022222222222222222222"},2019:{AN:"4",AP:"2222222222222222222222222",AR:"00",AS:"00000444220000",BR:"1004011001011101111110010000011111111000",CH:"0",CG:"40000000400",DN:"2",DM:"0",DL:"0000000",GA:"04",GJ:"00000000000000000000000000",HR:"0000000000",HP:"0000",JK:"330300",JH:"00300100000004",KA:"0000000000000000000340002000",KL:"44444433444444324344",LD:"3",MP:"00000000000000000000000004000",MH:"000102100010120011400010111010030100031110301131",MN:"10",ML:"14",MZ:"2",NL:"1",OD:"002220002220220222402",PY:"4",PB:"0044444444211",RJ:"0000000000000010000000000",SK:"2",TN:"334333343343233333333323342344312343334",TS:"00222022044242222",TR:"00",UP:"02220002200022000200000000000000000000000000200000000220022004000000200200001010",UK:"00000",WB:"000002002404220020202002222222222000022222"},2024:{AP:"1110210111111111011211212",AR:"00",AS:"00040041410000",BR:"1014011001011101112410010033011110133343",CG:"40000000000",GA:"04",GJ:"04000000000000000000000000",HR:"4040444000",HP:"0000",JK:"23300",JH:"00330100044003",KA:"4444040140000000400400001004",KL:"44444433340444344344",MP:"00000000000000000000000000000",MH:"400434104303314033444433311014333344331330021014",MN:"44",ML:"42",MZ:"2",NL:"4",OD:"000000000000000000400",PB:"4334422444324",RJ:"4404440300444030000000003",SK:"1",TN:"334333333343333433433333333344333343434",TS:"00444004004442004",TR:"00",UP:"34233003131003330300040330000000040300033033330003004330333334030333333300301334",WB:"030003003304333033333303333333333303333300",UK:"00000",AN:"0",CH:"4",DM:"2",DN:"0",DL:"0000000",LD:"4",PY:"4",LA:"2"}};
 let lsMode="geo";   // "geo" Results (one square per constituency), "seat" Seat share (counts only), "vote" Vote share
 let inOth="";   // this view's "Others N", for the line under the bar
-let inRel=null;   // Religion: {c,o,b} seats and non-Hindu seats per side, for the line under the bar
+let inRel=null, inPSeg=null;   // Religion: {c,o,b} seats and non-Hindu seats per side, for the line under the bar
 function renderLS(animate){
   const year=inYear, vote=lsMode==="vote";
-  if(lsColor==="religion"&&!LS_MREL[year]) lsColor="results";   // Religion: years with LS_MREL only (2009)
+  if(lsColor==="religion"&&!LS_MREL[year]) lsColor="results";
+  if(lsColor==="party"&&!PARTY_YEARS.has(year)) lsColor="results";   // Party: 2004 for now   // Religion: years with LS_MREL only (2009)
   const regions=!vote?lsSeats(year):year===2024?Object.fromEntries(Object.entries(LS).map(([k,v])=>[k,v.q])):LS_VOTE_HIST[year];
   const N=[0,0,0,0,0];
   for(const code in regions){
     let i=0; const rects=lsRegionRects(code,regions), geo=lsMode==="geo"&&LS_GEO[year]?.[code];
-    if(geo){const mg=lsMarginsOn(), rl=lsRelOn(); regions[code].forEach((n,g)=>N[g]+=n); rects.forEach((r,k)=>{const d=ST_DOT.get(r); if(mg||rl) d.dataset.p=LS_GROUPS[+geo[k]]; d.style.fill=rl?"var(--fade)":mg?lsShade(+geo[k],lsMarginOf(year,code,k)):LS_FILL[LS_GROUPS[+geo[k]]]}); continue}   // each square its own constituency
+    if(geo){const mg=lsMarginsOn(), rl=lsRelOn()||lsPartyOn(); regions[code].forEach((n,g)=>N[g]+=n); rects.forEach((r,k)=>{const d=ST_DOT.get(r); if(mg||rl) d.dataset.p=LS_GROUPS[+geo[k]]; d.style.fill=rl?"var(--fade)":mg?lsShade(+geo[k],lsMarginOf(year,code,k)):LS_FILL[LS_GROUPS[+geo[k]]]}); continue}   // each square its own constituency
     regions[code].forEach((n,g)=>{N[g]+=n;for(let k=0;k<n;k++) ST_DOT.get(rects[i++]).style.fill=LS_FILL[LS_GROUPS[g]]});
   }
   const bv=vote||lsMarginsOn();   // Margins: the bar shows vote share, like Vote % (owner, 2026-11-22)
   const shares=bv?LS_VOTE_NAT[year]:N, tot=shares.reduce((a,b)=>a+b,0);
   const mg=lsMarginsOn();
-  LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=shares[i]/tot*100+"%");   // Margins too: all five groups (owner, 2026-11-22)
+  LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=shares[i]/tot*100+"%");
+  // Party view (owner, 2026-11-27): the bar split party by party: Congress, its allies (biggest first), the non-aligned, the BJP's allies
+  // (biggest next to the BJP), the BJP; each in its colour (PCOL). The tally's totals stay the alliances'
+  inPSeg=null; if(lsPartyOn()){const C={};
+    for(const code in regions){const geo=LS_GEO[year]?.[code], pp=LS_PARTY[year]?.[code]?.split("|")||[]; if(geo) [...geo].forEach((d,k)=>{const key=LS_GROUPS[+d]+":"+partyKey(pp[k]); C[key]=(C[key]||0)+1})}
+    const by=g=>Object.entries(C).filter(([k])=>k.startsWith(g+":")).sort((a,b)=>b[1]-a[1]); PCOL={};
+    for(const g of ["inc","india","oth","nda","bjp"]) by(g).forEach(([k],i)=>{const p=k.split(":")[1]; PCOL[k]=g==="india"&&p==="TRS"?"#b8479e":PARTY_SHADES[g][i%PARTY_SHADES[g].length]});
+    inPSeg=[...by("inc"),...by("india"),...by("oth"),...by("nda").reverse(),...by("bjp")].map(([k,n])=>({k,g:k.split(":")[0],p:k.split(":")[1],n,c:PCOL[k]}));
+    LS_GROUPS.forEach(g=>document.getElementById("in-b-"+g).style.width="0%");
+    const bar=document.querySelector("#panel-in .bar"), mk=bar.querySelector(".mark"), T=inPSeg.reduce((a,x)=>a+x.n,0);
+    for(const x of inPSeg){const i=document.createElement("i"); i.className="pseg"; i.dataset.g=x.g; i.style.background=x.c; i.style.width=x.n/T*100+"%"; bar.insertBefore(i,mk)}}   // Margins too: all five groups (owner, 2026-11-22)
   document.getElementById("legend-loksabha").classList.toggle("margins",mg);
   const pct=lsMode==="seat", P=v=>pct?v/tot*100:v;   // Seat %: the bar's numbers as a share of the 543 seats (owner, 2026-11-09)
   const put=(id,v)=>{const n=document.getElementById(id); bv||pct?countToPct(n,P(v),animate):countTo(n,Math.round(v),animate)};
@@ -2446,7 +2487,7 @@ function renderLS(animate){
   document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${f(shares[0])}</span><span><i> · </i>Allies ${f(shares[1])}</span>`;
   document.getElementById("in-sub-india").innerHTML=`<span>Congress ${f(shares[4])}</span><span><i> · </i>Allies ${f(shares[3])}</span>`;
   document.getElementById("ls-leg-bloc").textContent=`Congress allies (${bloc})`;
-  document.getElementById("in-mark").style.opacity=document.getElementById("in-need").style.opacity=bv||lsRelOn()?0:1;   // Religion: no 272 line (owner, 2026-11-27)
+  document.getElementById("in-mark").style.opacity=document.getElementById("in-need").style.opacity=bv||lsRelOn()||lsPartyOn()?0:1;   // Religion: no 272 line (owner, 2026-11-27)
   // Religion, like the USA's Race (owner, 2026-11-27): the big numbers are each side's share of its seats won by a non-Hindu MP;
   // the bar is each side's non-Hindu seats (dark teal) at its own end, its Hindu seats (pink) inward; Others grey in the middle
   const rl=lsRelOn(), BG={inc:"var(--inc)",india:"var(--india)",oth:"var(--oth)",nda:"var(--nda)",bjp:"var(--bjp)"};
@@ -2472,13 +2513,18 @@ function renderLS(animate){
   geoNote.textContent=lsMode==="geo"&&LS_GEO[year]?`Each square is one constituency, placed roughly where it lies within its state${year===2004?" (2004 used the constituencies from before the 2008 redrawing; their positions are approximate)":""}.`:geoNote.dataset.text;
   document.querySelectorAll("[data-ls]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ls===lsMode));
   document.getElementById("margin-view").hidden=!(lsMode==="geo"&&LS_MARGIN[year]); document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="stseats"]').hidden=true;   // Results / Margins: Seats, years with margins
-  document.querySelector('[data-margin="religion"]').hidden=!(lsMode==="geo"&&LS_MREL[year]); paintRel(lsRelOn(),year,regions);   // Religion: 2009 (owner, 2026-11-26)
+  document.querySelector('[data-margin="religion"]').hidden=!(lsMode==="geo"&&LS_MREL[year]); document.querySelector('[data-margin="party"]').hidden=!(lsMode==="geo"&&PARTY_YEARS.has(year)); paintRel(lsRelOn()||lsPartyOn(),year,regions);   // Religion: 2009 (owner, 2026-11-26)
   document.getElementById("legend-loksabha").classList.toggle("relig",lsRelOn());
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===lsColor));
   if(lsRelOn()){const all=Object.values(LS_MREL[year]).join("|").split("|"), n=all.filter(v=>v[1]==="n"||v[1]==="d").length;
     document.querySelectorAll("#legend-loksabha .rkeys [data-r]").forEach(e=>{const c=all.filter(v=>v[0]==="HMCSBO"[+e.dataset.r]).length; e.dataset.n=c; e.querySelector("b").textContent=c});
     const known=all.length-n, pk=Math.round(known/all.length*100);   // footnote (owner, 2026-11-27): the share from public sources, the rest marked *
     document.getElementById("ls-note").textContent=`Indian MPs don't declare a religion. About ${pk}% of these MPs' religions (${known} of ${all.length}) come from public sources: the MP's own words, the press, or Wikipedia / Wikidata. The other ${n} are assumed from the MP's name as the most likely religion and can be wrong; they are marked * when you hover a seat.`}
+  // Party view legend: each party's emoji and name, by seats won that year (the 🌐 group last); the note says how they are drawn
+  const pl=document.getElementById("legend-loksabha"); pl.classList.toggle("party",lsPartyOn());
+  if(lsPartyOn()&&inPSeg){const box=document.getElementById("ls-pkeys");   // the keys in the bar's order, each tinted as its emoji
+    box.replaceChildren(...inPSeg.map(x=>{const sp=document.createElement("span"), i=document.createElement("i"), em=document.createElement("em"); i.className="rk"; em.textContent=partyEmoji(x.p); em.style.filter=tintOf(x.c); i.append(em); sp.append(i,partyName(x.p)+(x.p==="OTH"?` (${x.g==="india"?"Congress allies":x.g==="nda"?"BJP allies":"non-aligned"})`:"")); return sp}));
+    document.getElementById("ls-note").textContent="Each square is one seat, marked with the winning party's election symbol as an emoji, tinted in its side's colours: Congress blue and its allies in blues and purples, BJP orange and its allies in oranges, reds and yellows, the non-aligned in greens. The bar splits the seats party by party in the same colours. 🌐: parties that won 3 or fewer seats across 2004-2024."}
   if(lsMarginsOn()) document.getElementById("ls-note").textContent="Darker shades mean a wider win over the runner-up: full colour is 20 points or more, the lightest is under 5. A party and its allies share one colour.";
 }
 function setLokSabha(mode,animate){if(mode===lsMode) return; lsMode=mode; if(inRace==="loksabha") renderIn(animate,false)}
@@ -2949,7 +2995,7 @@ function renderST(animate){
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
-  document.getElementById("margin-view").hidden=false; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=true;
+  document.getElementById("margin-view").hidden=false; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=document.querySelector('[data-margin="party"]').hidden=true;
   document.querySelector('[data-margin="stseats"]').hidden=false; document.getElementById("st-view").hidden=true;   // one toggle: Results / Margins (Govts.) / Seat share (owner, 2026-11-26)
   document.querySelectorAll("[data-margin]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.margin===(cm?stColor:"stseats")));
   document.getElementById("legend-states").classList.toggle("margins",stMarginsOn());
@@ -3299,6 +3345,16 @@ function rsPack(pk,active){
 // left end on the left, its right end on the right. That hits a tally or the majority number: the same side's inner end, the
 // majority number being the last resort. Then the other side; then the second line, under the number. Lok Sabha Vote share has no
 // mark: always the green's start (owner, 2026-11-07).
+// Party view (owner, 2026-11-27): under the bar, the five biggest parties, each under its own part: Congress flush left, BJP flush right,
+// the rest centred on their part; a label that would run into another (or off the bar) is left out
+function placePLabs(){const U=document.getElementById("in-under"); U.querySelectorAll(".plab").forEach(e=>e.remove()); if(!inPSeg||inRace!=="loksabha"||!lsPartyOn()) return;
+  const W=U.clientWidth; if(!W) return; const R0=U.getBoundingClientRect(), segs=[...document.querySelectorAll("#panel-in .bar .pseg")], placed=[];
+  [...inPSeg.map((x,i)=>({...x,i}))].sort((a,b)=>b.n-a.n).slice(0,5).forEach(x=>{const r=segs[x.i]?.getBoundingClientRect(); if(!r) return;
+    const l=document.createElement("span"); l.className="gain plab"; l.textContent=`${partyName(x.p)} ${x.n}`; l.style.color="var(--muted)"; U.appendChild(l);
+    const tw=l.offsetWidth, L0=r.left-R0.left, tries=x.p==="INC"?[L0]:x.p==="BJP"?[r.right-R0.left-tw]:[L0+r.width/2-tw/2,L0,r.right-R0.left-tw];   // centred, else from its start, else to its end
+    const a=tries.map(v=>Math.max(0,Math.min(W-tw,v))).find(v=>!placed.some(([p,q])=>v<q+8&&v+tw>p-8));
+    if(a==null){l.remove(); return} placed.push([a,a+tw]); l.style.left=a+"px"})}
+addEventListener("resize",()=>placePLabs());
 function placeOth(){const $=id=>document.getElementById(id), o=$("in-total-oth"), W=$("in-under").clientWidth;
   const cm=$("in-under").classList.contains("split");
   o.style.top=""; o.style.textAlign="";
@@ -3343,7 +3399,7 @@ function renderIn(animate,sync){
   ST_DOT.forEach(d=>{d.classList.remove("rs-off"); d.style.opacity=""});
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""; delete d.dataset.p});
   // reset what only some views use
-  document.getElementById("in-b-vac").style.width="0%";
+  document.getElementById("in-b-vac").style.width="0%"; document.querySelectorAll("#panel-in .bar .pseg,#in-under .plab").forEach(e=>e.remove());   // Party view's own parts
   // Religion's colours belong to Religion only (fix, 2026-11-27): put the party colours, the tally's colours and the grey Others
   // strip back before every view; Lok Sabha Religion sets its own again in renderLS. They had bled into Rajya Sabha and States
   inRel=null; document.getElementById("in-tally").classList.remove("relc"); document.getElementById("panel-in").classList.remove("rel04");
@@ -3366,11 +3422,12 @@ function renderIn(animate,sync){
   if(!cm){const two=id=>{const c=document.getElementById(id).children; return c[0].textContent+(narrow.matches?"\n":" · ")+c[1].lastChild.textContent}, tl=document.getElementById("in-total");
     document.getElementById("in-total-oth").textContent=inOth;
     tl.style.color="var(--inc)"; tl.textContent=two("in-sub-india"); document.getElementById("in-total-r").textContent=two("in-sub-nda")}
+  if(race==="loksabha"&&lsPartyOn()) for(const id of ["in-total","in-total-oth","in-total-r"]) document.getElementById(id).textContent="";   // Party view: its own labels (placePLabs)
   if(race==="loksabha"&&inRel){const u=x=>`${x.n} seats${narrow.matches?"\n":", "}${x.nh} non-Hindu`, $=id=>document.getElementById(id);   // Religion: seats and non-Hindu seats, grey (owner, 2026-11-27)
     $("in-total").textContent=u(inRel.c); $("in-total-r").textContent=u(inRel.b); $("in-total-oth").textContent=inRel.o.n?(narrow.matches?"Oth.\n":"Others ")+(inRel.o.nh/inRel.o.n*100).toFixed(1)+"%":"";   // Others: just its non-Hindu share (owner, 2026-11-27)
     for(const id of ["in-total","in-total-oth","in-total-r"]) $(id).style.color="var(--muted)"} else {document.getElementById("in-total-oth").style.color="var(--oth)"; document.getElementById("in-total-r").style.color="var(--bjp)"}
   if(narrow.matches&&!(race==="loksabha"&&inRel)){const o=document.getElementById("in-total-oth"); o.textContent=cm?o.textContent.replace("Others ","Oth. ").replace(/ \(.*/,""):o.textContent.replace("Others ","Oth.\n")}   // phones: two lines, like the tallies; Chief Minister one, like its notes
-  placeOth();
+  placeOth(); placePLabs();
   AP_ONE=inYear<=2014;   // names only: 2014 and before, Telangana's block is called AP too (owner, 2026-11-09)
   // AP and Telangana always keep their own blocks (owner, 2026-11-09: no joined block); IN_TIGHT_AP1 kept, unused
   const tight=true; PACK_IN.fixed=tight?IN_TIGHT:IN_COMPACT;   // tight layout (the owner's grid since 2026-11-14): every India view and year
@@ -3390,7 +3447,7 @@ function renderIn(animate,sync){
   document.getElementById("in-bloc").textContent=blocOf(inYear);
   // the centre of the tally, as on the USA maps: the year on the stepper and the view (owner, 2026-11-07)
   document.getElementById("in-mid-year").textContent=inYear;
-  setMid(document.getElementById("in-mid-label"),race==="loksabha"?(lsMode==="vote"?"Lok Sabha Vote Share":lsRelOn()?"Lok Sabha rep. by Religion":lsMarginsOn()?"Lok Sabha Margins":lsMode==="seat"?"Lok Sabha Seat Share":"Lok Sabha Results"):race==="rajyasabha"?"Rajya Sabha Seat Share":cm?(stMarginsOn()?"State Govt. Margins":"State Govt. Results"):"States' Seat Share");   // Title Case, owner's wording (2026-11-27)
+  setMid(document.getElementById("in-mid-label"),race==="loksabha"?(lsMode==="vote"?"Lok Sabha Vote Share":lsPartyOn()?"Lok Sabha rep. by Party":lsRelOn()?"Lok Sabha rep. by Religion":lsMarginsOn()?"Lok Sabha Margins":lsMode==="seat"?"Lok Sabha Seat Share":"Lok Sabha Results"):race==="rajyasabha"?"Rajya Sabha Seat Share":cm?(stMarginsOn()?"State Govt. Margins":"State Govt. Results"):"States' Seat Share");   // Title Case, owner's wording (2026-11-27)
   ["loksabha","rajyasabha","states"].forEach(r=>document.getElementById("legend-"+r).classList.toggle("off",r!==race));
   panel.setAttribute("aria-labelledby","tab-"+race);
   IN_PICK[race]=inYear; litSync?.();
@@ -3556,7 +3613,7 @@ function show(race,animate){
   document.getElementById("gov-view").hidden=race!=="governors";
   document.getElementById("pdist-view").hidden=race!=="president";   // setUS narrows this down (years in PRES_CD)
   document.getElementById("margin-view").hidden=!us;   // setUS narrows this down
-  if(!us){document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true} else document.querySelector('[data-margin="religion"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
+  if(!us){document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true} else document.querySelector('[data-margin="religion"]').hidden=document.querySelector('[data-margin="party"]').hidden=true;   // India reuses Results / Margins: no Race button there (owner, 2026-11-26)
   if(current&&countryOf(current)!==countryOf(race)) stopPlay();   // each country has its own tour: going to the other ends it
   document.getElementById("st-view").hidden=true;   // merged into Results / Margins / Seat share (owner, 2026-11-26)
   document.getElementById("ls-view").hidden=true;   // India: Compact only
@@ -3624,7 +3681,7 @@ senSeatsOnly.addEventListener("change",()=>{if(usRace==="senate"&&countryOf(curr
     const st=code==="DN"||code==="DM"?"D&D":inThree(code).toUpperCase();   // the map's short code: UP, J&K, KAR. (owner, 2026-11-10)
     // Every Lok Sabha view (owner, 2026-11-27), three lines: the place; "<religion emoji> MP*" (the emoji tinted as on the Religion map,
     // * where the religion is assumed from the name, as the Religion note says); the party (short form) and the lead over the runner-up
-    const mg=lsMarginOf(inYear,code,k), rep=LS_REP[inYear]?.[code]?.split("|")[k], ro=LS_MREL[inYear]&&lsRelOf(inYear,code,k), pty=LS_PARTY[inYear]?.[code]?.split("|")[k];
+    const mg=lsMarginOf(inYear,code,k), rep=LS_REP[inYear]?.[code]?.split("|")[k], ro=lsRelOn()&&lsRelOf(inYear,code,k), pty=LS_PARTY[inYear]?.[code]?.split("|")[k];   // the religion emoji and * in the Religion view only (owner, 2026-11-27)
     box.textContent=`${LS_NAMES[+i]}, ${st}`;
     if(rep||ro){const em=document.createElement("span"); if(ro){em.textContent=REL_EMOJI[ro.pick]+" "; em.style.filter=relTint(ro.pick)}
       box.append("\n",em,`${rep||""}${ro&&(ro.src==="n"||ro.src==="d")?"*":""}`)}
@@ -4024,7 +4081,7 @@ addEventListener("resize",()=>requestAnimationFrame(fitMids)); document.fonts?.r
 // 9 -> 5 + 4; 5 or fewer stay one column); its sentences run full width below. Keys inside wrappers (.proj, .rkeys) count one by one.
 (function legendCols(){let raf=0;
   const keys=el=>[...el.children].flatMap(c=>{const cs=getComputedStyle(c); if(cs.display==="none"||c.hidden) return [];
-    if(cs.display==="contents"||c.classList.contains("rkeys")) return keys(c); return c.classList.contains("txt")||c.classList.contains("own")&&!c.querySelector("svg")||!c.textContent.trim()?[{t:c}]:[{k:c}]});
+    if(cs.display==="contents"||c.classList.contains("rkeys")||c.classList.contains("pkeys")) return keys(c); return c.classList.contains("txt")||c.classList.contains("own")&&!c.querySelector("svg")||!c.textContent.trim()?[{t:c}]:[{k:c}]});
   const run=()=>{raf=0; for(const L of document.querySelectorAll(".legends .legend")){
     L.querySelectorAll("[data-gp]").forEach(e=>{e.style.gridRow=e.style.gridColumn=""; delete e.dataset.gp}); L.classList.remove("two");
     if(!narrow.matches||L.classList.contains("off")||!L.offsetParent) continue;
@@ -4107,7 +4164,7 @@ addEventListener("resize",fitIndia); narrow.addEventListener("change",()=>reques
 // Back / Forward step through the views; a hash missing a part keeps that part's default.
 function viewHash(){const r=current; if(!r) return "";
   if(countryOf(r)==="usa") return "#"+[r,usYear(r),r==="senate"&&senMode,r==="governors"&&(govMode==="leg"?"units":"governors"),r==="president"&&PRES_CD[usYear(r)]&&presDist&&"district",colorMode].filter(Boolean).join("/");
-  return "#"+[r,inYear,r==="loksabha"&&lsMarginsOn()&&"margins",r==="loksabha"&&lsRelOn()&&"religion",r==="states"&&stMode,r==="states"&&stMarginsOn()&&"margins",r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
+  return "#"+[r,inYear,r==="loksabha"&&lsMarginsOn()&&"margins",r==="loksabha"&&lsRelOn()&&"religion",r==="loksabha"&&lsPartyOn()&&"party",r==="states"&&stMode,r==="states"&&stMarginsOn()&&"margins",r==="loksabha"&&inYear===2004&&LS_EDIT&&"edit",r==="rajyasabha"&&RS_EDIT&&"edit"].filter(Boolean).join("/")}
 let urlTimer=0, urlReplace=true;
 function syncURL(){clearTimeout(urlTimer); urlTimer=setTimeout(()=>{const h=viewHash(); if(!h||h===location.hash){urlReplace=false; return}
   history[urlReplace||playing||ttLive?"replaceState":"pushState"](null,"",h); urlReplace=false},0)}
@@ -4121,7 +4178,7 @@ function applyHash(animate){const [r0,...t]=decodeURIComponent(location.hash.sli
     if(y&&usYearsOf(race).includes(y)) usYearPick=y; else if(!y) usYearPick=2026;
     if(race!==current) show(race,animate); else {usStep(race); setUS(race,animate)}
   } else {
-    if(race==="loksabha"){lsMode="geo"; lsColor=has("margins")?"margins":has("religion")?"religion":"results"; LS_EDIT=has("edit")}
+    if(race==="loksabha"){lsMode="geo"; lsColor=has("margins")?"margins":has("religion")?"religion":has("party")?"party":"results"; LS_EDIT=has("edit")}
     if(race==="states"){const m=["cm","seats"].find(has); stMode=m||"cm"; stColor=has("margins")?"margins":"results"}
     if(race==="rajyasabha") RS_EDIT=has("edit");
     const ys=race==="states"?ST_YEARS:race==="rajyasabha"?RS_YEARS:IN_YEARS; IN_PICK[race]=y&&ys.includes(y)?y:IN_DEFAULT[race];
