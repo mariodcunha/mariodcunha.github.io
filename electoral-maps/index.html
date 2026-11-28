@@ -311,7 +311,12 @@ svg.map text.in{fill:#fff} svg.map text.in.grey{fill:var(--muted)} svg.map text.
 .legend .mkey{order:-5} .legend.margins .lead{display:none}
 .legend .txt{order:2;flex-basis:100%;display:block} #p-ev:not([hidden]),.legend .txt span:not([hidden]){display:inline}   /* the President note runs on after it, same line (owner, 2026-11-22) */
 .legend .txt:empty{display:none}
-.credit{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.credit{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px;display:flex;justify-content:space-between;align-items:baseline;gap:16px}   /* About left, the NYT credit right (owner, 2026-11-27) */
+.credit a{color:inherit;text-decoration:underline;text-underline-offset:2px} .credit .about{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.credit a:hover,.credit .about:hover{color:var(--fg)} .credit span{text-align:right}
+#about{max-width:min(560px,calc(100% - 32px));padding:24px 24px 20px;border:1px solid var(--rule);border-radius:var(--r-out);background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans);box-shadow:0 12px 40px rgba(0,0,0,.18)}
+#about a{color:inherit;text-decoration:underline;text-underline-offset:2px} #about::backdrop{background:rgba(0,0,0,.45)} #about h2{margin:0 0 12px;font-size:20px} #about p{margin:0 0 12px} #about p:last-of-type{margin-bottom:16px}
+#about .close{position:absolute;top:12px;right:12px;width:32px;height:32px;border:0;border-radius:50%;background:var(--chip);color:var(--fg);font-size:18px;line-height:32px;cursor:pointer}
 .credit-top{display:none}
 .legends>.legend{grid-area:1/1;transition:opacity .35s}
 .legends>.legend.off{opacity:0;pointer-events:none;visibility:hidden}
@@ -480,8 +485,14 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   #in-under{min-height:34px}
   .legends>.legend.off{display:none}
   .legend.stack,#panel-in .legend,#panel-us .legend{flex-direction:column;align-items:flex-start} .legend.stack .own,.legend.stack .txt,#panel-in .legend .txt,#panel-us .legend>*{flex-basis:auto}   /* phones: one per line, USA and India, every map and year (owner, 2026-11-26); the page scrolls anyway */
-  .credit{display:none}
+  .credit{font-size:12px}   /* phones too now, for About (owner, 2026-11-27) */
   .credit-top{display:block;font-size:12px;line-height:15px;color:var(--muted)}
+  .credit-top.about{background:none;border:0;padding:0;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:2px;cursor:pointer;align-self:center}
+  .credit .about{display:none} .credit{justify-content:flex-end}   /* phones: About sits top left; the footer keeps the NYT credit */
+  #about{margin:auto 0 0;width:100%;max-width:100%;max-height:85vh;max-height:85dvh;overflow:auto;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:28px 20px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.2)}   /* a bottom sheet */
+  #about[open]{animation:sheet-up .28s cubic-bezier(.2,.8,.2,1)} @keyframes sheet-up{from{transform:translateY(100%)}to{transform:none}}
+  @media (prefers-reduced-motion:reduce){#about[open]{animation:none}}
+  #about::before{content:"";position:absolute;top:8px;left:50%;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--rule)}   /* grab handle */
   #panel-us.pct #need{display:none}
   .topbar{min-height:44px}
   .toggle{position:fixed;z-index:20;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));display:none!important;justify-self:stretch}   /* phones: the race stepper instead (owner, 2026-11-26) */
@@ -641,7 +652,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       <button type="button" data-ls="vote" aria-pressed="false">Vote %</button>
     </div>
   </div>
-  <p class="credit-top" style="margin:0">Inspired by<br>@NYTimes</p>
+  <button type="button" class="credit-top about" id="about-open-top">About</button>   <!-- phones: About, a bottom sheet (owner, 2026-11-27; was "Inspired by @NYTimes") -->
   <div id="play" class="idle" role="group" aria-label="Play through every map"><span class="pthumb" aria-hidden="true"></span><button type="button" id="play-left"></button><button type="button" id="play-right"></button></div>
   <div id="ttest" class="idle" role="group" aria-label="Transition test" hidden><span class="pthumb" aria-hidden="true"></span><button type="button" id="tt-left"></button><button type="button" id="tt-right"></button></div>   <!-- only with ?transitions (owner, 2026-11-26) -->
   <div id="ttest-cap" role="status" hidden></div>
@@ -763,9 +774,20 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
       </div>
     </div>
   </section>
-  <footer class="credit">Inspired by the dataviz from The New York Times.</footer>
+  <footer class="credit"><button type="button" class="about" id="about-open">About</button><span>Inspired by DataViz from the <a href="https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html" target="_blank" rel="noopener">New York Times</a></span></footer>
+  <dialog id="about" aria-labelledby="about-h">
+    <button type="button" class="close" id="about-close" aria-label="Close">×</button>
+    <h2 id="about-h">About</h2>
+    <p>I love electoral politics, and I'm passionate about drawing election data geometrically, so that it represents the voting population fairly instead of a geographic map that gives a misleading picture.</p>
+    <p>It's important to look at electoral data by units of population rather than by land. Inspired by the <a href="https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html" target="_blank" rel="noopener">New York Times</a>, I've tried to perfect geometric electoral maps for the US and India, two countries that are part of my life.</p>
+    <p>I've shaped these maps to follow the real geography of both countries, then used them to show the results from many slices and perspectives. I hope you enjoy them as much as I've enjoyed making them: playing with colors, shades, palettes, emojis and all their wonderful permutations and combinations.</p>
+  </dialog>
 </main>
 <script>
+// About (owner, 2026-11-27): a modal; Esc, the × and a click outside it close it
+{const d=document.getElementById("about"); ["about-open","about-open-top"].forEach(id=>document.getElementById(id).addEventListener("click",()=>d.showModal()));
+  document.getElementById("about-close").addEventListener("click",()=>d.close());
+  d.addEventListener("click",e=>{const r=d.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) d.close()})}
 // Winners by year: dem = states won by the Democrat; me2 / ne2 = Maine's and Nebraska's 2nd districts
 const PRES={
   2008:{d:"Obama",r:"McCain",dem:"CA OR WA NV CO NM MN IA WI MI IL IN OH PA VA NC FL MD DE DC NJ NY CT RI MA VT NH ME HI",me2:"d",ne2:"d"},
@@ -3600,7 +3622,7 @@ function projLegend(race,n){
   const sw=(cls,t)=>`<span class="${cls==="hatch-d"?"kd lead":cls==="hatch-r"?"kr lead":"kt"}"><i class="sw ${cls}${race==="senate"?" c":""}"></i>${t}</span>`;
   if(race==="house") return `<span class="base"><i class="sw" style="background:var(--dem)"></i>Democrats called (${n.d})</span>`+sw("hatch-d",`Democrats leading (${n.D})`)+(n.T?sw("hatch-t",`Toss-up (${n.T})`):"")+
     `<span><i class="sw" style="background:var(--house)"></i>No result (${n.v})</span>`+sw("hatch-r",`Republicans leading (${n.R})`)+`<span class="base"><i class="sw" style="background:var(--rep)"></i>Republicans called (${n.r})</span>`+
-    `<span class="txt">The totals count called and leading seats. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th, headed to runoffs. Results from The New York Times and The Associated Press, as of Nov 9, 2026.</span>`;
+    `<span class="txt">The totals count called and leading seats. Leading: races not called yet, shown by who leads the count. No result: Louisiana’s 5th and 6th, headed to runoffs. Results from The New York Times and The Associated Press, as of Nov 27, 2026.</span>`;
   if(race==="senate") return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
     `<span class="txt">${n.D||n.R?"Solid circles: seats not up in 2026, or races called. Light circles: races still being counted, shown by who leads, and counted in the totals as leading. ":"Every 2026 race is called. "}Results from The New York Times, with later calls for Idaho, Michigan, Montana, Nebraska, Mississippi and Alaska.</span>`;   // keys and the light-circle line only while a race is uncalled
   return (n.D?sw("hatch-d",`Democrats leading, not called (${n.D})`):"")+(n.R?sw("hatch-r",`Republicans leading, not called (${n.R})`):"")+
