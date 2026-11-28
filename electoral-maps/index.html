@@ -202,8 +202,8 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .bar.div i[data-g="d"]:not(.hatch-d),.bar.div i[data-g="r"]:not(.hatch-r){background:var(--skin-dk)!important} .bar.div i.hatch-d,.bar.div i.hatch-r{background:var(--skin-lt)!important;box-shadow:none!important}   /* by class, not id, so the pinned copy (#mini, no ids) matches too (2026-11-27) */
 /* Stuck tally (owner, 2026-11-27): number first, then its name, side by side (mirrored on the right, so the numbers stay at the
    outer edges); the centre too on the web (year, then the title), stacked on phones where it is narrow. Web and phones */
-.head.flat .tally .cand:not(.mid):not(.oth){display:flex;align-items:baseline;gap:8px} .head.flat .tally .cand.r,.head.flat .tally .cand.nda{flex-direction:row-reverse}
-.head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap;max-width:none}   /* the year beside the title, never above it, phones too (owner, 2026-11-27); a title that doesn't fit shortens or goes (fitMid) */
+@media (min-width:776px){.head.flat .tally .cand:not(.mid):not(.oth){display:flex;align-items:baseline;gap:4px} .head.flat .tally .cand.r,.head.flat .tally .cand.nda{flex-direction:row-reverse}
+.head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap;max-width:none}}   /* web only now (owner, 2026-11-27): gap halved 8 -> 4px; phones keep the number above the name */   /* the year beside the title, never above it, phones too (owner, 2026-11-27); a title that doesn't fit shortens or goes (fitMid) */
 @media (max-width:775px){.legend.two{display:grid!important;grid-template-columns:1fr 1fr;gap:8px 16px;align-items:center} .legend.two .rkeys{display:contents!important}}   /* phones: 6+ keys in two columns (legendCols) */
 .legend .skin{display:none!important} #legend-house.race .skin,#legend-senate.race .skin{display:inline-flex!important} #legend-house.race .skin.nc:not(.on){display:none!important}
 #legend-house.race #proj-house>span:not(.txt),#legend-senate.race #proj-senate>span:not(.txt){display:none!important}   /* Race legends: non-white / white keys, no blue / red (owner, 2026-11-27) */
@@ -446,7 +446,7 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   .head::before{content:"";position:absolute;z-index:-1;inset:0 calc(50% - 50vw);background:var(--bg);box-shadow:0 1px 0 rgba(0,0,0,calc(.08*var(--hp,0)))}
   html.dark .head::before{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
   .head .tally .cand b{font-size:calc(clamp(30px,5.5vw,46px) - (clamp(30px,5.5vw,46px) - 20px)*var(--hp,0))}
-  .head .tally .cand:not(.mid)>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 20px)*var(--hp,0))}   /* stuck: number and name both 20px (owner, 2026-11-27) */
+  .head .tally .cand:not(.mid)>span,.head .tally .cand.mid .lk>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 18px)*var(--hp,0))}   /* stuck: names and the title 18px, numbers 20px (owner, 2026-11-27) */
   .head .bar{height:calc(15px - 7px*var(--hp,0))}
   .head .under,.head .need{font-size:calc(14px - 2px*var(--hp,0))}
   #mini .tally{align-items:baseline}
@@ -512,7 +512,8 @@ svg.packed .plabels{opacity:1;transition:opacity .35s .45s}
   html.dark .head{box-shadow:0 1px 0 rgba(255,255,255,calc(.1*var(--hp,0)))}
   .topbar{position:relative;z-index:20}   /* the country menu drops over the tally: the sticky .head (z 15) was covering it, so taps went to the numbers (fix, 2026-11-27) */
   .head .tally .cand b{font-size:calc(30px - 14px*var(--hp,0))!important;line-height:calc(30px - 14px*var(--hp,0))!important}   /* stuck: 16px (owner, 2026-11-27; was 14) */
-  .head .tally .cand:not(.mid)>span{font-size:calc(clamp(14px,1.8vw,18px) - (clamp(14px,1.8vw,18px) - 16px)*var(--hp,0))!important}   /* stuck: the name 16px too, the number's size (owner, 2026-11-27) */
+  .head .tally .cand:not(.mid)>span{font-size:14px!important}   /* phones: names 14px, stuck or not (owner, 2026-11-27; numbers 16px when stuck) */
+  .head .tally .cand.mid .lk>span{font-size:calc(12.5px + 1.5px*var(--hp,0))!important;line-height:17px!important}   /* stuck: the title 14px like the names; numbers stay above names on phones */
   .head .bar{height:calc(15px - 7.5px*var(--hp,0))}   /* stuck: the bar half as tall (owner, 2026-11-27) */
   .head .under,.head .need{font-size:12px}   /* phones: the line under the bar always 12px, stuck or not (owner, 2026-11-27) */
   /* (owner, 2026-11-26) the pinned bar is the tally exactly as on the page (numbers over names, the year over the centre label,
