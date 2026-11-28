@@ -2090,12 +2090,12 @@ function setUSNow(race,animate,year=usYear(race),mapOnly=false){
   // House Margins (owner, 2026-11-22): the bar and big numbers show the national House popular vote, Democrats / Republicans
   // (Wikipedia infoboxes; 2026: current counts), others grey in the middle; seats under the bar
   // Senate Seats Margins too: the popular vote in that year's Senate races (same day)
-  const PVT=race==="house"?HOUSE_PV:race==="senate"&&sm==="seats"&&SEN_MARGINS[year]?SEN_PV:race==="governors"&&!legOn()&&GOV_MARGINS[year]?GOV_PV:null;   // Governors: that year's governor races
+  const PVT=race==="president"&&usDist?PRES_PV:race==="house"?HOUSE_PV:race==="senate"&&sm==="seats"&&SEN_MARGINS[year]?SEN_PV:race==="governors"&&!legOn()&&GOV_MARGINS[year]?GOV_PV:null;   // Governors: that year's governor races
   // Results (owner, 2026-11-22): House and Senate Seats keep the seats up top and put the vote share under the bar, as President
   if(PVT&&PVT!==GOV_PV&&!fut&&!legOn()&&!marginsOn()&&PVT[year]) T={...T,pv:PVT[year]};
-  if(PVT&&!fut&&!legOn()&&marginsOn()&&PVT[year]){const [vd,vr]=PVT[year], ch=race==="house"?"House":race==="governors"?"governor races":"Senate";
-    T={...T,d:vd,r:vr,tot:100,mark:null,vote:true,seg:{d:vd,m:100-vd-vr,r:vr},ud:race==="governors"?`${T.d} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.d/435*100)}% population`:`${T.d} seats`,ur:race==="governors"?`${T.r} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.r/435*100)}% population`:`${T.r} seats`,   // Governors: + population share (owner, 2026-11-22)
-      label:`${year} ${ch} vote share: Democrats ${vd}%, Republicans ${vr}%; seats ${T.d} to ${T.r}`}}
+  if(PVT&&!fut&&!legOn()&&marginsOn()&&PVT[year]){const [vd,vr]=PVT[year], ch=race==="president"?"presidential":race==="house"?"House":race==="governors"?"governor races":"Senate", un=race==="president"?"districts":"seats";   // President District too (owner, 2026-11-27)
+    T={...T,d:vd,r:vr,tot:100,mark:null,vote:true,pv:null,...race==="president"?{ctl:vd>vr?"d":"r"}:{},seg:{d:vd,m:100-vd-vr,r:vr},ud:race==="governors"?`${T.d} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.d/435*100)}% population`:`${T.d} ${un}`,ur:race==="governors"?`${T.r} governors,${narrow.matches?"\n":" "}covers ${Math.round(c.r/435*100)}% population`:`${T.r} ${un}`,   // Governors: + population share (owner, 2026-11-22)
+      label:`${year} ${ch} vote share: Democrats ${vd}%, Republicans ${vr}%; ${un} ${T.d} to ${T.r}`}}
   // the grey square for the bar's middle: everyone but Democrats and Republicans
   document.querySelectorAll(".okey").forEach(e=>{e.hidden=!T.vote; if(T.vote) e.querySelector("em").textContent="Others"});
   // Senate Representation (every year): the tally shows each side's share of representation, not seats. A senator
@@ -2994,6 +2994,14 @@ function renderST(animate){
   tl.textContent=cm?gov(L[3]+L[4]):"";
   document.getElementById("in-total-oth").textContent=cm&&L[2]?`Others ${pct(L[2])||"<1"}% (${N[2]})`:"";   // even a sliver gets its label
   document.getElementById("in-total-r").textContent=cm?gov(L[0]+L[1]):"";
+  const pv=cm&&stMarginsOn()&&ST_PV[year];   // Margins: the pooled vote up top and in the bar; the governments and population under it
+  if(pv){const P=v=>v.toFixed(1)+"%", gv=(n,v)=>`${n} govts,${narrow.matches?"\n":" "}covers ${pct(v)}% population`;
+    LS_GROUPS.forEach((g,i)=>document.getElementById("in-b-"+g).style.width=pv[i]+"%"); document.getElementById("in-b-vac").style.width="0%";
+    countToPct(document.getElementById("in-n-nda"),pv[0]+pv[1],animate); countToPct(document.getElementById("in-n-oth"),pv[2],animate); countToPct(document.getElementById("in-n-india"),pv[3]+pv[4],animate);
+    document.getElementById("in-sub-nda").innerHTML=`<span>BJP ${P(pv[0])}</span><span><i> · </i>Allies ${P(pv[1])}</span>`;
+    document.getElementById("in-sub-india").innerHTML=`<span>Congress ${P(pv[4])}</span><span><i> · </i>Allies ${P(pv[3])}</span>`;
+    tl.textContent=gv(N[3]+N[4],L[3]+L[4]); document.getElementById("in-total-r").textContent=gv(N[0]+N[1],L[0]+L[1]);
+    document.getElementById("in-total-oth").textContent=`Others ${P(pv[2])}`}
   legShape("states",cm?"sq":"c");   // Chief Ministers: sharp blocks; Seat share: circles
   document.getElementById("margin-view").hidden=false; document.querySelector('[data-margin="race"]').hidden=true; document.querySelector('[data-margin="power"]').hidden=true; document.querySelector('[data-margin="religion"]').hidden=document.querySelector('[data-margin="party"]').hidden=true;
   document.querySelector('[data-margin="stseats"]').hidden=false; document.getElementById("st-view").hidden=true;   // one toggle: Results / Margins (Govts.) / Seat share (owner, 2026-11-26)
@@ -3003,7 +3011,7 @@ function renderST(animate){
   document.querySelectorAll("[data-st]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.st===stMode));
   document.getElementById("st-leg-bloc").textContent=`Congress allies (${blocOf(year)})`;
   document.getElementById("st-note").textContent=cm
-    ?(stMarginsOn()?"Darker shades mean a wider lead in vote share for the government's alliance over the strongest rival, in the state election behind it: full colour is 20 points or more, the lightest is under 5 (or behind). A party and its allies share one colour. ":"")+`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
+    ?(stMarginsOn()?"The big numbers and the bar pool every state's latest assembly vote by alliance, each state weighted by its Lok Sabha seats; under the bar, the governments each side runs and the population they cover. Darker shades mean a wider lead in vote share for the government's alliance over the strongest rival, in the state election behind it: full colour is 20 points or more, the lightest is under 5 (or behind). A party and its allies share one colour. ":"")+`Each state is one block coloured by its chief minister's party in ${stWhen(year)}; its size is its Lok Sabha seats.${" States under President's rule or with no assembly are grey."}`
     :`Each state's circles are split by its assembly seats, from its latest election up to ${stWhen(year)}, grouped by each party's alliance then. States vote on their own calendars: this is a snapshot of every assembly.`;
   inSvg.setAttribute("aria-label",cm?`Chief ministers in ${stWhen(year)} by alliance, each state sized by its Lok Sabha seats`
     :`State assemblies in ${stWhen(year)} by alliance, drawn on the Lok Sabha seat squares`);
@@ -3023,6 +3031,10 @@ const ST_MARGIN={2004:{AP:6.1,AR:29.69,AS:19.74,BR:13.22,CG:2.55,DL:12.91,GA:-2.
   2021:{AP:10.78,AR:31.85,AS:11.45,BR:8.56,CG:10,DL:13.8,GA:4.1,GJ:7.1,HP:7.1,HR:8.79,JH:2.4,KA:-1.79,KL:2.73,MH:9.73,ML:-9.5,MN:1.2,MP:0.01,MZ:7.72,NL:-13.4,OD:12.2,PB:7.95,PY:5.29,RJ:0.53,SK:0.46,TN:5.67,TR:6.62,TS:18.44,UK:13,UP:19.22,WB:9.95},
   2024:{AP:15.92,AR:38.46,AS:11.45,BR:8.56,CG:4.04,DL:13.8,GA:7.05,GJ:24.98,HP:0.9,HR:0.6,JH:6.19,JK:10.87,KA:6.88,KL:2.73,MH:13.98,ML:4.57,MN:22.91,MP:8.17,MZ:2.76,NL:41.48,OD:-0.15,PB:19.03,PY:5.29,RJ:1.91,SK:31.01,TN:5.67,TR:13.43,TS:2.39,UK:6.4,UP:11.76,WB:9.95},
   2026:{AP:15.92,AR:38.46,AS:12.62,BR:8.89,CG:4.04,DL:3.58,GA:7.05,GJ:24.98,HP:0.9,HR:0.6,JH:6.19,JK:10.87,KA:6.88,KL:10.63,MH:13.98,ML:4.57,MN:22.91,MP:8.17,MZ:2.76,NL:41.48,OD:-0.15,PB:19.03,PY:7.28,RJ:1.91,SK:31.01,TN:4.72,TR:13.43,TS:2.39,UK:6.4,UP:11.76,WB:5.24}};
+// Govts. Margins, the bar and big numbers (owner, 2026-11-27, like US Governors Margins): every state's latest assembly vote pooled by
+// alliance, [BJP, NDA allies, Others, Congress allies, Congress] %, each state weighted by its Lok Sabha seats (no vote totals after 2013);
+// parties grouped by their alliance that year, as on the map; independents and untabled parties count as Others. st-build/pv.py.
+const ST_PV={2004:[18.2,13.4,34.7,9.6,24.1],2006:[18.1,5.9,43.5,8.8,23.6],2009:[17.4,6.1,45.8,7.5,23.2],2011:[17.7,4.5,44.7,8.5,24.6],2014:[19.8,7.5,46.2,5.4,21.1],2016:[21.7,7.2,41.9,9.5,19.7],2019:[26.5,7.0,37.4,10.2,18.9],2021:[28.6,6.3,37.3,8.9,19.0],2024:[30.5,9.4,20.6,22.0,17.6],2026:[31.4,11.1,22.1,17.8,17.6]};
 let stColor="results";
 const stMarginsOn=()=>inRace==="states"&&stMode==="cm"&&!!ST_MARGIN[inYear]&&stColor==="margins";
 document.getElementById("legend-states").insertAdjacentHTML("afterbegin",[[4,"var(--inc)","Congress + allies"],[0,"var(--bjp)","BJP + allies"],[2,"var(--oth)","Others"]]
