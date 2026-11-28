@@ -200,6 +200,10 @@ svg.india text{transition:transform .45s var(--ease),opacity .45s var(--ease)}
    skin tone in the middle (the white gap still splits the parties); dark mode a touch lighter so the brown reads on the dark page */
 :root{--skin-dk:#9a623d;--skin-lt:#efc9a4} html.dark{--skin-dk:#a86f47;--skin-lt:#e3bb93}
 .bar.div i[data-g="d"]:not(.hatch-d),.bar.div i[data-g="r"]:not(.hatch-r){background:var(--skin-dk)!important} .bar.div i.hatch-d,.bar.div i.hatch-r{background:var(--skin-lt)!important;box-shadow:none!important}   /* by class, not id, so the pinned copy (#mini, no ids) matches too (2026-11-27) */
+/* Stuck tally (owner, 2026-11-27): number first, then its name, side by side (mirrored on the right, so the numbers stay at the
+   outer edges); the centre too on the web (year, then the title), stacked on phones where it is narrow. Web and phones */
+.head.flat .tally .cand:not(.mid):not(.oth){display:flex;align-items:baseline;gap:8px} .head.flat .tally .cand.r,.head.flat .tally .cand.nda{flex-direction:row-reverse}
+@media (min-width:776px){.head.flat .tally .cand.mid{display:flex;align-items:baseline;justify-content:center;gap:.35em}}
 .legend .skin{display:none!important} #legend-house.race .skin,#legend-senate.race .skin{display:inline-flex!important} #legend-house.race .skin.nc:not(.on){display:none!important}
 #legend-house.race #proj-house>span:not(.txt),#legend-senate.race #proj-senate>span:not(.txt){display:none!important}   /* Race legends: non-white / white keys, no blue / red (owner, 2026-11-27) */
 /* India Religion (owner, 2026-11-27): Hindu a pink like the emoji tint, 3:1 on white; non-Hindu a dark teal, darker than the pink. Dark mode: provisional */
@@ -3322,6 +3326,12 @@ function renderIn(animate,sync){
   ST_DOT.forEach(d=>{d.style.fill=""; d.style.stroke=""; delete d.dataset.p});
   // reset what only some views use
   document.getElementById("in-b-vac").style.width="0%";
+  // Religion's colours belong to Religion only (fix, 2026-11-27): put the party colours, the tally's colours and the grey Others
+  // strip back before every view; Lok Sabha Religion sets its own again in renderLS. They had bled into Rajya Sabha and States
+  inRel=null; document.getElementById("in-tally").classList.remove("relc");
+  for(const [g,c] of [["inc","--inc"],["india","--india"],["oth","--oth"],["nda","--nda"],["bjp","--bjp"]]) document.getElementById("in-b-"+g).style.background=`var(${c})`;
+  {const v=document.getElementById("in-b-vac"); v.style.background="var(--house)"; v.dataset.g="m"}
+  document.getElementById("in-total-oth").style.color="var(--oth)"; document.getElementById("in-total-r").style.color="var(--bjp)";
   document.getElementById("in-mark").style.opacity=document.getElementById("in-need").style.opacity=0;
   document.getElementById("in-check-nda").style.display=document.getElementById("in-check-india").style.display="none";
   document.getElementById("in-under").classList.remove("split");
@@ -3961,7 +3971,8 @@ function stickMini(){
     const tb=narrow.matches?0:document.querySelector(".topbar").offsetHeight; if(!narrow.matches) document.documentElement.style.setProperty("--tbh",tb+"px");
     const start=pn.getBoundingClientRect().top+scrollY+parseFloat(getComputedStyle(h).marginTop)-tb,   /* the panel is a flex box, so the head's -20px margin doesn't collapse */ p=Math.min(1,Math.max(0,(scrollY-start)/(narrow.matches?D:60)));
     if(p===0||!H0.has(h)){h.style.setProperty("--hp",0); H0.set(h,h.offsetHeight)}
-    h.style.setProperty("--hp",p.toFixed(3)); h.style.marginBottom=p?Math.max(0,H0.get(h)-h.offsetHeight)+"px":""}};
+    h.style.setProperty("--hp",p.toFixed(3)); h.classList.toggle("flat",p>=.5);   // half-way stuck: each number moves beside its name (owner, 2026-11-27)
+    h.style.marginBottom=p?Math.max(0,H0.get(h)-h.offsetHeight)+"px":""}};
   const go=()=>{if(!raf) raf=requestAnimationFrame(run)};
   addEventListener("scroll",go,{passive:true}); addEventListener("resize",go); narrow.addEventListener?.("change",go);
   new MutationObserver(go).observe(document.querySelector("main"),{subtree:true,attributes:true,attributeFilter:["hidden"]}); go()})();
